@@ -1,444 +1,482 @@
 """
-PyQtGraph-based Real-Time Visualization for DWTA Simulator
-===========================================================
+TacticalMapWidget - PyQtGraph Tactical Display for DWTA Operator
+================================================================
 
-High-performance visualization using PyQtGraph for real-time updates.
-Replaces matplotlib with 50-70% speedup (5-10ms → <2ms per frame).
+Operator-focused map widget for Multi-Layer Air Defense (MLAD).
+Replaces matplotlib TkAgg with PyQtGraph for real-time performance.
 
-Author: Claude Code (Optimized)
-Date: 2026-02-06
+Features:
+  - TTA-based threat color coding (red <30s / yellow <60s / green >=60s)
+  - LSAM range rings (150km, 300km) and MSAM range rings (5km, 50km)
+  - Threat trajectory prediction lines (threat -> target asset, dashed)
+  - Battery-to-threat assignment lines (green dashed)
+  - Intercept/miss flash animations (TTL 1.2s)
+  - Color-coded battery markers (ammo level)
+
+Author: Claude Code
 """
 
 import numpy as np
-from typing import Dict, List, Tuple, Optional, Set
 import time
+from typing import Dict
 
 try:
     import pyqtgraph as pg
-    from PyQt5 import QtWidgets, QtCore, QtGui
+    from PyQt5 import QtCore, QtWidgets
     PYQTGRAPH_AVAILABLE = True
 except ImportError:
     PYQTGRAPH_AVAILABLE = False
-    print("[WARNING] PyQtGraph not available. Install with: pip install pyqtgraph PyQt5")
+    print("[WARNING] PyQtGraph not available. Install: pip install pyqtgraph PyQt5")
 
 
-class PyQtGraphDisplay:
+class TacticalMapWidget(pg.PlotWidget):
     """
-    High-performance PyQtGraph display system for DWTA tactical simulation.
+    High-performance PyQtGraph tactical map widget.
+    Designed for MLAD (Multi-Layer Air Defense) operators.
 
-    Features:
-    - Incremental updates (only changed elements)
-    - Pre-allocated plot items for zero-copy updates
-    - Change detection to minimize redraws
-    - Target: <2ms per frame update (vs 5-10ms for matplotlib)
+    Usage:
+        widget = TacticalMapWidget(tracker)
+        # Called periodically by DWTAMainWindow QTimer:
+        widget.update_display()
+        # Called on kill event from signal:
+        widget.trigger_kill_flash(x, y, success=True)
     """
 
-    def __init__(self, tracker):
-        """
-        Initialize PyQtGraph display.
-
-        Args:
-            tracker: MultiMissileTracker instance
-        """
-        if not PYQTGRAPH_AVAILABLE:
-            raise ImportError("PyQtGraph is not available. Cannot initialize display.")
-
+    def __init__(self, tracker, parent=None):
+        super().__init__(parent)
         self.tracker = tracker
 
-        # Create Qt application
-        self.app = QtWidgets.QApplication.instance()
-        if not self.app:
-            self.app = QtWidgets.QApplication([])
+        # Flash animation list: [{'item': PlotItem, 'created': float, 'ttl': float}]
+        self._flash_items = []
 
-        # Create main window
-        self.win = pg.GraphicsLayoutWidget(title="DWTA Real-Time Tactical Display")
-        self.win.resize(1600, 900)
-        self.win.setBackground('#0a0a0a')  # Dark background
+        # Change detection caches
+        self._last_assignments: dict = {}
+        self._last_battery_ammo: dict = {}
 
-        # Create plot layout (3 panels)
-        self.main_plot = self.win.addPlot(row=0, col=0, colspan=3, title="Tactical Situation")
-        self.win.nextRow()
-        self.objective_plot = self.win.addPlot(row=1, col=0, colspan=2, title="Objective Function History")
-        self.status_plot = self.win.addPlot(row=1, col=2, title="Mission Status")
+        self._configure_plot()
+        self._init_static_items()
+        self._draw_range_rings()
+        self._update_assets()
 
-        # Configure main tactical plot
-        self._configure_main_plot()
+    # ------------------------------------------------------------------
+    # Initialization
+    # ------------------------------------------------------------------
 
-        # Pre-create plot items for incremental updates
-        self._init_plot_items()
+    def _configure_plot(self):
+        """Configure plot axes, background, and labels."""
+        self.setBackground('#0a0a0a')
+        self.showGrid(x=True, y=True, alpha=0.2)
+        self.setXRange(-90, 120, padding=0)
+        self.setYRange(-130, 270, padding=0)
+        self.setLabel('left', 'Y Position (km)', color='#00cc00')
+        self.setLabel('bottom', 'X Position (km)', color='#00cc00')
+        self.setTitle('TACTICAL SITUATION DISPLAY', color='#00ff00', size='11pt')
+        self.setAspectLocked(False)
 
-        # Change tracking for incremental updates
-        self._last_threat_positions = {}
-        self._last_assignments = {}
-        self._last_battery_ammo = {}
-        self._last_kill_results = {}
-        self._last_objective_history = []
+        # Style axes ticks
+        for axis in ('left', 'bottom'):
+            self.getAxis(axis).setTextPen(pg.mkPen('#888888'))
+            self.getAxis(axis).setPen(pg.mkPen('#333333'))
 
-        # Performance tracking
-        self.frame_times = []
-        self.last_update_time = time.time()
+        # North indicator
+        north = pg.TextItem('N\u2191', color='white', anchor=(0.5, 0.5))
+        north.setPos(112, 258)
+        self.addItem(north)
 
-        # Show window
-        self.win.show()
-
-        print("[OK] PyQtGraph display initialized")
-
-    def _configure_main_plot(self):
-        """Configure main tactical display plot."""
-        # Set coordinate system
-        self.main_plot.setXRange(-100, 120)
-        self.main_plot.setYRange(-150, 300)
-        self.main_plot.setLabel('left', 'Y Position (km)', color='#00ff00')
-        self.main_plot.setLabel('bottom', 'X Position (km)', color='#00ff00')
-
-        # Grid
-        self.main_plot.showGrid(x=True, y=True, alpha=0.3)
-
-        # Aspect ratio
-        self.main_plot.setAspectLocked(False)
-
-        # Title style
-        self.main_plot.setTitle("Tactical Situation", color='#00ff00', size='14pt')
-
-    def _init_plot_items(self):
-        """Pre-create all plot items for zero-copy incremental updates."""
-
-        # Assets (friendly forces) - blue diamonds
+    def _init_static_items(self):
+        """Pre-allocate all scatter/line plot items."""
+        # Protected assets -- 노란 별 (★) : 자산은 포대/위협과 명확히 구분
         self.asset_scatter = pg.ScatterPlotItem(
-            size=12,
-            pen=pg.mkPen(None),
-            brush=pg.mkBrush(74, 144, 226, 220),  # NATO blue
-            symbol='d'  # Diamond
+            size=20,
+            pen=pg.mkPen('#ffe066', width=2),
+            brush=pg.mkBrush(255, 224, 102, 210),
+            symbol='star'
         )
-        self.main_plot.addItem(self.asset_scatter)
+        self.addItem(self.asset_scatter)
 
-        # Active threats - orange/red triangles
-        self.threat_scatter = pg.ScatterPlotItem(
-            size=15,
-            pen=pg.mkPen('#ff8c42', width=1),
-            brush=pg.mkBrush(255, 140, 66, 200),
-            symbol='t'  # Triangle down
-        )
-        self.main_plot.addItem(self.threat_scatter)
+        # Active threats -- 원 (●) : 크기·색상으로 TTA 표현 (spots API)
+        self.threat_scatter = pg.ScatterPlotItem()
+        self.addItem(self.threat_scatter)
 
-        # Intercepted threats - green X
+        # Intercepted -- 하늘색 X (요격 성공, 위협 녹색과 구분)
         self.intercepted_scatter = pg.ScatterPlotItem(
-            size=10,
-            pen=pg.mkPen('#00ff00', width=2),
+            size=12,
+            pen=pg.mkPen('#00ccff', width=2),
             brush=pg.mkBrush(None),
             symbol='x'
         )
-        self.main_plot.addItem(self.intercepted_scatter)
+        self.addItem(self.intercepted_scatter)
 
-        # Missed threats - red star
+        # Missed -- 작은 적색 십자
         self.missed_scatter = pg.ScatterPlotItem(
-            size=12,
+            size=10,
             pen=pg.mkPen('#ff3333', width=2),
-            brush=pg.mkBrush(255, 51, 51, 150),
-            symbol='star'
+            brush=pg.mkBrush(None),
+            symbol='+'
         )
-        self.main_plot.addItem(self.missed_scatter)
+        self.addItem(self.missed_scatter)
 
-        # Batteries (stored as dict of individual items for color coding)
-        self.battery_items = {}
+        # Dicts for dynamic items
+        self.battery_items: Dict[str, list] = {}
+        self.trajectory_items: Dict[str, object] = {}
+        self.assignment_items: Dict[tuple, object] = {}
+        self.asset_text_items: Dict[str, object] = {}
 
-        # Battery coverage circles (stored as dict)
-        self.coverage_circles = {}
+        self._draw_legend()
 
-        # Trajectory lines (dict: threat_id -> PlotDataItem)
-        self.trajectory_items = {}
+    def _draw_legend(self):
+        """좌하단 고정 범례 — QLabel 오버레이 (줌/패닝과 무관하게 고정)."""
+        if hasattr(self, '_legend_label'):
+            return  # 중복 생성 방지
+        lines = [
+            ('<span style="color:#ff8800">■ LSAM(주황)</span>'
+             '&nbsp;&nbsp;'
+             '<span style="color:#00cccc">⬟ MSAM(청록)</span>'
+             '&nbsp;&nbsp;잔탄: 밝음→어두움'),
+            '<span style="color:#ffe066">★ 보호 자산 (노랑)</span>',
+            '<span style="color:#ff3333">● 위협 적&lt;30s</span>'
+             '&nbsp;<span style="color:#ffcc00">황&lt;60s</span>'
+             '&nbsp;<span style="color:#00dd55">녹≥60s</span>',
+            '<span style="color:#00ff00">— 녹색점선: 교전 중</span>'
+             '&nbsp;&nbsp;'
+             '<span style="color:#cc6600">주황점선: 미교전</span>',
+            '<span style="color:#00ccff">✕ 요격</span>'
+             '&nbsp;&nbsp;'
+             '<span style="color:#ff4444">+ 피격</span>',
+        ]
+        html = '<br>'.join(lines)
 
-        # Assignment lines (dict: (battery_id, threat_id) -> PlotDataItem)
-        self.assignment_items = {}
+        self._legend_label = QtWidgets.QLabel(self)
+        self._legend_label.setTextFormat(QtCore.Qt.RichText)
+        self._legend_label.setText(html)
+        self._legend_label.setStyleSheet(
+            "background-color: rgba(0,0,0,170);"
+            "color: #aaaaaa;"
+            "font-size: 10px;"
+            "padding: 4px 6px;"
+            "border: 1px solid #333333;"
+        )
+        self._legend_label.adjustSize()
+        self._legend_label.setAttribute(QtCore.Qt.WA_TransparentForMouseEvents)
+        self._legend_label.show()
 
-        # Text labels (dict: id -> TextItem)
-        self.text_labels = {}
+    def resizeEvent(self, event):
+        """위젯 크기 변경 시 범례를 좌하단에 재고정."""
+        super().resizeEvent(event)
+        if hasattr(self, '_legend_label'):
+            margin = 6
+            lw = self._legend_label.width()
+            lh = self._legend_label.height()
+            self._legend_label.move(margin, self.height() - lh - margin)
+
+    def _draw_range_rings(self):
+        """Draw LSAM/MSAM engagement range rings (called once at init)."""
+        if not hasattr(self.tracker, 'batteries'):
+            return
+
+        for battery in self.tracker.batteries:
+            bx, by = battery['position']
+            stype = battery.get('system_type', 'MSAM')
+
+            if stype == 'LSAM':
+                radii = [150, 300]
+                pen = pg.mkPen(255, 140, 0, 70, width=1,
+                               style=QtCore.Qt.DashLine)
+            else:
+                radii = [5, 50]
+                pen = pg.mkPen(0, 200, 180, 70, width=1,
+                               style=QtCore.Qt.DashLine)
+
+            for r in radii:
+                theta = np.linspace(0, 2 * np.pi, 120)
+                xs = bx + r * np.cos(theta)
+                ys = by + r * np.sin(theta)
+                ring = pg.PlotCurveItem(xs, ys, pen=pen)
+                self.addItem(ring)
+
+    def _update_assets(self):
+        """Draw asset markers and labels (called once -- assets are static)."""
+        if not hasattr(self.tracker, 'assets') or not self.tracker.assets:
+            return
+
+        for item in self.asset_text_items.values():
+            self.removeItem(item)
+        self.asset_text_items.clear()
+
+        positions = np.array(
+            [[a['position'][0], a['position'][1]] for a in self.tracker.assets]
+        )
+        self.asset_scatter.setData(pos=positions)
+
+        for asset in self.tracker.assets:
+            short_id = asset['id'].replace('ASSET_', 'A')
+            label = pg.TextItem(short_id, color='#ffe066', anchor=(0.5, 1.6))
+            label.setPos(asset['position'][0], asset['position'][1])
+            self.addItem(label)
+            self.asset_text_items[asset['id']] = label
+
+    # ------------------------------------------------------------------
+    # Per-frame update helpers
+    # ------------------------------------------------------------------
+
+    @staticmethod
+    def _compute_tta(missile: dict) -> float:
+        """Return time-to-arrival in seconds for an active missile."""
+        if not missile.get('active', False):
+            return float('inf')
+        remaining = max(1.0 - missile.get('flight_progress', 0.0), 0.0)
+        return missile.get('flight_time', 300) * remaining
+
+    @staticmethod
+    def _tta_color(tta: float):
+        """Return (r, g, b, a) tuple based on TTA urgency."""
+        if tta < 30:
+            return (255, 50, 50, 235)
+        elif tta < 60:
+            return (255, 200, 0, 235)
+        else:
+            return (0, 210, 80, 235)
+
+    def _update_threats(self):
+        """Update threat scatter with per-missile TTA-based colour."""
+        missiles = self.tracker.missiles
+        kill_results = self.tracker.kill_results
+
+        active = {mid: m for mid, m in missiles.items() if m.get('active')}
+        if active:
+            spots = []
+            for mid, m in active.items():
+                tta = self._compute_tta(m)
+                r, g, b, a = self._tta_color(tta)
+                spots.append({
+                    'pos': (m['position'][0], m['position'][1]),
+                    'pen': pg.mkPen(r, g, b, 220, width=1.5),
+                    'brush': pg.mkBrush(r, g, b, a),
+                    'size': 10,
+                    'symbol': 'o',  # 원 — 포대(사각/오각)·자산(별)과 명확히 구분
+                })
+            self.threat_scatter.setData(spots=spots)
+        else:
+            self.threat_scatter.setData(spots=[])
+
+        int_pos = [
+            (missiles[mid]['position'][0], missiles[mid]['position'][1])
+            for mid, (res, _, _) in kill_results.items()
+            if res == 'INTERCEPTED' and mid in missiles
+        ]
+        self.intercepted_scatter.setData(
+            pos=np.array(int_pos) if int_pos else np.empty((0, 2))
+        )
+
+        miss_pos = [
+            (missiles[mid]['position'][0], missiles[mid]['position'][1])
+            for mid, (res, _, _) in kill_results.items()
+            if res == 'MISSED' and mid in missiles
+        ]
+        self.missed_scatter.setData(
+            pos=np.array(miss_pos) if miss_pos else np.empty((0, 2))
+        )
+
+    def _update_trajectory_lines(self):
+        """미교전 위협(배터리 미할당)만 궤적선 표시 — 교전 중인 위협은 교전선으로 표현."""
+        missiles = self.tracker.missiles
+        asset_lookup = {a['id']: a for a in self.tracker.assets}
+        assign_mgr = self.tracker.primary_assignments
+
+        # 비활성 또는 교전 중인 위협의 기존 선 제거
+        for mid in list(self.trajectory_items.keys()):
+            m = missiles.get(mid)
+            engaged = bool(assign_mgr.get_batteries_for_threat(mid))
+            if not m or not m.get('active') or engaged:
+                self.removeItem(self.trajectory_items.pop(mid))
+
+        for mid, m in missiles.items():
+            if not m.get('active'):
+                continue
+            # 교전 중이면 교전선(녹색)으로 표현하므로 궤적선 불필요
+            if assign_mgr.get_batteries_for_threat(mid):
+                continue
+            target_id = m.get('target_asset')
+            if not target_id or target_id == 'EMPTY_AREA':
+                continue
+            asset = asset_lookup.get(target_id)
+            if asset is None:
+                continue
+
+            tx, ty = m['position'][0], m['position'][1]
+            ax, ay = asset['position'][0], asset['position'][1]
+
+            if mid in self.trajectory_items:
+                self.trajectory_items[mid].setData([tx, ax], [ty, ay])
+            else:
+                # 미교전 위협 궤적: 밝은 주황 점선 (위험 경고)
+                pen = pg.mkPen('#cc6600', width=1.2, style=QtCore.Qt.DotLine)
+                line = pg.PlotCurveItem([tx, ax], [ty, ay], pen=pen)
+                self.addItem(line)
+                self.trajectory_items[mid] = line
+
+    def _update_assignment_lines(self):
+        """Draw assignment lines: battery -> assigned active threat (green dashed)."""
+        current = dict(self.tracker.primary_assignments.items())
+
+        if current == self._last_assignments:
+            return
+
+        for item in self.assignment_items.values():
+            self.removeItem(item)
+        self.assignment_items.clear()
+
+        bat_lookup = {b['id']: b for b in self.tracker.batteries}
+        pen = pg.mkPen('#00ff00', width=1, style=QtCore.Qt.DashLine)
+
+        for bat_id, threat_ids in current.items():
+            battery = bat_lookup.get(bat_id)
+            if not battery:
+                continue
+            bx, by = battery['position']
+
+            for mid in threat_ids:
+                m = self.tracker.missiles.get(mid)
+                if not m or not m.get('active'):
+                    continue
+                tx, ty = m['position'][0], m['position'][1]
+                line = pg.PlotCurveItem([bx, tx], [by, ty], pen=pen)
+                self.addItem(line)
+                self.assignment_items[(bat_id, mid)] = line
+
+        self._last_assignments = current
+
+    def _update_batteries(self):
+        """Update battery markers colour-coded by remaining ammo."""
+        current_ammo = {
+            b['id']: b.get('available_missiles', 0) for b in self.tracker.batteries
+        }
+        if current_ammo == self._last_battery_ammo:
+            return
+
+        for items in self.battery_items.values():
+            for it in items:
+                self.removeItem(it)
+        self.battery_items.clear()
+
+        for battery in self.tracker.batteries:
+            bid = battery['id']
+            bx, by = battery['position']
+            ammo = battery.get('available_missiles', 0)
+            stype = battery.get('system_type', 'LSAM')
+
+            # 무기체계별 고정 기본색 (자산 노랑과 확실히 구분)
+            if stype == 'LSAM':
+                base_color = '#ff8800'   # 주황 — LSAM
+                symbol = 's'             # 사각형
+                size = 18
+            else:
+                base_color = '#00cccc'   # 청록 — MSAM
+                symbol = 'p'             # 오각형
+                size = 16
+
+            # 잔탄에 따른 내부 채움 투명도 (잔탄 많을수록 밝게)
+            if ammo >= 20:
+                alpha = 180
+            elif ammo >= 10:
+                alpha = 120
+            elif ammo >= 5:
+                alpha = 70
+            else:
+                alpha = 30   # 잔탄 거의 없음 → 거의 투명
+
+            r = int(base_color[1:3], 16)
+            g = int(base_color[3:5], 16)
+            b = int(base_color[5:7], 16)
+
+            scatter = pg.ScatterPlotItem(
+                pos=np.array([[bx, by]]),
+                size=size,
+                pen=pg.mkPen(base_color, width=2),
+                brush=pg.mkBrush(r, g, b, alpha),
+                symbol=symbol
+            )
+            self.addItem(scatter)
+
+            short_id = (bid.replace('LSAM_BATTERY_', 'L')
+                           .replace('MSAM_BATTERY_', 'M')
+                           .replace('LSAM_', 'L')
+                           .replace('MSAM_', 'M'))
+            text = pg.TextItem(
+                f'{short_id}\n{ammo}', color=base_color, anchor=(0.5, 1.9)
+            )
+            text.setPos(bx, by)
+            self.addItem(text)
+
+            self.battery_items[bid] = [scatter, text]
+
+        self._last_battery_ammo = current_ammo
+
+    # ------------------------------------------------------------------
+    # Flash animation
+    # ------------------------------------------------------------------
+
+    def trigger_kill_flash(self, x: float, y: float, success: bool):
+        """
+        Trigger a flash animation at (x, y).
+        success=True  -> green flash (intercept)
+        success=False -> red flash   (miss)
+        """
+        if success:
+            pen = pg.mkPen('#00ccff', width=3)
+            brush = pg.mkBrush(0, 204, 255, 130)
+        else:
+            pen = pg.mkPen('#ff3333', width=3)
+            brush = pg.mkBrush(255, 51, 51, 130)
+
+        flash = pg.ScatterPlotItem(
+            pos=np.array([[x, y]]),
+            size=32, pen=pen, brush=brush, symbol='o'
+        )
+        self.addItem(flash)
+        self._flash_items.append({
+            'item': flash,
+            'created': time.time(),
+            'ttl': 1.2
+        })
+
+    def _clear_expired_flashes(self):
+        """Remove flash items that have exceeded their TTL."""
+        now = time.time()
+        remaining = []
+        for entry in self._flash_items:
+            if now - entry['created'] > entry['ttl']:
+                try:
+                    self.removeItem(entry['item'])
+                except Exception:
+                    pass
+            else:
+                remaining.append(entry)
+        self._flash_items = remaining
+
+    # ------------------------------------------------------------------
+    # Main update (called by QTimer every 250 ms)
+    # ------------------------------------------------------------------
 
     def update_display(self):
         """
-        Main update method - called every frame.
-        Uses incremental updates for optimal performance.
-
-        Target: <2ms per frame
+        Orchestrate all per-frame visual updates.
+        Called by DWTAMainWindow._on_display_tick() under _sim_lock.
         """
-        start_time = time.time()
-
-        # Get current simulation state
-        sim_state = self._get_simulation_state()
-
-        # Incremental updates (only redraw changed elements)
-        changes_made = False
-
-        # 1. Update threat positions (most frequent change)
-        if self._update_threats(sim_state):
-            changes_made = True
-
-        # 2. Update assignments (changes every optimization)
-        if self._update_assignments(sim_state):
-            changes_made = True
-
-        # 3. Update battery status (changes on missile fire)
-        if self._update_batteries(sim_state):
-            changes_made = True
-
-        # 4. Update objective history (periodic)
-        if self._update_objective_plot(sim_state):
-            changes_made = True
-
-        # 5. Update status panel
-        if self._update_status_panel(sim_state):
-            changes_made = True
-
-        # Process Qt events only if changes were made
-        if changes_made:
-            QtWidgets.QApplication.processEvents()
-
-        # Track performance
-        frame_time = time.time() - start_time
-        self.frame_times.append(frame_time)
-        if len(self.frame_times) > 100:
-            self.frame_times.pop(0)
-
-        # Log performance periodically
-        if time.time() - self.last_update_time > 5.0:
-            avg_frame_time = np.mean(self.frame_times) * 1000  # Convert to ms
-            print(f"[PERF] PyQtGraph avg frame time: {avg_frame_time:.2f}ms (target: <2ms)")
-            self.last_update_time = time.time()
-
-    def _get_simulation_state(self) -> Dict:
-        """Extract current simulation state from tracker."""
-        return {
-            'missiles': self.tracker.missiles,
-            'batteries': self.tracker.batteries,
-            'assets': self.tracker.assets,
-            'assignments': dict(self.tracker.primary_assignments.items()),
-            'kill_results': self.tracker.kill_results,
-            'objective_history': self.tracker.optimization_history,
-            'current_time': self.tracker.current_time_step,
-            'stats': self.tracker.stats
-        }
-
-    def _update_threats(self, sim_state: Dict) -> bool:
-        """Update threat positions with change detection."""
-        current_threats = {
-            tid: (m['position'][0], m['position'][1])
-            for tid, m in sim_state['missiles'].items()
-            if m['active']
-        }
-
-        # Check for changes
-        if current_threats == self._last_threat_positions:
-            return False
-
-        # Update active threats
-        if current_threats:
-            positions = np.array([pos for pos in current_threats.values()])
-            self.threat_scatter.setData(pos=positions)
-        else:
-            self.threat_scatter.setData(pos=np.array([]))
-
-        # Update intercepted threats
-        intercepted_positions = [
-            (sim_state['missiles'][tid]['position'][0], sim_state['missiles'][tid]['position'][1])
-            for tid, (result, _, _) in sim_state['kill_results'].items()
-            if result == 'INTERCEPTED' and tid in sim_state['missiles']
-        ]
-        if intercepted_positions:
-            self.intercepted_scatter.setData(pos=np.array(intercepted_positions))
-        else:
-            self.intercepted_scatter.setData(pos=np.array([]))
-
-        # Update missed threats
-        missed_positions = [
-            (sim_state['missiles'][tid]['position'][0], sim_state['missiles'][tid]['position'][1])
-            for tid, (result, _, _) in sim_state['kill_results'].items()
-            if result == 'MISSED' and tid in sim_state['missiles']
-        ]
-        if missed_positions:
-            self.missed_scatter.setData(pos=np.array(missed_positions))
-        else:
-            self.missed_scatter.setData(pos=np.array([]))
-
-        self._last_threat_positions = current_threats.copy()
-        return True
-
-    def _update_assignments(self, sim_state: Dict) -> bool:
-        """Update assignment lines with change detection."""
-        current_assignments = sim_state['assignments']
-
-        # Check for changes
-        if current_assignments == self._last_assignments:
-            return False
-
-        # Remove old assignment lines
-        for key, item in list(self.assignment_items.items()):
-            self.main_plot.removeItem(item)
-        self.assignment_items.clear()
-
-        # Draw new assignment lines
-        for battery_id, threat_ids in current_assignments.items():
-            # Get battery position
-            battery = next((b for b in sim_state['batteries'] if b['id'] == battery_id), None)
-            if not battery:
-                continue
-
-            b_pos = battery['position']
-
-            for threat_id in threat_ids:
-                # Get threat position
-                if threat_id not in sim_state['missiles'] or not sim_state['missiles'][threat_id]['active']:
-                    continue
-
-                t_pos = sim_state['missiles'][threat_id]['position'][:2]
-
-                # Create line
-                line = pg.PlotDataItem(
-                    [b_pos[0], t_pos[0]],
-                    [b_pos[1], t_pos[1]],
-                    pen=pg.mkPen('#00ff00', width=1, style=QtCore.Qt.DashLine)
-                )
-                self.main_plot.addItem(line)
-                self.assignment_items[(battery_id, threat_id)] = line
-
-        self._last_assignments = current_assignments.copy()
-        return True
-
-    def _update_batteries(self, sim_state: Dict) -> bool:
-        """Update battery displays with change detection."""
-        current_ammo = {b['id']: b['available_missiles'] for b in sim_state['batteries']}
-
-        # Check for changes
-        if current_ammo == self._last_battery_ammo:
-            return False
-
-        # Remove old battery items
-        for key, items in list(self.battery_items.items()):
-            for item in items:
-                self.main_plot.removeItem(item)
-        self.battery_items.clear()
-
-        # Draw batteries with color-coded status
-        for battery in sim_state['batteries']:
-            b_id = battery['id']
-            pos = battery['position']
-            ammo = battery['available_missiles']
-            system_type = battery.get('system_type', 'LSAM')
-
-            # Color based on ammo level
-            if ammo >= 20:
-                color = '#00ff00'  # Green
-            elif ammo >= 10:
-                color = '#ffff00'  # Yellow
-            elif ammo >= 5:
-                color = '#ff9900'  # Orange
-            else:
-                color = '#ff3333'  # Red
-
-            # Symbol based on type
-            symbol = 's' if system_type == 'LSAM' else '^'  # Square for LSAM, Triangle for MSAM
-            size = 18 if system_type == 'LSAM' else 15
-
-            # Create scatter point
-            scatter = pg.ScatterPlotItem(
-                pos=np.array([[pos[0], pos[1]]]),
-                size=size,
-                pen=pg.mkPen(color, width=2),
-                brush=pg.mkBrush(color + '80'),  # Semi-transparent
-                symbol=symbol
-            )
-            self.main_plot.addItem(scatter)
-
-            # Add text label
-            text = pg.TextItem(
-                f"{b_id}\n{ammo}",
-                color=color,
-                anchor=(0.5, 0.5)
-            )
-            text.setPos(pos[0], pos[1] - 10)
-            self.main_plot.addItem(text)
-
-            self.battery_items[b_id] = [scatter, text]
-
-        self._last_battery_ammo = current_ammo.copy()
-        return True
-
-    def _update_objective_plot(self, sim_state: Dict) -> bool:
-        """Update objective function history plot."""
-        current_history = sim_state['objective_history']
-
-        # Check for changes
-        if len(current_history) == len(self._last_objective_history):
-            return False
-
-        if not current_history:
-            return False
-
-        # Extract data
-        timesteps = [entry[0] for entry in current_history if entry[1] != float('inf')]
-        objectives = [entry[1] for entry in current_history if entry[1] != float('inf')]
-
-        if not timesteps:
-            return False
-
-        # Clear and redraw
-        self.objective_plot.clear()
-        self.objective_plot.plot(
-            timesteps,
-            objectives,
-            pen=pg.mkPen('#ff9900', width=2),
-            symbol='o',
-            symbolSize=5,
-            symbolBrush='#ff9900'
-        )
-
-        self.objective_plot.setLabel('left', 'Objective Value', color='#00ff00')
-        self.objective_plot.setLabel('bottom', 'Time Step (s)', color='#00ff00')
-        self.objective_plot.showGrid(x=True, y=True, alpha=0.3)
-
-        self._last_objective_history = current_history.copy()
-        return True
-
-    def _update_status_panel(self, sim_state: Dict) -> bool:
-        """Update status panel with mission statistics."""
-        # Clear status plot
-        self.status_plot.clear()
-
-        # Create status text
-        stats = sim_state['stats']
-        deviated = stats.get('deviated', 0)
-        actual_threats = stats['total'] - deviated
-        success_rate = (stats['intercepted'] / actual_threats * 100) if actual_threats > 0 else 0
-
-        status_text = f"""
-<span style='color: #00ff00; font-size: 12pt; font-weight: bold;'>MISSION STATUS</span><br><br>
-<span style='color: #ffffff;'>Time:</span> <span style='color: #0099ff;'>T={sim_state['current_time']}s</span><br>
-<span style='color: #ffffff;'>Active:</span> <span style='color: #ffff00;'>{stats['active']}</span><br>
-<span style='color: #ffffff;'>Intercepted:</span> <span style='color: #00ff00;'>{stats['intercepted']}</span><br>
-<span style='color: #ffffff;'>Missed:</span> <span style='color: #ff3333;'>{stats['missed']}</span><br>
-<span style='color: #ffffff;'>Success Rate:</span> <span style='color: #00ff00;'>{success_rate:.1f}%</span><br>
-<span style='color: #ffffff;'>Total Threats:</span> <span style='color: #0099ff;'>{actual_threats}</span>
-        """
-
-        text_item = pg.TextItem(html=status_text, anchor=(0, 0))
-        text_item.setPos(-0.9, 0.9)
-        self.status_plot.addItem(text_item)
-
-        # Hide axes
-        self.status_plot.hideAxis('left')
-        self.status_plot.hideAxis('bottom')
-        self.status_plot.setXRange(-1, 1)
-        self.status_plot.setYRange(-1, 1)
-
-        return True
-
-    def close(self):
-        """Clean up and close display."""
-        if hasattr(self, 'win'):
-            self.win.close()
-        print("[OK] PyQtGraph display closed")
+        self._clear_expired_flashes()
+        self._update_threats()
+        self._update_trajectory_lines()
+        self._update_assignment_lines()
+        self._update_batteries()
 
 
-# Test/demo code
-if __name__ == "__main__":
-    print("PyQtGraph Display Module - Ready for integration")
+# ---------------------------------------------------------------------------
+# Backwards-compatible alias kept to avoid ImportError if anything still
+# references the old class name.
+# ---------------------------------------------------------------------------
+PyQtGraphDisplay = TacticalMapWidget
+
+
+if __name__ == '__main__':
+    print("TacticalMapWidget -- Ready for integration with DWTAMainWindow")
     print("Install dependencies: pip install pyqtgraph PyQt5")

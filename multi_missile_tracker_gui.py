@@ -1,10 +1,9 @@
 """
 Multi-Missile Real-time DWTA Analysis Simulator - GUI Version
 ============================================================
+UI: PyQt5 single-window (DWTAMainWindow) + PyQtGraph TacticalMapWidget
 """
 
-import matplotlib.pyplot as plt
-import matplotlib.patches as patches
 import numpy as np
 import time
 import random
@@ -12,32 +11,29 @@ from typing import Dict, List, Tuple, Optional, Set
 import sys
 import os
 import threading
-import tkinter as tk
-from tkinter import ttk, scrolledtext, messagebox
-import warnings
 from datetime import datetime
 
-# Set matplotlib backend for GUI
+# PyQt5 + PyQtGraph (required)
 try:
-    import matplotlib
-    matplotlib.use('TkAgg')
-    from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
-    # Suppress matplotlib aspect ratio warnings
-    warnings.filterwarnings('ignore', message='.*fixed.*limits.*adjustable.*')
-    GUI_AVAILABLE = True
-except ImportError:
-    GUI_AVAILABLE = False
-
-# 🆕 Phase 2: PyQtGraph import for high-performance visualization
-PYQTGRAPH_AVAILABLE = False
-try:
+    from PyQt5 import QtWidgets, QtCore, QtGui
+    from PyQt5.QtCore import QTimer, pyqtSignal, pyqtSlot
+    from PyQt5.QtWidgets import (
+        QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QSplitter,
+        QGroupBox, QPushButton, QLabel, QComboBox, QTextEdit,
+        QTableWidget, QTableWidgetItem, QHeaderView, QFrame,
+        QDoubleSpinBox, QSpinBox, QCheckBox, QButtonGroup,
+        QRadioButton, QSizePolicy, QAbstractItemView, QFileDialog,
+        QMessageBox, QSlider, QApplication,
+    )
     import pyqtgraph as pg
-    from PyQt5 import QtWidgets, QtCore
-    from pyqtgraph_display import PyQtGraphDisplay
+    from pyqtgraph_display import TacticalMapWidget
+    GUI_AVAILABLE = True
     PYQTGRAPH_AVAILABLE = True
-    print("[OK] PyQtGraph available for high-performance visualization")
-except ImportError:
-    print("[INFO] PyQtGraph not available (optional). Install with: pip install pyqtgraph PyQt5")
+    print("[OK] PyQt5 + PyQtGraph available")
+except ImportError as _qt_err:
+    GUI_AVAILABLE = False
+    PYQTGRAPH_AVAILABLE = False
+    print(f"[WARN] PyQt5/PyQtGraph not available: {_qt_err}")
 
 # --- Dependency Handling (개별 import — 하나 실패해도 나머지 동작) ---
 
@@ -342,850 +338,1015 @@ class OptimizedAssignmentManager:
                 if threat_id in active_threat_ids:
                     self.assign(threat_id, battery_id)
 
-class ControlPanel:
-    """GUI 제어 패널"""
+class DWTAMainWindow(QMainWindow):
+    """
+    DWTA 단일 PyQt5 메인 윈도우.
+    tkinter ControlPanel + matplotlib figure 를 완전히 대체한다.
+
+    시그널 (크로스스레드 안전):
+      sig_status_update  — 시뮬 스레드 → 임무 상황 라벨 갱신
+      sig_log_message    — 시뮬 스레드 → 이벤트 로그 삽입
+      sig_kill_event     — 시뮬 스레드 → 플래시 애니메이션 트리거
+      sig_solver_update  — 시뮬 스레드 → 솔버 시간/Warm-start/목적함수 갱신
+    """
+
+    sig_status_update = pyqtSignal(dict)
+    sig_log_message   = pyqtSignal(str, str)    # (message, level)
+    sig_kill_event    = pyqtSignal(str, str)    # (missile_id, result)
+    sig_solver_update = pyqtSignal(str, str)    # (key, value)
+
+    # ------------------------------------------------------------------ init
+
     def __init__(self, tracker):
+        super().__init__()
         self.tracker = tracker
-        self.control_window = None
+
+        # 시뮬레이션 제어 플래그 (sim thread가 읽음)
         self.running = False
-        self.paused = False
-        
-        # 제어 변수들
-        self.speed_var = tk.DoubleVar(value=1.0)
-        self.objective_var = tk.StringVar(value=tracker.objective)
-        self.max_duration_var = tk.IntVar(value=1600)
-        self.scenario_var = tk.StringVar(value=tracker.config.scenario_type if hasattr(tracker.config, 'scenario_type') else "BASELINE_15")
-        
-        # 🆕 알고리즘 선택 변수
-        self.algorithm_var = tk.StringVar(value="MIP")
+        self.paused  = False
+        self._sim_thread = None
+        self._sim_start_time = None
+        self._threat_row_map: dict = {}    # mid → row index (누적 로그용)
+        self._threat_last_state: dict = {}  # mid → (tta_str, danger, d_color, bat_str) 마지막 활성 상태
 
-        # 🆕 Warm-start 토글 변수
-        self.warmstart_enabled_var = tk.BooleanVar(value=True)
-
-        # 🆕 로그 수집 변수
-        self.logging_enabled_var = tk.BooleanVar(value=False)
-
-        # 🆕 Phase 2.3: Visualization backend selection
-        self.viz_backend_var = tk.StringVar(value="matplotlib")
-        
-        # 실행 시간 측정용
-        self.sim_start_time = None
-        self.sim_elapsed_time = 0
-        
-    def create_control_window(self):
-        """제어 창 생성 (교착 상태 방지 개선)"""
-        try:
-            # ⚡ 교착 방지: tkinter 이벤트 큐 정리
-            import tkinter as tk
-            root = tk._default_root
-            if root:
-                root.update_idletasks()
-            
-            self.control_window = tk.Toplevel()
-            self.control_window.title("DWTA TACTICAL CONTROL SYSTEM")
-            self.control_window.geometry("850x650")
-            self.control_window.configure(bg='#0a0a0a')
-            self.control_window.protocol("WM_DELETE_WINDOW", self.on_closing)
-            
-            # ⚡ 교착 방지: 창 생성 후 이벤트 처리
-            self.control_window.update_idletasks()
-        except Exception as e:
-            print(f"[WARN] 제어 창 생성 실패: {e}")
-            raise
-        
-        # Configure military-style theme
-        style = ttk.Style()
-        style.theme_use('clam')
-        
-        # Configure military colors
-        style.configure('Military.TLabelframe', 
-                       background='#0a0a0a',
-                       bordercolor='#2a4a2a',
-                       darkcolor='#1a2a1a',
-                       lightcolor='#3a5a3a',
-                       borderwidth=2,
-                       relief='solid')
-        style.configure('Military.TLabelframe.Label',
-                       background='#0a0a0a',
-                       foreground='#00ff00',
-                       font=('Consolas', 10, 'bold'))
-        
-        style.configure('Military.TButton',
-                       background='#1a3a1a',
-                       foreground='#00ff00',
-                       bordercolor='#2a4a2a',
-                       focuscolor='#0066ff',
-                       font=('Consolas', 9, 'bold'),
-                       relief='raised',
-                       borderwidth=2)
-        style.map('Military.TButton',
-                 background=[('active', '#2a5a2a'), ('pressed', '#0a2a0a')],
-                 foreground=[('active', '#66ff66'), ('pressed', '#ffffff')])
-        
-        style.configure('Military.TLabel',
-                       background='#0a0a0a',
-                       foreground='#cccccc',
-                       font=('Consolas', 9))
-        
-        style.configure('Status.TLabel',
-                       background='#0a0a0a',
-                       foreground='#00ff00',
-                       font=('Consolas', 9, 'bold'))
-        
-        style.configure('Military.TCombobox',
-                       fieldbackground='#1a1a1a',
-                       background='#0a0a0a',
-                       foreground='#00ff00',
-                       bordercolor='#2a4a2a',
-                       arrowcolor='#00ff00',
-                       selectbackground='#2a4a2a',
-                       selectforeground='#00ff00')
-        style.map('Military.TCombobox',
-                 fieldbackground=[('readonly', '#1a1a1a')],
-                 background=[('readonly', '#0a0a0a')])
-        
-        style.configure('Military.TSpinbox',
-                       fieldbackground='#1a1a1a',
-                       background='#0a0a0a',
-                       foreground='#00ff00',
-                       bordercolor='#2a4a2a',
-                       selectbackground='#2a4a2a',
-                       selectforeground='#00ff00')
-        style.map('Military.TSpinbox',
-                 fieldbackground=[('readonly', '#1a1a1a')],
-                 background=[('readonly', '#0a0a0a')])
-        
-        style.configure('Military.Horizontal.TScale',
-                       background='#0a0a0a',
-                       troughcolor='#404040',
-                       bordercolor='#2a4a2a',
-                       lightcolor='#00ff00',
-                       darkcolor='#006600',
-                       sliderlength=20)
-        style.map('Military.Horizontal.TScale',
-                 background=[('active', '#0a0a0a')],
-                 troughcolor=[('active', '#505050')])
-        
-        # 🆕 Radiobutton 스타일
-        style.configure('Military.TRadiobutton',
-                       background='#0a0a0a',
-                       foreground='#00ff00',
-                       font=('Consolas', 9))
-        style.map('Military.TRadiobutton',
-                 background=[('active', '#0a0a0a')],
-                 foreground=[('active', '#66ff66')])
-        
-        # 🆕 Checkbutton 스타일
-        style.configure('Military.TCheckbutton',
-                       background='#0a0a0a',
-                       foreground='#00ff00',
-                       font=('Consolas', 9))
-        style.map('Military.TCheckbutton',
-                 background=[('active', '#0a0a0a')],
-                 foreground=[('active', '#66ff66')])
-        
-        # Additional status label styles
-        style.configure('Success.TLabel',
-                       background='#0a0a0a',
-                       foreground='#00ff00',
-                       font=('Consolas', 9, 'bold'))
-        
-        style.configure('Warning.TLabel',
-                       background='#0a0a0a',
-                       foreground='#ff6600',
-                       font=('Consolas', 9, 'bold'))
-        
-        style.configure('Info.TLabel',
-                       background='#0a0a0a',
-                       foreground='#0066ff',
-                       font=('Consolas', 9, 'bold'))
-        
-        # 메인 프레임
-        main_frame = ttk.Frame(self.control_window, padding="15")
-        main_frame.configure(style='Military.TFrame')
-        main_frame.grid(row=0, column=0, sticky="nsew")
-        
-        # Configure main frame style
-        style.configure('Military.TFrame', background='#0a0a0a')
-        
-        # Configure button frame style
-        style.configure('ButtonFrame.TFrame', background='#0a0a0a')
-        
-        # 제어 패널
-        self.create_controls(main_frame)
-        
-        # 상태 패널
-        self.create_status_panel(main_frame)
-        
-        # 로그 패널
-        self.create_log_panel(main_frame)
-        
-        # 그리드 설정
-        self.control_window.grid_rowconfigure(0, weight=1)
-        self.control_window.grid_columnconfigure(0, weight=1)
-        main_frame.grid_rowconfigure(2, weight=1)
-        main_frame.grid_columnconfigure(0, weight=1)
-        
-        # ⚡ 교착 방지: 모든 위젯 생성 후 이벤트 처리
-        self.control_window.update_idletasks()
-        
-    def create_controls(self, parent):
-        """제어 버튼들 생성"""
-        control_frame = ttk.LabelFrame(parent, text="⚡ SIMULATION CONTROL", 
-                                     padding="15", style='Military.TLabelframe')
-        control_frame.grid(row=0, column=0, sticky="ew", pady=(0,15))
-        
-        # 첫 번째 행: 시나리오 선택
-        ttk.Label(control_frame, text="시나리오:", style='Military.TLabel').grid(row=0, column=0, sticky="w", pady=5)
-        
-        # 시나리오 목록 가져오기
+        # 시나리오 목록 캐시
         try:
             from config_mip import ScenarioManager
-            scenario_list = ScenarioManager.get_scenario_list()
-            scenario_values = [f"{key}: {desc}" for key, desc in scenario_list.items()]
-            scenario_keys = list(scenario_list.keys())
-        except:
-            scenario_values = ["BASELINE_15: 기본 시나리오"]
-            scenario_keys = ["BASELINE_15"]
-        
-        scenario_combo = ttk.Combobox(control_frame, textvariable=self.scenario_var,
-                                     values=scenario_keys, state="readonly", width=25,
-                                     style='Military.TCombobox')
-        scenario_combo.grid(row=0, column=1, columnspan=2, padx=5, pady=5, sticky="ew")
-        scenario_combo.bind('<<ComboboxSelected>>', self.on_scenario_change)
-        
-        # 두 번째 행: 목적함수, 속도, 최대 시간
-        ttk.Label(control_frame, text="목적함수:", style='Military.TLabel').grid(row=1, column=0, sticky="w")
-        objective_combo = ttk.Combobox(control_frame, textvariable=self.objective_var,
-                                      values=list(OBJECTIVES.keys()), state="readonly", width=15,
-                                      style='Military.TCombobox')
-        objective_combo.grid(row=1, column=1, padx=5)
-        objective_combo.bind('<<ComboboxSelected>>', self.on_objective_change)
-        
-        # 시뮬레이션 속도
-        ttk.Label(control_frame, text="속도:", style='Military.TLabel').grid(row=1, column=2, padx=(20,0))
-        speed_scale = ttk.Scale(control_frame, from_=0.1, to=5.0, 
-                               variable=self.speed_var, orient="horizontal", length=120,
-                               style='Military.Horizontal.TScale')
-        speed_scale.grid(row=1, column=3, padx=5)
-        speed_label = ttk.Label(control_frame, text="1.0x", style='Status.TLabel')
-        speed_label.grid(row=1, column=4, padx=5)
-        
-        def update_speed_label(*args):
-            speed_label.config(text=f"{self.speed_var.get():.1f}x")
-        self.speed_var.trace('w', update_speed_label)
-        
-        # 최대 시간
-        ttk.Label(control_frame, text="최대 시간(초):", style='Military.TLabel').grid(row=1, column=5, padx=(20,0))
-        ttk.Spinbox(control_frame, from_=300, to=3000, 
-                   textvariable=self.max_duration_var, width=8,
-                   style='Military.TSpinbox').grid(row=1, column=6, padx=5)
-        
-        # 🆕 세 번째 행: 알고리즘 선택 및 Warm-start 옵션
-        ttk.Label(control_frame, text="알고리즘:", style='Military.TLabel').grid(row=2, column=0, sticky="w", pady=5)
-        
-        algo_frame = ttk.Frame(control_frame, style='ButtonFrame.TFrame')
-        algo_frame.grid(row=2, column=1, columnspan=3, sticky="w", padx=5)
-        
-        ttk.Radiobutton(algo_frame, text="MIP (최적)", 
-                       variable=self.algorithm_var, value="MIP",
-                       command=self.on_algorithm_change,
-                       style='Military.TRadiobutton').pack(side="left", padx=5)
-        ttk.Radiobutton(algo_frame, text="Greedy (빠름)", 
-                       variable=self.algorithm_var, value="Greedy",
-                       command=self.on_algorithm_change,
-                       style='Military.TRadiobutton').pack(side="left", padx=5)
-        ttk.Radiobutton(algo_frame, text="GA (균형)", 
-                       variable=self.algorithm_var, value="GA",
-                       command=self.on_algorithm_change,
-                       style='Military.TRadiobutton').pack(side="left", padx=5)
-        
-        # Warm-start 체크박스
-        self.warmstart_check = ttk.Checkbutton(control_frame, text="Warm-start 활성화", 
-                                               variable=self.warmstart_enabled_var,
-                                               command=self.on_warmstart_toggle,
-                                               style='Military.TCheckbutton')
-        self.warmstart_check.grid(row=2, column=4, columnspan=2, sticky="w", padx=(20,0))
-        
-        # 로그 수집 체크박스
-        ttk.Checkbutton(control_frame, text="로그 자동 저장",
-                       variable=self.logging_enabled_var,
-                       command=self.on_logging_toggle,
-                       style='Military.TCheckbutton').grid(row=2, column=6, sticky="w", padx=5)
+            self._scenario_list = list(ScenarioManager.get_scenario_list().keys())
+        except Exception:
+            self._scenario_list = ["BASELINE_15"]
 
-        # 🆕 Phase 2.3: Visualization backend selector (row 3)
-        ttk.Label(control_frame, text="Display:", style='Military.TLabel').grid(row=3, column=0, sticky="w", pady=5)
+        # UI 구축
+        self.setWindowTitle("DWTA 실시간 전술 운용 시스템")
+        self.resize(1680, 960)
+        self._apply_stylesheet()
+        self._build_layout()
 
-        # Backend selection combobox
-        viz_combo = ttk.Combobox(control_frame, textvariable=self.viz_backend_var,
-                                values=["matplotlib", "pyqtgraph"] if PYQTGRAPH_AVAILABLE else ["matplotlib"],
-                                state="readonly", width=15,
-                                style='Military.TCombobox')
-        viz_combo.grid(row=3, column=1, padx=5, pady=5)
-        viz_combo.bind('<<ComboboxSelected>>', self.on_viz_backend_change)
+        # QTimer (250 ms, main thread) — display + table refresh
+        self._display_timer = QTimer(self)
+        self._display_timer.setInterval(250)
+        self._display_timer.timeout.connect(self._on_display_tick)
 
-        # Backend info label
-        backend_info_text = "PyQtGraph: <2ms/frame (FAST)" if PYQTGRAPH_AVAILABLE else "PyQtGraph not available (optional)"
-        backend_info = ttk.Label(control_frame,
-                               text=backend_info_text,
-                               style='Military.TLabel',
-                               foreground='#00ff00' if PYQTGRAPH_AVAILABLE else '#cccccc')
-        backend_info.grid(row=3, column=2, columnspan=2, sticky="w", padx=5)
+        # 신호-슬롯 연결
+        self.sig_status_update.connect(self._update_status_labels)
+        self.sig_log_message.connect(self._append_log)
+        self.sig_kill_event.connect(self._handle_kill_event)
+        self.sig_solver_update.connect(self._update_solver_info)
 
-        # 제어 버튼들
-        button_frame = ttk.Frame(control_frame, style='ButtonFrame.TFrame')
-        button_frame.grid(row=4, column=0, columnspan=7, pady=10)
-        
-        self.start_btn = ttk.Button(button_frame, text="▶ 시작", command=self.start_simulation,
-                                   style='Military.TButton')
-        self.start_btn.pack(side="left", padx=8)
-        
-        self.pause_btn = ttk.Button(button_frame, text="⏸ 일시정지", command=self.pause_simulation, 
-                                   state="disabled", style='Military.TButton')
-        self.pause_btn.pack(side="left", padx=8)
-        
-        self.stop_btn = ttk.Button(button_frame, text="⏹ 정지", command=self.stop_simulation, 
-                                  state="disabled", style='Military.TButton')
-        self.stop_btn.pack(side="left", padx=8)
-        
-        self.reset_btn = ttk.Button(button_frame, text="[RESET] 리셋", command=self.reset_simulation,
-                                   style='Military.TButton')
-        self.reset_btn.pack(side="left", padx=8)
-        
-    def create_status_panel(self, parent):
-        """상태 패널 생성"""
-        status_frame = ttk.LabelFrame(parent, text="[STATUS] REAL-TIME STATUS", 
-                                    padding="15", style='Military.TLabelframe')
-        status_frame.grid(row=1, column=0, sticky="ew", pady=(0,15))
-        
-        # 상태 변수들
-        self.time_var = tk.StringVar(value="T=0")
-        self.active_var = tk.StringVar(value="활성 위협: 0")
-        self.intercepted_var = tk.StringVar(value="요격 성공: 0")
-        self.missed_var = tk.StringVar(value="요격 실패: 0")
-        self.success_rate_var = tk.StringVar(value="성공률: 0%")
-        self.objective_val_var = tk.StringVar(value="목적함수: -")
-        self.warmstart_var = tk.StringVar(value="Warm-start: OFF")  # Warm-start 상태
-        self.solver_time_var = tk.StringVar(value="솔버 시간: -")  # 🆕 솔버 시간
-        
-        # 상태 표시
-        status_labels = [
-            ("현재 시간:", self.time_var),
-            ("활성 위협:", self.active_var),
-            ("요격 성공:", self.intercepted_var),
-            ("요격 실패:", self.missed_var),
-            ("성공률:", self.success_rate_var),
-            ("목적함수 값:", self.objective_val_var),
-            ("Warm-start:", self.warmstart_var),  # 🆕
-            ("솔버 시간:", self.solver_time_var)   # 🆕
+        # Blink timer for alert bar
+        self._blink_state = False
+        self._blink_timer = QTimer(self)
+        self._blink_timer.setInterval(500)
+        self._blink_timer.timeout.connect(self._blink_alert)
+
+        # 이전 kill_results snapshot (이벤트 감지용)
+        self._prev_kill_count = 0
+        self._prev_stats: dict = {'intercepted': 0, 'missed': 0, 'active': 0}
+
+    # ------------------------------------------------------------------ stylesheet
+
+    def _apply_stylesheet(self):
+        QApplication.instance().setStyle('Fusion')
+        self.setStyleSheet("""
+            QMainWindow, QWidget {
+                background-color: #0a0a0a;
+                color: #cccccc;
+                font-family: Consolas, monospace;
+                font-size: 9pt;
+            }
+            QGroupBox {
+                border: 1px solid #2a4a2a;
+                border-radius: 3px;
+                margin-top: 6px;
+                color: #00ff00;
+                font-weight: bold;
+            }
+            QGroupBox::title {
+                subcontrol-origin: margin;
+                left: 8px;
+                padding: 0 4px;
+            }
+            QPushButton {
+                background-color: #1a3a1a;
+                color: #00ff00;
+                border: 1px solid #2a4a2a;
+                border-radius: 3px;
+                padding: 4px 10px;
+                min-width: 60px;
+            }
+            QPushButton:hover  { background-color: #2a5a2a; }
+            QPushButton:pressed{ background-color: #0a2a0a; }
+            QPushButton:disabled { color: #445544; border-color: #1a2a1a; }
+            QComboBox {
+                background-color: #141414;
+                color: #00ff00;
+                border: 1px solid #2a4a2a;
+                padding: 2px 6px;
+            }
+            QComboBox QAbstractItemView {
+                background-color: #141414;
+                color: #00ff00;
+                selection-background-color: #2a4a2a;
+            }
+            QSpinBox, QDoubleSpinBox, QSlider {
+                background-color: #141414;
+                color: #00ff00;
+                border: 1px solid #2a4a2a;
+            }
+            QCheckBox, QRadioButton {
+                color: #00ff00;
+            }
+            QTextEdit {
+                background-color: #0d0d0d;
+                color: #00ff00;
+                border: 1px solid #1a2a1a;
+            }
+            QTableWidget {
+                background-color: #0d0d0d;
+                color: #cccccc;
+                gridline-color: #1e1e1e;
+                border: 1px solid #1a2a1a;
+            }
+            QTableWidget::item:selected {
+                background-color: #1a3a1a;
+                color: #ffffff;
+            }
+            QHeaderView::section {
+                background-color: #111f11;
+                color: #00ff00;
+                border: 1px solid #1a2a1a;
+                padding: 3px;
+            }
+            QSplitter::handle { background-color: #2a3a2a; }
+            QSplitter::handle:hover { background-color: #005500; }
+            QSplitter::handle:horizontal { width: 5px; }
+            QSplitter::handle:vertical { height: 5px; }
+            QLabel#AlertLabel {
+                font-size: 9pt;
+                font-weight: bold;
+            }
+        """)
+
+    # ------------------------------------------------------------------ layout
+
+    def _build_layout(self):
+        central = QWidget()
+        self.setCentralWidget(central)
+        root = QHBoxLayout(central)
+        root.setContentsMargins(4, 4, 4, 4)
+        root.setSpacing(0)
+
+        # 좌우 분할 스플리터 (드래그로 크기 조절)
+        self._h_splitter = QSplitter(QtCore.Qt.Horizontal)
+        self._h_splitter.setHandleWidth(5)
+        self._h_splitter.addWidget(self._build_left_panel())
+        self._h_splitter.addWidget(self._build_right_panel())
+        self._h_splitter.setSizes([390, 1290])
+        self._h_splitter.setStretchFactor(0, 0)
+        self._h_splitter.setStretchFactor(1, 1)
+        root.addWidget(self._h_splitter)
+
+    def _build_left_panel(self) -> QWidget:
+        # 상단 고정 섹션 (컨트롤 + 상태)
+        top = QWidget()
+        top_layout = QVBoxLayout(top)
+        top_layout.setContentsMargins(0, 0, 4, 0)
+        top_layout.setSpacing(4)
+        top_layout.addWidget(self._build_sim_controls())
+        top_layout.addWidget(self._build_mission_status())
+
+        # 하단 가변 섹션 (위협 테이블 + 이벤트 로그) — 세로 스플리터
+        bottom_split = QSplitter(QtCore.Qt.Vertical)
+        bottom_split.setHandleWidth(5)
+        bottom_split.addWidget(self._build_threat_table())
+        bottom_split.addWidget(self._build_event_log())
+        bottom_split.setSizes([220, 340])
+
+        # 전체 좌측 세로 스플리터
+        v_split = QSplitter(QtCore.Qt.Vertical)
+        v_split.setHandleWidth(4)
+        v_split.addWidget(top)
+        v_split.addWidget(bottom_split)
+        v_split.setSizes([300, 560])
+        v_split.setStretchFactor(0, 0)
+        v_split.setStretchFactor(1, 1)
+        return v_split
+
+    def _build_right_panel(self) -> QWidget:
+        # 전술 맵 + 배터리 테이블 — 세로 스플리터
+        v_split = QSplitter(QtCore.Qt.Vertical)
+        v_split.setHandleWidth(5)
+
+        self.tactical_map = TacticalMapWidget(self.tracker)
+        v_split.addWidget(self.tactical_map)
+        v_split.addWidget(self._build_battery_table())
+        v_split.setSizes([740, 160])
+        v_split.setStretchFactor(0, 1)
+        v_split.setStretchFactor(1, 0)
+
+        # 경보바는 아래 고정 (스플리터 밖)
+        w = QWidget()
+        layout = QVBoxLayout(w)
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.setSpacing(2)
+        layout.addWidget(v_split, stretch=1)
+        layout.addWidget(self._build_alert_bar())
+        return w
+
+    # ------------------------------------------------------------------ left sub-panels
+
+    def _build_sim_controls(self) -> QGroupBox:
+        box = QGroupBox("SIMULATION CONTROL")
+        g = QVBoxLayout(box)
+        g.setSpacing(4)
+
+        # Row 0: Scenario
+        r0 = QHBoxLayout()
+        r0.addWidget(QLabel("시나리오:"))
+        self.scenario_combo = QComboBox()
+        self.scenario_combo.addItems(self._scenario_list)
+        current_scenario = getattr(self.tracker.config, 'scenario_type', 'BASELINE_15')
+        if current_scenario in self._scenario_list:
+            self.scenario_combo.setCurrentText(current_scenario)
+        r0.addWidget(self.scenario_combo, stretch=1)
+        g.addLayout(r0)
+
+        # Row 1: Objective
+        r1 = QHBoxLayout()
+        r1.addWidget(QLabel("목적함수:"))
+        self.objective_combo = QComboBox()
+        self.objective_combo.addItems(list(OBJECTIVES.keys()))
+        self.objective_combo.setCurrentText(self.tracker.objective)
+        r1.addWidget(self.objective_combo, stretch=1)
+        g.addLayout(r1)
+
+        # Row 2: Algorithm
+        r2 = QHBoxLayout()
+        r2.addWidget(QLabel("알고리즘:"))
+        self._algo_group = QButtonGroup(self)
+        for label, key in [("MIP", "MIP"), ("Greedy", "Greedy"), ("GA", "GA")]:
+            rb = QRadioButton(label)
+            rb.setObjectName(f"algo_{key}")
+            self._algo_group.addButton(rb)
+            r2.addWidget(rb)
+            if key == "MIP":
+                rb.setChecked(True)
+        g.addLayout(r2)
+
+        # Row 3: Speed + Max Duration
+        r3 = QHBoxLayout()
+        r3.addWidget(QLabel("속도:"))
+        self.speed_spin = QDoubleSpinBox()
+        self.speed_spin.setRange(0.1, 5.0)
+        self.speed_spin.setSingleStep(0.1)
+        self.speed_spin.setValue(1.0)
+        self.speed_spin.setFixedWidth(60)
+        r3.addWidget(self.speed_spin)
+        r3.addWidget(QLabel("x    최대:"))
+        self.max_dur_spin = QSpinBox()
+        self.max_dur_spin.setRange(300, 5000)
+        self.max_dur_spin.setValue(1600)
+        self.max_dur_spin.setFixedWidth(60)
+        r3.addWidget(self.max_dur_spin)
+        r3.addWidget(QLabel("s"))
+        r3.addStretch()
+        g.addLayout(r3)
+
+        # Row 4: Checkboxes
+        r4 = QHBoxLayout()
+        self.warmstart_check = QCheckBox("Warm-start")
+        self.warmstart_check.setChecked(False)
+        self.logging_check = QCheckBox("로그 자동 저장")
+        r4.addWidget(self.warmstart_check)
+        r4.addWidget(self.logging_check)
+        r4.addStretch()
+        g.addLayout(r4)
+
+        # Row 5: Buttons
+        r5 = QHBoxLayout()
+        self.start_btn  = QPushButton("▶ 시작")
+        self.pause_btn  = QPushButton("⏸ 일시정지")
+        self.stop_btn   = QPushButton("⏹ 정지")
+        self.reset_btn  = QPushButton("↺ 리셋")
+        for btn in (self.pause_btn, self.stop_btn):
+            btn.setEnabled(False)
+        self.start_btn.clicked.connect(self.on_start)
+        self.pause_btn.clicked.connect(self.on_pause)
+        self.stop_btn.clicked.connect(self.on_stop)
+        self.reset_btn.clicked.connect(self.on_reset)
+        for btn in (self.start_btn, self.pause_btn, self.stop_btn, self.reset_btn):
+            r5.addWidget(btn)
+        g.addLayout(r5)
+
+        # Wire algorithm group
+        self._algo_group.buttonClicked.connect(self._on_algo_changed)
+        self.scenario_combo.currentTextChanged.connect(self._on_scenario_changed)
+        self.objective_combo.currentTextChanged.connect(self._on_objective_changed)
+        self.warmstart_check.toggled.connect(self._on_warmstart_toggled)
+        self.logging_check.toggled.connect(self._on_logging_toggled)
+
+        return box
+
+    def _build_mission_status(self) -> QGroupBox:
+        box = QGroupBox("MISSION STATUS")
+        g = QVBoxLayout(box)
+        g.setSpacing(2)
+
+        self._status_labels: dict = {}
+        fields = [
+            ("time",     "T",         "#0099ff"),
+            ("active",   "Active",    "#ffff00"),
+            ("intercept","Kill",      "#00ff88"),
+            ("missed",   "Miss",      "#ff4444"),
+            ("rate",     "Rate",      "#00ff00"),
+            ("obj",      "Obj",       "#ff9900"),
+            ("solver",   "Solver",    "#aaaaaa"),
+            ("warmstart","WarmStart", "#aaaaaa"),
         ]
-        
-        for i, (label, var) in enumerate(status_labels):
-            # Add LED-style indicators
-            led_frame = ttk.Frame(status_frame, style='Military.TFrame')
-            led_frame.grid(row=i//3, column=(i%3)*3, sticky="w", padx=(0,5), pady=3)
-            
-            # LED indicator (colored circle)
-            led_color = '#00ff00' if 'T=' in var.get() or '성공' in label else '#ff6600' if '실패' in label else '#0066ff'
-            led_canvas = tk.Canvas(led_frame, width=12, height=12, bg='#0a0a0a', highlightthickness=0)
-            led_canvas.pack(side='left')
-            led_canvas.create_oval(2, 2, 10, 10, fill=led_color, outline='#ffffff', width=1)
-            
-            ttk.Label(status_frame, text=label, style='Military.TLabel').grid(row=i//3, column=(i%3)*3+1, sticky="w", padx=5, pady=3)
-            
-            # Color-coded status values
-            status_style = 'Status.TLabel'
-            if '성공' in label:
-                status_style = 'Success.TLabel'
-            elif '실패' in label:
-                status_style = 'Warning.TLabel'
-            elif '목적함수' in label:
-                status_style = 'Info.TLabel'
-                
-            ttk.Label(status_frame, textvariable=var, style=status_style, width=15).grid(row=i//3, column=(i%3)*3+2, sticky="w", padx=5, pady=3)
-        
-    def create_log_panel(self, parent):
-        """로그 패널 생성"""
-        log_frame = ttk.LabelFrame(parent, text="📜 EVENT LOG", 
-                                 padding="15", style='Military.TLabelframe')
-        log_frame.grid(row=2, column=0, sticky="nsew")
-        
-        # 로그 텍스트
-        self.log_text = scrolledtext.ScrolledText(log_frame, height=15, font=("Consolas", 9),
-                                                bg='#0f0f0f', fg='#00ff00',
-                                                insertbackground='#00ff00',
-                                                selectbackground='#2a4a2a',
-                                                selectforeground='#ffffff')
-        self.log_text.pack(fill="both", expand=True)
-        
-        # Configure log text tags for different message types
-        self.log_text.tag_configure('INFO', foreground='#00ff00')
-        self.log_text.tag_configure('WARNING', foreground='#ff6600')
-        self.log_text.tag_configure('ERROR', foreground='#ff3333')
-        self.log_text.tag_configure('SUCCESS', foreground='#66ff66')
-        self.log_text.tag_configure('ASSIGN', foreground='#0099ff')
-        self.log_text.tag_configure('INTERCEPT', foreground='#ff9900')
-        self.log_text.tag_configure('MISS', foreground='#ff6666')
-        self.log_text.tag_configure('LAUNCH', foreground='#ffff00')
-        self.log_text.tag_configure('TRAJECTORY', foreground='#cc99ff')
-        
-        # 로그 제어
-        log_control = ttk.Frame(log_frame, style='ButtonFrame.TFrame')
-        log_control.pack(fill="x", pady=(8,0))
-        
-        ttk.Button(log_control, text="🗑 로그 지우기", command=self.clear_log,
-                  style='Military.TButton').pack(side="left")
-        ttk.Button(log_control, text="💾 로그 저장", command=self.save_log,
-                  style='Military.TButton').pack(side="left", padx=8)
-        
-    def log_message(self, message, level="INFO"):
-        """로그 메시지 추가 (Thread-safe: 비메인 스레드에서 호출 시 main thread에 위임)"""
-        timestamp = time.strftime("%H:%M:%S")
+        for i in range(0, len(fields), 2):
+            row = QHBoxLayout()
+            for key, text, color in fields[i:i+2]:
+                lbl_name = QLabel(f"{text}:")
+                lbl_name.setFixedWidth(68)
+                lbl_val = QLabel("—")
+                lbl_val.setStyleSheet(f"color: {color}; font-weight: bold;")
+                lbl_val.setFixedWidth(90)
+                self._status_labels[key] = lbl_val
+                row.addWidget(lbl_name)
+                row.addWidget(lbl_val)
+            row.addStretch()
+            g.addLayout(row)
+        return box
 
-        # 🆕 DEBUG 레벨 메시지는 기본적으로 숨김
-        if level == "DEBUG" and '[DEBUG]' in message:
-            return  # DEBUG 메시지 필터링
+    def _build_threat_table(self) -> QGroupBox:
+        box = QGroupBox("THREAT TRACK TABLE")
+        v = QVBoxLayout(box)
+        v.setContentsMargins(4, 4, 4, 4)
 
-        # 비메인 스레드에서 호출 시 main thread로 위임 (Tkinter thread safety)
-        try:
-            if threading.current_thread() is not threading.main_thread():
-                self.control_window.after(0, lambda: self._log_message_impl(timestamp, message, level))
-                return
-        except RuntimeError:
-            pass
+        self.threat_table = QTableWidget(0, 5)
+        self.threat_table.setHorizontalHeaderLabels(
+            ["ID", "TTA(s)", "위험도", "배터리", "상태"]
+        )
+        self.threat_table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        self.threat_table.verticalHeader().setVisible(False)
+        self.threat_table.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        self.threat_table.setSelectionBehavior(QAbstractItemView.SelectRows)
+        self.threat_table.setAlternatingRowColors(True)
+        self.threat_table.setStyleSheet(
+            "QTableWidget { alternate-background-color: #0f0f0f; }"
+        )
+        v.addWidget(self.threat_table)
+        return box
 
-        self._log_message_impl(timestamp, message, level)
+    def _build_event_log(self) -> QGroupBox:
+        box = QGroupBox("EVENT LOG")
+        v = QVBoxLayout(box)
+        v.setContentsMargins(4, 4, 4, 4)
+        v.setSpacing(4)
 
-    def _log_message_impl(self, timestamp, message, level):
-        """로그 메시지 실제 삽입 (main thread에서만 호출)"""
-        # Determine message type and apply appropriate tag
-        tag = level
-        if 'ASSIGN' in message.upper():
-            tag = 'ASSIGN'
-        elif 'INTERCEPT' in message.upper():
-            tag = 'INTERCEPT'
-        elif 'MISS' in message.upper():
-            tag = 'MISS'
-        elif 'LAUNCH' in message.upper():
-            tag = 'LAUNCH'
-        elif 'TRAJECTORY' in message.upper():
-            tag = 'TRAJECTORY'
-        elif 'SUCCESS' in message.upper() or '성공' in message:
-            tag = 'SUCCESS'
-        elif 'WARNING' in message.upper() or '경고' in message:
-            tag = 'WARNING'
-        elif 'ERROR' in message.upper() or '오류' in message:
-            tag = 'ERROR'
+        self.log_text = QTextEdit()
+        self.log_text.setReadOnly(True)
+        self.log_text.setFont(QtGui.QFont("Consolas", 8))
+        v.addWidget(self.log_text)
 
-        try:
-            # Insert message with timestamp and apply color tag
-            start_pos = self.log_text.index(tk.END)
-            self.log_text.insert(tk.END, f"[{timestamp}] {message}\n")
-            end_pos = self.log_text.index(tk.END)
+        btn_row = QHBoxLayout()
+        clear_btn = QPushButton("지우기")
+        save_btn  = QPushButton("저장")
+        clear_btn.setFixedWidth(60)
+        save_btn.setFixedWidth(60)
+        clear_btn.clicked.connect(self.log_text.clear)
+        save_btn.clicked.connect(self._save_log)
+        btn_row.addWidget(clear_btn)
+        btn_row.addWidget(save_btn)
+        btn_row.addStretch()
+        v.addLayout(btn_row)
+        return box
 
-            # Apply color tag to the entire line
-            self.log_text.tag_add(tag, start_pos, end_pos)
-            self.log_text.see(tk.END)
+    def _build_battery_table(self) -> QGroupBox:
+        box = QGroupBox("BATTERY STATUS")
+        v = QVBoxLayout(box)
+        v.setContentsMargins(4, 4, 4, 4)
 
-            # 줄 수 제한
-            lines = int(self.log_text.index(tk.END).split('.')[0])
-            if lines > 1000:
-                self.log_text.delete("1.0", "100.0")
-        except tk.TclError:
-            pass  # 위젯이 이미 파괴된 경우 무시
-    
-    def update_status(self, tracker):
-        """상태 업데이트 (Thread-safe)"""
-        # 상태값을 먼저 캡처 (스레드 안전)
-        time_step = tracker.current_time_step
-        active = tracker.stats['active']
-        intercepted = tracker.stats['intercepted']
-        missed = tracker.stats['missed']
-        deviated_count = tracker.stats.get('deviated', 0)
-        total = tracker.stats['total']
-        obj_val = tracker.last_objective_value
+        self.battery_table = QTableWidget(0, 5)
+        self.battery_table.setHorizontalHeaderLabels(
+            ["ID", "종류", "잔탄", "교전중", "상태"]
+        )
+        self.battery_table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        self.battery_table.verticalHeader().setVisible(False)
+        self.battery_table.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        self.battery_table.setMinimumHeight(80)
+        v.addWidget(self.battery_table)
+        return box
 
-        def _update():
-            try:
-                self.time_var.set(f"T={time_step}")
-                self.active_var.set(f"활성 위협: {active}")
-                self.intercepted_var.set(f"요격 성공: {intercepted}")
-                self.missed_var.set(f"요격 실패: {missed}")
+    def _build_alert_bar(self) -> QFrame:
+        frame = QFrame()
+        frame.setFrameShape(QFrame.StyledPanel)
+        frame.setFixedHeight(28)
+        frame.setStyleSheet("background-color: #0a0a0a; border: 1px solid #1a2a1a;")
+        h = QHBoxLayout(frame)
+        h.setContentsMargins(8, 2, 8, 2)
+        self.alert_label = QLabel("시스템 준비")
+        self.alert_label.setObjectName("AlertLabel")
+        self.alert_label.setStyleSheet("color: #444444;")
+        h.addWidget(self.alert_label)
+        self._alert_frame = frame
+        return frame
 
-                actual_threats = total - deviated_count
-                if actual_threats > 0:
-                    success_rate = (intercepted / actual_threats) * 100
-                    self.success_rate_var.set(f"성공률: {success_rate:.1f}%")
+    # ------------------------------------------------------------------ simulation control slots
 
-                if obj_val is not None:
-                    self.objective_val_var.set(f"목적함수: {obj_val:.2f}")
-            except tk.TclError:
-                pass
-
-        # 비메인 스레드에서 호출 시 main thread로 위임
-        try:
-            if threading.current_thread() is not threading.main_thread():
-                self.control_window.after(0, _update)
-                return
-        except RuntimeError:
-            pass
-
-        _update()
-    
-    def start_simulation(self):
-        """시뮬레이션 시작"""
+    @pyqtSlot()
+    def on_start(self):
         if self.running:
             return
-            
         self.running = True
-        self.paused = False
-        
-        # 실행 시간 측정 시작
-        self.sim_start_time = time.time()
-        
-        # 버튼 상태 변경
-        self.start_btn.config(state="disabled")
-        self.pause_btn.config(state="normal")
-        self.stop_btn.config(state="normal")
-        
-        # 목적함수 업데이트
-        self.tracker.objective = self.objective_var.get()
-        
-        self.log_message(f"시뮬레이션 시작 - {OBJECTIVES[self.tracker.objective]}", "SUCCESS")
-        self.log_message(f"시나리오: {self.scenario_var.get()}, 배속: {self.speed_var.get():.1f}x", "INFO")
-        
-        # 시뮬레이션 스레드 시작
-        self.sim_thread = threading.Thread(target=self.run_simulation_thread, daemon=True)
-        self.sim_thread.start()
-    
-    def run_simulation_thread(self):
-        """시뮬레이션 실행 스레드"""
-        try:
-            # 🆕 시뮬레이션 시작 로그 (제어 패널이 준비된 후)
-            self.log_message("[INFO] === SIMULATION START (T=0) ===", "INFO")
-            
-            # 시나리오 시작
-            self.tracker.start_scenario()
-            
-            # 🆕 초기 정보 로그
-            self.log_message(f"[INFO] Scenario: {self.tracker.scenario_data.get('name', 'Unknown')}", "INFO")
-            self.log_message(f"[INFO] Batteries: {len(self.tracker.batteries)}, Assets: {len(self.tracker.assets)}", "INFO")
-            self.log_message(f"[INFO] Total Threats: {len(self.tracker.missiles)} registered", "INFO")
-            
-            prev_stats = self.tracker.stats.copy()
-            
-            while self.running:
-                if not self.paused:
-                    # 시뮬레이션 상태 변경은 lock으로 보호 (디스플레이 스레드와 경쟁 방지)
-                    with self.tracker._sim_lock:
-                        # 1단계: 시뮬레이션 상태 업데이트 (미사일 이동, 충돌 처리, 이벤트)
-                        self.tracker.update_simulation()
+        self.paused  = False
+        self._sim_start_time = time.time()
 
-                        # 2단계: 실시간 DWTA 최적화 (최신 위치/상태 기반)
-                        self.tracker.run_realtime_dwta()
+        # Apply current UI settings to tracker
+        self.tracker.objective = self.objective_combo.currentText()
+        algo = next(
+            (b.objectName().replace('algo_', '')
+             for b in self._algo_group.buttons() if b.isChecked()),
+            'MIP'
+        )
+        if hasattr(self.tracker, 'current_algorithm'):
+            self.tracker.current_algorithm = algo
+        if hasattr(self.tracker, 'enable_logging'):
+            self.tracker.enable_logging = self.logging_check.isChecked()
 
-                    # 새로운 이벤트 로깅
-                    self.check_events(prev_stats, self.tracker.stats)
-                    prev_stats = self.tracker.stats.copy()
+        self.start_btn.setEnabled(False)
+        self.pause_btn.setEnabled(True)
+        self.stop_btn.setEnabled(True)
 
-                    # 종료 조건 확인
-                    if self.should_terminate():
-                        break
+        # 누적 테이블 초기화 (새 시뮬레이션 시작)
+        self._threat_row_map.clear()
+        self._threat_last_state.clear()
+        self.threat_table.setRowCount(0)
+        self.battery_table.setRowCount(0)
 
-                # 속도 조절 (더 짧은 sleep으로 UI 응답성 향상)
-                time.sleep(0.05 / self.speed_var.get())
-                
-        except Exception as e:
-            self.log_message(f"시뮬레이션 오류: {e}", "ERROR")
-        finally:
-            self.control_window.after(0, self.simulation_finished)
-    
-    def check_events(self, prev_stats, current_stats):
-        """이벤트 확인 및 로깅"""
-        if current_stats['intercepted'] > prev_stats['intercepted']:
-            self.control_window.after(0, lambda: self.log_message("요격 성공!", "INTERCEPT"))
-        
-        if current_stats['missed'] > prev_stats['missed']:
-            self.control_window.after(0, lambda: self.log_message("요격 실패", "WARNING"))
-            
-        if current_stats['active'] > prev_stats['active']:
-            new_threats = current_stats['active'] - prev_stats['active']
-            self.control_window.after(0, lambda: self.log_message(f"{new_threats}개 새로운 위협 발견", "INFO"))
-    
-    def should_terminate(self):
-        """종료 조건 확인"""
-        if self.tracker.current_time_step >= self.max_duration_var.get():
-            return True
-        
-        all_threats_launched = all(missile['launch_time'] <= self.tracker.current_time_step 
-                                 for missile in self.tracker.missiles.values())
-        all_threats_resolved = len(self.tracker.kill_results) == self.tracker.stats['total']
-        no_active_threats = self.tracker.stats['active'] == 0
-        
-        return all_threats_launched and all_threats_resolved and no_active_threats
-    
-    def pause_simulation(self):
-        """일시정지/재개"""
+        self._append_log(f"시뮬레이션 시작 — {OBJECTIVES[self.tracker.objective]}", "SUCCESS")
+        self._append_log(f"시나리오: {self.scenario_combo.currentText()}, 배속: {self.speed_spin.value():.1f}x", "INFO")
+
+        self._display_timer.start()
+
+        self._sim_thread = threading.Thread(
+            target=self._run_sim_thread, daemon=True
+        )
+        self._sim_thread.start()
+
+    @pyqtSlot()
+    def on_pause(self):
         self.paused = not self.paused
         if self.paused:
-            self.pause_btn.config(text="재개")
-            self.log_message("시뮬레이션 일시정지", "WARNING")
+            self.pause_btn.setText("▶ 재개")
+            self._append_log("시뮬레이션 일시정지", "WARNING")
         else:
-            self.pause_btn.config(text="일시정지")
-            self.log_message("시뮬레이션 재개", "SUCCESS")
-    
-    def stop_simulation(self):
-        """시뮬레이션 정지"""
+            self.pause_btn.setText("⏸ 일시정지")
+            self._append_log("시뮬레이션 재개", "SUCCESS")
+
+    @pyqtSlot()
+    def on_stop(self):
         self.running = False
-        self.paused = False
-        
-        self.start_btn.config(state="normal")
-        self.pause_btn.config(state="disabled", text="일시정지")
-        self.stop_btn.config(state="disabled")
-        
-        self.log_message("시뮬레이션 정지", "WARNING")
-    
-    def reset_simulation(self):
-        """시뮬레이션 리셋"""
-        self.stop_simulation()
-        
-        # 트래커 상태 초기화
+        self.paused  = False
+        # 타이머 멈추기 전 최종 갱신 (마지막 상태 유지)
+        self._refresh_threat_table()
+        self._refresh_battery_table()
+        self._display_timer.stop()
+        self._blink_timer.stop()
+        self.start_btn.setEnabled(True)
+        self.pause_btn.setEnabled(False)
+        self.pause_btn.setText("⏸ 일시정지")
+        self.stop_btn.setEnabled(False)
+        self._append_log("시뮬레이션 정지", "WARNING")
+
+    @pyqtSlot()
+    def on_reset(self):
+        self.on_stop()
         if hasattr(self.tracker, 'missiles'):
             self.tracker.missiles.clear()
             self.tracker.kill_results.clear()
             self.tracker.primary_assignments.clear()
             self.tracker.current_time_step = 0
-            self.tracker.stats = {'intercepted': 0, 'missed': 0, 'active': 0, 'total': 0, 'retargeted': 0, 'tracked_misses': []}
-        
-        # 상태 초기화
-        self.time_var.set("T=0")
-        self.active_var.set("활성 위협: 0")
-        self.intercepted_var.set("요격 성공: 0")
-        self.missed_var.set("요격 실패: 0")
-        self.success_rate_var.set("성공률: 0%")
-        self.objective_val_var.set("목적함수: -")
-        
-        # 🆕 전략 뷰 및 목적함수 뷰 초기화
-        if hasattr(self.tracker, 'fig') and self.tracker.fig:
-            try:
-                # 차트 초기화
-                if hasattr(self.tracker, 'ax_main'):
-                    self.tracker.ax_main.clear()
-                if hasattr(self.tracker, 'ax_analysis'):
-                    self.tracker.ax_analysis.clear()
-                
-                # 축 재초기화
-                if hasattr(self.tracker, '_initialize_axes'):
-                    self.tracker._initialize_axes()
-                
-                # 캔버스 업데이트
-                self.tracker.fig.canvas.draw_idle()
-            except Exception as e:
-                print(f"차트 리셋 오류: {e}")
-        
-        self.log_message("시뮬레이션 리셋", "INFO")
-    
-    def simulation_finished(self):
-        """시뮬레이션 완료"""
-        self.running = False
-        
-        # 🆕 CRITICAL: Tracker의 finalize_simulation 호출 (메트릭 저장)
-        if hasattr(self.tracker, 'finalize_simulation'):
-            self.tracker.finalize_simulation()
-        
-        # 실행 시간 계산 및 로그 기록
-        if self.sim_start_time is not None:
-            self.sim_elapsed_time = time.time() - self.sim_start_time
-            deviated = self.tracker.stats.get('deviated', 0)
-            actual_threats = self.tracker.stats['total'] - deviated
-            
-            self.log_message(f"[INFO] === SIMULATION COMPLETE ===", "SUCCESS")
-            self.log_message(f"[INFO] Scenario: {self.scenario_var.get()}", "INFO")
-            self.log_message(f"[INFO] Total Threats: {self.tracker.stats['total']} ({actual_threats} actual, {deviated} deviated)", "INFO")
-            self.log_message(f"[INFO] Speed: {self.speed_var.get():.1f}x", "INFO")
-            self.log_message(f"[INFO] Simulation Time: {self.tracker.current_time_step}s", "INFO")
-            self.log_message(f"[INFO] Real Time: {self.sim_elapsed_time:.2f}s", "INFO")
-            self.log_message(f"[INFO] Time Compression: {self.tracker.current_time_step / self.sim_elapsed_time:.2f}x", "INFO")
-        
-        self.start_btn.config(state="normal")
-        self.pause_btn.config(state="disabled", text="일시정지")
-        self.stop_btn.config(state="disabled")
-        
-        # 결과 표시
-        stats = self.tracker.stats
-        total = stats['total']
-        deviated = stats.get('deviated', 0)
-        actual_threats = total - deviated
-        success_rate = min((stats['intercepted'] / total * 100) if total > 0 else 0, 100.0)
+            self.tracker.stats = {
+                'intercepted': 0, 'missed': 0, 'active': 0,
+                'total': 0, 'retargeted': 0, 'tracked_misses': []
+            }
+        self._threat_row_map.clear()
+        self._threat_last_state.clear()
+        for key, lbl in self._status_labels.items():
+            lbl.setText("—")
+        self.threat_table.setRowCount(0)
+        self.battery_table.setRowCount(0)
+        self.alert_label.setText("시스템 준비")
+        self.alert_label.setStyleSheet("color: #444444;")
+        self._alert_frame.setStyleSheet(
+            "background-color: #0a0a0a; border: 1px solid #1a2a1a;"
+        )
+        self._prev_stats = {'intercepted': 0, 'missed': 0, 'active': 0}
+        self._prev_kill_count = 0
+        # Reset tactical map state
+        if hasattr(self, 'tactical_map'):
+            self.tactical_map._last_assignments = {}
+            self.tactical_map._last_battery_ammo = {}
+            self.tactical_map._update_assets()
+        self._append_log("시뮬레이션 리셋", "INFO")
 
-        result_msg = f"""시뮬레이션 완료!
+    # ------------------------------------------------------------------ config change handlers
 
-총 위협: {total}발
-궤적 이탈: {deviated}발
-실제 위협: {actual_threats}발
-
-요격 성공: {stats['intercepted']}발
-요격 실패: {stats['missed']}발
-성공률: {success_rate:.1f}%
-
-실제 실행 시간: {self.sim_elapsed_time:.2f}초
-시뮬레이션 시간: {self.tracker.current_time_step}초
-배속: {self.speed_var.get():.1f}x"""
-        
-        messagebox.showinfo("시뮬레이션 완료", result_msg)
-        self.log_message("시뮬레이션 완료", "SUCCESS")
-    
-    def on_objective_change(self, event=None):
-        """목적함수 변경"""
-        if hasattr(self.tracker, 'objective'):
-            self.tracker.objective = self.objective_var.get()
-            self.log_message(f"목적함수 변경: {OBJECTIVES[self.tracker.objective]}", "INFO")
-    
-    def on_algorithm_change(self):
-        """🆕 알고리즘 변경"""
-        algorithm = self.algorithm_var.get()
-        if hasattr(self.tracker, 'current_algorithm'):
-            self.tracker.current_algorithm = algorithm
-            self.log_message(f"알고리즘 변경: {algorithm}", "INFO")
-            
-            # MIP가 아닌 경우 Warm-start 비활성화
-            if algorithm != "MIP":
-                self.warmstart_enabled_var.set(False)
-                self.warmstart_check.config(state="disabled")
-                self.log_message("Warm-start는 MIP 알고리즘에서만 사용 가능합니다", "WARNING")
-            else:
-                self.warmstart_check.config(state="normal")
-    
-    def on_warmstart_toggle(self):
-        """🆕 Warm-start 토글"""
-        enabled = self.warmstart_enabled_var.get()
-        
-        # MIP Optimizer 인스턴스 초기화 여부 결정
-        if hasattr(self.tracker, 'mip_optimizer_instance') and not enabled:
-            # Warm-start 비활성화 시 기존 인스턴스 제거
-            delattr(self.tracker, 'mip_optimizer_instance')
-            self.log_message("Warm-start 비활성화 - MIP 인스턴스 초기화됨", "INFO")
-        elif enabled:
-            self.log_message("Warm-start 활성화", "SUCCESS")
-        
-        # 상태 업데이트
-        self.warmstart_var.set(f"Warm-start: {'ON' if enabled else 'OFF'}")
-    
-    def on_logging_toggle(self):
-        """🆕 로그 수집 토글"""
-        enabled = self.logging_enabled_var.get()
-        if hasattr(self.tracker, 'enable_logging'):
-            self.tracker.enable_logging = enabled
-            status = "활성화" if enabled else "비활성화"
-            self.log_message(f"로그 자동 저장 {status}", "INFO")
-
-    def on_viz_backend_change(self, event=None):
-        """🆕 Phase 2.3: Visualization backend change handler"""
-        new_backend = self.viz_backend_var.get()
-
+    def _on_scenario_changed(self, new_scenario: str):
         if self.running:
-            messagebox.showwarning("경고", "시뮬레이션 실행 중에는 디스플레이 모드를 변경할 수 없습니다.")
-            # Restore previous value
-            current = "pyqtgraph" if (hasattr(self.tracker, 'use_pyqtgraph') and self.tracker.use_pyqtgraph) else "matplotlib"
-            self.viz_backend_var.set(current)
+            QMessageBox.warning(self, "경고", "시뮬레이션 실행 중에는 시나리오를 변경할 수 없습니다.")
+            self.scenario_combo.setCurrentText(
+                getattr(self.tracker.config, 'scenario_type', 'BASELINE_15')
+            )
             return
-
-        # Require restart for backend change
-        if messagebox.askyesno("디스플레이 모드 변경",
-                             f"디스플레이를 '{new_backend}'로 변경하시겠습니까?\n"
-                             f"변경 사항은 다음 시뮬레이션 시작 시 적용됩니다."):
-            # Store preference (will be applied on next simulation start)
-            self.tracker.use_pyqtgraph = (new_backend == "pyqtgraph" and PYQTGRAPH_AVAILABLE)
-            status_msg = f"디스플레이 모드: {new_backend} (다음 시작 시 적용)"
-            self.log_message(status_msg, "SUCCESS")
-
-            if new_backend == "pyqtgraph" and PYQTGRAPH_AVAILABLE:
-                self.log_message("🚀 PyQtGraph 모드: 고성능 렌더링 (<2ms/frame)", "INFO")
-            else:
-                self.log_message("📊 Matplotlib 모드: 기본 렌더링", "INFO")
-        else:
-            # Restore previous value
-            current = "pyqtgraph" if (hasattr(self.tracker, 'use_pyqtgraph') and self.tracker.use_pyqtgraph) else "matplotlib"
-            self.viz_backend_var.set(current)
-
-    def on_scenario_change(self, event=None):
-        """시나리오 변경"""
-        if self.running:
-            messagebox.showwarning("경고", "시뮬레이션 실행 중에는 시나리오를 변경할 수 없습니다.")
-            return
-        
-        new_scenario = self.scenario_var.get()
-        
-        # 시나리오 변경 확인
-        if messagebox.askyesno("시나리오 변경", 
-                               f"시나리오를 '{new_scenario}'로 변경하시겠습니까?\n현재 시뮬레이션 상태가 초기화됩니다."):
+        reply = QMessageBox.question(
+            self, "시나리오 변경",
+            f"시나리오를 '{new_scenario}'로 변경하시겠습니까?\n현재 상태가 초기화됩니다.",
+            QMessageBox.Yes | QMessageBox.No
+        )
+        if reply == QMessageBox.Yes:
             try:
-                # config 업데이트
                 self.tracker.config.scenario_type = new_scenario
-                
-                # 시나리오 재로드
                 self.tracker._load_scenario()
-                
-                # 트래커 상태 초기화
                 self.tracker.missiles.clear()
                 self.tracker.kill_results.clear()
                 self.tracker.primary_assignments.clear()
                 self.tracker.current_time_step = 0
-                self.tracker.stats = {'intercepted': 0, 'missed': 0, 'active': 0, 'total': 0, 'retargeted': 0, 'tracked_misses': []}
-                
-                # 상태 초기화
-                self.time_var.set("T=0")
-                self.active_var.set("활성 위협: 0")
-                self.intercepted_var.set("요격 성공: 0")
-                self.missed_var.set("요격 실패: 0")
-                self.success_rate_var.set("성공률: 0%")
-                self.objective_val_var.set("목적함수: -")
-                
-                # 시나리오 정보 로깅
-                from config_mip import ScenarioManager
-                scenario_list = ScenarioManager.get_scenario_list()
-                scenario_desc = scenario_list.get(new_scenario, "Unknown")
-                threat_count = len(self.tracker.initial_threats_config)
-                
-                self.log_message(f"시나리오 변경: {scenario_desc}", "SUCCESS")
-                self.log_message(f"위협 미사일 수: {threat_count}발", "INFO")
-                
+                self.tracker.stats = {
+                    'intercepted': 0, 'missed': 0, 'active': 0,
+                    'total': 0, 'retargeted': 0, 'tracked_misses': []
+                }
+                # Redraw static map elements (assets/batteries/rings)
+                self.tactical_map._last_assignments = {}
+                self.tactical_map._last_battery_ammo = {}
+                self.tactical_map.clear()
+                self.tactical_map._configure_plot()
+                self.tactical_map._init_static_items()
+                self.tactical_map._draw_range_rings()
+                self.tactical_map._update_assets()
+                self._append_log(f"시나리오 변경: {new_scenario}", "SUCCESS")
             except Exception as e:
-                messagebox.showerror("오류", f"시나리오 변경 실패: {e}")
-                self.log_message(f"시나리오 변경 오류: {e}", "ERROR")
+                QMessageBox.critical(self, "오류", f"시나리오 변경 실패: {e}")
+                self._append_log(f"시나리오 변경 오류: {e}", "ERROR")
+                self.scenario_combo.setCurrentText(
+                    getattr(self.tracker.config, 'scenario_type', 'BASELINE_15')
+                )
         else:
-            # 취소 시 원래 값으로 복원
-            self.scenario_var.set(self.tracker.config.scenario_type)
-    
-    def clear_log(self):
-        """로그 지우기"""
-        self.log_text.delete("1.0", tk.END)
-    
-    def save_log(self):
-        """로그 저장"""
-        try:
-            from tkinter import filedialog
-            filename = filedialog.asksaveasfilename(
-                defaultextension=".txt",
-                filetypes=[("텍스트 파일", "*.txt"), ("모든 파일", "*.*")]
+            self.scenario_combo.setCurrentText(
+                getattr(self.tracker.config, 'scenario_type', 'BASELINE_15')
             )
-            if filename:
-                content = self.log_text.get("1.0", tk.END)
-                with open(filename, 'w', encoding='utf-8') as f:
-                    f.write(content)
-                messagebox.showinfo("성공", f"로그가 저장되었습니다: {filename}")
-        except Exception as e:
-            messagebox.showerror("오류", f"로그 저장 실패: {e}")
-    
-    def on_closing(self):
-        """창 닫기"""
-        if self.running:
-            if messagebox.askokcancel("종료", "시뮬레이션이 실행 중입니다. 종료하시겠습니까?"):
-                self.stop_simulation()
-                self.control_window.destroy()
-        else:
-            self.control_window.destroy()
 
+    def _on_objective_changed(self, key: str):
+        if hasattr(self.tracker, 'objective'):
+            self.tracker.objective = key
+            self._append_log(f"목적함수 변경: {OBJECTIVES.get(key, key)}", "INFO")
+
+    def _on_algo_changed(self, btn):
+        algo = btn.objectName().replace('algo_', '')
+        if hasattr(self.tracker, 'current_algorithm'):
+            self.tracker.current_algorithm = algo
+        self._append_log(f"알고리즘 변경: {algo}", "INFO")
+        # Warm-start only available for MIP
+        ws_ok = (algo == "MIP")
+        self.warmstart_check.setEnabled(ws_ok)
+        if not ws_ok:
+            self.warmstart_check.setChecked(False)
+
+    def _on_warmstart_toggled(self, enabled: bool):
+        if not enabled and hasattr(self.tracker, 'mip_optimizer_instance'):
+            try:
+                delattr(self.tracker, 'mip_optimizer_instance')
+            except AttributeError:
+                pass
+        self._append_log(
+            f"Warm-start {'활성화' if enabled else '비활성화'}", "INFO"
+        )
+
+    def _on_logging_toggled(self, enabled: bool):
+        if hasattr(self.tracker, 'enable_logging'):
+            self.tracker.enable_logging = enabled
+
+    # ------------------------------------------------------------------ simulation thread
+
+    def _run_sim_thread(self):
+        """Simulation background thread (mirrors ControlPanel.run_simulation_thread)."""
+        try:
+            self.sig_log_message.emit("=== SIMULATION START (T=0) ===", "INFO")
+            self.tracker.start_scenario()
+            self.sig_log_message.emit(
+                f"Scenario: {self.tracker.scenario_data.get('name', '?')}  "
+                f"Batteries: {len(self.tracker.batteries)}  "
+                f"Assets: {len(self.tracker.assets)}  "
+                f"Threats: {len(self.tracker.missiles)} registered",
+                "INFO"
+            )
+
+            while self.running:
+                if not self.paused:
+                    with self.tracker._sim_lock:
+                        self.tracker.update_simulation()
+                        self.tracker.run_realtime_dwta()
+
+                    # Emit stats for status labels
+                    self.sig_status_update.emit(self.tracker.stats.copy())
+
+                    # Event detection
+                    cur = self.tracker.stats
+                    if cur['intercepted'] > self._prev_stats['intercepted']:
+                        self.sig_log_message.emit("요격 성공!", "INTERCEPT")
+                    if cur['missed'] > self._prev_stats['missed']:
+                        self.sig_log_message.emit("요격 실패", "WARNING")
+                    new_active = cur['active'] - self._prev_stats['active']
+                    if new_active > 0:
+                        self.sig_log_message.emit(
+                            f"{new_active}개 새로운 위협 발견", "INFO"
+                        )
+                    self._prev_stats = cur.copy()
+
+                    # Kill flash events (only new entries)
+                    total_kills = len(self.tracker.kill_results)
+                    if total_kills > self._prev_kill_count:
+                        for mid, (result, _, _) in list(self.tracker.kill_results.items()):
+                            if result in ('INTERCEPTED', 'MISSED'):
+                                m = self.tracker.missiles.get(mid)
+                                if m:
+                                    self.sig_kill_event.emit(mid, result)
+                        self._prev_kill_count = total_kills
+
+                    if self._should_terminate():
+                        break
+
+                time.sleep(0.05 / max(self.speed_spin.value(), 0.1))
+
+        except Exception as e:
+            self.sig_log_message.emit(f"시뮬레이션 오류: {e}", "ERROR")
+        finally:
+            QTimer.singleShot(0, self._on_sim_finished)
+
+    def _should_terminate(self) -> bool:
+        if self.tracker.current_time_step >= self.max_dur_spin.value():
+            return True
+        all_launched = all(
+            m['launch_time'] <= self.tracker.current_time_step
+            for m in self.tracker.missiles.values()
+        )
+        all_resolved = (
+            len(self.tracker.kill_results) == self.tracker.stats.get('total', 0)
+        )
+        no_active = self.tracker.stats.get('active', 0) == 0
+        return all_launched and all_resolved and no_active
+
+    def _on_sim_finished(self):
+        """Called on main thread when simulation thread exits."""
+        self.running = False
+
+        # 타이머 멈추기 전 최종 테이블 갱신
+        self._refresh_threat_table()
+        self._refresh_battery_table()
+        self._refresh_alert_bar()
+
+        self._display_timer.stop()
+        self._blink_timer.stop()
+
+        if hasattr(self.tracker, 'finalize_simulation'):
+            self.tracker.finalize_simulation()
+
+        elapsed = time.time() - self._sim_start_time if self._sim_start_time else 0
+        stats = self.tracker.stats
+        deviated = stats.get('deviated', 0)
+        actual = stats['total'] - deviated
+        rate = min((stats['intercepted'] / actual * 100) if actual > 0 else 0, 100.0)
+
+        self._append_log("=== SIMULATION COMPLETE ===", "SUCCESS")
+        self._append_log(
+            f"총위협:{stats['total']}  이탈:{deviated}  실제:{actual}  "
+            f"요격:{stats['intercepted']}  실패:{stats['missed']}  성공률:{rate:.1f}%",
+            "INFO"
+        )
+        self._append_log(
+            f"실제 실행시간: {elapsed:.2f}s  시뮬시간: {self.tracker.current_time_step}s",
+            "INFO"
+        )
+
+        self.start_btn.setEnabled(True)
+        self.pause_btn.setEnabled(False)
+        self.pause_btn.setText("⏸ 일시정지")
+        self.stop_btn.setEnabled(False)
+
+        msg = (
+            f"시뮬레이션 완료!\n\n"
+            f"총 위협: {stats['total']}발  (이탈: {deviated})\n"
+            f"요격 성공: {stats['intercepted']}발\n"
+            f"요격 실패: {stats['missed']}발\n"
+            f"성공률: {rate:.1f}%\n\n"
+            f"실제 실행시간: {elapsed:.2f}s\n"
+            f"시뮬레이션 시간: {self.tracker.current_time_step}s"
+        )
+        QMessageBox.information(self, "시뮬레이션 완료", msg)
+
+    # ------------------------------------------------------------------ QTimer tick
+
+    def _on_display_tick(self):
+        """Fires every 250 ms on the main thread — refresh all visual elements."""
+        if not self.tracker._sim_lock.acquire(blocking=False):
+            return
+        try:
+            try:
+                self.tactical_map.update_display()
+            except Exception as e:
+                print(f"[WARN] tactical_map update error: {e}")
+            self._refresh_threat_table()
+            self._refresh_battery_table()
+            self._refresh_alert_bar()
+        finally:
+            self.tracker._sim_lock.release()
+
+    # ------------------------------------------------------------------ table refresh
+
+    @staticmethod
+    def _compute_tta(missile: dict) -> float:
+        if not missile.get('active', False):
+            return float('inf')
+        remaining = max(1.0 - missile.get('flight_progress', 0.0), 0.0)
+        return missile.get('flight_time', 300) * remaining
+
+    def _refresh_threat_table(self):
+        """누적 로그 방식: 신규 위협은 행 추가, 기존 위협은 상태만 갱신."""
+        missiles   = self.tracker.missiles
+        kill_res   = self.tracker.kill_results
+        assign_mgr = self.tracker.primary_assignments
+
+        self.threat_table.setUpdatesEnabled(False)
+        scroll_to_bottom = False
+
+        for mid, m in missiles.items():
+            if mid in kill_res:
+                result_str = kill_res[mid][0]
+                if result_str == 'INTERCEPTED':
+                    status, s_color = "INTERCEPT", "#00ccff"
+                elif result_str == 'DEVIATED':
+                    status, s_color = "이탈",      "#888888"
+                else:
+                    status, s_color = "MISSED",    "#ff4444"
+                # 마지막 활성 상태(TTA, 위험도, 배터리) 보존
+                last = self._threat_last_state.get(mid, ("—", "—", "#888888", "—"))
+                tta_str, danger, d_color, bat_str = last
+            elif m.get('active'):
+                tta = self._compute_tta(m)
+                if tta < 30:
+                    danger, d_color = "HIGH", "#ff4444"
+                elif tta < 60:
+                    danger, d_color = "MED",  "#ffcc00"
+                else:
+                    danger, d_color = "LOW",  "#00cc44"
+                batteries = assign_mgr.get_batteries_for_threat(mid)
+                status    = "ENGAGED" if batteries else "TRACKED"
+                s_color   = "#00ccff" if batteries else "#aaaaaa"
+                tta_str   = f"{tta:.0f}"
+                bat_str   = ", ".join(b.replace('LSAM_BATTERY_','L').replace('MSAM_BATTERY_','M')
+                                        .replace('LSAM_','L').replace('MSAM_','M')
+                                      for b in batteries) or "—"
+                # 현재 상태 스냅샷 저장 (요격/피격 후에도 마지막 값 유지용)
+                self._threat_last_state[mid] = (tta_str, danger, d_color, bat_str)
+            else:
+                continue  # 아직 발사 전
+
+            short_id = mid.replace('MISSILE_', 'M').replace('THREAT_', 'T')
+            cells  = [short_id, tta_str, danger, bat_str, status]
+            colors = ["#00ff00", "#00ff00", d_color, "#00ff00", s_color]
+
+            if mid in self._threat_row_map:
+                # 기존 행 갱신 (상태 변경만)
+                row = self._threat_row_map[mid]
+                for j, (cell, color) in enumerate(zip(cells, colors)):
+                    item = self.threat_table.item(row, j)
+                    if item is None:
+                        item = QTableWidgetItem(cell)
+                        item.setTextAlignment(QtCore.Qt.AlignCenter)
+                        self.threat_table.setItem(row, j, item)
+                    else:
+                        item.setText(cell)
+                    item.setForeground(QtGui.QBrush(QtGui.QColor(color)))
+            else:
+                # 신규 위협 → 맨 아래에 행 추가 (이벤트 로그처럼 누적)
+                row = self.threat_table.rowCount()
+                self.threat_table.insertRow(row)
+                self._threat_row_map[mid] = row
+                for j, (cell, color) in enumerate(zip(cells, colors)):
+                    item = QTableWidgetItem(cell)
+                    item.setTextAlignment(QtCore.Qt.AlignCenter)
+                    item.setForeground(QtGui.QBrush(QtGui.QColor(color)))
+                    self.threat_table.setItem(row, j, item)
+                scroll_to_bottom = True
+
+        self.threat_table.setUpdatesEnabled(True)
+        if scroll_to_bottom:
+            self.threat_table.scrollToBottom()
+
+    def _refresh_battery_table(self):
+        batteries  = self.tracker.batteries
+        assign_mgr = self.tracker.primary_assignments
+
+        self.battery_table.setUpdatesEnabled(False)
+        self.battery_table.setRowCount(len(batteries))
+        for i, b in enumerate(batteries):
+            bid   = b['id']
+            ammo  = b.get('available_missiles', 0)
+            stype = b.get('system_type', '—')
+            engaging = len(assign_mgr.get_threats_for_battery(bid))
+
+            if ammo == 0:
+                status, s_color = "EMPTY",   "#ff4444"
+            elif ammo < 5:
+                status, s_color = "LOW_AMMO","#ff9900"
+            elif engaging > 0:
+                status, s_color = "ENGAGING","#00ccff"
+            else:
+                status, s_color = "READY",   "#00ff44"
+
+            short_id = (bid.replace('LSAM_BATTERY_', 'L')
+                           .replace('MSAM_BATTERY_', 'M')
+                           .replace('LSAM_', 'L')
+                           .replace('MSAM_', 'M'))
+            # 무기체계별 고정 색 (맵 심볼과 동일: LSAM=주황, MSAM=청록)
+            id_color = '#ff8800' if stype == 'LSAM' else '#00cccc'
+            cells  = [short_id, stype, str(ammo), str(engaging), status]
+            colors = [id_color, id_color, None, None, s_color]
+            for j, (cell, color) in enumerate(zip(cells, colors)):
+                item = QTableWidgetItem(cell)
+                item.setTextAlignment(QtCore.Qt.AlignCenter)
+                if color:
+                    item.setForeground(QtGui.QBrush(QtGui.QColor(color)))
+                self.battery_table.setItem(i, j, item)
+        self.battery_table.setUpdatesEnabled(True)
+
+    def _refresh_alert_bar(self):
+        """Flash alert bar if there are unengaged high-danger threats."""
+        assign_mgr = self.tracker.primary_assignments
+        unengaged = [
+            mid for mid, m in self.tracker.missiles.items()
+            if m.get('active')
+            and self._compute_tta(m) < 60
+            and not assign_mgr.get_batteries_for_threat(mid)
+        ]
+        if unengaged:
+            n = len(unengaged)
+            self.alert_label.setText(f"⚠ ALERT — {n}개 미교전 위협 (TTA<60s)")
+            if not self._blink_timer.isActive():
+                self._blink_timer.start()
+        else:
+            self._blink_timer.stop()
+            self.alert_label.setText("정상 — 미교전 위협 없음")
+            self.alert_label.setStyleSheet("color: #00cc44;")
+            self._alert_frame.setStyleSheet(
+                "background-color: #0a0a0a; border: 1px solid #1a2a1a;"
+            )
+
+    def _blink_alert(self):
+        self._blink_state = not self._blink_state
+        if self._blink_state:
+            self._alert_frame.setStyleSheet(
+                "background-color: #3a0000; border: 1px solid #ff0000;"
+            )
+            self.alert_label.setStyleSheet("color: #ff4444; font-weight: bold;")
+        else:
+            self._alert_frame.setStyleSheet(
+                "background-color: #1a0000; border: 1px solid #880000;"
+            )
+            self.alert_label.setStyleSheet("color: #cc2222;")
+
+    # ------------------------------------------------------------------ signal slots
+
+    @pyqtSlot(dict)
+    def _update_status_labels(self, stats: dict):
+        ts  = self.tracker.current_time_step
+        dev = stats.get('deviated', 0)
+        act = stats['total'] - dev
+        rate = min((stats['intercepted'] / act * 100) if act > 0 else 0, 100.0)
+        obj  = self.tracker.last_objective_value
+
+        self._status_labels['time'].setText(f"T={ts}s")
+        self._status_labels['active'].setText(str(stats.get('active', 0)))
+        self._status_labels['intercept'].setText(str(stats.get('intercepted', 0)))
+        self._status_labels['missed'].setText(str(stats.get('missed', 0)))
+        self._status_labels['rate'].setText(f"{rate:.1f}%")
+        if obj is not None and obj != float('inf'):
+            self._status_labels['obj'].setText(f"{obj:.2f}")
+
+    @pyqtSlot(str, str)
+    def _append_log(self, message: str, level: str):
+        """Insert a colour-coded log entry (always runs on main thread via signal)."""
+        COLOR = {
+            'INFO':      '#00ff00',
+            'SUCCESS':   '#66ff66',
+            'WARNING':   '#ff9900',
+            'ERROR':     '#ff4444',
+            'INTERCEPT': '#ff9900',
+            'ASSIGN':    '#0099ff',
+            'MISS':      '#ff6666',
+            'LAUNCH':    '#ffff00',
+            'TRAJECTORY':'#cc99ff',
+            'DEBUG':     '#555555',
+        }
+        # Determine colour from message content overrides
+        if 'INTERCEPT' in message.upper():
+            color = COLOR['INTERCEPT']
+        elif 'MISS' in message.upper():
+            color = COLOR['MISS']
+        elif 'LAUNCH' in message.upper():
+            color = COLOR['LAUNCH']
+        elif 'ASSIGN' in message.upper():
+            color = COLOR['ASSIGN']
+        else:
+            color = COLOR.get(level, '#00ff00')
+
+        ts = time.strftime("%H:%M:%S")
+        html = (
+            f'<span style="color:#555555">[{ts}]</span> '
+            f'<span style="color:{color}">{message}</span>'
+        )
+        self.log_text.append(html)
+
+        # Keep log buffer under 1000 lines
+        doc = self.log_text.document()
+        while doc.blockCount() > 1000:
+            cursor = self.log_text.textCursor()
+            cursor.movePosition(QtGui.QTextCursor.Start)
+            cursor.select(QtGui.QTextCursor.BlockUnderCursor)
+            cursor.removeSelectedText()
+            cursor.deleteChar()
+
+    @pyqtSlot(str, str)
+    def _handle_kill_event(self, missile_id: str, result: str):
+        """Trigger flash animation on tactical map for intercept/miss."""
+        m = self.tracker.missiles.get(missile_id)
+        if m:
+            x, y = m['position'][0], m['position'][1]
+            self.tactical_map.trigger_kill_flash(x, y, success=(result == 'INTERCEPTED'))
+
+    @pyqtSlot(str, str)
+    def _update_solver_info(self, key: str, value: str):
+        """Update solver time, warm-start, or objective value labels."""
+        if key == 'solver_time':
+            self._status_labels['solver'].setText(value)
+        elif key == 'warmstart':
+            self._status_labels['warmstart'].setText(value)
+        elif key == 'objective':
+            self._status_labels['obj'].setText(value)
+
+    # ------------------------------------------------------------------ log save
+
+    def _save_log(self):
+        filename, _ = QFileDialog.getSaveFileName(
+            self, "로그 저장", "", "텍스트 파일 (*.txt);;모든 파일 (*)"
+        )
+        if filename:
+            try:
+                with open(filename, 'w', encoding='utf-8') as f:
+                    f.write(self.log_text.toPlainText())
+            except Exception as e:
+                QMessageBox.critical(self, "오류", f"로그 저장 실패: {e}")
+
+    # ------------------------------------------------------------------ interface for tracker compatibility
+
+    def log_message(self, message: str, level: str = "INFO"):
+        """Called by MultiMissileTracker internals. Thread-safe via signal."""
+        if level == "DEBUG":
+            return  # suppress debug
+        self.sig_log_message.emit(message, level)
+
+    def update_status(self, tracker):
+        """Compatibility: tracker calls this after update_simulation()."""
+        self.sig_status_update.emit(tracker.stats.copy())
+
+    # ------------------------------------------------------------------ window close
+
+    def closeEvent(self, event):
+        if self.running:
+            reply = QMessageBox.question(
+                self, "종료",
+                "시뮬레이션이 실행 중입니다. 종료하시겠습니까?",
+                QMessageBox.Yes | QMessageBox.No
+            )
+            if reply == QMessageBox.No:
+                event.ignore()
+                return
+            self.on_stop()
+        self._display_timer.stop()
+        self._blink_timer.stop()
+        event.accept()
+
+
+# ---------------------------------------------------------------------------
+# Backwards-compatible alias so any code still referencing ControlPanel works
+# ---------------------------------------------------------------------------
+ControlPanel = DWTAMainWindow
+
+
+# ===========================================================================
+# Simulation Engine
+# ===========================================================================
 class MultiMissileTracker:
     """실시간 DWTA 분석 시뮬레이터 - GUI 지원 버전"""
 
@@ -1202,9 +1363,28 @@ class MultiMissileTracker:
             print(f"Warning: Unknown objective '{objective}'. Defaulting to 'MIN_DAMAGE'.")
             self.objective = 'MIN_DAMAGE'
 
-        # Initialize configuration and load scenario
+        # GUI 초기화를 먼저: 사용자가 빈 창이 아닌 로딩 중인 창을 볼 수 있도록
+        self.control_panel = None
+        self.text_mode = self.headless
+        self.pyqtgraph_display = None
+        self.fig = None
+
+        # DWTAMainWindow 빌드 시 config.scenario_type 접근 — 먼저 설정
         self.config = mip_config
-        #mip 사용으로 _load_scenario 실행 
+
+        if not self.headless and GUI_AVAILABLE:
+            try:
+                self._qt_app = QApplication.instance() or QApplication(sys.argv)
+                self.main_window = DWTAMainWindow(self)
+                self.control_panel = self.main_window
+                self.main_window.show()
+                self._qt_app.processEvents()  # 창이 화면에 즉시 나타나도록
+                print("[OK] DWTAMainWindow (PyQt5) 초기화 완료")
+            except Exception as e:
+                print(f"GUI 초기화 실패: {e}")
+                self.control_panel = None
+
+        # Load scenario (무거운 사전 계산 — GUI 창 이후 실행)
         self._load_scenario()
         #config_mip.py에서 데이터 추출:시나리오데이터, 자산 데이터, 포대 데이터, 초기 위협 정보, 교전 확률 매트릭스
         
@@ -1273,42 +1453,18 @@ class MultiMissileTracker:
         self.last_objective_value = None
         self.last_solve_time = None
         
-        # GUI 컴포넌트
-        self.control_panel = None
-        self.text_mode = self.headless  # headless 모드 = text 모드
-        self.pyqtgraph_display = None  # 🆕 PyQtGraph display instance
-
-        # Visualization Setup
-        # Headless 모드에서는 GUI 완전히 비활성화
+        # GUI 초기화는 __init__ 상단에서 이미 완료 (시나리오 로드 전에 창이 먼저 뜸)
         if self.headless:
-            self.fig = None
-            self.control_panel = None
-            self.text_mode = True
             print("Headless 모드: GUI 없이 실행합니다.")
-        elif self.use_pyqtgraph and PYQTGRAPH_AVAILABLE:
-            # 🆕 Phase 2: PyQtGraph visualization (high-performance mode)
-            try:
-                print("[OK] Initializing PyQtGraph high-performance visualization...")
-                self.pyqtgraph_display = PyQtGraphDisplay(self)
-                self.fig = None  # No matplotlib figure in PyQtGraph mode
-                print("[OK] PyQtGraph display ready (target: <2ms per frame)")
-            except Exception as e:
-                print(f"[ERROR] PyQtGraph initialization failed: {e}")
-                print("   Falling back to matplotlib...")
-                self.use_pyqtgraph = False
-                self._setup_gui_visualization()
-        elif GUI_AVAILABLE:
-            try:
-                self._setup_gui_visualization()
-            except Exception as e:
-                print(f"GUI 초기화 실패: {e}")
-                self.fig = None
-                self.control_panel = None
-                print("GUI를 사용할 수 없어 시각화 없이 실행합니다.")
-        else:
-            self.fig = None
-            self.control_panel = None
-            print("GUI를 사용할 수 없어 시각화 없이 실행합니다.")
+        elif not GUI_AVAILABLE:
+            print("PyQt5/PyQtGraph 없음 — GUI 비활성화 (pip install pyqtgraph PyQt5)")
+        # DWTAMainWindow는 이미 _load_scenario() 전에 생성됨; 여기서 map 갱신
+        if not self.headless and self.control_panel and hasattr(self.control_panel, 'tactical_map'):
+            self.control_panel.tactical_map._draw_range_rings()
+            self.control_panel.tactical_map._update_assets()
+            self.control_panel.tactical_map._update_batteries()   # 시뮬 시작 전에도 포대 표시
+            if hasattr(self, '_qt_app'):
+                self._qt_app.processEvents()
 
     # 🆕 Phase 1.2-1.3: Performance Cache Helper Methods
     def _invalidate_active_cache(self):
@@ -1338,128 +1494,6 @@ class MultiMissileTracker:
             self._battery_lookup = {b['id']: b for b in self.batteries}
             print(f"[OK] Battery lookup cache built: {len(self._battery_lookup)} batteries")
 
-    def _setup_gui_visualization(self):
-        """GUI 시각화 설정 (교착 상태 방지 개선)"""
-        max_retries = 3
-        retry_count = 0
-        
-        # 초기화
-        self.fig = None
-        self.control_panel = None
-        
-        while retry_count < max_retries:
-            try:
-                print("[OK] GUI 레이아웃 버전: v4.0 - 전술 디스플레이(왼쪽) 75%, 목적함수(오른쪽) 25% (3:1 비율)")
-                
-                # ⚡ 교착 방지: matplotlib 백엔드 명시적 초기화
-                import matplotlib
-                matplotlib.use('TkAgg', force=True)
-                
-                plt.ion()
-                plt.style.use('dark_background')
-                
-                # Figure 생성
-                self.fig = plt.figure(figsize=(20, 8))
-                
-                # 수동으로 subplot 위치 지정 (3:1 비율로 왼쪽이 더 크게)
-                # [left, bottom, width, height] 형식
-                # 계산: 전체 가용 폭 = 1.0 - 0.04(left_margin) - 0.03(gap) - 0.03(right_margin) = 0.90
-                # 좌측 = 0.90 * 0.75 = 0.675, 우측 = 0.90 * 0.25 = 0.225
-                self.ax_main = self.fig.add_axes([0.04, 0.08, 0.675, 0.85])      # 전술 디스플레이(왼쪽): 67.5% 폭
-                self.ax_analysis = self.fig.add_axes([0.745, 0.08, 0.225, 0.85])  # 목적함수(오른쪽): 22.5% 폭
-                
-                print(f"[OK] Tactical Display (LEFT): left=0.04, width=0.675 (75%)")
-                print(f"[OK] Objective View (RIGHT): left=0.745, width=0.225 (25%)")
-                print(f"[OK] Ratio verification: 0.675 / 0.225 = {0.675/0.225:.2f}:1")
-                
-                #self.fig.suptitle(f'Real-time DWTA Analysis (Objective: {self.objective})', fontsize=16, color='white')
-                
-                # 메인 창을 GUI 모드로 설정
-                self.fig.canvas.manager.set_window_title("DWTA 실시간 시뮬레이션")
-                
-                self._initialize_axes()
-                
-                # 제어 패널 생성 (headless 모드가 아닌 경우에만)
-                if GUI_AVAILABLE and not self.headless:
-                    # ⚡ 교착 방지: matplotlib 이벤트 큐 정리
-                    self.fig.canvas.draw_idle()
-                    self.fig.canvas.flush_events()
-                    
-                    self.control_panel = ControlPanel(self)
-                    self.control_panel.create_control_window()
-                else:
-                    self.control_panel = None
-                
-                # 성공 시 루프 탈출
-                print("[OK] GUI 초기화 성공")
-                break
-                    
-            except Exception as e:
-                retry_count += 1
-                print(f"[WARN] GUI 초기화 실패 (시도 {retry_count}/{max_retries}): {e}")
-                
-                # 정리 작업
-                if hasattr(self, 'fig') and self.fig:
-                    plt.close(self.fig)
-                    self.fig = None
-                if hasattr(self, 'control_panel') and self.control_panel:
-                    self.control_panel = None
-                
-                if retry_count >= max_retries:
-                    print("❌ GUI 초기화 최대 재시도 횟수 초과. Headless 모드로 전환합니다.")
-                    self.headless = True
-                    self.text_mode = True
-                    self.fig = None
-                    self.control_panel = None
-                    return
-                
-                # 재시도 전 대기
-                import time
-                time.sleep(0.5)
-        
-        # 최종 실패 처리 (루프 밖)
-        if retry_count >= max_retries:
-            return
-        
-        # 원래 예외 처리 (성공 시에는 실행되지 않음)
-        try:
-            pass
-        except Exception as e:
-            print(f"GUI 시각화 설정 실패: {e}")
-            self.fig = None
-    
-    # _setup_visualization() 메서드 제거됨 - GUI 전용 버전에서는 필요 없음
-
-    def _initialize_axes(self):
-        """Enhanced axes initialization with better scaling and visibility."""
-        if not self.fig: return
-        
-        # Main tactical display with improved bounds
-        self.ax_main.set_facecolor('black')
-        self.ax_main.set_title('Tactical Display', fontsize=14, color='white')
-        # Further expanded bounds to ensure all elements are visible
-        self.ax_main.set_xlim(-90, 120) 
-        self.ax_main.set_ylim(-130, 270)
-        # 'auto' aspect ratio to use full allocated width (0.675) without shrinking
-        self.ax_main.set_aspect('auto')
-        self.ax_main.grid(True, color='cyan', alpha=0.3, linestyle=':')
-        self.ax_main.tick_params(colors='white', labelsize=10)
-        self.ax_main.set_xlabel('X Position (km)', color='white', fontsize=11)
-        self.ax_main.set_ylabel('Y Position (km)', color='white', fontsize=11)
-        
-        # Analysis panel
-        if hasattr(self, 'ax_analysis'):
-            self.ax_analysis.set_facecolor('#111111')
-            self.ax_analysis.set_title('Objective Function Analysis', fontsize=12, color='white')
-            self.ax_analysis.tick_params(colors='white', labelsize=9)
-        
-        # History panel (if exists)
-        if hasattr(self, 'ax_history'):
-            self.ax_history.set_facecolor('#111111')
-            self.ax_history.set_title('Event Log', fontsize=12, color='white')
-            self.ax_history.axis('off')
-
-    # 기존 메서드들 유지 (원본 코드와 동일)
     def _load_scenario(self):
         """Load realistic scenario with comprehensive threat configuration."""
         try:
@@ -1630,7 +1664,7 @@ class MultiMissileTracker:
 
     def update_simulation(self):
         """Advance simulation by one time step."""
-        self.current_time_step += 5
+        self.current_time_step += 1
         
         self._simulate_dynamic_events()
         
@@ -1670,9 +1704,7 @@ class MultiMissileTracker:
         
         self.stats['active'] = active_count
         
-        # GUI 상태 업데이트
-        if self.control_panel:
-            self.control_panel.update_status(self)
+        # GUI 상태 업데이트는 DWTAMainWindow QTimer (_on_display_tick) 에서 처리
 
     def _simulate_dynamic_events(self):
         """Handles dynamic scenario changes including controlled retargeting events."""
@@ -1695,7 +1727,8 @@ class MultiMissileTracker:
                 continue
             
             # Low probability of trajectory deviation (missile veers off course)
-            if random.random() < missile.get('retarget_probability', 0.002):
+            # step=1초 기준으로 확률 정규화 (원래 step=5 기준 0.002 → 초당 0.0004)
+            if random.random() < missile.get('retarget_probability', 0.002) * 0.2:
                 # Missile deviates from intended target (goes to empty area)
                 old_target = missile['target_asset']
                 
@@ -2518,13 +2551,13 @@ class MultiMissileTracker:
                 "INFO"
             )
 
-            # 🆕 GUI 상태 업데이트: 솔버 시간 (Thread-safe)
-            if hasattr(self.control_panel, 'solver_time_var'):
+            # 🆕 GUI 상태 업데이트: 솔버 시간 (Thread-safe Qt signal)
+            if self.control_panel and hasattr(self.control_panel, 'sig_solver_update'):
                 st = f"{pure_st:.3f}s"
-                self.control_panel.control_window.after(0, lambda: self.control_panel.solver_time_var.set(st))
+                self.control_panel.sig_solver_update.emit('solver_time', st)
 
-        # 🆕 Warm-start 상태 업데이트 (Thread-safe)
-        if self.control_panel and hasattr(self.control_panel, 'warmstart_var'):
+        # 🆕 Warm-start 상태 업데이트 (Thread-safe Qt signal)
+        if self.control_panel and hasattr(self.control_panel, 'sig_solver_update'):
             warmstart_applied = result.get('warmstart_applied', False)
             warmstart_count = result.get('warmstart_count', 0)
 
@@ -2532,7 +2565,7 @@ class MultiMissileTracker:
                 ws_text = f"ON ({warmstart_count} vars)"
             else:
                 ws_text = "OFF"
-            self.control_panel.control_window.after(0, lambda: self.control_panel.warmstart_var.set(ws_text))
+            self.control_panel.sig_solver_update.emit('warmstart', ws_text)
         
         # 🆕 Stress Test Metrics 기록
         if self.stress_metrics:
@@ -2674,38 +2707,8 @@ class MultiMissileTracker:
             print(summary_msg)
 
     def update_display(self):
-        """Update the display - matplotlib or PyQtGraph based on mode."""
-        # 🆕 Phase 2: PyQtGraph mode (high-performance, <2ms per frame)
-        if self.use_pyqtgraph and self.pyqtgraph_display:
-            try:
-                self.pyqtgraph_display.update_display()
-            except Exception as e:
-                print(f"PyQtGraph update error: {e}")
-                print("Disabling PyQtGraph mode...")
-                self.use_pyqtgraph = False
-            return
-
-        # Original matplotlib mode
-        if self.fig:
-            try:
-                # clear() 대신 기존 객체 재사용 (성능 향상)
-                self.ax_main.clear()
-                self._initialize_axes()
-                self._draw_tactical_display()
-
-                # History와 Analysis는 덜 자주 업데이트 (5초마다)
-                if self.current_time_step % 5 == 0:
-                    if hasattr(self, 'ax_history'):
-                        self._draw_history_panel()
-                    if hasattr(self, 'ax_analysis'):
-                        self._draw_analysis_panel()
-
-                # draw_idle()만 사용 (flush_events와 pause 제거로 성능 향상)
-                self.fig.canvas.draw_idle()
-            except Exception as e:
-                if plt.fignum_exists(self.fig.number):
-                    print(f"Visualization update error: {e}")
-                self.fig = None
+        """DWTAMainWindow QTimer(_on_display_tick)가 TacticalMapWidget을 직접 갱신한다."""
+        pass
 
     def _print_status_report(self):
         """Text-based status report (원본 코드)"""
@@ -2745,427 +2748,6 @@ class MultiMissileTracker:
             active_count = len([m for m in self.missiles.values() if m['active']])
             print(f"[T={self.current_time_step:3d}] Active:{active_count:2d} | Int:{self.stats['intercepted']:2d} | Miss:{self.stats['missed']:2d} | Assignments:{len(self.primary_assignments)}")
 
-    def _check_text_overlap(self, x, y, width, height):
-        """Check if text area overlaps with existing text areas"""
-        for occupied in self.occupied_areas:
-            ox, oy, ow, oh = occupied
-            if (x < ox + ow and x + width > ox and 
-                y < oy + oh and y + height > oy):
-                return True
-        return False
-    
-    def _find_best_text_position(self, center_x, center_y, text_width, text_height, preferred_positions):
-        """Find the best position for text that doesn't overlap"""
-        for dx, dy in preferred_positions:
-            test_x = center_x + dx - text_width/2
-            test_y = center_y + dy - text_height/2
-            
-            if not self._check_text_overlap(test_x, test_y, text_width, text_height):
-                self.occupied_areas.append((test_x, test_y, text_width, text_height))
-                return center_x + dx, center_y + dy
-        
-        # If no position found, use the first preference and add to occupied areas anyway
-        dx, dy = preferred_positions[0]
-        test_x = center_x + dx - text_width/2
-        test_y = center_y + dy - text_height/2
-        self.occupied_areas.append((test_x, test_y, text_width, text_height))
-        return center_x + dx, center_y + dy
-
-    def _find_optimal_label_position(self, center_x, center_y, text_width, text_height, system_type=None):
-        """Find optimal label position to avoid overlaps using 8-direction priority system"""
-        # Define 8 directions with priority based on system type
-        if system_type == 'LSAM':
-            # LSAM priority: left directions first
-            preferred_positions = [
-                (-35, -25), (-35, 0), (-35, 25),   # Left side
-                (35, -25), (0, -30), (0, 30),      # Right and vertical
-                (35, 0), (35, 25)                  # Right side
-            ]
-        else:  # MSAM or others
-            # MSAM priority: right directions first
-            preferred_positions = [
-                (35, 25), (35, 0), (35, -25),      # Right side
-                (-35, 25), (0, 30), (0, -30),      # Left and vertical
-                (-35, 0), (-35, -25)               # Left side
-            ]
-        
-        # Try each position until we find one without overlap
-        for dx, dy in preferred_positions:
-            test_x = center_x + dx - text_width/2
-            test_y = center_y + dy - text_height/2
-            
-            if not self._check_text_overlap(test_x, test_y, text_width, text_height):
-                self.occupied_areas.append((test_x, test_y, text_width, text_height))
-                return center_x + dx, center_y + dy, dx, dy  # Return offset for leader line
-        
-        # If no position found, use the first preference and add to occupied areas anyway
-        dx, dy = preferred_positions[0]
-        test_x = center_x + dx - text_width/2
-        test_y = center_y + dy - text_height/2
-        self.occupied_areas.append((test_x, test_y, text_width, text_height))
-        return center_x + dx, center_y + dy, dx, dy
-
-    def _draw_tactical_display(self):
-        """Enhanced tactical display with military-style appearance."""
-        import numpy as np
-        
-        # Initialize occupied areas tracker
-        self.occupied_areas = []
-        
-        # Set dark background with military-style grid (matching reference image)
-        self.ax_main.set_facecolor('#0a0a0a')  # Very dark background like reference
-        self.ax_main.grid(True, alpha=0.4, color='#2a4a2a', linestyle='-', linewidth=0.8)  # Green grid
-        
-        # Add North indicator with blue background like reference
-        bbox_props = dict(boxstyle="round,pad=0.3", facecolor='#4a90e2', alpha=0.8)
-        self.ax_main.text(0.95, 0.95, '⬆ N', transform=self.ax_main.transAxes, 
-                         ha='center', va='center', fontsize=12, color='white', weight='bold',
-                         bbox=bbox_props)
-        
-        # Draw assets with diamond markers (friendly blue)
-        for asset in self.assets:
-            # Handle both 2D and 3D positions
-            pos = asset['position']
-            x, y = pos[:2] if len(pos) > 2 else pos
-            color = '#4a90e2'  # NATO friendly blue
-            
-            # Draw asset as diamond (reduced size)
-            self.ax_main.scatter(x, y, c=color, s=90,marker='D', alpha=0.9, 
-                               edgecolors='black',linewidth=1.0)
-            
-            # ⚡ 성능 최적화: 문자열 조회 최소화
-            asset_id = asset['id']
-            asset_number = asset_id.split('_')[-1] if '_' in asset_id else asset_id[-2:]
-            self.ax_main.text(x, y, asset_number, ha='center', va='center', 
-                            fontsize=5, color='black', weight='bold', zorder=13)
-
-        # Draw batteries with type-specific styling and coverage areas
-        for battery in self.batteries:
-            # ⚡ 성능 최적화: 한 번만 조회
-            # Handle both 2D and 3D positions
-            pos = battery['position']
-            x, y = pos[:2] if len(pos) > 2 else pos
-            system_type = battery.get('system_type', 'UNKNOWN')
-            available = battery.get('available_missiles', 0)
-            status = battery.get('status', 'UNKNOWN')
-            
-            # Different colors, markers and sizes for different battery types
-            if system_type == 'LSAM':
-                color = '#ff6b35'  # Orange-red for LSAM
-                marker = 's'       # Square for LSAM
-                marker_size = 150  # Reduced size for LSAM
-                max_range = 300    # LSAM max range in km (실제 스펙: 150-300km)
-                min_range = 150    # LSAM min range in km
-                offset_x, offset_y = -8, -8  # Position offset to prevent overlap
-            elif system_type == 'MSAM':
-                color = '#00d4aa'  # Teal green for MSAM to distinguish
-                marker = '^'       # Triangle for MSAM
-                marker_size = 120  # Reduced size for MSAM
-                max_range = 50     # MSAM max range in km (실제 스펙: 5-50km)
-                min_range = 5      # MSAM min range in km
-                offset_x, offset_y = 8, 8   # Different offset to prevent overlap
-            else:
-                color = 'gray'
-                marker = 'D'
-                marker_size = 100  # Reduced size
-                max_range = 50
-                min_range = 10
-                offset_x, offset_y = 0, 0
-            
-            # Adjust alpha based on status
-            alpha = 0.9 if status == 'OPERATIONAL' else 0.4
-            
-            # Draw concentric circles for coverage area (only if operational)
-            if status == 'OPERATIONAL':
-                # Use green color for range circles like reference image
-                circle_color = '#2d5a2d' if system_type == 'LSAM' else '#1a4a1a'
-                
-                # Outer circle (max range) - dashed line
-                circle_outer = plt.Circle((x, y), max_range, fill=False, 
-                                        color=circle_color, alpha=0.6, linewidth=1.2, linestyle='--')
-                self.ax_main.add_patch(circle_outer)
-                
-                # Inner circle (min range) - dotted line
-                if min_range > 0:
-                    circle_inner = plt.Circle((x, y), min_range, fill=False, 
-                                            color=circle_color, alpha=0.4, linewidth=0.8, linestyle=':')
-                    self.ax_main.add_patch(circle_inner)
-            
-            # Draw battery with type-specific marker and position offset
-            actual_x, actual_y = x + offset_x, y + offset_y
-            self.ax_main.scatter(actual_x, actual_y, c=color, s=marker_size, marker=marker, alpha=alpha,
-                               edgecolors='white', linewidth=2, zorder=10)
-            
-            # Draw heading line (pointing north as default)
-            heading_angle = np.radians(90)  # 90 degrees (North direction)
-            heading_length = 20 if system_type == 'LSAM' else 15  # Different lengths
-            end_x = actual_x + heading_length * np.cos(heading_angle)
-            end_y = actual_y + heading_length * np.sin(heading_angle)
-            
-            if status == 'OPERATIONAL':
-                self.ax_main.plot([actual_x, end_x], [actual_y, end_y], '-', color=color, 
-                                linewidth=2.5 if system_type == 'LSAM' else 2, alpha=0.9, zorder=9)
-                # Add arrowhead
-                self.ax_main.annotate('', xy=(end_x, end_y), xytext=(actual_x, actual_y),
-                                    arrowprops=dict(arrowstyle='->', color=color, 
-                                                  lw=2.5 if system_type == 'LSAM' else 2, alpha=0.9),
-                                    zorder=9)
-            
-            # Battery number inside symbol
-            battery_number = battery['id'].split('_')[-1] if '_' in battery['id'] else battery['id'][-2:]
-            self.ax_main.text(actual_x, actual_y, battery_number, ha='center', va='center', 
-                            fontsize=6, color='black', weight='bold', zorder=13)
-
-        # Draw missiles with threat-based styling
-        for missile_id, missile in self.missiles.items():
-            if missile_id in self.kill_results:
-                # Show different symbols for intercepted vs missed threats
-                # Handle both 2D and 3D positions
-                pos = missile['position']
-                x, y = pos[:2] if len(pos) > 2 else pos
-                result = self.kill_results[missile_id][0]  # Get result from tuple
-                
-                if result == 'INTERCEPTED':
-                    # Successfully intercepted (green X mark)
-                    self.ax_main.scatter(x, y, c='#00ff00', s=80, marker='x', alpha=0.8,
-                                       edgecolors='white', linewidth=2)
-                else:
-                    # Missed/Failed intercept (red explosion-like symbol)
-                    self.ax_main.scatter(x, y, c='#ff3333', s=100, marker='*', alpha=0.8,
-                                       edgecolors='white', linewidth=1.5)
-            
-            elif missile['active']:
-                # Handle both 2D and 3D positions
-                pos = missile['position']
-                x, y = pos[:2] if len(pos) > 2 else pos
-
-                # Check if missile is assigned to any battery
-                is_assigned = any(threat_id == missile_id for threat_id in self.primary_assignments.values())
-
-                if is_assigned:
-                    # Assigned threat (orange downward triangle)
-                    color = '#ff8c42'  # Orange for assigned
-                    marker = 'v'  # Downward triangle
-                else:
-                    # Unassigned threat (red downward triangle)
-                    color = '#cc4125'  # Threat red
-                    marker = 'v'  # Downward triangle
-
-                # Draw threat missile (reduced size)
-                self.ax_main.scatter(x, y, c=color, s=180, marker=marker, alpha=0.9,
-                                   edgecolors='white', linewidth=1.0)
-
-                # Threat number inside symbol with progress
-                threat_number = missile_id.split('_')[-1] if '_' in missile_id else missile_id[-2:]
-                progress = missile['flight_progress']
-                self.ax_main.text(x, y, f"{threat_number}\n{progress:.0%}", ha='center', va='center',
-                                fontsize=4, color='white', weight='bold', zorder=13)
-
-                # Draw trajectory line (green for missile trajectory)
-                # Handle both 2D and 3D target positions
-                tpos = missile['target_position']
-                tx, ty = tpos[:2] if len(tpos) > 2 else tpos
-                self.ax_main.plot([x, tx], [y, ty], '-', color='#2d5a2d', alpha=0.7, linewidth=1)
-
-        # Draw assignment lines with better visibility
-        for battery_id, threat_list in self.primary_assignments.items():
-            for threat_id in threat_list:
-                if threat_id in self.missiles and self.missiles[threat_id]['active']:
-                    battery = next((b for b in self.batteries if b['id'] == battery_id), None)
-                    if battery:
-                        # Handle both 2D and 3D positions
-                        bpos = battery['position']
-                        bx, by = bpos[:2] if len(bpos) > 2 else bpos
-                        mpos = self.missiles[threat_id]['position']
-                        mx, my = mpos[:2] if len(mpos) > 2 else mpos
-                        # Thin assignment line with subtle indicator
-                        self.ax_main.plot([bx, mx], [by, my], '-', color='lime',
-                                        linewidth=1, alpha=0.6)
-                        # Small assignment indicator at midpoint
-                        mid_x, mid_y = (bx + mx) / 2, (by + my) / 2
-                        self.ax_main.text(mid_x, mid_y, '●', ha='center', va='center',
-                                    fontsize=4, color='lime', alpha=0.8)
-        
-        # Add ammunition status panel in top-right corner
-        self._draw_ammunition_status()
-
-    def _draw_ammunition_status(self):
-        """Draw ammunition status and legend with separated layout"""
-        from matplotlib.lines import Line2D
-        
-        # Create ammunition status legend (upper left)
-        ammo_elements = []
-        sorted_batteries = sorted(self.batteries, key=lambda b: b['id'])
-        
-        for battery in sorted_batteries:
-            available = battery.get('available_missiles', 0)
-            system_type = battery.get('system_type', 'UNKNOWN')
-            battery_id = battery['id']
-            
-            # Format display text
-            display_text = f"{battery_id}: {available} missiles"
-            
-            # Color coding based on ammunition level
-            if available >= 20:
-                marker_color = '#00ff00'  # Green for high ammo
-            elif available >= 10:
-                marker_color = '#ffff00'  # Yellow for medium ammo
-            elif available >= 5:
-                marker_color = '#ff8800'  # Orange for low ammo
-            else:
-                marker_color = '#ff0000'  # Red for critical ammo
-            
-            # Create ammunition status element
-            marker_shape = 's' if system_type == 'LSAM' else '^'
-            ammo_elements.append(Line2D([0], [0], marker=marker_shape, color='w', 
-                                        markerfacecolor=marker_color, markersize=6,
-                                        label=display_text, 
-                                        markeredgecolor='white', markeredgewidth=1))
-        
-        # Add ammunition status legend (upper left)
-        if ammo_elements:
-            ammo_legend = self.ax_main.legend(handles=ammo_elements, 
-                                            title='AMMUNITION STATUS', 
-                                            loc='upper left',
-                                            bbox_to_anchor=(0.02, 0.98),
-                                            fontsize=5,
-                                            title_fontsize=7,
-                                            frameon=True,
-                                            framealpha=0.9,
-                                            fancybox=True,
-                                            shadow=True,
-                                            facecolor='black',
-                                            edgecolor='#2d5a2d')
-            
-            # Style the ammunition legend
-            ammo_legend.get_title().set_color('#00ff00')
-            ammo_legend.get_title().set_weight('bold')
-            
-            # Set text colors to white for better visibility
-            for text in ammo_legend.get_texts():
-                text.set_color('white')
-        
-        # Create symbol legend (lower left)
-        symbol_elements = []
-        
-        # Add symbol type explanations
-        symbol_elements.append(Line2D([0], [0], marker='D', color='w', 
-                                    markerfacecolor='#4a90e2', markersize=8,
-                                    label='Assets (Protected)', 
-                                    markeredgecolor='white', markeredgewidth=1))
-        
-        symbol_elements.append(Line2D([0], [0], marker='s', color='w', 
-                                    markerfacecolor='#ff6b35', markersize=8,
-                                    label='LSAM Batteries', 
-                                    markeredgecolor='white', markeredgewidth=1))
-        
-        symbol_elements.append(Line2D([0], [0], marker='^', color='w', 
-                                    markerfacecolor='#00d4aa', markersize=8,
-                                    label='MSAM Batteries', 
-                                    markeredgecolor='white', markeredgewidth=1))
-        
-        symbol_elements.append(Line2D([0], [0], marker='v', color='w', 
-                                    markerfacecolor='#ff8c42', markersize=8,
-                                    label='Assigned Threats', 
-                                    markeredgecolor='white', markeredgewidth=1))
-        
-        symbol_elements.append(Line2D([0], [0], marker='v', color='w', 
-                                    markerfacecolor='#cc4125', markersize=8,
-                                    label='Unassigned Threats', 
-                                    markeredgecolor='white', markeredgewidth=1))
-        
-        symbol_elements.append(Line2D([0], [0], marker='x', color='w', 
-                                    markerfacecolor='#00ff00', markersize=8,
-                                    label='Intercepted Threats', 
-                                    markeredgecolor='white', markeredgewidth=1))
-        
-        symbol_elements.append(Line2D([0], [0], marker='*', color='w', 
-                                    markerfacecolor='#ff3333', markersize=8,
-                                    label='Failed Intercepts', 
-                                    markeredgecolor='white', markeredgewidth=1))
-        
-        # Add symbol legend (lower left)
-        if symbol_elements:
-            symbol_legend = self.ax_main.legend(handles=symbol_elements, 
-                                              title='SYMBOL LEGEND', 
-                                              loc='lower left',
-                                              bbox_to_anchor=(0.02, 0.02),
-                                              fontsize=5,
-                                              title_fontsize=7,
-                                              frameon=True,
-                                              framealpha=0.9,
-                                              fancybox=True,
-                                              shadow=True,
-                                              facecolor='black',
-                                              edgecolor='#2d5a2d')
-            
-            # Style the symbol legend
-            symbol_legend.get_title().set_color('#00ff00')
-            symbol_legend.get_title().set_weight('bold')
-            
-            # Set text colors to white for better visibility
-            for text in symbol_legend.get_texts():
-                text.set_color('white')
-        
-        # Add both legends to the plot (matplotlib supports multiple legends)
-        if ammo_elements:
-            self.ax_main.add_artist(ammo_legend)
-
-    def _draw_history_panel(self):
-        """Draw history panel (원본 코드)"""
-        self.ax_history.clear()
-        self.ax_history.set_facecolor('#111111')
-        self.ax_history.set_title('Event Log', fontsize=12, color='white')
-        self.ax_history.axis('off')
-        
-        y_pos = 0.95
-        self.ax_history.text(0.05, y_pos, f"Time Step: {self.current_time_step}", fontsize=10, color='white')
-        y_pos -= 0.05
-        self.ax_history.text(0.05, y_pos, f"Active: {self.stats['active']}", fontsize=10, color='yellow')
-        y_pos -= 0.05
-        self.ax_history.text(0.05, y_pos, f"Killed: {self.stats['intercepted']}", fontsize=10, color='lime')
-        y_pos -= 0.05
-        self.ax_history.text(0.05, y_pos, f"Missed: {self.stats['missed']}", fontsize=10, color='red')
-        y_pos -= 0.06
-
-        self.ax_history.text(0.05, y_pos, "Recent Events:", fontsize=10, color='cyan')
-        y_pos -= 0.05
-        
-        recent_results = sorted(self.kill_results.items(), key=lambda item: item[1][1], reverse=True)[:15]
-        for missile_id, (result, time, _) in recent_results:
-            if result == 'INTERCEPTED':
-                color = 'lime'
-                symbol = '✓'
-            else:
-                color = 'red'
-                symbol = '✗'
-            self.ax_history.text(0.05, y_pos, f"[T={time}] {symbol} {missile_id}: {result}", fontsize=9, color=color)
-            y_pos -= 0.05
-            if y_pos < 0.05: break
-
-    def _draw_analysis_panel(self):
-        """Draw analysis panel (원본 코드)"""
-        self.ax_analysis.clear()
-        self.ax_analysis.set_title('Objective Function Value Over Time', fontsize=12, color='cyan')
-        
-        if self.objective == 'MIN_DAMAGE':
-            ylabel = 'Expected Damage (Minimize)'
-        else:
-            ylabel = 'Expected Hits (Minimize)'
-            
-        self.ax_analysis.set_ylabel(ylabel, fontsize=9, color='white')
-        self.ax_analysis.set_xlabel('Time Step', fontsize=9, color='white')
-        self.ax_analysis.tick_params(colors='white', labelsize=8)
-
-        if self.optimization_history:
-            valid_history = [h for h in self.optimization_history if h[1] != float('inf')]
-            if valid_history:
-                times = [h[0] for h in valid_history]
-                values = [h[1] for h in valid_history]
-
-                self.ax_analysis.plot(times, values, color='orange', marker='o', markersize=4, linestyle='-')
-                self.ax_analysis.grid(True, alpha=0.3, linestyle='--')
-
     def run_simulation(self, max_duration=3000):
         """Run simulation (GUI 모드에서는 제어 패널에서 실행)"""
         # Headless 모드에서는 GUI 루프 건너뛰기
@@ -3174,36 +2756,10 @@ class MultiMissileTracker:
             self.start_scenario()
             return
         
-        # GUI 모드에서만 제어 패널 루프 실행
-        if self.control_panel and self.fig is not None:
+        # GUI 모드에서만 Qt 이벤트 루프 실행
+        if self.control_panel and hasattr(self, '_qt_app'):
             print("GUI 모드: 제어 패널에서 시뮬레이션을 제어하세요.")
-            try:
-                # GUI 모드에서는 메인 루프만 실행
-                # update_display 호출 빈도 제한 (bottleneck 방지)
-                last_display_update = time.time()
-                display_update_interval = 0.5  # 0.5초마다 업데이트
-                
-                while self.fig is not None and plt.fignum_exists(self.fig.number):
-                    current_time = time.time()
-                    if current_time - last_display_update >= display_update_interval:
-                        # Non-blocking: 시뮬레이션 실행 중이면 이번 프레임 건너뜀
-                        # (Tkinter 이벤트 루프를 차단하면 안 됨)
-                        if self._sim_lock.acquire(blocking=False):
-                            try:
-                                self.update_display()
-                            finally:
-                                self._sim_lock.release()
-                            last_display_update = current_time
-                    plt.pause(0.1)
-            except KeyboardInterrupt:
-                print("\n시뮬레이션이 중단되었습니다.")
-            finally:
-                if self.control_panel and self.control_panel.control_window:
-                    try:
-                        self.control_panel.control_window.destroy()
-                    except:
-                        pass  # 이미 닫힌 경우 무시
-            return
+            sys.exit(self._qt_app.exec_())
         
         try:
             while True:
@@ -3268,13 +2824,10 @@ class MultiMissileTracker:
                 self.last_objective_value = 0.0  # 기본값 설정
                 print("No valid objective value found, set to 0.0")
         
-        # 제어 패널 목적함수 값 업데이트 (Thread-safe)
+        # 제어 패널 목적함수 값 업데이트 (Thread-safe Qt signal)
         if self.control_panel and self.last_objective_value is not None:
-            obj_text = f"목적함수: {self.last_objective_value:.2f}"
-            try:
-                self.control_panel.control_window.after(0, lambda: self.control_panel.objective_val_var.set(obj_text))
-            except (tk.TclError, RuntimeError):
-                pass
+            if hasattr(self.control_panel, 'sig_solver_update'):
+                self.control_panel.sig_solver_update.emit('objective', f"{self.last_objective_value:.2f}")
         
         # 🆕 로그 자동 저장
         if self.enable_logging:
@@ -3380,20 +2933,7 @@ class MultiMissileTracker:
         # 🆕 성능 지표 저장
         self.save_performance_metrics()
         
-        # 시각화 유지
-        if not self.text_mode and self.fig:
-            try:
-                plt.savefig(f"dwta_analysis_{self.objective}.png")
-                print("\nVisualization saved to dwta_analysis.png")
-            except:
-                pass
-            
-            # Compare 모드에서는 GUI 창 대기 생략 (자동 진행)
-            if not self.comparison_mode:
-                print("\nKeeping visualization open. Close the window to exit.")
-                plt.ioff() 
-                self.update_display()
-                plt.show(block=True)
+        # Qt GUI 모드에서는 이벤트 루프가 run_simulation()에서 관리됨 (추가 처리 불필요)
 
     def _save_run_log(self):
         """🆕 실행 로그를 CSV 파일로 저장"""
