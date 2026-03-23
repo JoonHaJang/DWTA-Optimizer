@@ -318,18 +318,14 @@ class OptimizedAssignmentManager:
                     battery_id = self.idx_to_battery_id[b_idx]
                     self.unassign(threat_id, battery_id)
         
-        # 🆕 2단계: 새로 할당될 위협에 대한 기존 할당 제거
-        # (MIP 제약 조건 준수: 위협당 최대 2개 배터리)
-        new_threat_ids = set()
-        for battery_id, threat_list in new_assignments.items():
-            new_threat_ids.update(threat_list)
-        
-        for threat_id in new_threat_ids:
-            if threat_id in self.threat_id_to_idx:
-                t_idx = self.threat_id_to_idx[threat_id]
-                battery_indices = self.threat_to_batteries[t_idx].copy()
-                for b_idx in battery_indices:
-                    battery_id = self.idx_to_battery_id[b_idx]
+        # 2단계: 새 플랜에 포함된 포대의 기존 할당을 전부 초기화
+        # (옵티마이저 결과는 매 사이클 완전한 새 플랜 → 포대별로 replace)
+        for battery_id in new_assignments:
+            if battery_id in self.battery_id_to_idx:
+                b_idx = self.battery_id_to_idx[battery_id]
+                threats_copy = self.battery_to_threats[b_idx].copy()
+                for t_idx in threats_copy:
+                    threat_id = self.idx_to_threat_id[t_idx]
                     self.unassign(threat_id, battery_id)
         
         # 3단계: 새 할당 추가
@@ -1864,11 +1860,25 @@ class MultiMissileTracker:
                     salvo_results.append((shot_num + 1, Pk_shot))
                     P_surv_this *= (1 - Pk_shot)
 
-                # ③ K-factor: 현재 거리 기반, salvo 결과 전체에 적용 (pⱼₜ = kⱼₜ × Pⱼ)
+                # ③ K-factor: k_factor_cache 우선 (거리+시간), 없으면 거리 선형 폴백
                 bx, by = battery['position']
                 mx, my = missile['position'][0], missile['position'][1]
                 dist = ((bx - mx) ** 2 + (by - my) ** 2) ** 0.5
-                k = 0.6 + 0.4 * max(0.0, 1.0 - dist / max_range) if max_range > 0 else 0.8
+                k_cache = getattr(self, 'k_factor_cache', None)
+                if k_cache is not None and hasattr(k_cache, 'get_k_time_dependent'):
+                    elapsed = missile.get('flight_progress', 0.0) * missile.get('flight_time', 300.0)
+                    total   = missile.get('flight_time', 300.0)
+                    try:
+                        k = k_cache.get_k_time_dependent(dist, max_range, elapsed, total)
+                    except Exception:
+                        k = 0.6 + 0.4 * max(0.0, 1.0 - dist / max_range) if max_range > 0 else 0.8
+                elif k_cache is not None and hasattr(k_cache, 'get_k_from_distance'):
+                    try:
+                        k = k_cache.get_k_from_distance(dist, max_range)
+                    except Exception:
+                        k = 0.6 + 0.4 * max(0.0, 1.0 - dist / max_range) if max_range > 0 else 0.8
+                else:
+                    k = 0.6 + 0.4 * max(0.0, 1.0 - dist / max_range) if max_range > 0 else 0.8
                 p_eff = min(k * (1.0 - P_surv_this), 0.9999)   # k × Pⱼ
 
                 # ④ 전체 생존확률 누적
