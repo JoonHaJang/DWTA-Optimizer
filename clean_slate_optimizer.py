@@ -19,10 +19,55 @@ from typing import Dict, List, Tuple, Optional, Any
 
 import highspy
 
-# --- Reuse existing dataclasses from project ---
-from nonlinear_mip_optimizer import Asset, InterceptorSystem, Threat
-
 logger = logging.getLogger(__name__)
+
+
+# ═══════════════════════════════════════════════════════════════════
+# Core Data Classes (self-contained — no external dependency)
+# ═══════════════════════════════════════════════════════════════════
+
+@dataclass
+class Asset:
+    """방어 자산"""
+    id: str
+    position: Tuple[float, float]
+    value: float
+    priority: int
+    estimated_threat_missiles: List[str]
+
+@dataclass
+class InterceptorSystem:
+    """요격체계 (상층/하층)"""
+    id: str
+    system_type: str       # "UPPER"/"LSAM" (상층) or "LOWER"/"MSAM" (하층)
+    position: Tuple[float, float]
+    available_missiles: int
+    max_missiles_per_target: int
+    intercept_probability: float
+    engagement_range: float
+
+@dataclass
+class Threat:
+    """위협 미사일"""
+    id: str
+    target_asset_id: str
+    current_position: Tuple[float, float, float]
+    estimated_impact_time: float
+    launch_position: Tuple[float, float] = (0.0, 0.0)
+    flight_time: float = 300.0
+    specs: dict = None
+    launch_time: float = 0.0
+    trajectory_type: str = "ballistic"
+    rcs: float = 0.5
+
+    def __post_init__(self):
+        if self.specs is None:
+            self.specs = {
+                "max_altitude_km": 50.0,
+                "avg_speed_kmh": 2000.0,
+                "trajectory_type": self.trajectory_type,
+                "rcs": self.rcs
+            }
 
 
 # ═══════════════════════════════════════════════════════════════════
@@ -404,7 +449,9 @@ def _compute_k(system: InterceptorSystem, threat: Threat,
 # Section 3: Model Builder — HiGHS Direct API
 # ═══════════════════════════════════════════════════════════════════
 
-NUM_OA_BREAKPOINTS = 10  # exp() outer approximation breakpoints
+NUM_OA_BREAKPOINTS = 40  # exp() outer approximation breakpoints
+OA_REFINE_ROUNDS = 3     # iterative tangent-cut refinement rounds
+OA_REFINE_TOL = 1e-7     # relative convergence tolerance for f_i vs exp(σ_i)
 
 
 def build_model(prob: DWTAProblem, time_limit: float = 3.0,
@@ -541,11 +588,20 @@ def build_model(prob: DWTAProblem, time_limit: float = 3.0,
         sigma_min_i = col_lower[sigma_offset + i]
 
         if sigma_min_i >= -1e-9:
-            # No feasible engagement → fᵢ = 1 (threats fully survive, asset damaged)
-            _add_row(1.0, 1.0, [f_offset + i], [1.0])
+            # Check: are there ANY threats targeting this asset?
+            threats_targeting_i = int(np.sum(prob.threat_to_asset == i))
+            if threats_targeting_i == 0:
+                # No threats → fᵢ = 0 (no damage possible)
+                _add_row(0.0, 0.0, [f_offset + i], [1.0])
+            else:
+                # Threats exist but no feasible engagement → fᵢ = 1 (undefendable)
+                _add_row(1.0, 1.0, [f_offset + i], [1.0])
             continue
 
-        breakpoints = np.linspace(sigma_min_i, 0.0, NUM_OA_BREAKPOINTS)
+        # Non-uniform breakpoints: denser near σ=0 where exp() curvature is highest
+        # Use quadratic concentration: t² mapping pushes points toward 0
+        t = np.linspace(0.0, 1.0, NUM_OA_BREAKPOINTS)
+        breakpoints = sigma_min_i * (1.0 - t**2)  # σ_min at t=0, 0 at t=1
         for sigma_k in breakpoints:
             e_k = math.exp(sigma_k)
             # fᵢ ≥ eᵃᵏ(1 + σᵢ - σᵏ) = eᵃᵏ + eᵃᵏ(σᵢ - σᵏ)
@@ -788,6 +844,12 @@ def extract_result(h: highspy.Highs, vmap: VarMap,
     # damage = Bᵢ × exp(σᵢ)
     total_damage = 0.0
     for i in range(prob.n_assets):
+        # Assets with no threats: no damage possible, survival = 100%
+        threats_targeting_i = int(np.sum(prob.threat_to_asset == i))
+        if threats_targeting_i == 0:
+            result['asset_survival_probs'][prob.asset_ids[i]] = 1.0
+            continue  # 0 damage contribution
+
         sigma_i = x[vmap.sigma_offset + i]
         threat_survival = math.exp(sigma_i)  # P(threats survive defenses)
         asset_survival = 1.0 - threat_survival  # P(asset is protected)
@@ -932,8 +994,53 @@ class CleanSlateOptimizer:
                               'total_missiles': 0, 'feasible_engagements': 0},
             }
 
-        # Solve
+        # Solve with iterative OA refinement
         self._model.run()
+
+        # --- Iterative tangent-cut refinement for exact exp(σ) equivalence ---
+        for oa_round in range(OA_REFINE_ROUNDS):
+            model_status = self._model.getModelStatus()
+            if model_status != highspy.HighsModelStatus.kOptimal and \
+               model_status != highspy.HighsModelStatus.kObjectiveBound:
+                break
+
+            sol = self._model.getSolution()
+            x = np.array(sol.col_value)
+
+            max_gap = 0.0
+            cuts_added = 0
+            for i in range(self._problem.n_assets):
+                # Skip assets with no threats (f_i fixed to 0)
+                threats_i = int(np.sum(self._problem.threat_to_asset == i))
+                if threats_i == 0:
+                    continue
+
+                sigma_i = x[self._vmap.sigma_offset + i]
+                f_i = x[self._vmap.f_offset + i]
+                exp_sigma = math.exp(sigma_i)
+
+                gap = exp_sigma - f_i
+                if gap > max_gap:
+                    max_gap = gap
+
+                # Add tangent cut at current σ* if relative gap is significant
+                rel_tol = OA_REFINE_TOL * max(exp_sigma, 1e-15)
+                if gap > rel_tol:
+                    e_k = exp_sigma
+                    rhs = e_k * (1.0 - sigma_i)
+                    self._model.addRow(
+                        rhs, highspy.kHighsInf,
+                        2,
+                        [self._vmap.f_offset + i, self._vmap.sigma_offset + i],
+                        [1.0, -e_k],
+                    )
+                    cuts_added += 1
+
+            if cuts_added == 0:
+                break  # Converged — f_i ≈ exp(σ_i) for all assets
+
+            self._model.run()
+
         total_time = self._build_time + (time.perf_counter() - t0)
 
         result = extract_result(

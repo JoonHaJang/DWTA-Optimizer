@@ -41,13 +41,15 @@ except ImportError:
 
 # --- Dependency Handling (개별 import — 하나 실패해도 나머지 동작) ---
 
-# ① 핵심: 시나리오 + 데이터 클래스 (이것 없으면 시뮬레이션 불가)
+# ① 핵심: 시나리오 + 데이터 클래스 + CleanSlate Optimizer
 try:
     from config_mip import MIPConfig, mip_config, EnhancedEngagementMatrix, KFactorCache
-    from nonlinear_mip_optimizer import Asset, InterceptorSystem, Threat
+    from clean_slate_optimizer import Asset, InterceptorSystem, Threat, CleanSlateOptimizer
     MIP_AVAILABLE = True
+    CLEANSLATE_AVAILABLE = True
 except ImportError as e:
     MIP_AVAILABLE = False
+    CLEANSLATE_AVAILABLE = False
     print(f"[CRITICAL] Core import failed: {e}")
     from dataclasses import dataclass
     @dataclass
@@ -69,23 +71,13 @@ except ImportError as e:
     class KFactorCache:
         def __init__(self, *args, **kwargs): pass
     mip_config = MIPConfig()
-
-# ② Clean Slate Optimizer (highspy + numpy만 필요)
-try:
-    from clean_slate_optimizer import CleanSlateOptimizer
-    CLEANSLATE_AVAILABLE = True
-except ImportError as e:
-    CLEANSLATE_AVAILABLE = False
-    print(f"[WARN] CleanSlate not available: {e}")
-
-# ③ Legacy Optimizer (PuLP 필요 — 없어도 CleanSlate로 동작)
-try:
-    from nonlinear_mip_optimizer import NonLinearMIPOptimizer
-except ImportError:
-    class NonLinearMIPOptimizer:
-        def __init__(self, config): pass
+    class CleanSlateOptimizer:
+        def __init__(self, config=None): pass
         def create_model(self, *args, **kwargs): pass
         def solve(self): return {'feasible': False, 'objective_value': float('inf')}
+
+# ② Legacy Optimizer stub (CleanSlate가 대체 — 하위 호환용)
+NonLinearMIPOptimizer = CleanSlateOptimizer
 
 # ④ 비교용 알고리즘 (선택)
 try:
