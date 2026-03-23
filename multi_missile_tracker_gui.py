@@ -1848,14 +1848,31 @@ class MultiMissileTracker:
                 battery['available_missiles'] -= missiles_to_fire
                 self._invalidate_battery_cache()  # 🆕 Cache invalidation
                 missiles_fired += missiles_to_fire
-                
-                base_Pk = 0.85  # LSAM 기본 요격 확률
-                
+
+                # ① 배터리 스펙에서 단발 Pₖ 취득 (없으면 LSAM 기본값)
+                try:
+                    Pk_base   = battery['specs']['ballistic_missile_specs']['intercept_probability']
+                    max_range = battery['specs']['ballistic_missile_specs']['engagement_range_km']['max']
+                except (KeyError, TypeError):
+                    Pk_base, max_range = 0.85, 300
+
+                # ② per-shot Beta 샘플링 → 이 배터리의 salvo 생존확률
                 salvo_results = []
+                P_surv_this = 1.0
                 for shot_num in range(missiles_to_fire):
-                    Pk_shot = self.uncertainty_model.sample_intercept_probability(base_Pk)
+                    Pk_shot = self.uncertainty_model.sample_intercept_probability(Pk_base)
                     salvo_results.append((shot_num + 1, Pk_shot))
-                    P_survival *= (1 - Pk_shot)
+                    P_surv_this *= (1 - Pk_shot)
+
+                # ③ K-factor: 현재 거리 기반, salvo 결과 전체에 적용 (pⱼₜ = kⱼₜ × Pⱼ)
+                bx, by = battery['position']
+                mx, my = missile['position'][0], missile['position'][1]
+                dist = ((bx - mx) ** 2 + (by - my) ** 2) ** 0.5
+                k = 0.6 + 0.4 * max(0.0, 1.0 - dist / max_range) if max_range > 0 else 0.8
+                p_eff = min(k * (1.0 - P_surv_this), 0.9999)   # k × Pⱼ
+
+                # ④ 전체 생존확률 누적
+                P_survival *= (1.0 - p_eff)
                 
                 if self.control_panel:
                     salvo_detail = ", ".join([f"{shot}발:Pk={pk:.4f}" for shot, pk in salvo_results])
@@ -1898,13 +1915,30 @@ class MultiMissileTracker:
                     self._invalidate_battery_cache()  # 🆕 Cache invalidation
                     missiles_fired += missiles_to_fire
                     
-                    base_Pk = 0.78  # MSAM 기본 요격 확률
-                    
+                    # ① 배터리 스펙에서 단발 Pₖ 취득 (없으면 MSAM 기본값)
+                    try:
+                        Pk_base   = battery['specs']['ballistic_missile_specs']['intercept_probability']
+                        max_range = battery['specs']['ballistic_missile_specs']['engagement_range_km']['max']
+                    except (KeyError, TypeError):
+                        Pk_base, max_range = 0.78, 50
+
+                    # ② per-shot Beta 샘플링 → 이 배터리의 salvo 생존확률
                     salvo_results = []
+                    P_surv_this = 1.0
                     for shot_num in range(missiles_to_fire):
-                        Pk_shot = self.uncertainty_model.sample_intercept_probability(base_Pk)
+                        Pk_shot = self.uncertainty_model.sample_intercept_probability(Pk_base)
                         salvo_results.append((shot_num + 1, Pk_shot))
-                        P_survival *= (1 - Pk_shot)
+                        P_surv_this *= (1 - Pk_shot)
+
+                    # ③ K-factor: 현재 거리 기반, salvo 결과 전체에 적용 (pⱼₜ = kⱼₜ × Pⱼ)
+                    bx, by = battery['position']
+                    mx, my = missile['position'][0], missile['position'][1]
+                    dist = ((bx - mx) ** 2 + (by - my) ** 2) ** 0.5
+                    k = 0.6 + 0.4 * max(0.0, 1.0 - dist / max_range) if max_range > 0 else 0.8
+                    p_eff = min(k * (1.0 - P_surv_this), 0.9999)   # k × Pⱼ
+
+                    # ④ 전체 생존확률 누적
+                    P_survival *= (1.0 - p_eff)
                     
                     if self.control_panel:
                         salvo_detail = ", ".join([f"{shot}발:Pk={pk:.4f}" for shot, pk in salvo_results])
@@ -2149,52 +2183,14 @@ class MultiMissileTracker:
                         )
                 return
             
-            # 불확실성 모델링: 매 최적화마다 확률 샘플링
-            # Clean Slate: engagement_matrix.is_feasible() 대신 거리 기반 판단
-            sampled_probs = {}
-            for threat in threats_opt:
-                threat_id = getattr(threat, 'id', '')
-                threat_pos = getattr(threat, 'current_position', (0, 0, 0))
+            # 옵티마이저는 배터리 스펙 Pₖ를 결정론적으로 사용 (pⱼₜ = kⱼₜ × Pⱼ 상수 사전계산)
+            # 불확실성(Beta 샘플링)은 시뮬레이션 판정(_process_impact)에서만 적용
 
-                can_engage_lsam = False
-                can_engage_msam = False
-
-                for battery in self.batteries:
-                    if battery.get('available_missiles', 0) <= 0:
-                        continue
-                    bpos = battery.get('position', (0, 0))
-                    dx = threat_pos[0] - bpos[0]
-                    dy = threat_pos[1] - bpos[1]
-                    dist = (dx*dx + dy*dy) ** 0.5
-
-                    sys_type = battery.get('system_type', '')
-                    specs = battery.get('specs', {})
-                    bm_specs = specs.get('ballistic_missile_specs', {})
-                    rng_info = bm_specs.get('engagement_range_km', {})
-                    max_range = rng_info.get('max', 300 if 'LSAM' in sys_type else 50)
-
-                    if dist <= max_range * 1.5:
-                        if 'LSAM' in sys_type:
-                            can_engage_lsam = True
-                        elif 'MSAM' in sys_type:
-                            can_engage_msam = True
-
-                if can_engage_lsam:
-                    base_prob = 0.85
-                elif can_engage_msam:
-                    base_prob = 0.78
-                else:
-                    base_prob = 0.85
-
-                sampled_prob = self.uncertainty_model.sample_intercept_probability(base_prob)
-                sampled_probs[threat_id] = sampled_prob
-            
             # 🆕 알고리즘 선택 (MIP, Greedy, GA)
             # 모든 알고리즘이 독립 모듈을 사용하여 동일한 프로세스를 거침
             if self.current_algorithm == 'Greedy':
                 # Greedy Optimizer 모듈 사용
                 optimizer = GreedyOptimizer(self.config)
-                optimizer.set_intercept_probabilities(sampled_probs)
                 optimizer.create_model(
                     assets=assets_opt,
                     interceptor_systems=systems_opt,
@@ -2208,7 +2204,6 @@ class MultiMissileTracker:
             elif self.current_algorithm == 'GA':
                 # Genetic Algorithm Optimizer 모듈 사용
                 optimizer = GeneticAlgorithmOptimizer(self.config)
-                optimizer.set_intercept_probabilities(sampled_probs)
                 optimizer.create_model(
                     assets=assets_opt,
                     interceptor_systems=systems_opt,
@@ -2234,7 +2229,6 @@ class MultiMissileTracker:
                 if self.control_panel:
                     optimizer.log_callback = self.control_panel.log_message
 
-                optimizer.set_intercept_probabilities(sampled_probs)
                 optimizer.create_model(
                     assets=assets_opt,
                     interceptor_systems=systems_opt,

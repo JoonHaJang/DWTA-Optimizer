@@ -156,16 +156,18 @@ class TacticalMapWidget(pg.PlotWidget):
             "padding: 4px 6px;"
             "border: 1px solid #333333;"
         )
-        self._legend_label.adjustSize()
+        self._legend_label.setWordWrap(False)
         self._legend_label.setAttribute(QtCore.Qt.WA_TransparentForMouseEvents)
+        # 렌더링 후 실제 크기로 조정 (RichText는 show 후 측정이 정확함)
         self._legend_label.show()
+        self._legend_label.adjustSize()
 
     def resizeEvent(self, event):
         """위젯 크기 변경 시 범례를 좌하단에 재고정."""
         super().resizeEvent(event)
         if hasattr(self, '_legend_label'):
+            self._legend_label.adjustSize()
             margin = 6
-            lw = self._legend_label.width()
             lh = self._legend_label.height()
             self._legend_label.move(margin, self.height() - lh - margin)
 
