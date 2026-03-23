@@ -1,0 +1,13 @@
+# Archive
+archive/
+
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+*.log
+*.txt
+!requirements.txt
+performance_results/
