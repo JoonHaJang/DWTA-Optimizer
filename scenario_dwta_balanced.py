@@ -280,7 +280,7 @@ class ScenarioManager:
     
     @staticmethod
     def get_scenario_list() -> Dict[str, str]:
-        """사용 가능한 모든 시나리오 목록"""
+        """사용 가능한 모든 시나리오 목록 (Single Source of Truth)"""
         return {
             # 확장성 테스트 (Scalability)
             "SMALL_3": "초소규모 (3발 - 알고리즘 검증)",
@@ -289,14 +289,19 @@ class ScenarioManager:
             "MEDIUM_10": "중소규모 (10발 - 일반 공격)",
             "BASELINE_15": "중규모 기본 (15발 - 표준)",
             "MEDIUM_20": "중대규모 (20발 - 균형 공격)",
-            "HEAVY_30": "대규모 (30발 - 포화 공격)",
+            "LARGE_30": "대규모 (30발 - 포화 공격)",
             "LARGE_40": "초대규모 (40발 - 한계 테스트)",
+
+            # 스트레스 테스트 (MIP 솔버 성능 한계 검증)
             "STRESS_100": "스트레스 (100발 - 성능 검증)",
-            
+            "STRESS_150": "스트레스 (150발 - 점진적 확장)",
+            "STRESS_200": "스트레스 (200발 - 한계 탐색)",
+            "STRESS_300": "스트레스 (300발 - 극한 테스트)",
+
             # 공격 패턴
-            "SEQUENTIAL_20": "순차 공격 (20발 - 순차 발사)",
-            "SIMULTANEOUS_20": "동시 공격 (20발 - 동시 발사)",
-            
+            "SEQUENTIAL_15": "순차 공격 (15발 - 순차 발사)",
+            "SIMULTANEOUS_15": "동시 공격 (15발 - 동시 발사)",
+
             # 표준 벤치마크
             "DWTA_BALANCED": "표준 벤치마크 (20발, 6개 배터리)"
         }
@@ -310,33 +315,42 @@ class ScenarioManager:
                 "batteries": DWTABalancedScenario.create_constrained_batteries(),
                 "threats": DWTABalancedScenario.create_balanced_threats()
             }
-        elif scenario_type in ["SMALL_3", "SMALL_5", "SMALL_8", "MEDIUM_10", "BASELINE_15", 
-                               "MEDIUM_20", "HEAVY_30", "LARGE_40", "STRESS_100"]:
-            # 숫자 추출
+        elif scenario_type.startswith("STRESS_"):
+            # 스트레스 테스트: base 15발을 반복 확장
+            num = int(scenario_type.split("_")[1])
+            intervals = {100: 10, 150: 6, 200: 5, 300: 3}
+            interval = intervals.get(num, max(3, 1000 // num))
+            base_threats = ScenarioManager._create_threats(15, pattern="balanced")
+            return {
+                "assets": ScenarioManager._create_assets(num),
+                "batteries": ScenarioManager._create_batteries(num),
+                "threats": ScenarioManager._create_stress_threats(base_threats, num, interval)
+            }
+        elif scenario_type.startswith("SEQUENTIAL_"):
+            num = int(scenario_type.split("_")[1])
+            return {
+                "assets": ScenarioManager._create_assets(num),
+                "batteries": ScenarioManager._create_batteries(num),
+                "threats": ScenarioManager._create_threats(num, pattern="sequential")
+            }
+        elif scenario_type.startswith("SIMULTANEOUS_"):
+            num = int(scenario_type.split("_")[1])
+            return {
+                "assets": ScenarioManager._create_assets(num),
+                "batteries": ScenarioManager._create_batteries(num),
+                "threats": ScenarioManager._create_threats(num, pattern="simultaneous")
+            }
+        else:
+            # 일반 시나리오: 숫자 추출
             if "_" in scenario_type:
-                num_threats = int(scenario_type.split("_")[1])
+                num_threats = int(scenario_type.split("_")[-1])
             else:
-                num_threats = 15  # BASELINE
-            
+                num_threats = 15
             return {
                 "assets": ScenarioManager._create_assets(num_threats),
                 "batteries": ScenarioManager._create_batteries(num_threats),
                 "threats": ScenarioManager._create_threats(num_threats, pattern="balanced")
             }
-        elif scenario_type == "SEQUENTIAL_20":
-            return {
-                "assets": ScenarioManager._create_assets(20),
-                "batteries": ScenarioManager._create_batteries(20),
-                "threats": ScenarioManager._create_threats(20, pattern="sequential")
-            }
-        elif scenario_type == "SIMULTANEOUS_20":
-            return {
-                "assets": ScenarioManager._create_assets(20),
-                "batteries": ScenarioManager._create_batteries(20),
-                "threats": ScenarioManager._create_threats(20, pattern="simultaneous")
-            }
-        else:
-            raise ValueError(f"Unknown scenario type: {scenario_type}")
     
     @staticmethod
     def _create_assets(num_threats: int) -> List[Dict]:
@@ -410,20 +424,32 @@ class ScenarioManager:
             ]
             return base + additional
         else:
-            # 100발: 15개 배터리 (여유)
-            batteries_10 = ScenarioManager._create_batteries(50)
-            more = [
-                {
-                    "id": f"LSAM_{i:02d}", "name": f"Extra_LSAM_{i}", "system_type": "LSAM", "layer": "UPPER",
-                    "position": ((i-6) * 40, (i-6) * -30), "coverage_radius_km": 150, "defense_zone": f"ZONE_{i}",
-                    "dedicated_assets": [f"A{(i%10)+1:02d}"],
+            # 100+발: 배터리 수를 위협 수에 비례하여 스케일링
+            batteries_base = ScenarioManager._create_batteries(50)  # 10개
+            # 추가 LSAM + MSAM 쌍 생성
+            extra_pairs = max(0, (num_threats - 50) // 30)  # 30발당 1쌍 추가
+            extra = []
+            for i in range(extra_pairs + 5):
+                idx = 6 + i
+                extra.append({
+                    "id": f"LSAM_{idx:02d}", "name": f"Extra_LSAM_{idx}", "system_type": "LSAM", "layer": "UPPER",
+                    "position": ((idx-6) * 40 - 80, (idx-6) * -30 + 60), "coverage_radius_km": 150, "defense_zone": f"ZONE_{idx}",
+                    "dedicated_assets": [f"A{(idx%10)+1:02d}"],
                     "specs": {
                         **InterceptorSystemConfig.get_lsam_specs(),
                         "battery_config": {"launchers": 4, "missiles_per_launcher": 5, "total_missiles": 20, "simultaneous_engagements": 5}
                     }
-                } for i in range(6, 11)
-            ]
-            return batteries_10 + more
+                })
+                extra.append({
+                    "id": f"MSAM_{idx:02d}", "name": f"Extra_MSAM_{idx}", "system_type": "MSAM", "layer": "LOWER",
+                    "position": ((idx-6) * 35 - 70, (idx-6) * -25 + 50), "coverage_radius_km": 40, "defense_zone": f"ZONE_{idx}",
+                    "dedicated_assets": [f"A{(idx%10)+1:02d}"],
+                    "specs": {
+                        **InterceptorSystemConfig.get_msam_specs(),
+                        "battery_config": {"launchers": 6, "missiles_per_launcher": 5, "total_missiles": 30, "simultaneous_engagements": 5}
+                    }
+                })
+            return batteries_base + extra
     
     @staticmethod
     def _create_threats(num_threats: int, pattern: str = "balanced") -> List[Dict]:
@@ -531,6 +557,41 @@ class ScenarioManager:
             })
         
         print(f"시나리오 생성: {num_threats}발 (NODONG: {num_nodong}, SCUD_B: {num_scud}), 간격: {interval}초, 패턴: {pattern}")
+        return threats
+
+    @staticmethod
+    def _create_stress_threats(base_threats: List[Dict], count: int, interval: int) -> List[Dict]:
+        """스트레스 테스트 위협 생성 — base_threats(15발) 템플릿을 반복 확장
+
+        config_mip.py의 원래 로직:
+        - base_threats를 i % 15로 반복
+        - 발사 간격: interval초
+        - 발사 거리 순차 증가 (초기 100km → 점진 증가)
+        - flight_time 비례 조정
+        """
+        threats = []
+        for i in range(count):
+            threat = base_threats[i % len(base_threats)].copy()
+            threat['id'] = f"T{i+1:03d}"
+            threat['name'] = f"{threat['type']}_{i+1}"
+            threat['launch_time'] = i * interval
+
+            # 발사 거리 순차 증가
+            base_distance = 100.0
+            distance_increment = i * 1.0
+            target_distance = base_distance + distance_increment
+
+            # launch_position 조정
+            original_launch_y = threat['launch_position'][1]
+            threat['launch_position'] = (threat['launch_position'][0], original_launch_y + distance_increment)
+
+            # flight_time 조정 (거리 비례)
+            original_flight_time = threat.get('flight_time', 300)
+            threat['flight_time'] = int(original_flight_time * (target_distance / base_distance))
+
+            threats.append(threat)
+
+        print(f"스트레스 시나리오 생성: {count}발, 간격: {interval}초, base: {len(base_threats)}발 템플릿")
         return threats
 
 

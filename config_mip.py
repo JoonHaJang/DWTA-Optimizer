@@ -945,8 +945,8 @@ class EngagementZoneConfig(BaseModel):
         
         return max(min_prob, min(max_prob, adjusted_probability))
 
-class ScenarioManager:
-    """다양한 위협 시나리오 버전 관리 클래스"""
+class _LegacyScenarioManager:
+    """(Legacy) 이전 ScenarioManager — scenario_dwta_balanced.ScenarioManager로 대체됨"""
     
     @staticmethod
     def get_scenario_list() -> Dict[str, str]:
@@ -1112,22 +1112,22 @@ class ScenarioManager:
     @staticmethod
     def create_stress_test_100(base_threats: List[Dict]) -> List[Dict]:
         """스트레스 테스트 시나리오 (100발 - 성능 한계 검증)"""
-        return ScenarioManager._create_stress_test(base_threats, 100, interval=10)
+        return _Legacy_LegacyScenarioManager._create_stress_test(base_threats, 100, interval=10)
     
     @staticmethod
     def create_stress_test_150(base_threats: List[Dict]) -> List[Dict]:
         """스트레스 테스트 시나리오 (150발 - 점진적 확장)"""
-        return ScenarioManager._create_stress_test(base_threats, 150, interval=6)
+        return _LegacyScenarioManager._create_stress_test(base_threats, 150, interval=6)
     
     @staticmethod
     def create_stress_test_200(base_threats: List[Dict]) -> List[Dict]:
         """스트레스 테스트 시나리오 (200발 - 한계 탐색)"""
-        return ScenarioManager._create_stress_test(base_threats, 200, interval=5)
+        return _LegacyScenarioManager._create_stress_test(base_threats, 200, interval=5)
     
     @staticmethod
     def create_stress_test_300(base_threats: List[Dict]) -> List[Dict]:
         """스트레스 테스트 시나리오 (300발 - 극한 테스트)"""
-        return ScenarioManager._create_stress_test(base_threats, 300, interval=3)
+        return _LegacyScenarioManager._create_stress_test(base_threats, 300, interval=3)
     
     @staticmethod
     def _create_stress_test(base_threats: List[Dict], count: int, interval: int) -> List[Dict]:
@@ -1257,6 +1257,7 @@ class MIPConfig(BaseModel):
             scenario_type = self.scenario_type
         
         # 시나리오 정보 가져오기
+        from scenario_dwta_balanced import ScenarioManager
         scenario_list = ScenarioManager.get_scenario_list()
         scenario_desc = scenario_list.get(scenario_type, "Unknown scenario")
         
@@ -1275,6 +1276,17 @@ class MIPConfig(BaseModel):
             "total_variables_estimate": self.num_assets * num_threats * self.num_batteries * 2,
             "total_constraints_estimate": self.num_assets * num_threats * 5
         }
+
+# ScenarioManager re-export: scenario_dwta_balanced.py가 Single Source of Truth
+# (순환 import 방지를 위해 모듈 로드 완료 후 lazy import)
+def _init_scenario_manager():
+    from scenario_dwta_balanced import ScenarioManager as _SM
+    return _SM
+
+try:
+    ScenarioManager = _init_scenario_manager()
+except ImportError:
+    ScenarioManager = _LegacyScenarioManager  # fallback
 
 # 기본 MIP 설정 인스턴스 생성 (현실적 규모)
 mip_config = MIPConfig()

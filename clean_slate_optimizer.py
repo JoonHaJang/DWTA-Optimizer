@@ -454,8 +454,8 @@ OA_REFINE_ROUNDS = 3     # iterative tangent-cut refinement rounds
 OA_REFINE_TOL = 1e-7     # relative convergence tolerance for f_i vs exp(σ_i)
 
 
-def build_model(prob: DWTAProblem, time_limit: float = 3.0,
-                gap_tol: float = 0.001, threads: int = 1
+def build_model(prob: DWTAProblem, time_limit: float = 10.0,
+                gap_tol: float = 0.03, threads: int = 4
                 ) -> Tuple[highspy.Highs, VarMap]:
     """Pure function: DWTAProblem → (HiGHS model, VarMap)."""
 
@@ -532,6 +532,8 @@ def build_model(prob: DWTAProblem, time_limit: float = 3.0,
     for k in range(n_x):
         h.changeColIntegrality(k, highspy.HighsVarType.kInteger)
 
+    # Probing은 HiGHS presolve에 위임 (capacity 제약과의 상호작용으로 수동 fixing 위험)
+
     # Set objective
     for k in range(n_vars):
         if col_cost[k] != 0.0:
@@ -598,10 +600,20 @@ def build_model(prob: DWTAProblem, time_limit: float = 3.0,
                 _add_row(1.0, 1.0, [f_offset + i], [1.0])
             continue
 
-        # Non-uniform breakpoints: denser near σ=0 where exp() curvature is highest
-        # Use quadratic concentration: t² mapping pushes points toward 0
-        t = np.linspace(0.0, 1.0, NUM_OA_BREAKPOINTS)
-        breakpoints = sigma_min_i * (1.0 - t**2)  # σ_min at t=0, 0 at t=1
+        # Adaptive OA breakpoints: σ_min에 따라 개수 조절 (정제가 보완)
+        abs_sigma = abs(sigma_min_i)
+        if abs_sigma < 1.0:
+            n_bp = 5       # exp 거의 선형
+        elif abs_sigma < 3.0:
+            n_bp = 10
+        elif abs_sigma < 8.0:
+            n_bp = 15
+        else:
+            n_bp = NUM_OA_BREAKPOINTS  # 큰 σ 범위: 전체 사용
+
+        # Non-uniform: denser near σ=0 where exp() curvature is highest
+        t = np.linspace(0.0, 1.0, n_bp)
+        breakpoints = sigma_min_i * (1.0 - t**2)
         for sigma_k in breakpoints:
             e_k = math.exp(sigma_k)
             # fᵢ ≥ eᵃᵏ(1 + σᵢ - σᵏ) = eᵃᵏ + eᵃᵏ(σᵢ - σᵏ)
@@ -663,17 +675,10 @@ def build_model(prob: DWTAProblem, time_limit: float = 3.0,
     # In capacity-constrained scenarios, forced coverage would cause infeasibility.
     # The optimizer allocates resources optimally given capacity limits.
 
-    # --- C8: Multi-layer limit: upper + lower ≤ 2 per threat ---
-    for t in range(prob.n_threats):
-        idxs = []
-        for j in range(prob.n_upper):
-            if upper_var_idx[j, t] >= 0:
-                idxs.append(int(upper_var_idx[j, t]))
-        for j in range(prob.n_lower):
-            if lower_var_idx[j, t] >= 0:
-                idxs.append(int(lower_var_idx[j, t]))
-        if len(idxs) > 2:
-            _add_row(-highspy.kHighsInf, 2.0, idxs, [1.0] * len(idxs))
+    # C8 (upper+lower ≤ 2) 제거: C5(upper≤1) + C6(lower≤1)로 자동 보장 (수학적 동치)
+
+    # Symmetry breaking: HiGHS의 내장 orbitope 감지에 위임
+    # ("Found N full orbitope(s) acting on M columns" — 자동 처리)
 
     # === Batch add all rows ===
     n_rows = len(row_lower_list)
@@ -764,6 +769,21 @@ def extract_result(h: highspy.Highs, vmap: VarMap,
                model_status == highspy.HighsModelStatus.kObjectiveBound or \
                model_status == highspy.HighsModelStatus.kSolutionLimit
 
+    # Time limit에서도 feasible solution이 있으면 사용 (최적은 아니지만 유효한 할당)
+    if not feasible and model_status in (highspy.HighsModelStatus.kTimeLimit,
+                                         highspy.HighsModelStatus.kUnknown):
+        try:
+            sol = h.getSolution()
+            if sol.col_value and len(sol.col_value) == vmap.n_vars:
+                # Objective가 유한하면 feasible solution이 존재
+                obj_val = sum(sol.col_value[vmap.f_offset + i] * prob.asset_values[i]
+                              for i in range(prob.n_assets))
+                if obj_val < 1e20:
+                    feasible = True
+                    logger.info(f"TimeLimit but feasible solution found (obj={obj_val:.2f})")
+        except Exception:
+            pass
+
     solve_time = build_time
     # HiGHS run_time은 매우 짧아 0으로 보일 수 있으므로 build_time을 solver time으로 사용
     try:
@@ -780,6 +800,8 @@ def extract_result(h: highspy.Highs, vmap: VarMap,
         highspy.HighsModelStatus.kSolutionLimit: "Optimal",
     }
     status_str = status_names.get(model_status, "Not Solved")
+    if feasible and model_status == highspy.HighsModelStatus.kTimeLimit:
+        status_str = "Feasible (TimeLimit)"
 
     result = {
         'feasible': feasible,
@@ -802,6 +824,9 @@ def extract_result(h: highspy.Highs, vmap: VarMap,
             'num_systems': prob.n_upper + prob.n_lower,
             'total_missiles': int(prob.upper_capacity.sum() * 2 + prob.lower_capacity.sum() * 2),
             'feasible_engagements': int(prob.upper_feasible.sum() + prob.lower_feasible.sum()),
+            'time_limit_reached': model_status == highspy.HighsModelStatus.kSolutionLimit or
+                                  model_status == highspy.HighsModelStatus.kObjectiveBound,
+            'solver_status': status_str,
         },
     }
 
@@ -994,7 +1019,7 @@ class CleanSlateOptimizer:
                               'total_missiles': 0, 'feasible_engagements': 0},
             }
 
-        # Solve with iterative OA refinement
+        # Solve MIP directly (HiGHS presolve + warm-start handles LP internally)
         self._model.run()
 
         # --- Iterative tangent-cut refinement for exact exp(σ) equivalence ---

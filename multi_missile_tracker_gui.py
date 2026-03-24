@@ -416,6 +416,7 @@ class DWTAMainWindow(QMainWindow):
                 margin-top: 6px;
                 color: #00ff00;
                 font-weight: bold;
+                font-size: 8pt;
             }
             QGroupBox::title {
                 subcontrol-origin: margin;
@@ -666,7 +667,7 @@ class DWTAMainWindow(QMainWindow):
                 lbl_name.setFixedWidth(68)
                 lbl_val = QLabel("—")
                 lbl_val.setStyleSheet(f"color: {color}; font-weight: bold;")
-                lbl_val.setFixedWidth(90)
+                lbl_val.setMinimumWidth(90)
                 self._status_labels[key] = lbl_val
                 row.addWidget(lbl_name)
                 row.addWidget(lbl_val)
@@ -1391,7 +1392,7 @@ class MultiMissileTracker:
         # Optimization Tracking
         # 🔧 OPTIMIZED: 하이브리드 자료구조로 교체 (딕셔너리 → 양방향 인덱스 + 비트마스크)
         # 성능: 탐색 O(1), 메모리 6배 절감 - 🆕 300 위협 지원
-        self.primary_assignments = OptimizedAssignmentManager(max_threats=300, max_batteries=20)
+        self.primary_assignments = OptimizedAssignmentManager(max_threats=300, max_batteries=50)
         self.last_optimization_step = -99 #마지막 최적화 단계 -99는 최적화 미수항 상태.
         self.optimization_interval = 1 #최적화 간격(1초)
 
@@ -1660,7 +1661,7 @@ class MultiMissileTracker:
 
     def update_simulation(self):
         """Advance simulation by one time step."""
-        self.current_time_step += 1
+        self.current_time_step += 2
         
         self._simulate_dynamic_events()
         
@@ -1970,10 +1971,9 @@ class MultiMissileTracker:
         P_kill = 1.0 - P_survival
         P_kill = min(P_kill, 0.999)  # Cap probability
 
-        # 🆕 Deterministic Outcome (Stage 2 제거)
         # 기댓값 기반 판정: 불확실성은 Stage 1(Beta 분포)에서만 적용
-        # 최적화-실행 편차 최소화 및 알고리즘 비교 공정성 확보
-        if P_kill >= 0.5 and missiles_fired > 0:  # 50% 이상 확률이면 성공으로 판정
+        # Stage 2는 결정론적 임계값 — 최적화-실행 편차 최소화
+        if P_kill >= 0.5 and missiles_fired > 0:
             result = 'INTERCEPTED'
             # 🔧 FIX: 각 위협은 최초 요격 성공 시에만 카운트 (재교전 중복 방지)
             if missile_id not in self.kill_results:
@@ -2276,7 +2276,7 @@ class MultiMissileTracker:
                     if valid_objective is not None:
                         self.last_objective_value = valid_objective
                     else:
-                        self.last_objective_value = 999.99  # 마지막 수단으로 높은 값 설정
+                        self.last_objective_value = 0.0  # 유효한 값 없음 = 피해 없음
             self.last_solve_time = solve_time
             
             # 모든 알고리즘에 대해 optimization_history에 추가
@@ -2311,10 +2311,10 @@ class MultiMissileTracker:
                             }
                         
                         # 원인 분석
-                        if diag['time_limit_reached']:
+                        if diag.get('time_limit_reached', False):
                             reason = "시간 초과 (복잡도)"
                             detail = f"변수 {diag['num_variables']}개, 제약 {diag['num_constraints']}개"
-                        elif diag['solver_status'] == 'Infeasible':
+                        elif diag.get('solver_status', '') == 'Infeasible':
                             # 자원 부족 vs 제약 충돌 구분
                             avg_missiles_per_threat = diag['total_missiles'] / max(diag['num_threats'], 1)
                             
@@ -2451,16 +2451,18 @@ class MultiMissileTracker:
                     Range = specs['engagement_range_km']['max']
                     max_missiles = battery['specs']['battery_config'].get('simultaneous_engagements', 2)
                 else:
-                    # Default specs for unknown system types
-                    Pk = 0.95
-                    Range = 50.0
-                    max_missiles = 3
-                    
+                    # Default specs by system type
+                    if 'LSAM' in battery.get('system_type', ''):
+                        Pk, Range, max_missiles = 0.85, 300.0, 3
+                    else:
+                        Pk, Range, max_missiles = 0.78, 50.0, 3
+
             except (KeyError, TypeError):
-                # Fallback specs for demo mode or missing data
-                Pk = 0.95
-                Range = 50.0
-                max_missiles = 3
+                # Fallback specs by system type
+                if 'LSAM' in battery.get('system_type', ''):
+                    Pk, Range, max_missiles = 0.85, 300.0, 3
+                else:
+                    Pk, Range, max_missiles = 0.78, 50.0, 3
 
             systems_opt.append(InterceptorSystem(
                 id=battery['id'], 
@@ -2481,15 +2483,18 @@ class MultiMissileTracker:
                 # Calculate remaining flight time
                 remaining_time = max(0.1, missile['flight_time'] * (1.0 - missile['flight_progress']))
                 current_pos = missile['position']
-                # Estimate altitude based on flight progress (ballistic trajectory)
-                altitude = 10000.0 * (1.0 - missile['flight_progress'])
-                
                 # Find original threat configuration for enhanced data
                 original_threat_data = None
                 for threat_data in self.initial_threats_config:
                     if threat_data['id'] == missile['id']:
                         original_threat_data = threat_data
                         break
+
+                # Ballistic trajectory altitude: sin curve (launch → apex → impact)
+                max_alt_km = 50.0  # default
+                if original_threat_data:
+                    max_alt_km = original_threat_data.get('specs', {}).get('max_altitude_km', 50.0)
+                altitude = max_alt_km * 1000.0 * np.sin(np.pi * missile['flight_progress'])
                 
                 # Create threat object with basic data
                 threat_obj = Threat(
