@@ -328,7 +328,16 @@ class OptimizedAssignmentManager:
                     threat_id = self.idx_to_threat_id[t_idx]
                     self.unassign(threat_id, battery_id)
         
-        # 3단계: 새 할당 추가
+        # 3단계: 새로 할당될 표적의 기존 포대 할당 전부 제거 (사이클 간 잔존 방지)
+        for threat_list in new_assignments.values():
+            for threat_id in threat_list:
+                if threat_id in self.threat_id_to_idx:
+                    t_idx = self.threat_id_to_idx[threat_id]
+                    for b_idx in self.threat_to_batteries[t_idx].copy():
+                        bid = self.idx_to_battery_id[b_idx]
+                        self.unassign(threat_id, bid)
+
+        # 4단계: 새 할당 추가
         for battery_id, threat_list in new_assignments.items():
             for threat_id in threat_list:
                 if threat_id in active_threat_ids:
@@ -1012,7 +1021,7 @@ class DWTAMainWindow(QMainWindow):
         stats = self.tracker.stats
         deviated = stats.get('deviated', 0)
         actual = stats['total'] - deviated
-        rate = min((stats['intercepted'] / actual * 100) if actual > 0 else 0, 100.0)
+        rate = ((actual - stats['missed']) / actual * 100) if actual > 0 else 0
 
         self._append_log("=== SIMULATION COMPLETE ===", "SUCCESS")
         self._append_log(
@@ -1097,8 +1106,13 @@ class DWTAMainWindow(QMainWindow):
                 else:
                     danger, d_color = "LOW",  "#00cc44"
                 batteries = assign_mgr.get_batteries_for_threat(mid)
-                status    = "ENGAGED" if batteries else "TRACKED"
-                s_color   = "#00ccff" if batteries else "#aaaaaa"
+                if batteries:
+                    if m.get('flight_progress', 0) >= 0.50:
+                        status, s_color = "ENGAGED",  "#00ccff"
+                    else:
+                        status, s_color = "ASSIGNED", "#00aa88"
+                else:
+                    status, s_color = "TRACKED", "#aaaaaa"
                 tta_str   = f"{tta:.0f}"
                 bat_str   = ", ".join(b.replace('LSAM_BATTERY_','L').replace('MSAM_BATTERY_','M')
                                         .replace('LSAM_','L').replace('MSAM_','M')
@@ -1275,11 +1289,12 @@ class DWTAMainWindow(QMainWindow):
 
     @pyqtSlot(str, str)
     def _handle_kill_event(self, missile_id: str, result: str):
-        """Trigger flash animation on tactical map for intercept/miss."""
+        """Trigger flash + immediately clean up engagement lines and threat dot."""
         m = self.tracker.missiles.get(missile_id)
         if m:
             x, y = m['position'][0], m['position'][1]
             self.tactical_map.trigger_kill_flash(x, y, success=(result == 'INTERCEPTED'))
+            self.tactical_map.remove_intercepted(missile_id)
 
     @pyqtSlot(str, str)
     def _update_solver_info(self, key: str, value: str):
@@ -1422,9 +1437,8 @@ class MultiMissileTracker:
         
         # 🆕 불확실성 모델링 (Uncertainty Modeling)
         self.uncertainty_config = UncertaintyConfig(
-            distribution_type="beta",  # 베타 분포
-            beta_alpha=9.0,           # α=9 (높은 확률 편향)
-            beta_beta=1.0,            # β=1
+            distribution_type="beta",
+            beta_concentration=10.0,  # n=10 — Pk_base 중심, 적정 분산
             monte_carlo_runs=1,       # 실시간은 1회만
             confidence_level=0.95
         )
@@ -3014,7 +3028,7 @@ class MultiMissileTracker:
         # 궤적 이탈 제외한 실제 위협
         deviated = self.stats.get('deviated', 0)
         actual_threats = self.stats['total'] - deviated
-        actual_intercept_rate = (self.stats['intercepted'] / actual_threats * 100) if actual_threats > 0 else 0
+        actual_intercept_rate = ((actual_threats - self.stats['missed']) / actual_threats * 100) if actual_threats > 0 else 0
         
         # 메트릭 데이터
         metrics = {

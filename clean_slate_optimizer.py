@@ -663,18 +663,6 @@ def build_model(prob: DWTAProblem, time_limit: float = 3.0,
     # In capacity-constrained scenarios, forced coverage would cause infeasibility.
     # The optimizer allocates resources optimally given capacity limits.
 
-    # --- C8: Multi-layer limit: upper + lower ≤ 2 per threat ---
-    for t in range(prob.n_threats):
-        idxs = []
-        for j in range(prob.n_upper):
-            if upper_var_idx[j, t] >= 0:
-                idxs.append(int(upper_var_idx[j, t]))
-        for j in range(prob.n_lower):
-            if lower_var_idx[j, t] >= 0:
-                idxs.append(int(lower_var_idx[j, t]))
-        if len(idxs) > 2:
-            _add_row(-highspy.kHighsInf, 2.0, idxs, [1.0] * len(idxs))
-
     # === Batch add all rows ===
     n_rows = len(row_lower_list)
     if n_rows > 0:
@@ -1053,7 +1041,6 @@ class CleanSlateOptimizer:
                 'upper_assignments': result['upper_assignments'],
                 'lower_assignments': result['lower_assignments'],
             }
-
         # Log
         diag = result['diagnosis']
         self._log(

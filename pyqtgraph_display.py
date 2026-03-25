@@ -7,27 +7,142 @@ Replaces matplotlib TkAgg with PyQtGraph for real-time performance.
 
 Features:
   - TTA-based threat color coding (red <30s / yellow <60s / green >=60s)
-  - LSAM range rings (150km, 300km) and MSAM range rings (5km, 50km)
-  - Threat trajectory prediction lines (threat -> target asset, dashed)
-  - Battery-to-threat assignment lines (green dashed)
+  - LSAM range rings (150km inner solid, 300km outer dotted) and MSAM (5km/50km)
+  - Threat glow ring (semi-transparent background circle)
+  - Assigned-threat white outline + glow highlight
+  - Threat trajectory prediction lines (unassigned threats only, dotted)
+  - Battery-to-threat engagement lines (TTA-based color/thickness, distance-gated)
+  - Battery ammo bar below marker
+  - Assigned-battery outline highlight
+  - HUD overlay (top-right: ACTIVE / ENGAGED / FREE counts)
+  - QPainter-based legend (bottom-left, actual symbol rendering)
   - Intercept/miss flash animations (TTL 1.2s)
-  - Color-coded battery markers (ammo level)
 
 Author: Claude Code
 """
 
+import math
 import numpy as np
 import time
 from typing import Dict
 
 try:
     import pyqtgraph as pg
-    from PyQt5 import QtCore, QtWidgets
+    from PyQt5 import QtCore, QtGui, QtWidgets
     PYQTGRAPH_AVAILABLE = True
 except ImportError:
     PYQTGRAPH_AVAILABLE = False
     print("[WARNING] PyQtGraph not available. Install: pip install pyqtgraph PyQt5")
 
+
+# ---------------------------------------------------------------------------
+# QPainter-based legend widget
+# ---------------------------------------------------------------------------
+
+class _LegendWidget(QtWidgets.QWidget):
+    """Compact legend: battery symbols + asset + threat TTA colours."""
+
+    _ROW_H = 16
+    _ROWS = 3
+    _PAD = 6
+    _W = 220
+
+    def sizeHint(self):
+        h = self._PAD * 2 + self._ROW_H * self._ROWS
+        return QtCore.QSize(self._W, h)
+
+    def paintEvent(self, event):
+        p = QtGui.QPainter(self)
+        p.setRenderHint(QtGui.QPainter.Antialiasing)
+
+        p.fillRect(self.rect(), QtGui.QColor(0, 0, 0, 160))
+        p.setPen(QtGui.QColor(0x33, 0x33, 0x33))
+        p.drawRect(self.rect().adjusted(0, 0, -1, -1))
+
+        pad = self._PAD
+        rh = self._ROW_H
+        rows_y = [pad + rh * i + rh // 2 for i in range(self._ROWS)]
+        font = QtGui.QFont("monospace", 8)
+        p.setFont(font)
+
+        # ── Row 0: LSAM square + MSAM pentagon ──────────────────────────────
+        y = rows_y[0]
+        sx = pad + 6
+        p.setPen(QtGui.QPen(QtGui.QColor(0xff, 0x88, 0x00), 2))
+        p.setBrush(QtGui.QBrush(QtGui.QColor(0xff, 0x88, 0x00, 80)))
+        p.drawRect(sx - 5, y - 5, 10, 10)
+        p.setPen(QtGui.QColor(0xff, 0x88, 0x00))
+        p.drawText(sx + 9, y + 4, "LSAM")
+        cx2 = sx + 60
+        pts = _pentagon_points(cx2, y, 6)
+        p.setPen(QtGui.QPen(QtGui.QColor(0x00, 0xcc, 0xcc), 2))
+        p.setBrush(QtGui.QBrush(QtGui.QColor(0x00, 0xcc, 0xcc, 80)))
+        p.drawPolygon(pts)
+        p.setPen(QtGui.QColor(0x00, 0xcc, 0xcc))
+        p.drawText(cx2 + 9, y + 4, "MSAM")
+
+        # ── Row 1: Protected asset star ──────────────────────────────────────
+        y = rows_y[1]
+        _draw_star(p, pad + 6, y, 6, QtGui.QColor(0xff, 0xe0, 0x66))
+        p.setPen(QtGui.QColor(0xff, 0xe0, 0x66))
+        p.drawText(pad + 16, y + 4, "Asset")
+
+        # ── Row 2: Threat symbols + TTA colours ─────────────────────────────
+        y = rows_y[2]
+        threat_colors = [
+            (QtGui.QColor(255, 50, 50),  "<30s"),
+            (QtGui.QColor(255, 200, 0),  "<60s"),
+            (QtGui.QColor(0, 210, 80),   "≥60s"),
+        ]
+        x_off = pad + 6
+        # Triangle = unassigned (first entry as example)
+        col0 = threat_colors[0][0]
+        tri = QtGui.QPolygon([
+            QtCore.QPoint(x_off,     y - 5),
+            QtCore.QPoint(x_off - 5, y + 4),
+            QtCore.QPoint(x_off + 5, y + 4),
+        ])
+        p.setPen(QtGui.QPen(col0, 1.5))
+        p.setBrush(QtGui.QBrush(col0))
+        p.drawPolygon(tri)
+        p.setPen(QtGui.QColor(0xaa, 0xaa, 0xaa))
+        p.drawText(x_off + 8, y + 4, "▲free")
+        x_off += 52
+        # Circle = assigned
+        col1 = threat_colors[1][0]
+        p.setPen(QtGui.QPen(QtGui.QColor(255, 255, 255), 1.5))
+        p.setBrush(QtGui.QBrush(col1))
+        p.drawEllipse(QtCore.QPoint(x_off, y), 5, 5)
+        p.setPen(QtGui.QColor(0xaa, 0xaa, 0xaa))
+        p.drawText(x_off + 8, y + 4, "●engaged")
+
+        p.end()
+
+
+def _pentagon_points(cx, cy, r):
+    pts = QtGui.QPolygon()
+    for i in range(5):
+        angle = math.radians(-90 + 72 * i)
+        pts.append(QtCore.QPoint(int(cx + r * math.cos(angle)),
+                                 int(cy + r * math.sin(angle))))
+    return pts
+
+
+def _draw_star(painter, cx, cy, r, color):
+    painter.setPen(QtGui.QPen(color, 1.5))
+    painter.setBrush(QtGui.QBrush(color))
+    pts = QtGui.QPolygon()
+    for i in range(10):
+        angle = math.radians(-90 + 36 * i)
+        rr = r if i % 2 == 0 else r * 0.45
+        pts.append(QtCore.QPoint(int(cx + rr * math.cos(angle)),
+                                 int(cy + rr * math.sin(angle))))
+    painter.drawPolygon(pts)
+
+
+# ---------------------------------------------------------------------------
+# Main widget
+# ---------------------------------------------------------------------------
 
 class TacticalMapWidget(pg.PlotWidget):
     """
@@ -49,8 +164,7 @@ class TacticalMapWidget(pg.PlotWidget):
         # Flash animation list: [{'item': PlotItem, 'created': float, 'ttl': float}]
         self._flash_items = []
 
-        # Change detection caches
-        self._last_assignments: dict = {}
+        # Change detection cache (battery ammo only; assignment lines rebuilt every frame)
         self._last_battery_ammo: dict = {}
 
         self._configure_plot()
@@ -64,28 +178,28 @@ class TacticalMapWidget(pg.PlotWidget):
 
     def _configure_plot(self):
         """Configure plot axes, background, and labels."""
-        self.setBackground('#0a0a0a')
-        self.showGrid(x=True, y=True, alpha=0.2)
+        self.setBackground('#050a14')
+        self.showGrid(x=True, y=True, alpha=0.06)
         self.setXRange(-90, 120, padding=0)
         self.setYRange(-130, 270, padding=0)
-        self.setLabel('left', 'Y Position (km)', color='#00cc00')
-        self.setLabel('bottom', 'X Position (km)', color='#00cc00')
-        self.setTitle('TACTICAL SITUATION DISPLAY', color='#00ff00', size='11pt')
+        self.setLabel('left', 'Y (km)', color='#1c5f96')
+        self.setLabel('bottom', 'X (km)', color='#1c5f96')
+        self.setTitle('TACTICAL SITUATION DISPLAY', color='#1c5f96', size='11pt')
         self.setAspectLocked(False)
 
         # Style axes ticks
         for axis in ('left', 'bottom'):
-            self.getAxis(axis).setTextPen(pg.mkPen('#888888'))
-            self.getAxis(axis).setPen(pg.mkPen('#333333'))
+            self.getAxis(axis).setTextPen(pg.mkPen('#2a4a6a'))
+            self.getAxis(axis).setPen(pg.mkPen('#1a2a3a'))
 
         # North indicator
-        north = pg.TextItem('N\u2191', color='white', anchor=(0.5, 0.5))
+        north = pg.TextItem('N\u2191', color='#2a4a6a', anchor=(0.5, 0.5))
         north.setPos(112, 258)
         self.addItem(north)
 
     def _init_static_items(self):
         """Pre-allocate all scatter/line plot items."""
-        # Protected assets -- 노란 별 (★) : 자산은 포대/위협과 명확히 구분
+        # Protected assets -- 노란 별 (★)
         self.asset_scatter = pg.ScatterPlotItem(
             size=20,
             pen=pg.mkPen('#ffe066', width=2),
@@ -94,11 +208,15 @@ class TacticalMapWidget(pg.PlotWidget):
         )
         self.addItem(self.asset_scatter)
 
-        # Active threats -- 원 (●) : 크기·색상으로 TTA 표현 (spots API)
+        # Threat glow ring (behind main dot) — semi-transparent larger circle
+        self.threat_glow = pg.ScatterPlotItem()
+        self.addItem(self.threat_glow)
+
+        # Active threats -- TTA-based colour; assigned → white outline
         self.threat_scatter = pg.ScatterPlotItem()
         self.addItem(self.threat_scatter)
 
-        # Intercepted -- 하늘색 X (요격 성공, 위협 녹색과 구분)
+        # Intercepted -- 하늘색 X
         self.intercepted_scatter = pg.ScatterPlotItem(
             size=12,
             pen=pg.mkPen('#00ccff', width=2),
@@ -123,56 +241,56 @@ class TacticalMapWidget(pg.PlotWidget):
         self.asset_text_items: Dict[str, object] = {}
 
         self._draw_legend()
+        self._init_hud()
 
     def _draw_legend(self):
-        """좌하단 고정 범례 — QLabel 오버레이 (줌/패닝과 무관하게 고정)."""
-        if hasattr(self, '_legend_label'):
-            return  # 중복 생성 방지
-        lines = [
-            ('<span style="color:#ff8800">■ LSAM(주황)</span>'
-             '&nbsp;&nbsp;'
-             '<span style="color:#00cccc">⬟ MSAM(청록)</span>'
-             '&nbsp;&nbsp;잔탄: 밝음→어두움'),
-            '<span style="color:#ffe066">★ 보호 자산 (노랑)</span>',
-            '<span style="color:#ff3333">● 위협 적&lt;30s</span>'
-             '&nbsp;<span style="color:#ffcc00">황&lt;60s</span>'
-             '&nbsp;<span style="color:#00dd55">녹≥60s</span>',
-            '<span style="color:#00ff00">— 녹색점선: 교전 중</span>'
-             '&nbsp;&nbsp;'
-             '<span style="color:#cc6600">주황점선: 미교전</span>',
-            '<span style="color:#00ccff">✕ 요격</span>'
-             '&nbsp;&nbsp;'
-             '<span style="color:#ff4444">+ 피격</span>',
-        ]
-        html = '<br>'.join(lines)
+        """좌하단 고정 범례 — QPainter 기반 실제 심볼 렌더링."""
+        if hasattr(self, '_legend_widget'):
+            return
+        self._legend_widget = _LegendWidget(self)
+        self._legend_widget.setAttribute(QtCore.Qt.WA_TransparentForMouseEvents)
+        self._legend_widget.show()
+        self._legend_widget.adjustSize()
 
-        self._legend_label = QtWidgets.QLabel(self)
-        self._legend_label.setTextFormat(QtCore.Qt.RichText)
-        self._legend_label.setText(html)
-        self._legend_label.setStyleSheet(
-            "background-color: rgba(0,0,0,170);"
-            "color: #aaaaaa;"
-            "font-size: 10px;"
-            "padding: 4px 6px;"
-            "border: 1px solid #333333;"
+    def _init_hud(self):
+        """우상단 HUD 오버레이 QLabel 초기화."""
+        if hasattr(self, '_hud_label'):
+            return  # 시나리오 재로드 시 중복 생성 방지
+        self._hud_label = QtWidgets.QLabel(self)
+        self._hud_label.setStyleSheet(
+            "background: rgba(0,0,0,160);"
+            "color: #00ccff;"
+            "font-size: 11px;"
+            "font-family: monospace;"
+            "padding: 5px 8px;"
+            "border: 1px solid #1a4a6a;"
         )
-        self._legend_label.setWordWrap(False)
-        self._legend_label.setAttribute(QtCore.Qt.WA_TransparentForMouseEvents)
-        # 렌더링 후 실제 크기로 조정 (RichText는 show 후 측정이 정확함)
-        self._legend_label.show()
-        self._legend_label.adjustSize()
+        self._hud_label.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignTop)
+        self._hud_label.setAttribute(QtCore.Qt.WA_TransparentForMouseEvents)
+        self._hud_label.setText("ACTIVE     0\nENGAGED    0\nFREE       0")
+        self._hud_label.show()
+        self._hud_label.adjustSize()
 
     def resizeEvent(self, event):
-        """위젯 크기 변경 시 범례를 좌하단에 재고정."""
+        """위젯 크기 변경 시 범례·HUD 위치 재고정."""
         super().resizeEvent(event)
-        if hasattr(self, '_legend_label'):
-            self._legend_label.adjustSize()
-            margin = 6
-            lh = self._legend_label.height()
-            self._legend_label.move(margin, self.height() - lh - margin)
+        margin = 6
+        if hasattr(self, '_legend_widget'):
+            self._legend_widget.adjustSize()
+            lh = self._legend_widget.height()
+            self._legend_widget.move(margin, self.height() - lh - margin)
+        if hasattr(self, '_hud_label'):
+            self._hud_label.adjustSize()
+            self._hud_label.move(
+                self.width() - self._hud_label.width() - margin, margin
+            )
 
     def _draw_range_rings(self):
-        """Draw LSAM/MSAM engagement range rings (called once at init)."""
+        """Draw LSAM/MSAM engagement range rings (called once at init).
+
+        Inner ring: solid, brighter.
+        Outer ring: dotted, dimmer.
+        """
         if not hasattr(self.tracker, 'batteries'):
             return
 
@@ -182,17 +300,22 @@ class TacticalMapWidget(pg.PlotWidget):
 
             if stype == 'LSAM':
                 radii = [150, 300]
-                pen = pg.mkPen(255, 140, 0, 70, width=1,
-                               style=QtCore.Qt.DashLine)
+                rv, gv, bv = 255, 140, 0
             else:
                 radii = [5, 50]
-                pen = pg.mkPen(0, 200, 180, 70, width=1,
-                               style=QtCore.Qt.DashLine)
+                rv, gv, bv = 0, 200, 180
 
-            for r in radii:
+            for idx, r in enumerate(radii):
                 theta = np.linspace(0, 2 * np.pi, 120)
                 xs = bx + r * np.cos(theta)
                 ys = by + r * np.sin(theta)
+                if idx == 0:
+                    # Inner ring: brighter, solid
+                    pen = pg.mkPen(rv, gv, bv, 140, width=1.5)
+                else:
+                    # Outer ring: dimmer, dotted
+                    pen = pg.mkPen(rv, gv, bv, 45, width=1,
+                                   style=QtCore.Qt.DotLine)
                 ring = pg.PlotCurveItem(xs, ys, pen=pen)
                 self.addItem(ring)
 
@@ -240,31 +363,63 @@ class TacticalMapWidget(pg.PlotWidget):
             return (0, 210, 80, 235)
 
     def _update_threats(self):
-        """Update threat scatter with per-missile TTA-based colour."""
+        """Update threat scatter + glow ring with TTA-based colour.
+
+        Unassigned threats : triangle (▲) — approaching, no intercept yet.
+        Assigned threats   : circle  (●) — TTA colour, white outline.
+        """
         missiles = self.tracker.missiles
         kill_results = self.tracker.kill_results
 
+        # Threats with a VISIBLE engagement line (assigned + within ENGAGEMENT_LINE_DIST_KM).
+        # Uses assignment_items from the previous frame — aligned with line visibility.
+        assigned_threats = {mid for (_, mid) in self.assignment_items}
+
         active = {mid: m for mid, m in missiles.items() if m.get('active')}
+        glow_spots = []
+        threat_spots = []
+
         if active:
-            spots = []
             for mid, m in active.items():
                 tta = self._compute_tta(m)
                 r, g, b, a = self._tta_color(tta)
-                spots.append({
-                    'pos': (m['position'][0], m['position'][1]),
-                    'pen': pg.mkPen(r, g, b, 220, width=1.5),
-                    'brush': pg.mkBrush(r, g, b, a),
-                    'size': 10,
-                    'symbol': 'o',  # 원 — 포대(사각/오각)·자산(별)과 명확히 구분
-                })
-            self.threat_scatter.setData(spots=spots)
-        else:
-            self.threat_scatter.setData(spots=[])
+                is_assigned = mid in assigned_threats
+                pos = (m['position'][0], m['position'][1])
 
+                if is_assigned:
+                    # Assigned: circle + white outline + glow
+                    glow_spots.append({
+                        'pos': pos,
+                        'pen': pg.mkPen(r, g, b, 80, width=1),
+                        'brush': pg.mkBrush(r, g, b, 45),
+                        'size': 24,
+                        'symbol': 'o',
+                    })
+                    threat_spots.append({
+                        'pos': pos,
+                        'pen': pg.mkPen(255, 255, 255, 210, width=2),
+                        'brush': pg.mkBrush(r, g, b, a),
+                        'size': 12,
+                        'symbol': 'o',
+                    })
+                else:
+                    # Unassigned: triangle, TTA colour outline, no glow
+                    threat_spots.append({
+                        'pos': pos,
+                        'pen': pg.mkPen(r, g, b, 200, width=1.5),
+                        'brush': pg.mkBrush(r, g, b, 160),
+                        'size': 11,
+                        'symbol': 't',
+                    })
+
+        self.threat_glow.setData(spots=glow_spots)
+        self.threat_scatter.setData(spots=threat_spots)
+
+        current_t = getattr(self.tracker, 'current_time_step', 0)
         int_pos = [
             (missiles[mid]['position'][0], missiles[mid]['position'][1])
-            for mid, (res, _, _) in kill_results.items()
-            if res == 'INTERCEPTED' and mid in missiles
+            for mid, (res, t, _) in kill_results.items()
+            if res == 'INTERCEPTED' and mid in missiles and (current_t - t) <= 5
         ]
         self.intercepted_scatter.setData(
             pos=np.array(int_pos) if int_pos else np.empty((0, 2))
@@ -280,12 +435,11 @@ class TacticalMapWidget(pg.PlotWidget):
         )
 
     def _update_trajectory_lines(self):
-        """미교전 위협(배터리 미할당)만 궤적선 표시 — 교전 중인 위협은 교전선으로 표현."""
+        """미교전 위협(배터리 미할당)만 궤적선 표시."""
         missiles = self.tracker.missiles
         asset_lookup = {a['id']: a for a in self.tracker.assets}
         assign_mgr = self.tracker.primary_assignments
 
-        # 비활성 또는 교전 중인 위협의 기존 선 제거
         for mid in list(self.trajectory_items.keys()):
             m = missiles.get(mid)
             engaged = bool(assign_mgr.get_batteries_for_threat(mid))
@@ -295,7 +449,6 @@ class TacticalMapWidget(pg.PlotWidget):
         for mid, m in missiles.items():
             if not m.get('active'):
                 continue
-            # 교전 중이면 교전선(녹색)으로 표현하므로 궤적선 불필요
             if assign_mgr.get_batteries_for_threat(mid):
                 continue
             target_id = m.get('target_asset')
@@ -311,45 +464,92 @@ class TacticalMapWidget(pg.PlotWidget):
             if mid in self.trajectory_items:
                 self.trajectory_items[mid].setData([tx, ax], [ty, ay])
             else:
-                # 미교전 위협 궤적: 밝은 주황 점선 (위험 경고)
                 pen = pg.mkPen('#cc6600', width=1.2, style=QtCore.Qt.DotLine)
                 line = pg.PlotCurveItem([tx, ax], [ty, ay], pen=pen)
                 self.addItem(line)
                 self.trajectory_items[mid] = line
 
+    @staticmethod
+    def _tta_bucket(tta: float) -> int:
+        """Return 0/1/2 for red/yellow/green — used to detect pen changes."""
+        if tta < 30:
+            return 0
+        elif tta < 60:
+            return 1
+        return 2
+
+    _ENGAGEMENT_PENS = None   # lazily initialised once
+
+    @classmethod
+    def _get_engagement_pens(cls):
+        if cls._ENGAGEMENT_PENS is None:
+            cls._ENGAGEMENT_PENS = [
+                pg.mkPen(255, 50,  50,  200, width=2.5, style=QtCore.Qt.DashLine),  # red
+                pg.mkPen(255, 200, 0,   200, width=1.8, style=QtCore.Qt.DashLine),  # yellow
+                pg.mkPen(0,   210, 80,  180, width=1.2, style=QtCore.Qt.DashLine),  # green
+            ]
+        return cls._ENGAGEMENT_PENS
+
     def _update_assignment_lines(self):
-        """Draw assignment lines: battery -> assigned active threat (green dashed)."""
+        """Draw engagement lines: battery → threat.
+
+        Reuses existing PlotCurveItem objects — only setData/setPen per frame.
+        Items are added/removed only when the visible set actually changes.
+        """
         current = dict(self.tracker.primary_assignments.items())
-
-        if current == self._last_assignments:
-            return
-
-        for item in self.assignment_items.values():
-            self.removeItem(item)
-        self.assignment_items.clear()
-
         bat_lookup = {b['id']: b for b in self.tracker.batteries}
-        pen = pg.mkPen('#00ff00', width=1, style=QtCore.Qt.DashLine)
+        pens = self._get_engagement_pens()
 
+        # Build desired (bat_id, mid) set for this frame.
+        # Line appears when flight_progress >= 0.50 (intercept fires at 0.60),
+        # ensuring the line is always visible before the intercept flash.
+        desired: dict = {}   # key → (bx, by, tx, ty, bucket)
         for bat_id, threat_ids in current.items():
             battery = bat_lookup.get(bat_id)
             if not battery:
                 continue
             bx, by = battery['position']
-
             for mid in threat_ids:
                 m = self.tracker.missiles.get(mid)
                 if not m or not m.get('active'):
                     continue
+                if m.get('flight_progress', 0) < 0.50:
+                    continue
                 tx, ty = m['position'][0], m['position'][1]
-                line = pg.PlotCurveItem([bx, tx], [by, ty], pen=pen)
-                self.addItem(line)
-                self.assignment_items[(bat_id, mid)] = line
+                desired[(bat_id, mid)] = (bx, by, tx, ty,
+                                          self._tta_bucket(self._compute_tta(m)))
 
-        self._last_assignments = current
+        # Remove stale items
+        for key in list(self.assignment_items.keys()):
+            if key not in desired:
+                self.removeItem(self.assignment_items.pop(key))
+
+        # Update existing / create new
+        for key, (bx, by, tx, ty, bucket) in desired.items():
+            if key in self.assignment_items:
+                line = self.assignment_items[key]
+                line.setData([bx, tx], [by, ty])
+                line.setPen(pens[bucket])
+            else:
+                line = pg.PlotCurveItem([bx, tx], [by, ty], pen=pens[bucket])
+                self.addItem(line)
+                self.assignment_items[key] = line
+
+    def remove_intercepted(self, missile_id: str):
+        """Called immediately on intercept signal: removes lines + refreshes scatter.
+
+        Ensures engagement line and threat dot disappear at the same time as the
+        flash animation — no 250ms polling lag for the intercept event.
+        """
+        for key in list(self.assignment_items.keys()):
+            if key[1] == missile_id:
+                self.removeItem(self.assignment_items.pop(key))
+        if missile_id in self.trajectory_items:
+            self.removeItem(self.trajectory_items.pop(missile_id))
+        self._update_threats()
 
     def _update_batteries(self):
-        """Update battery markers colour-coded by remaining ammo."""
+        """Update battery markers: colour by ammo, ammo bar below, highlight when assigned."""
         current_ammo = {
             b['id']: b.get('available_missiles', 0) for b in self.tracker.batteries
         }
@@ -361,23 +561,28 @@ class TacticalMapWidget(pg.PlotWidget):
                 self.removeItem(it)
         self.battery_items.clear()
 
+        # Collect which batteries currently have active assignments
+        assigned_batteries: set = set()
+        for bat_id, tids in self.tracker.primary_assignments.items():
+            if tids:
+                assigned_batteries.add(bat_id)
+
         for battery in self.tracker.batteries:
             bid = battery['id']
             bx, by = battery['position']
             ammo = battery.get('available_missiles', 0)
             stype = battery.get('system_type', 'LSAM')
+            is_engaged = bid in assigned_batteries
 
-            # 무기체계별 고정 기본색 (자산 노랑과 확실히 구분)
             if stype == 'LSAM':
-                base_color = '#ff8800'   # 주황 — LSAM
-                symbol = 's'             # 사각형
+                base_color = '#ff8800'
+                symbol = 's'
                 size = 18
             else:
-                base_color = '#00cccc'   # 청록 — MSAM
-                symbol = 'p'             # 오각형
+                base_color = '#00cccc'
+                symbol = 'p'
                 size = 16
 
-            # 잔탄에 따른 내부 채움 투명도 (잔탄 많을수록 밝게)
             if ammo >= 20:
                 alpha = 180
             elif ammo >= 10:
@@ -385,16 +590,19 @@ class TacticalMapWidget(pg.PlotWidget):
             elif ammo >= 5:
                 alpha = 70
             else:
-                alpha = 30   # 잔탄 거의 없음 → 거의 투명
+                alpha = 30
 
             r = int(base_color[1:3], 16)
             g = int(base_color[3:5], 16)
             b = int(base_color[5:7], 16)
 
+            pen_width = 3 if is_engaged else 2
+            pen_alpha = 255 if is_engaged else 200
+
             scatter = pg.ScatterPlotItem(
                 pos=np.array([[bx, by]]),
                 size=size,
-                pen=pg.mkPen(base_color, width=2),
+                pen=pg.mkPen(r, g, b, pen_alpha, width=pen_width),
                 brush=pg.mkBrush(r, g, b, alpha),
                 symbol=symbol
             )
@@ -414,6 +622,27 @@ class TacticalMapWidget(pg.PlotWidget):
 
         self._last_battery_ammo = current_ammo
 
+    def _update_hud(self):
+        """Update top-right HUD overlay with ACTIVE / ENGAGED / FREE counts.
+
+        ENGAGED = flight_progress >= 0.50 (engagement line visible), matching
+        the 'ENGAGED' status shown in the threat table.
+        """
+        missiles = self.tracker.missiles
+        active_cnt = sum(1 for m in missiles.values() if m.get('active'))
+        engaged_ids = {mid for (_, mid) in self.assignment_items}
+        engaged_cnt = sum(1 for mid in engaged_ids if missiles.get(mid, {}).get('active'))
+        free_cnt = active_cnt - engaged_cnt
+        text = (f"ACTIVE   {active_cnt:4d}\n"
+                f"ENGAGED  {engaged_cnt:4d}\n"
+                f"FREE     {free_cnt:4d}")
+        self._hud_label.setText(text)
+        self._hud_label.adjustSize()
+        margin = 6
+        self._hud_label.move(
+            self.width() - self._hud_label.width() - margin, margin
+        )
+
     # ------------------------------------------------------------------
     # Flash animation
     # ------------------------------------------------------------------
@@ -421,8 +650,8 @@ class TacticalMapWidget(pg.PlotWidget):
     def trigger_kill_flash(self, x: float, y: float, success: bool):
         """
         Trigger a flash animation at (x, y).
-        success=True  -> green flash (intercept)
-        success=False -> red flash   (miss)
+        success=True  -> cyan flash (intercept)
+        success=False -> red flash  (miss)
         """
         if success:
             pen = pg.mkPen('#00ccff', width=3)
@@ -470,11 +699,11 @@ class TacticalMapWidget(pg.PlotWidget):
         self._update_trajectory_lines()
         self._update_assignment_lines()
         self._update_batteries()
+        self._update_hud()
 
 
 # ---------------------------------------------------------------------------
-# Backwards-compatible alias kept to avoid ImportError if anything still
-# references the old class name.
+# Backwards-compatible alias
 # ---------------------------------------------------------------------------
 PyQtGraphDisplay = TacticalMapWidget
 

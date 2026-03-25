@@ -289,14 +289,17 @@ class ScenarioManager:
             "MEDIUM_10": "중소규모 (10발 - 일반 공격)",
             "BASELINE_15": "중규모 기본 (15발 - 표준)",
             "MEDIUM_20": "중대규모 (20발 - 균형 공격)",
-            "HEAVY_30": "대규모 (30발 - 포화 공격)",
+            "LARGE_30": "대규모 (30발 - 포화 공격)",
             "LARGE_40": "초대규모 (40발 - 한계 테스트)",
             "STRESS_100": "스트레스 (100발 - 성능 검증)",
-            
+            "STRESS_150": "스트레스 (150발 - 점진적 확장)",
+            "STRESS_200": "스트레스 (200발 - 한계 탐색)",
+            "STRESS_300": "스트레스 (300발 - 극한 테스트)",
+
             # 공격 패턴
-            "SEQUENTIAL_20": "순차 공격 (20발 - 순차 발사)",
-            "SIMULTANEOUS_20": "동시 공격 (20발 - 동시 발사)",
-            
+            "SEQUENTIAL_15": "순차 공격 (15발 - 순차 발사)",
+            "SIMULTANEOUS_15": "동시 공격 (15발 - 동시 발사)",
+
             # 표준 벤치마크
             "DWTA_BALANCED": "표준 벤치마크 (20발, 6개 배터리)"
         }
@@ -310,33 +313,33 @@ class ScenarioManager:
                 "batteries": DWTABalancedScenario.create_constrained_batteries(),
                 "threats": DWTABalancedScenario.create_balanced_threats()
             }
-        elif scenario_type in ["SMALL_3", "SMALL_5", "SMALL_8", "MEDIUM_10", "BASELINE_15", 
-                               "MEDIUM_20", "HEAVY_30", "LARGE_40", "STRESS_100"]:
-            # 숫자 추출
-            if "_" in scenario_type:
-                num_threats = int(scenario_type.split("_")[1])
+        elif scenario_type.startswith("SEQUENTIAL_"):
+            num_threats = int(scenario_type.split("_")[1])
+            return {
+                "assets": ScenarioManager._create_assets(num_threats),
+                "batteries": ScenarioManager._create_batteries(num_threats),
+                "threats": ScenarioManager._create_threats(num_threats, pattern="sequential")
+            }
+        elif scenario_type.startswith("SIMULTANEOUS_"):
+            num_threats = int(scenario_type.split("_")[1])
+            return {
+                "assets": ScenarioManager._create_assets(num_threats),
+                "batteries": ScenarioManager._create_batteries(num_threats),
+                "threats": ScenarioManager._create_threats(num_threats, pattern="simultaneous")
+            }
+        else:
+            # SMALL_N, MEDIUM_N, BASELINE_N, HEAVY_N, LARGE_N, STRESS_N 등
+            # 마지막 _숫자 패턴에서 위협 수 추출
+            parts = scenario_type.rsplit("_", 1)
+            if len(parts) == 2 and parts[1].isdigit():
+                num_threats = int(parts[1])
             else:
-                num_threats = 15  # BASELINE
-            
+                raise ValueError(f"Unknown scenario type: {scenario_type}")
             return {
                 "assets": ScenarioManager._create_assets(num_threats),
                 "batteries": ScenarioManager._create_batteries(num_threats),
                 "threats": ScenarioManager._create_threats(num_threats, pattern="balanced")
             }
-        elif scenario_type == "SEQUENTIAL_20":
-            return {
-                "assets": ScenarioManager._create_assets(20),
-                "batteries": ScenarioManager._create_batteries(20),
-                "threats": ScenarioManager._create_threats(20, pattern="sequential")
-            }
-        elif scenario_type == "SIMULTANEOUS_20":
-            return {
-                "assets": ScenarioManager._create_assets(20),
-                "batteries": ScenarioManager._create_batteries(20),
-                "threats": ScenarioManager._create_threats(20, pattern="simultaneous")
-            }
-        else:
-            raise ValueError(f"Unknown scenario type: {scenario_type}")
     
     @staticmethod
     def _create_assets(num_threats: int) -> List[Dict]:
@@ -409,8 +412,8 @@ class ScenarioManager:
                 }
             ]
             return base + additional
-        else:
-            # 100발: 15개 배터리 (여유)
+        elif num_threats <= 100:
+            # 100발: 15개 배터리 (LSAM×10 + MSAM×5)
             batteries_10 = ScenarioManager._create_batteries(50)
             more = [
                 {
@@ -424,6 +427,36 @@ class ScenarioManager:
                 } for i in range(6, 11)
             ]
             return batteries_10 + more
+        elif num_threats <= 200:
+            # 200발: 20개 배터리 (LSAM×10 + MSAM×10)
+            batteries_15 = ScenarioManager._create_batteries(100)
+            more = [
+                {
+                    "id": f"MSAM_{i:02d}", "name": f"Extra_MSAM_{i}", "system_type": "MSAM", "layer": "LOWER",
+                    "position": ((i-6) * 30, (i-6) * -20), "coverage_radius_km": 40, "defense_zone": f"ZONE_M{i}",
+                    "dedicated_assets": [f"A{(i%10)+1:02d}"],
+                    "specs": {
+                        **InterceptorSystemConfig.get_msam_specs(),
+                        "battery_config": {"launchers": 6, "missiles_per_launcher": 8, "total_missiles": 48, "simultaneous_engagements": 5}
+                    }
+                } for i in range(6, 11)
+            ]
+            return batteries_15 + more
+        else:
+            # 300발+: 25개 배터리 (LSAM×15 + MSAM×10)
+            batteries_20 = ScenarioManager._create_batteries(200)
+            more = [
+                {
+                    "id": f"LSAM_{i:02d}", "name": f"Extra_LSAM_{i}", "system_type": "LSAM", "layer": "UPPER",
+                    "position": ((i-11) * 50, (i-11) * -35), "coverage_radius_km": 150, "defense_zone": f"ZONE_{i}",
+                    "dedicated_assets": [f"A{(i%10)+1:02d}"],
+                    "specs": {
+                        **InterceptorSystemConfig.get_lsam_specs(),
+                        "battery_config": {"launchers": 4, "missiles_per_launcher": 6, "total_missiles": 24, "simultaneous_engagements": 5}
+                    }
+                } for i in range(11, 16)
+            ]
+            return batteries_20 + more
     
     @staticmethod
     def _create_threats(num_threats: int, pattern: str = "balanced") -> List[Dict]:

@@ -19,8 +19,7 @@ warnings.filterwarnings('ignore')
 class UncertaintyConfig:
     """불확실성 모델링 설정"""
     distribution_type: str = "beta"  # "beta" or "normal"
-    beta_alpha: float = 9.0  # 베타 분포 α 파라미터
-    beta_beta: float = 1.0   # 베타 분포 β 파라미터
+    beta_concentration: float = 10.0  # 집중도 n — 클수록 Pk_base에 타이트한 분포
     normal_std: float = 0.05  # 정규 분포 표준편차
     monte_carlo_runs: int = 50  # 몬테카를로 반복 횟수
     confidence_level: float = 0.95  # 신뢰구간 수준
@@ -36,11 +35,11 @@ class UncertaintyModeling:
     def sample_intercept_probability(self, base_probability: float) -> float:
         """기본 요격 확률에서 불확실성을 고려한 베타 분포 샘플링"""
         if self.config.distribution_type == "beta":
-            # 베타 분포에서 직접 샘플링 (GUI와 동일한 방식)
-            alpha = self.config.beta_alpha
-            beta = self.config.beta_beta
-            sampled = np.random.beta(alpha, beta)
-            return sampled
+            # Pk_base를 평균으로 갖는 Beta 분포 — 탄별 독립 요격 확률 불확실성
+            n = self.config.beta_concentration
+            alpha = max(base_probability * n, 0.1)
+            beta  = max((1 - base_probability) * n, 0.1)
+            return np.random.beta(alpha, beta)
             
         elif self.config.distribution_type == "normal":
             # 정규 분포: 평균을 기본 확률로, 표준편차는 설정값
