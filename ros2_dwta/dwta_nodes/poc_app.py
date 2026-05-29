@@ -10,7 +10,7 @@ import sys
 
 from .ros_compat import rclpy, USING_ROS2
 from . import (ControlStationNode, EngageabilityNode, LauncherNode,
-               PlanningNode, RadarNode, ThreatAssessmentNode)
+               PlanningNode, RadarNode, ThreatAssessmentNode, WorldStateNode)
 from .scenario import default_scenario
 
 
@@ -22,8 +22,11 @@ def build_nodes():
     planning = PlanningNode(batteries)
     launcher = LauncherNode(batteries)
     control = ControlStationNode()
-    # control & radar first so policy/tracks are available early
-    return [control, radar, assessment, engage, planning, launcher], batteries, launcher
+    world = WorldStateNode()
+    world.set_battery_layers({b.id: b.layer for b in batteries})
+    # control & radar first so policy/tracks are available early; world last (COP)
+    nodes = [control, radar, assessment, engage, planning, launcher, world]
+    return nodes, batteries, launcher
 
 
 def main(duration: float = 45.0, args=None) -> None:
@@ -62,11 +65,11 @@ def main(duration: float = 45.0, args=None) -> None:
 def _summary(launcher, batteries) -> None:
     print("=" * 78)
     print(" 종료 요약")
-    print(f"  발사된 요격탄(고유 system->threat): {len(launcher._fired)}")
+    print(f"  발사된 요격탄 총 {launcher._fired_seq}발, 비행중 {len(launcher._in_flight)}발")
     for b in batteries:
         used = b.available_missiles - launcher._available[b.id]
         print(f"  {b.id:9s} [{b.layer:5s}] 사용 {used}/{b.available_missiles}  "
-              f"교전 위협: {launcher._engaging[b.id]}")
+              f"교전중 위협: {launcher._engaging[b.id]}")
     print("=" * 78)
 
 

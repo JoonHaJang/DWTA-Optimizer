@@ -27,6 +27,27 @@ control_station_node ──/policy(전시·평시, SLS/SSL, 위협당 최대탄)
 | OO계획수립(WTA) | `planning_node` | 2 Hz | scores + matrix + `/policy` → `/engagement_plan` |
 | 발사대 | `launcher_node` | 이벤트+5 Hz | `/engagement_plan` → `/launch_events`, `/interceptor_status` |
 | 통제소 | `control_station_node` | 1 Hz | → `/policy` |
+| 상황도(COP) | `world_state_node` | 2 Hz | 전 토픽 구독 → `/world_state`(latched) |
+
+## 정보 공유 / 이벤트 / COP
+
+- **통합 이벤트 버스 `/events`**: `DETECTED / LAUNCH / INTERCEPT / MISS / IMPACT`.
+  레이다·발사대가 발행하고 관련 노드가 구독해 **이벤트 기반으로 상태가 전파**됩니다.
+- **아군 요격탄 상태 공유**: `launcher_node`가 비행중 요격탄(`Interceptor`: 표적·
+  비행시간·Pk·상태)을 `/interceptor_status.in_flight`로 발행 → engageability·planning이
+  잔여탄/비행중을 단일 진실원으로 사용. **MISS 시 자동 재교전(SLS)**, `INTERCEPT/IMPACT`는
+  종결 처리(재할당 금지).
+- **Common Operational Picture `world_state_node`**: 적 탄도탄 생명주기
+  (DETECTED→ASSESSED→ENGAGEABLE→ENGAGED→INTERCEPTED/LEAKED)와 아군 포대(잔여탄·비행중·
+  교전중)를 하나의 `/world_state`로 집계해 **모든 노드가 동일한 상황 인식**을 갖습니다
+  (latched QoS로 늦게 합류한 노드도 최신 COP 수신).
+
+## 형식 명세 (spec-first, 타임드 오토마타)
+
+`spec/` — ROS2 구조를 구현 전에 형식 명세로 고정하고 검증:
+- `spec/timed_automata.md` — 노드=오토마타, 토픽=채널, 주기=클럭 명세 + 검증 속성.
+- `spec/dwta_model.xml` — UPPAAL 모델(위협/요격탄 생명주기). 검증 쿼리:
+  교착없음, `ammo>=0`, `inflight<=CAP`, 모든 위협 종결(라이브니스), 전량요격 가능 등.
 
 WTA 백엔드는 교체식(`dwta_nodes/wta_backend.py`): 기본 `GreedyWTA`(위험도 우선,
 상·하층/동시교전/잔여탄 제약). 기존 `greedy_optimizer`/`ga_optimizer`/

@@ -15,8 +15,9 @@ from .scenario import Battery, distance
 
 
 class EngageabilityNode(Node):
-    PERIOD = 0.2  # 5 Hz
+    PERIOD = 0.2   # 5 Hz
     MIN_TTA = 3.0  # 최소 비행/요격 준비 시간 (s)
+    MIN_PK = 0.5   # 이 명중률 미만이면 교전 보류 (가능성 평가 게이트)
 
     def __init__(self, batteries: List[Battery]):
         super().__init__("engageability_node")
@@ -52,6 +53,8 @@ class EngageabilityNode(Node):
                 # 거리 기반 Pk 보정 (가까울수록 명중률↑)
                 range_factor = max(0.4, 1.0 - 0.5 * d / b.engagement_range)
                 pk = round(min(0.97, b.base_pk * range_factor), 4)
+                if pk < self.MIN_PK:
+                    continue  # 명중률 부족 -> 교전 보류 (더 가까운 창 대기)
                 cells.append(EngagementCell(
                     system_id=bid, threat_id=tr.threat_id, layer=b.layer, pk=pk,
                     window_open=self._latest.stamp,

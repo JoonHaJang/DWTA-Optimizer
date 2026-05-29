@@ -1,13 +1,15 @@
 """레이다/경보체계 노드 (sensor + world truth for the PoC).
 
-10 Hz 루프로 탄도탄을 전진시키고 추적정보(TrackArray)와 레이다 상태를 발행한다.
-교전 결과(/launch_events)를 받아 요격된 위협을 제거해 폐루프를 닫는다.
+10 Hz 루프로 탄도탄을 전진시키고 추적정보(TrackArray)·레이다 상태를 발행한다.
+통합 이벤트(/events)를 구독해 요격 성공(INTERCEPT) 위협을 제거하고, 탐지(DETECTED)·
+탄착(IMPACT) 이벤트를 발행해 폐루프를 닫는다. 요격 실패(MISS) 위협은 계속 비행.
 """
 from __future__ import annotations
 
 from typing import Dict, List
 
-from .messages import BallisticTrack, LaunchEvent, RadarStatus, TrackArray
+from .messages import (BallisticTrack, Event, EV_DETECTED, EV_IMPACT,
+                       EV_INTERCEPT, RadarStatus, TrackArray)
 from .ros_compat import Node
 from .scenario import Asset, Battery, ThreatSpawn, distance, velocity_toward
 
@@ -22,17 +24,18 @@ class RadarNode(Node):
         self._spawns = list(spawns)
         self._spawned: set = set()
         self._threats: Dict[str, dict] = {}     # active threat states
-        self._intercepted: set = set()
+        self._killed: set = set()                # INTERCEPT 처리된 위협
         self.sim_t = 0.0
 
         self._track_pub = self.create_publisher(TrackArray, "/tracks", 10)
         self._status_pub = self.create_publisher(RadarStatus, "/radar_status", 10)
-        self.create_subscription(LaunchEvent, "/launch_events", self._on_launch, 10)
+        self._ev_pub = self.create_publisher(Event, "/events", 10)
+        self.create_subscription(Event, "/events", self._on_event, 10)
         self.create_timer(self.PERIOD, self._tick)
 
-    # 교전 발생 -> 해당 위협 요격 처리 (PoC: 사격 시 제거)
-    def _on_launch(self, ev: LaunchEvent) -> None:
-        self._intercepted.add(ev.threat_id)
+    def _on_event(self, ev: Event) -> None:
+        if ev.kind == EV_INTERCEPT:        # 요격 성공 -> 위협 제거
+            self._killed.add(ev.threat_id)
 
     def _spawn_due(self) -> None:
         for sp in self._spawns:
@@ -47,6 +50,8 @@ class RadarNode(Node):
                 "launch_pos": sp.launch_position,
             }
             self._spawned.add(sp.threat_id)
+            self._ev_pub.publish(Event(stamp=self.sim_t, kind=EV_DETECTED,
+                                       threat_id=sp.threat_id, detail=sp.target_asset_id))
             self.get_logger().info(f"탐지: {sp.threat_id} -> {sp.target_asset_id} 발사 포착")
 
     def _tick(self) -> None:
@@ -55,7 +60,7 @@ class RadarNode(Node):
 
         tracks: List[BallisticTrack] = []
         for tid in list(self._threats):
-            if tid in self._intercepted:
+            if tid in self._killed:
                 self.get_logger().info(f"요격 확인: {tid} 제거")
                 del self._threats[tid]
                 continue
@@ -66,7 +71,9 @@ class RadarNode(Node):
             d = distance(tuple(st["pos"]), asset.position)
             speed = (st["vel"][0] ** 2 + st["vel"][1] ** 2) ** 0.5 or 1.0
             tta = d / speed
-            if d <= 1.0:  # 탄착
+            if d <= 1.0:  # 탄착 (방어 실패 / 누설)
+                self._ev_pub.publish(Event(stamp=self.sim_t, kind=EV_IMPACT,
+                                           threat_id=tid, detail=st["target"]))
                 self.get_logger().info(f"!! 탄착: {tid} -> {st['target']} 방어 실패")
                 del self._threats[tid]
                 continue

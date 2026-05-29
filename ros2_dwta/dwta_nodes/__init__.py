@@ -5,6 +5,7 @@ from .launcher_node import LauncherNode
 from .planning_node import PlanningNode
 from .radar_node import RadarNode
 from .threat_assessment_node import ThreatAssessmentNode
+from .world_state_node import WorldStateNode
 
 __all__ = [
     "RadarNode",
@@ -13,4 +14,5 @@ __all__ = [
     "PlanningNode",
     "LauncherNode",
     "ControlStationNode",
+    "WorldStateNode",
 ]

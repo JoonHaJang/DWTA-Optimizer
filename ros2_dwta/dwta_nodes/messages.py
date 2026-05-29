@@ -90,11 +90,24 @@ class EngagementPlan:
 
 # ---- OO체계 (actuators / status) ----------------------------------------------
 @dataclass
+class Interceptor:
+    """아군 요격탄 한 발의 상태 (비행중 유도탄)."""
+    interceptor_id: str
+    system_id: str
+    target_threat_id: str
+    pk: float
+    launch_time: float
+    intercept_time: float          # 예상 요격 시각 (launch + flyout)
+    state: str = "IN_FLIGHT"       # IN_FLIGHT | HIT | MISS
+
+
+@dataclass
 class InterceptorStatus:
-    """발사대/요격체계 상태 (잔여 유도탄 수, 교전 상태)."""
+    """발사대/요격체계 상태 (잔여탄·비행중 요격탄·교전 상태) — 전 노드 공유."""
     stamp: float
     available: Dict[str, int] = field(default_factory=dict)        # system_id -> 잔여탄
     engaging: Dict[str, List[str]] = field(default_factory=dict)   # system_id -> [threat_id]
+    in_flight: List[Interceptor] = field(default_factory=list)     # 현재 비행중 요격탄
 
 
 @dataclass
@@ -112,3 +125,53 @@ class DefensePolicy:
     posture: str = "WARTIME"       # 전시/평시
     fire_doctrine: str = "SHOOT_LOOK_SHOOT"   # 단발/연속, SSL/SLS
     max_interceptors_per_threat: int = 2
+
+
+# ---- 통합 이벤트 버스 (event-driven sharing) -----------------------------------
+# 이벤트 종류: 탐지/발사/요격성공/요격실패/탄착(누설)
+EV_DETECTED = "DETECTED"
+EV_LAUNCH = "LAUNCH"
+EV_INTERCEPT = "INTERCEPT"   # 요격 성공 (HIT)
+EV_MISS = "MISS"             # 요격 실패 -> 위협 계속 (재교전 대상)
+EV_IMPACT = "IMPACT"         # 방어 실패 (탄착)
+
+
+@dataclass
+class Event:
+    stamp: float
+    kind: str                              # EV_* 중 하나
+    threat_id: str = ""
+    system_id: str = ""
+    interceptor_id: str = ""
+    detail: str = ""
+
+
+# ---- Common Operational Picture (전 노드 공유 월드 상태) ------------------------
+# 위협 생명주기: DETECTED -> ASSESSED -> ENGAGEABLE -> ENGAGED -> INTERCEPTED | LEAKED
+@dataclass
+class ThreatState:
+    threat_id: str
+    target_asset_id: str
+    position: Tuple[float, float]
+    time_to_impact: float
+    danger: float
+    lifecycle: str                          # DETECTED|ASSESSED|ENGAGEABLE|ENGAGED|INTERCEPTED|LEAKED
+    assigned_systems: List[str] = field(default_factory=list)
+
+
+@dataclass
+class BatteryState:
+    system_id: str
+    layer: str
+    available: int                          # 잔여탄
+    in_flight: int                          # 비행중 요격탄 수
+    engaging: List[str] = field(default_factory=list)
+
+
+@dataclass
+class WorldState:
+    """모든 노드가 구독하는 통합 상황도(적 탄도탄 + 아군 요격탄 상태)."""
+    stamp: float
+    threats: List[ThreatState] = field(default_factory=list)
+    batteries: List[BatteryState] = field(default_factory=list)
+    recent_events: List[Event] = field(default_factory=list)
