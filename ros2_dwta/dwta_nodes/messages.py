@@ -1,0 +1,114 @@
+"""Message types for the DWTA ROS2 pipeline.
+
+For the PoC these are plain dataclasses so the exact same node code runs both
+under real ROS2 (rclpy) and under the in-process shim (sim_bus) without a ROS2
+install.  For a real deployment, replace these with a `dwta_msgs` rosidl
+interface package (the equivalent .msg files live in ros2_dwta/msg/) and import
+the generated types instead -- the field names are kept identical on purpose.
+"""
+from __future__ import annotations
+
+from dataclasses import dataclass, field
+from typing import Dict, List, Tuple
+
+
+# ---- 경보체계 / 레이다 (sensor) -------------------------------------------------
+@dataclass
+class BallisticTrack:
+    """단일 탄도탄 추적 정보 (위치/속도/예상탄착/발사점)."""
+    threat_id: str
+    target_asset_id: str
+    position: Tuple[float, float]
+    velocity: Tuple[float, float]
+    launch_position: Tuple[float, float]
+    time_to_impact: float          # TTA, seconds
+    stamp: float                   # sim time the track was produced
+
+
+@dataclass
+class TrackArray:
+    stamp: float
+    tracks: List[BallisticTrack] = field(default_factory=list)
+
+
+@dataclass
+class RadarStatus:
+    stamp: float
+    detecting: bool
+    n_tracks: int
+
+
+# ---- OO평가 (threat assessment) -----------------------------------------------
+@dataclass
+class ThreatScore:
+    threat_id: str
+    target_asset_id: str
+    danger: float                  # 높을수록 위험 (가치/TTA 기반 점수화)
+    time_to_impact: float
+
+
+@dataclass
+class ThreatScores:
+    stamp: float
+    scores: List[ThreatScore] = field(default_factory=list)
+
+
+# ---- OO 가능성 평가 (engageability) -------------------------------------------
+@dataclass
+class EngagementCell:
+    """(요격체계, 탄도탄) 교전 가능성 한 칸: 교전창 + 명중률."""
+    system_id: str
+    threat_id: str
+    layer: str                     # "UPPER" | "LOWER"
+    pk: float                      # 명중률 (Probability of kill)
+    window_open: float             # 교전 가능 시작 (s, sim time)
+    window_close: float            # 교전 가능 종료 (s, sim time)
+
+
+@dataclass
+class EngagementMatrix:
+    stamp: float
+    cells: List[EngagementCell] = field(default_factory=list)
+
+
+# ---- OO계획 수립/전송 (planning) ----------------------------------------------
+@dataclass
+class Assignment:
+    system_id: str
+    threat_id: str
+    layer: str
+    pk: float
+
+
+@dataclass
+class EngagementPlan:
+    stamp: float
+    assignments: List[Assignment] = field(default_factory=list)
+    objective_value: float = 0.0
+    solver: str = ""
+
+
+# ---- OO체계 (actuators / status) ----------------------------------------------
+@dataclass
+class InterceptorStatus:
+    """발사대/요격체계 상태 (잔여 유도탄 수, 교전 상태)."""
+    stamp: float
+    available: Dict[str, int] = field(default_factory=dict)        # system_id -> 잔여탄
+    engaging: Dict[str, List[str]] = field(default_factory=dict)   # system_id -> [threat_id]
+
+
+@dataclass
+class LaunchEvent:
+    stamp: float
+    system_id: str
+    threat_id: str
+    pk: float
+
+
+# ---- 통제소 (policy) -----------------------------------------------------------
+@dataclass
+class DefensePolicy:
+    stamp: float
+    posture: str = "WARTIME"       # 전시/평시
+    fire_doctrine: str = "SHOOT_LOOK_SHOOT"   # 단발/연속, SSL/SLS
+    max_interceptors_per_threat: int = 2
