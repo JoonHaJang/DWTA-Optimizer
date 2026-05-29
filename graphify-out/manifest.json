@@ -73,5 +73,15 @@
     "mtime": 1780036821.4047608,
     "ast_hash": "311133ea746491216df9c241089aeeb8",
     "semantic_hash": "311133ea746491216df9c241089aeeb8"
+  },
+  "/home/user/DWTA-Optimizer/.claude/settings.json": {
+    "mtime": 1780037253.4162083,
+    "ast_hash": "87f0d903477984d0587a02f8fe185263",
+    "semantic_hash": ""
+  },
+  "/home/user/DWTA-Optimizer/CLAUDE.md": {
+    "mtime": 1780037253.4159327,
+    "ast_hash": "82efb97a359f5c7290bf2513d14686be",
+    "semantic_hash": ""
   }
 }

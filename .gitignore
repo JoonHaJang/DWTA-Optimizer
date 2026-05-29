@@ -20,3 +20,5 @@ graphify-out/.graphify_python
 graphify-out/.graphify_root
 graphify-out/.graphify_*.json
 graphify-out/.needs_update
+# dated rollback backups created by the auto-rebuild hook
+graphify-out/20*/

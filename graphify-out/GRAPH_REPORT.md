@@ -1,13 +1,18 @@
-# Graph Report - .  (2026-05-29)
+# Graph Report - DWTA-Optimizer  (2026-05-29)
 
 ## Corpus Check
-- 15 files · ~51,266 words
+- 16 files · ~51,451 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 655 nodes · 1463 edges · 27 communities (21 shown, 6 thin omitted)
+- 660 nodes · 1466 edges · 41 communities (33 shown, 8 thin omitted)
 - Extraction: 75% EXTRACTED · 25% INFERRED · 0% AMBIGUOUS · INFERRED: 365 edges (avg confidence: 0.52)
-- Token cost: 235,640 input · 0 output
+- Token cost: 0 input · 0 output
+
+## Graph Freshness
+- Built from commit: `b282fa1f`
+- Run `git rev-parse HEAD` and compare to check if the graph is stale.
+- Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
 - [[_COMMUNITY_Clean-Slate Optimizer & Scenarios|Clean-Slate Optimizer & Scenarios]]
@@ -37,6 +42,20 @@
 - [[_COMMUNITY_SciPy Dependency|SciPy Dependency]]
 - [[_COMMUNITY_Engagement Zone Config|Engagement Zone Config]]
 - [[_COMMUNITY_Config Node|Config Node]]
+- [[_COMMUNITY_Community 27|Community 27]]
+- [[_COMMUNITY_Community 28|Community 28]]
+- [[_COMMUNITY_Community 29|Community 29]]
+- [[_COMMUNITY_Community 30|Community 30]]
+- [[_COMMUNITY_Community 31|Community 31]]
+- [[_COMMUNITY_Community 32|Community 32]]
+- [[_COMMUNITY_Community 33|Community 33]]
+- [[_COMMUNITY_Community 34|Community 34]]
+- [[_COMMUNITY_Community 35|Community 35]]
+- [[_COMMUNITY_Community 36|Community 36]]
+- [[_COMMUNITY_Community 37|Community 37]]
+- [[_COMMUNITY_Community 38|Community 38]]
+- [[_COMMUNITY_Community 39|Community 39]]
+- [[_COMMUNITY_Community 40|Community 40]]
 
 ## God Nodes (most connected - your core abstractions)
 1. `DWTAMainWindow` - 55 edges
@@ -72,39 +91,39 @@
 - **DWTA optimizer strategies implementing shared solve/create_model interface** — ga_optimizer_geneticalgorithmoptimizer, greedy_optimizer_greedyoptimizer, clean_slate_optimizer_cleanslateoptimizer [INFERRED 0.85]
 - **Optimizers sharing Asset/InterceptorSystem/Threat dataclasses and engagement-matrix data** — ga_optimizer_geneticalgorithmoptimizer, greedy_optimizer_greedyoptimizer, clean_slate_optimizer_build_problem [INFERRED 0.85]
 
-## Communities (27 total, 6 thin omitted)
+## Communities (41 total, 8 thin omitted)
 
 ### Community 0 - "Clean-Slate Optimizer & Scenarios"
-Cohesion: 0.06
-Nodes (55): Asset, CleanSlateOptimizer, InterceptorSystem, Backward compatibility., Drop-in replacement for NonLinearMIPOptimizer.      Interface contract:, Provide k-factor cache for distance/time-based k computation., Threat, EnhancedEngagementMatrix (+47 more)
+Cohesion: 0.05
+Nodes (72): bool, float, str, Asset, build_problem(), _check_feasibility(), CleanSlateOptimizer, _compute_distance() (+64 more)
 
 ### Community 1 - "Configuration & Engagement Models"
-Cohesion: 0.06
-Nodes (50): BaseModel, bool, bool, str, BatteryPosition, Config, EnemyMissile, EnemyMissileSpec (+42 more)
+Cohesion: 0.17
+Nodes (12): AssetConfig, InterceptorSystemConfig, 방어 자산 설정 (10개 선택 - 우선순위 기반), DWTABalancedScenario, DWTA 벤치마크 최적화 시나리오 ================================ 학술 논문용 균형잡힌 DWTA 시나리오 설계  목표, 제약된 방어 자원 (6개 포대)         - LSAM 3개 (20발/포대) = 60발         - MSAM 3개 (30발/포대) =, 균형잡힌 자산 가치 분포 (10개)         - 균등 분포로 편차 최소화         - 총 가치: 9,500, 시나리오 타입에 따라 자산, 배터리, 위협 생성 (+4 more)
 
 ### Community 2 - "Feasibility & McCormick Caches"
-Cohesion: 0.05
-Nodes (29): int, str, BinaryTreeMcCormickCache, FeasibilityCache, 교전 가능 여부 (정적 precompute + 실시간 거리 체크)                  Args:             battery_, 새로운 위협에 대해서만 증분 계산                  Args:             batteries: 포대 리스트, 이동 중인 위협의 현재 위치 기반으로 교전 매트릭스 동적 업데이트.          기존 정적 precompute는 발사 위치 기반이었으나, 이, 특정 위협에 대해 유효한 state 조합만 생성                  Args:             threat_id: 위협 ID (+21 more)
+Cohesion: 0.09
+Nodes (15): int, FeasibilityCache, 새로운 위협에 대해서만 증분 계산                  Args:             batteries: 포대 리스트, 이동 중인 위협의 현재 위치 기반으로 교전 매트릭스 동적 업데이트.          기존 정적 precompute는 발사 위치 기반이었으나, 이, 특정 위협에 대해 유효한 state 조합만 생성                  Args:             threat_id: 위협 ID, 필요한 McCormick 적용 횟수 계산 (캐싱), 비트마스크 기반 교전 가능성 캐시      각 포대(battery)마다 uint64 비트마스크로 feasible한 위협을 관리.     - O(, battery_idx에 대해 feasible한 위협 인덱스 리스트 (bit extraction) (+7 more)
 
 ### Community 3 - "Tactical Map Widget (PyQtGraph)"
-Cohesion: 0.05
-Nodes (30): _draw_star(), _LegendWidget, _pentagon_points(), TacticalMapWidget - PyQtGraph Tactical Display for DWTA Operator ===============, High-performance PyQtGraph tactical map widget.     Designed for MLAD (Multi-Lay, Configure plot axes, background, and labels., Pre-allocate all scatter/line plot items., 좌하단 고정 범례 — QPainter 기반 실제 심볼 렌더링. (+22 more)
+Cohesion: 0.08
+Nodes (16): Return time-to-arrival in seconds for an active missile., Return (r, g, b, a) tuple based on TTA urgency., Update threat scatter + glow ring with TTA-based colour.          Unassigned thr, 미교전 위협(배터리 미할당)만 궤적선 표시., Return 0/1/2 for red/yellow/green — used to detect pen changes., Draw engagement lines: battery → threat.          Reuses existing PlotCurveItem, Called immediately on intercept signal: removes lines + refreshes scatter., Update battery markers: colour by ammo, ammo bar below, highlight when assigned. (+8 more)
 
 ### Community 4 - "K-Factor & McCormick Computation"
-Cohesion: 0.08
-Nodes (22): float, KFactorCache, McCormickCoefficients, 기본 요격 확률 (O(1) lookup), K-factor 사전 계산 캐시 + 경량 실시간 계산 (최적화 #3), 모든 (threat, system) 조합의 k-factor 계산                  Args:             threats:, K-factor 조회 (캐시에서, O(1)), 실시간 K값 계산 (LUT 기반, 초경량)                  Args:             threat_pos: 위협 현재 위치 (+14 more)
+Cohesion: 0.27
+Nodes (4): float, 모든 (threat, system) 조합의 k-factor 계산                  Args:             threats:, K-factor 계산 로직 (4가지 요소 종합)                  k_ij(t) = k_base(t) × distance_corre, 운동학적 요소: 고도와 속도에 따른 요격 난이도
 
 ### Community 5 - "MIP Solver Techniques"
 Cohesion: 0.06
 Nodes (41): Bipartite Graph-Based Problem Decomposition, Branch and Bound (B&B), CSR Sparse Matrix, Exact Algorithm (Global Optimality Guarantee), FBBT (Feasibility-Based Bound Tightening), Huffman Binary Tree, LP Relaxation, McCormick Relaxation (+33 more)
 
 ### Community 6 - "Simulation Engine (MultiMissileTracker)"
-Cohesion: 0.09
-Nodes (17): MultiMissileTracker, Called by MultiMissileTracker internals. Thread-safe via signal., 실시간 DWTA 분석 시뮬레이터 - GUI 지원 버전, Invalidate active threats count cache, Invalidate operational battery and ammo cache, Get operational batteries with caching (O(1) after first call), Rebuild persistent battery lookup cache, Simple linear trajectory for visualization. (+9 more)
+Cohesion: 0.11
+Nodes (14): MultiMissileTracker, Called by MultiMissileTracker internals. Thread-safe via signal., 실시간 DWTA 분석 시뮬레이터 - GUI 지원 버전, Invalidate active threats count cache, Invalidate operational battery and ammo cache, Get operational batteries with caching (O(1) after first call), Simple linear trajectory for visualization., 다음 iteration을 위한 시뮬레이션 상태 리셋 (Compare 모드 전용) (+6 more)
 
 ### Community 7 - "Clean-Slate MIP Model Building"
-Cohesion: 0.10
-Nodes (29): bool, float, int, str, apply_warmstart(), build_model(), build_problem(), _check_feasibility() (+21 more)
+Cohesion: 0.22
+Nodes (13): int, apply_warmstart(), build_model(), DWTAProblem, extract_result(), Variable index mapping for HiGHS model., Pure function: DWTAProblem → (HiGHS model, VarMap)., Apply previous solution as MIP start hint. Returns count of hints set. (+5 more)
 
 ### Community 8 - "Genetic Algorithm Optimizer"
 Cohesion: 0.10
@@ -112,23 +131,27 @@ Nodes (16): Asset, GeneticAlgorithmOptimizer, InterceptorSystem, Genetic Algorit
 
 ### Community 9 - "Main Window GUI Layout"
 Cohesion: 0.11
-Nodes (6): DWTAMainWindow, Trigger flash + immediately clean up engagement lines and threat dot., Update solver time, warm-start, or objective value labels., Compatibility: tracker calls this after update_simulation()., DWTA 단일 PyQt5 메인 윈도우.     tkinter ControlPanel + matplotlib figure 를 완전히 대체한다., QMainWindow
+Nodes (5): DWTAMainWindow, Insert a colour-coded log entry (always runs on main thread via signal)., Compatibility: tracker calls this after update_simulation()., DWTA 단일 PyQt5 메인 윈도우.     tkinter ControlPanel + matplotlib figure 를 완전히 대체한다., QMainWindow
 
 ### Community 10 - "Scenario Generation & Deployment"
 Cohesion: 0.10
 Nodes (10): 방어 자산 목록 반환 - scenario_dwta_balanced.py의 ScenarioManager 사용, 포대 배치 목록 반환 - scenario_dwta_balanced.py의 ScenarioManager 사용, 위협 미사일 목록 반환 - scenario_dwta_balanced.py의 ScenarioManager 사용, 현실적인 시나리오 생성 - 시나리오 타입에 따라 다른 위협 구성, 전구 방어 구역 기반 포대 배치 - 각 자산당 전담 상층/하층 시스템 배정, L-SAM (장거리 지대공 미사일) 실제 스펙, 세밀한 시간 기반 북한 탄도탄 15발 시나리오 (노동 + Scud-B), M-SAM (중거리 지대공 미사일) 실제 스펙 - 한국형 천궁-II (+2 more)
 
 ### Community 11 - "Stress Metrics & Table Refresh"
-Cohesion: 0.17
-Nodes (9): _calculate_stress_metrics(), Called on main thread when simulation thread exits., Fires every 250 ms on the main thread — refresh all visual elements., 누적 로그 방식: 신규 위협은 행 추가, 기존 위협은 상태만 갱신., Flash alert bar if there are unengaged high-danger threats., Text-based status report (원본 코드), Final reporting (원본 코드 유지), 성능 지표를 CSV 파일로 저장 (확장된 메트릭) (+1 more)
+Cohesion: 0.25
+Nodes (4): Called on main thread when simulation thread exits., Fires every 250 ms on the main thread — refresh all visual elements., 누적 로그 방식: 신규 위협은 행 추가, 기존 위협은 상태만 갱신., Flash alert bar if there are unengaged high-danger threats.
 
 ### Community 12 - "Assignment Manager Data Structure"
-Cohesion: 0.27
-Nodes (4): OptimizedAssignmentManager, 하이브리드 자료구조: 빠른 쓰기 O(1) + 빠른 탐색 O(1)~O(k)     - battery_to_threats: List[List[int, 새로운 할당으로 병합 (MIP 제약 조건 준수)                  제약 조건:         - 위협당 상층 최대 1개 배터리, str
+Cohesion: 0.23
+Nodes (5): OptimizedAssignmentManager, 하이브리드 자료구조: 빠른 쓰기 O(1) + 빠른 탐색 O(1)~O(k)     - battery_to_threats: List[List[int, Update solver time, warm-start, or objective value labels., 새로운 할당으로 병합 (MIP 제약 조건 준수)                  제약 조건:         - 위협당 상층 최대 1개 배터리, str
 
 ### Community 13 - "Config Class Aggregates"
 Cohesion: 0.16
 Nodes (15): AssetConfig, BatteryDeploymentConfig, EngagementZoneConfig.calculate_engagement_time_window, EngagementZoneConfig.calculate_trajectory_intercept_point, EngagementZoneConfig.calculate_window_adjusted_probability, EngagementZoneConfig.can_engage_trajectory, EngagementZoneConfig.create_engagement_matrix, InterceptorSystemConfig (+7 more)
+
+### Community 14 - "GUI Controls & Event Handlers"
+Cohesion: 0.10
+Nodes (11): _draw_star(), _LegendWidget, _pentagon_points(), TacticalMapWidget - PyQtGraph Tactical Display for DWTA Operator ===============, Configure plot axes, background, and labels., Pre-allocate all scatter/line plot items., 좌하단 고정 범례 — QPainter 기반 실제 심볼 렌더링., 우상단 HUD 오버레이 QLabel 초기화. (+3 more)
 
 ### Community 15 - "Display Update Methods"
 Cohesion: 0.16
@@ -158,20 +181,64 @@ Nodes (3): Greedy 알고리즘 실행 (공정한 비교를 위해 개선)       
 Cohesion: 0.83
 Nodes (4): CleanSlateOptimizer, GeneticAlgorithmOptimizer, GreedyOptimizer, UncertaintyModeling
 
+### Community 27 - "Community 27"
+Cohesion: 0.18
+Nodes (17): Config, BatteryDeploymentConfig, LaunchBaseConfig, MIPSolverConfig, ProbabilityConfig, config_mip.py ============= MIP 최적화 전용 설정 파일  기존 config.py를 확장하여 MIP 모델에 특화된 설정들, 교전 타임 윈도우 기반 확률 계산 설정, MIP 솔버 설정 (최적해 탐색 우선) (+9 more)
+
+### Community 28 - "Community 28"
+Cohesion: 0.20
+Nodes (12): BaseModel, bool, str, BatteryPosition, EnemyMissile, EnemyMissileSpec, InterceptorConfig, RadarConfig (+4 more)
+
+### Community 29 - "Community 29"
+Cohesion: 0.18
+Nodes (9): bool, EngagementZoneConfig, 우선순위 기반 주요 방어 자산 10개 선택, 교전 영역 계산 설정 - 궁적 기반 교전 영역 모델링, 미사일 궤적에서 교전 시점의 위치와 고도 계산, 궤적 기반 교전 가능성 및 교전 시간 윈도우 계산, 포대가 위협을 교전할 수 있는지 계산 (궁적 기반), 교전 타임 윈도우 계산 - 궁적 기반 실시간 분석 (+1 more)
+
+### Community 30 - "Community 30"
+Cohesion: 0.18
+Nodes (6): str, 교전 가능 여부 (정적 precompute + 실시간 거리 체크)                  Args:             battery_, 기본 요격 확률 (O(1) lookup), 실시간 K값 계산 (LUT 기반, 초경량)                  Args:             threat_pos: 위협 현재 위치, 특정 레이어의 feasible (system_id, threat_id) 쌍 반환, North Korean missile launch bases information
+
+### Community 31 - "Community 31"
+Cohesion: 0.15
+Nodes (7): ③ CSR Sparse Index: feasible (system, threat) 쌍의 인덱스 구조      모든 메서드에서 이중 루프 대신 사, engagement matrix에서 1회 순회로 feasible pair 인덱스를 구축한다.          Args:             u, feasibility 검사 (EnhancedEngagementMatrix 또는 dict fallback), 특정 threat에 대해 feasible한 상층 system ID 리스트, 특정 threat에 대해 feasible한 하층 system ID 리스트, 특정 system에 대해 feasible한 threat ID 리스트, SparseEngagementIndex
+
+### Community 32 - "Community 32"
+Cohesion: 0.19
+Nodes (5): Trigger flash + immediately clean up engagement lines and threat dot., Initialize the fixed scenario threats., Perform real-time optimization (DWTA) with comprehensive logic.          이벤트 기반, Clean Slate: 시뮬레이션 상태에서 옵티마이저 입력 생성.          기존 대비 변경:         - engagement_mat, Simulation background thread (mirrors ControlPanel.run_simulation_thread).
+
+### Community 33 - "Community 33"
+Cohesion: 0.20
+Nodes (5): _calculate_stress_metrics(), Text-based status report (원본 코드), Final reporting (원본 코드 유지), 성능 지표를 CSV 파일로 저장 (확장된 메트릭), Stress test 메트릭 계산 (iteration 종료 시 1회만 호출)
+
+### Community 34 - "Community 34"
+Cohesion: 0.27
+Nodes (7): KFactorCache, K-factor 사전 계산 캐시 + 경량 실시간 계산 (최적화 #3), Asset, InterceptorSystem, Greedy DWTA Optimizer ===================== Greedy 알고리즘 기반 DWTA 최적화기 (독립 모듈)  전략, Greedy 모델 생성 - 데이터 구조 초기화, Threat
+
+### Community 35 - "Community 35"
+Cohesion: 0.20
+Nodes (5): McCormickCoefficients, K-factor 조회 (캐시에서, O(1)), Warmstart용 K값 조회 (별칭), McCormick Relaxation 계수 사전 계산 (최적화 #3), 모든 조합의 McCormick linearization 계수 계산                  Args:             threats:
+
+### Community 36 - "Community 36"
+Cohesion: 0.25
+Nodes (4): 거리 기반 K값 계산 (LUT 사용, O(1))          Args:             distance: 위협-시스템 거리 (km), 위협의 비행 단계 판별          탄도 미사일 비행 단계:         - Boost phase:     0% ~ 15% of fligh, 시간 종속 K-factor: k(t) = k_geometric × k_temporal(phase, t)          기존 거리 기반 k에 비, 동적 업데이트된 교전 매트릭스의 거리 정보로 k-factor 캐시 갱신.          update_moving_threats() 이후 호출하
+
+### Community 38 - "Community 38"
+Cohesion: 0.40
+Nodes (3): BinaryTreeMcCormickCache, 🆕 Binary Tree McCormick 계수 캐시 (선택적 최적화)          자산별 생존 확률 곱셈에 사용되는 McCormick 계수, Binary Tree 깊이 계산 (캐싱)
+
 ## Knowledge Gaps
-- **35 isolated node(s):** `str`, `bool`, `int`, `str`, `bool` (+30 more)
+- **37 isolated node(s):** `PreToolUse`, `graphify`, `str`, `bool`, `int` (+32 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **6 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **8 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `KFactorCache` connect `K-Factor & McCormick Computation` to `Clean-Slate Optimizer & Scenarios`, `Configuration & Engagement Models`, `Simulation Engine (MultiMissileTracker)`, `Genetic Algorithm Optimizer`, `Main Window GUI Layout`, `Assignment Manager Data Structure`?**
-  _High betweenness centrality (0.140) - this node is a cross-community bridge._
-- **Why does `TacticalMapWidget` connect `Tactical Map Widget (PyQtGraph)` to `Clean-Slate Optimizer & Scenarios`, `Main Window GUI Layout`, `Assignment Manager Data Structure`, `Simulation Engine (MultiMissileTracker)`?**
-  _High betweenness centrality (0.132) - this node is a cross-community bridge._
-- **Why does `ScenarioManager` connect `Clean-Slate Optimizer & Scenarios` to `Configuration & Engagement Models`, `Simulation Engine (MultiMissileTracker)`, `Main Window GUI Layout`, `Scenario Generation & Deployment`, `Assignment Manager Data Structure`, `Large-Scale Stress Scenarios`?**
-  _High betweenness centrality (0.108) - this node is a cross-community bridge._
+- **Why does `KFactorCache` connect `Community 34` to `Clean-Slate Optimizer & Scenarios`, `Community 35`, `K-Factor & McCormick Computation`, `Community 36`, `Simulation Engine (MultiMissileTracker)`, `Genetic Algorithm Optimizer`, `Main Window GUI Layout`, `Assignment Manager Data Structure`, `Community 27`, `Community 30`?**
+  _High betweenness centrality (0.138) - this node is a cross-community bridge._
+- **Why does `TacticalMapWidget` connect `Clean-Slate Optimizer & Scenarios` to `Tactical Map Widget (PyQtGraph)`, `Simulation Engine (MultiMissileTracker)`, `Main Window GUI Layout`, `Assignment Manager Data Structure`, `GUI Controls & Event Handlers`?**
+  _High betweenness centrality (0.130) - this node is a cross-community bridge._
+- **Why does `ScenarioManager` connect `Clean-Slate Optimizer & Scenarios` to `Simulation Engine (MultiMissileTracker)`, `Main Window GUI Layout`, `Scenario Generation & Deployment`, `Assignment Manager Data Structure`, `Large-Scale Stress Scenarios`, `Community 27`?**
+  _High betweenness centrality (0.106) - this node is a cross-community bridge._
 - **Are the 14 inferred relationships involving `DWTAMainWindow` (e.g. with `Asset` and `CleanSlateOptimizer`) actually correct?**
   _`DWTAMainWindow` has 14 INFERRED edges - model-reasoned connections that need verification._
 - **Are the 30 inferred relationships involving `KFactorCache` (e.g. with `Config` and `ScenarioManager`) actually correct?**
