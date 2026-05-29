@@ -47,6 +47,10 @@ def render_ascii(ws: WorldState, assets: List[Asset], batteries: List[Battery],
         r, c = cell(*t.position)
         if grid[r][c] in (" ",):
             grid[r][c] = _LIFE_CHAR.get(t.lifecycle, ".")
+    # 격추(+)/탄착(!) 잔상 마커 (위협보다 우선 표시)
+    for m in ws.fading:
+        r, c = cell(*m.position)
+        grid[r][c] = _LIFE_CHAR.get(m.lifecycle, "+")
 
     body = "\n".join("".join(row) for row in grid)
     # HUD
@@ -55,7 +59,8 @@ def render_ascii(ws: WorldState, assets: List[Asset], batteries: List[Battery],
     life = Counter(t.lifecycle for t in ws.threats)
     counts = " ".join(f"{k}={v}" for k, v in sorted(life.items()))
     sep = "-" * w
-    return (f"{sep}\n[t={ws.stamp:6.2f}s] 위협 {len(ws.threats)}  {counts}\n"
+    return (f"{sep}\n[t={ws.stamp:6.2f}s] 위협 {len(ws.threats)}  {counts}"
+            f"  | 격추 {ws.killed}  탄착 {ws.leaked}\n"
             f"포대: {ammo}\n{sep}\n{body}\n{sep}")
 
 

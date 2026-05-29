@@ -187,3 +187,6 @@ class WorldState:
     threats: List[ThreatState] = field(default_factory=list)
     batteries: List[BatteryState] = field(default_factory=list)
     recent_events: List[Event] = field(default_factory=list)
+    killed: int = 0                         # 격추(요격성공) 누계
+    leaked: int = 0                         # 탄착(누설) 누계
+    fading: List[ThreatState] = field(default_factory=list)  # 격추/탄착 잔상 마커(단기)

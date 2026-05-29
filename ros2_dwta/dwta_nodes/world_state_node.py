@@ -27,6 +27,10 @@ class WorldStateNode(Node):
         self._batteries: Dict[str, BatteryState] = {}
         self._covered: set = set()
         self._events: Deque[Event] = deque(maxlen=12)
+        self._last_pos: Dict[str, tuple] = {}      # threat_id -> 마지막 관측 위치
+        self._fade: list = []                       # [(ThreatState, expire_time)] 격추/탄착 잔상
+        self._killed = 0
+        self._leaked = 0
         self.sim_t = 0.0
 
         self._pub = self.create_publisher(WorldState, "/world_state", latched_qos())
@@ -42,6 +46,7 @@ class WorldStateNode(Node):
         seen = set()
         for tr in msg.tracks:
             seen.add(tr.threat_id)
+            self._last_pos[tr.threat_id] = tr.position
             self._threats[tr.threat_id] = {
                 "target": tr.target_asset_id,
                 "pos": tr.position,
@@ -84,11 +89,25 @@ class WorldStateNode(Node):
             self._batteries.setdefault(sid, BatteryState(sid, layer, 0, 0, []))
             self._batteries[sid].layer = layer
 
+    FADE = 3.0  # 격추/탄착 잔상 표시 시간 (s)
+
     def _on_event(self, ev: Event) -> None:
         self._events.append(ev)
         if ev.kind in (EV_INTERCEPT, EV_IMPACT):
             self._danger.pop(ev.threat_id, None)
             self._engageable.discard(ev.threat_id)
+            pos = self._last_pos.get(ev.threat_id)
+            if ev.kind == EV_INTERCEPT:
+                self._killed += 1
+                life = "INTERCEPTED"
+            else:
+                self._leaked += 1
+                life = "LEAKED"
+            if pos is not None:   # 마지막 위치에 잔상 마커 (단기 표시)
+                marker = ThreatState(threat_id=ev.threat_id, target_asset_id="",
+                                     position=pos, time_to_impact=0.0, danger=0.0,
+                                     lifecycle=life)
+                self._fade.append((marker, ev.stamp + self.FADE))
         if ev.kind in (EV_DETECTED, EV_INTERCEPT, EV_IMPACT):
             self._publish()  # 이벤트 발생 즉시 공유
 
@@ -110,9 +129,12 @@ class WorldStateNode(Node):
                 lifecycle=self._lifecycle(tid),
                 assigned_systems=[b.system_id for b in self._batteries.values()
                                   if tid in b.engaging]))
+        self._fade = [(m, exp) for (m, exp) in self._fade if exp >= self.sim_t]
         return WorldState(stamp=self.sim_t, threats=threats,
                           batteries=list(self._batteries.values()),
-                          recent_events=list(self._events))
+                          recent_events=list(self._events),
+                          killed=self._killed, leaked=self._leaked,
+                          fading=[m for (m, _) in self._fade])
 
     def _publish(self) -> None:
         self._pub.publish(self._build())
@@ -123,4 +145,5 @@ class WorldStateNode(Node):
         active = ", ".join(f"{t.threat_id}:{t.lifecycle}" for t in ws.threats) or "-"
         ammo = " ".join(f"{b.system_id}({b.available}탄/{b.in_flight}비행)"
                         for b in ws.batteries)
-        self.get_logger().info(f"[COP] 위협[{active}] | 포대 {ammo}")
+        self.get_logger().info(
+            f"[COP] 위협[{active}] | 포대 {ammo} | 격추 {ws.killed} 탄착 {ws.leaked}")
