@@ -130,9 +130,28 @@ Tick(cp<=PERIOD_P) --[cp>=PERIOD_P] plan! ; cp:=0--> Tick
 ```
 발사 cadence를 주기에 묶어 타이밍 속성을 인과적으로 만든다.
 
-## 5. 검증 속성 & 쿼리 (TCTL, 16개)
+## 4.2 두 모델 — SPEC vs IMPL
 
-`dwta_model.xml` `<queries>`에 포함. 4범주로 구성:
+검증 모델은 두 개로 분리해 둡니다.
+
+| 파일 | 정책 | 목적 |
+|---|---|---|
+| `dwta_model.xml` (**SPEC**) | 비결정 `select t`: 채널이 임의의 feasible 대상 선택 | **어떤 합리적 WTA 정책이든** 만족해야 하는 안전·타이밍·라이브니스를 검증 (강제 검증) |
+| `dwta_model_impl.xml` (**IMPL**) | `select t` + 가드 `t == best_u()/best_l()` → ROS2 시뮬레이터의 `GreedyWTA`와 동일한 결정적 정책 | **실제 코드의 정책**이 같은 속성을 보존하는지, 그리고 정책 고유의 invariants(D3/D4: danger DESC 우선순위)를 검증 |
+
+IMPL 모델의 declaration에는 `best_u()` / `best_l()` 함수가 정의되어 있고
+(`dwta_nodes/wta_backend.py` `GreedyWTA.solve()` 의 핵심 루프 ―
+*가장 danger 큰 위협부터 (위협, 계층)별 1개씩 배정*― 의 추상화), `Ready → Flying`
+전이가 이 함수 반환값과 일치할 때만 발화하므로 정책 자체가 모델에 내장됩니다.
+
+> 단순화: ID 작은 위협이 danger 큰 것으로 추상(시뮬레이터는 호출 전에 `sorted(scores,
+> key=danger, reverse=True)`로 미리 정렬). danger 자체를 모델링하지 않고 우선순위
+> 결과만 검증하는 데 충분합니다. Pk 비교는 안전성/충돌-자유 검증과 직교하므로
+> 의도적으로 제외했습니다.
+
+## 5. 검증 속성 & 쿼리 (TCTL)
+
+두 모델 모두 4범주로 구성. SPEC=16개, IMPL=18개(D1~D4 정책-특화 4개 추가).
 
 ### 안전성 (Safety, `A[]`)
 | ID | 쿼리 | 의미 |
@@ -167,38 +186,31 @@ Tick(cp<=PERIOD_P) --[cp>=PERIOD_P] plan! ; cp:=0--> Tick
 > 자원 설정 `ammoU=ammoL=2, MAXT=3` 은 R1(전량격추)과 R4(누설) 둘 다 도달 가능하게
 > 하여, 모델이 완전방어와 포화실패를 모두 표현하는지 점검한다.
 
-## 6. 두 모델 — SPEC vs IMPL
+## 6. IMPL 모델 추가 쿼리 (정책-특화, D1~D4)
 
-ROS2 시뮬레이터(`dwta_nodes/`)와 정확히 1:1 정합을 맞추기 위해 모델을 **두 개**로 분리한다.
+`dwta_model_impl.xml`은 S1~S8 / T1 / L1~L2 / R1~R4를 SPEC과 동일하게 검증하고,
+추가로 GreedyWTA 정책 고유의 속성을 4개 더 검증한다.
 
-| 파일 | 목적 | 발사 대상 선택 | 검증력 |
-|---|---|---|---|
-| `dwta_model.xml` (SPEC)      | 어떤 정책이든 만족해야 할 속성을 검증 | **비결정** `select t` + 가드 | 가장 강함 (모든 정책 커버) |
-| `dwta_model_impl.xml` (IMPL) | 실제 GreedyWTA 정책을 모델링·검증     | **결정적** `t == select_target_u()` | 정책 한정, 정책 전용 속성 추가 가능 |
-
-IMPL 모델이 시뮬레이터(`wta_backend.py::GreedyWTA.solve`, `launcher_node.py`)와 어떻게 대응되는지:
-
-| ROS2 구현 | IMPL 모델 |
-|---|---|
-| 위협 `danger` (asset value/TTA) | 정적 배열 `const int value_t[MAXT]` (단순화) |
-| 포대별 `available_missiles`     | `int ammoU_b[NB_U]`, `int ammoL_b[NB_L]` |
-| 포대별 `fire_control_channels`  | `const int CH_PER_U`, `CH_PER_L` (인스턴스 단위) |
-| `LauncherNode._on_plan`의 발사 가드 | `can_fire_u(b) = ammoU_b[b] > 0 && usedU_b[b] < CH_PER_U && select_target_u() >= 0` |
-| `GreedyWTA.solve`의 위협 우선 선택 | 함수 `select_target_u/_l` (`value_t` 내림차순) |
-| 위협당 레이어별 1포대(`upCnt/loCnt`) | 가드 `upCnt[t] == 0` (다포대 충돌-자유) |
-| 명중률 `Pk >= HIT_THRESHOLD` 판정 | `hitX!` / `missX!` 비결정 분기 (양쪽 trace 모두 검증) |
-
-### IMPL 모델 추가 속성 (정책 전용)
 | ID | 쿼리 | 의미 |
 |---|---|---|
-| P1 | `A[] forall(t) upCnt[t]>0 imply engU[t]` | 상층 진입 안 한 위협에 상층 요격 낭비 없음 |
-| P2 | `A[] forall(t) loCnt[t]>0 imply engL[t]` | 하층 진입 안 한 위협에 하층 요격 낭비 없음 |
-| P3 | `A[] usedU_b[0]+usedU_b[1] == inflU`     | 포대별 used 카운터와 전역 inflU의 일관성 |
-| P4 | `A[] usedL_b[0]+usedL_b[1] == inflL`     | 하층 동일 |
-| P5 | `E<> (usedU_b[0]>0 && usedU_b[1]>0)`     | 두 L-SAM 포대가 **동시에 가동** (부하 분산) |
+| D1 | `A[] (best_u() >= -1 && best_u() < MAXT)` | `best_u()`는 유효 id 또는 -1 (함수 totality) |
+| D2 | `A[] (best_l() >= -1 && best_l() < MAXT)` | `best_l()` 동일 |
+| D3 | `A[] forall(i,j) ((upCnt[i]>0 && upCnt[j]==0 && engU[j]) imply i <= j)` | **danger DESC** 우선순위: 더 위협적인(작은 id) 위협이 커버될 수 있다면 덜 위협적인 위협에 먼저 발사하지 않는다 |
+| D4 | `A[] forall(i,j) ((loCnt[i]>0 && loCnt[j]==0 && engL[j]) imply i <= j)` | 하층도 동일 |
 
-> S1~S8 / T1~T2 / L1~L2 / R1~R4 는 SPEC·IMPL 양쪽 모두 동일하게 검증한다.
+> S1~S8 / T1 / L1~L2 / R1~R4 는 SPEC·IMPL 양쪽 모두 동일하게 검증한다.
 > 동일 속성이 두 모델 모두에서 성립하면 **명세는 강하고 구현은 정합한 것**.
+
+### ROS2 시뮬레이터 ↔ IMPL 모델 정합
+
+| ROS2 구현 (`dwta_nodes/`) | IMPL 모델 |
+|---|---|
+| `wta_backend.GreedyWTA.solve`: `for s in sorted(scores, key=danger, reverse=True)` | `best_u()/best_l()`: 가장 작은 id 우선 (danger DESC 추상) |
+| 가드 `if cell.system_id not in covered_layer[t]` (충돌회피) | 가드 `upCnt[t] == 0 / loCnt[t] == 0` |
+| `LauncherNode._on_plan`: `if ammo>0 and channels left` | 가드 `ammoU>0 && best_u()>=0` + 인스턴스 수 `CH_U` |
+| `Planner._tick(2Hz)` → `/engagement_plan` | `Planner` 템플릿 `plan!` (주기 클럭 `cp<=PERIOD_P`) |
+| `FCR.resolve` Pk≥θ → hit/miss | broadcast `hitU/L!` / `missU/L!` (비결정 분기로 양쪽 trace 모두 검증) |
+| `WorldState`의 `(threat,layer)`별 커버 집합 | 전역 `upCnt/loCnt[MAXT]` |
 
 ## 7. UPPAAL로 검증하는 법
 
@@ -220,7 +232,7 @@ GUI 사용: 파일 열기 -> Verifier 탭 -> 각 쿼리 Check. 한글 주석은 
 
 구현(`dwta_nodes/`) 변경 시 두 모델/쿼리를 함께 갱신·재검증한다(graphify 그래프도 동기).
 
-## 7. 워크플로 (spec-first)
+## 8. 워크플로 (spec-first)
 
 1. 본 명세로 노드/채널/타이밍을 합의 → `dwta_model.xml`로 속성 검증.
 2. 검증 통과한 구조를 `dwta_nodes/`에 구현 (현재 PoC가 이 명세를 따름).
