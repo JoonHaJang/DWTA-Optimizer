@@ -2,114 +2,155 @@
 <!DOCTYPE nta PUBLIC '-//Uppaal Team//DTD Flat System 1.6//EN' 'http://www.it.uu.se/research/group/darts/uppaal/flat-1_6.dtd'>
 <nta>
   <declaration>
-// DWTA realtime C2 pipeline -- timed-automata model (UPPAAL), extended.
-//   Threat        : 적 탄도탄 생명주기
-//   InterceptorU  : 상층(L-SAM) 유도 채널 슬롯 (인스턴스 수 = CH_U)
-//   InterceptorL  : 하층(M-SAM) 유도 채널 슬롯 (인스턴스 수 = CH_L)
-//   Planner       : 계획수립 주기 클럭 (PERIOD_P) 모델
-// 포대별 채널/탄약을 분리: 상층(ammoU,inflU,CH_U) / 하층(ammoL,inflL,CH_L).
+// ============================================================================
+// DWTA 실시간 C2 파이프라인 -- 강화 타임드 오토마타 모델 (UPPAAL)
+// ----------------------------------------------------------------------------
+//  Threat(id)    : 적 탄도탄 생명주기. 상층(ENTER_U)부터 교전대, 하층(ENTER_L)은
+//                  더 가까워야 진입 -> 중첩대에서 상하층 동시 교전 가능.
+//  InterceptorU  : 상층(L-SAM) 유도채널 슬롯 (인스턴스 수 = CH_U). 발사는 계획주기
+//  InterceptorL  : 하층(M-SAM) 유도채널 슬롯 (인스턴스 수 = CH_L). (plan!)에 동기.
+//  Planner       : 계획수립 주기 클럭 (cp ≤ PERIOD_P) -> 발사 cadence 게이트.
+//
+//  공유 상태(COP 대응):
+//    ammoU/ammoL   잔여탄(계층),  inflU/inflL  비행중 요격탄 수(계층)
+//    upCnt[t]/loCnt[t]  위협 t에 대한 상/하층 동시 교전 수 (충돌-자유 검증용)
+//    engU[t]/engL[t]    위협 t의 상/하층 교전대 진입 여부
+//    killed/leaked      격추/탄착 누계
+// ============================================================================
+const int MAXT    = 3;    // 위협 수 (모델체킹용)
+const int CH_U    = 2;    // 상층 유도 채널 (= InterceptorU 인스턴스 수)
+const int CH_L    = 2;    // 하층 유도 채널 (= InterceptorL 인스턴스 수)
+const int ENTER_U = 6;    // 상층 교전대 진입 시각 (장거리, 이름)
+const int ENTER_L = 12;   // 하층 교전대 진입 시각 (근거리)
+const int IMPACT  = 30;   // 탄착(누설) 시각
+const int FLYOUT_U = 5;   // 상층 요격탄 비행시간 (장거리 -> 김)
+const int FLYOUT_L = 2;   // 하층 요격탄 비행시간
+const int PERIOD_P = 2;   // 계획수립 주기
 
-const int MAXT   = 3;
-const int CH_U   = 2;   // 상층 유도 채널 (= InterceptorU 인스턴스 수)
-const int CH_L   = 2;   // 하층 유도 채널 (= InterceptorL 인스턴스 수)
-const int ENTER  = 8;   // 교전영역 진입 시각
-const int IMPACT = 30;  // 탄착(누설) 시각
-const int FLYOUT_U = 3; // 상층 요격탄 비행시간
-const int FLYOUT_L = 2; // 하층 요격탄 비행시간
-const int PERIOD_P = 2; // 계획수립 주기
-
-int ammoU = 4, ammoL = 4;
-int inflU = 0, inflL = 0;       // 비행중 요격탄 수 (포대 계층별)
+int ammoU = 2, ammoL = 2;
+int inflU = 0, inflL = 0;
+int upCnt[MAXT];
+int loCnt[MAXT];
+bool engU[MAXT];
+bool engL[MAXT];
 int killed = 0, leaked = 0;
 
-chan assign[MAXT];      // 교전배정 (handshake, 어느 계층이든)
-chan hit[MAXT];
-chan miss[MAXT];
+broadcast chan plan;                 // 계획수립 주기 틱
+broadcast chan hitU[MAXT], missU[MAXT];
+broadcast chan hitL[MAXT], missL[MAXT];
   </declaration>
 
+  <!-- ===================== Threat ===================== -->
   <template>
     <name>Threat</name>
     <parameter>const int id</parameter>
     <declaration>clock x;</declaration>
-    <location id="id0" x="-560" y="0"><name>Inbound</name>
+
+    <location id="t0" x="-600" y="0"><name>Inbound</name>
       <label kind="invariant">x &lt;= IMPACT</label></location>
-    <location id="id1" x="-360" y="0"><name>Engageable</name>
+    <location id="t1" x="-340" y="0"><name>Live</name>
       <label kind="invariant">x &lt;= IMPACT</label></location>
-    <location id="id2" x="-160" y="0"><name>Engaged</name>
-      <label kind="invariant">x &lt;= IMPACT</label></location>
-    <location id="id3" x="0" y="-120"><name>Killed</name></location>
-    <location id="id4" x="0" y="120"><name>Leaked</name></location>
-    <init ref="id0"/>
-    <transition><source ref="id0"/><target ref="id1"/>
-      <label kind="guard">x &gt;= ENTER</label></transition>
-    <transition><source ref="id1"/><target ref="id2"/>
-      <label kind="synchronisation">assign[id]?</label></transition>
-    <transition><source ref="id1"/><target ref="id4"/>
+    <location id="t2" x="-120" y="-140"><name>Killed</name></location>
+    <location id="t3" x="-120" y="140"><name>Leaked</name></location>
+    <init ref="t0"/>
+
+    <!-- 상층 교전대 진입 -->
+    <transition><source ref="t0"/><target ref="t1"/>
+      <label kind="guard">x &gt;= ENTER_U</label>
+      <label kind="assignment">engU[id] = true</label></transition>
+    <!-- 하층 교전대 진입 (중첩대) -->
+    <transition><source ref="t1"/><target ref="t1"/>
+      <label kind="guard">x &gt;= ENTER_L &amp;&amp; !engL[id]</label>
+      <label kind="assignment">engL[id] = true</label></transition>
+    <!-- 격추 (상/하층 어느 쪽이든) -->
+    <transition><source ref="t1"/><target ref="t2"/>
+      <label kind="synchronisation">hitU[id]?</label>
+      <label kind="assignment">engU[id] = false, engL[id] = false, killed++</label></transition>
+    <transition><source ref="t1"/><target ref="t2"/>
+      <label kind="synchronisation">hitL[id]?</label>
+      <label kind="assignment">engU[id] = false, engL[id] = false, killed++</label></transition>
+    <!-- 요격 실패 -> 계속 비행 (재교전 가능) -->
+    <transition><source ref="t1"/><target ref="t1"/>
+      <label kind="synchronisation">missU[id]?</label></transition>
+    <transition><source ref="t1"/><target ref="t1"/>
+      <label kind="synchronisation">missL[id]?</label></transition>
+    <!-- 탄착(누설) -->
+    <transition><source ref="t1"/><target ref="t3"/>
       <label kind="guard">x &gt;= IMPACT</label>
-      <label kind="assignment">leaked++</label></transition>
-    <transition><source ref="id2"/><target ref="id3"/>
-      <label kind="synchronisation">hit[id]?</label>
-      <label kind="assignment">killed++</label></transition>
-    <transition><source ref="id2"/><target ref="id1"/>
-      <label kind="synchronisation">miss[id]?</label></transition>
-    <transition><source ref="id2"/><target ref="id4"/>
+      <label kind="assignment">engU[id] = false, engL[id] = false, leaked++</label></transition>
+    <transition><source ref="t0"/><target ref="t3"/>
       <label kind="guard">x &gt;= IMPACT</label>
       <label kind="assignment">leaked++</label></transition>
   </template>
 
+  <!-- ===================== InterceptorU (상층 채널) ===================== -->
   <template>
     <name>InterceptorU</name>
     <declaration>clock f; int tgt;</declaration>
-    <location id="u0" x="-400" y="0"><name>Idle</name></location>
-    <location id="u1" x="-160" y="0"><name>Flying</name>
+    <location id="u0" x="-560" y="0"><name>Idle</name></location>
+    <location id="u1" x="-320" y="0"><name>Ready</name><committed/></location>
+    <location id="u2" x="-80" y="0"><name>Flying</name>
       <label kind="invariant">f &lt;= FLYOUT_U</label></location>
     <init ref="u0"/>
+
+    <!-- 계획 주기에만 발사 결심 -->
     <transition><source ref="u0"/><target ref="u1"/>
+      <label kind="synchronisation">plan?</label></transition>
+    <!-- 발사: 교전대 진입 && 상층 미교전(충돌회피) && 탄약 -->
+    <transition><source ref="u1"/><target ref="u2"/>
       <label kind="select">t : int[0,MAXT-1]</label>
-      <label kind="guard">ammoU &gt; 0</label>
-      <label kind="synchronisation">assign[t]!</label>
-      <label kind="assignment">ammoU--, inflU++, tgt = t, f = 0</label></transition>
-    <transition><source ref="u1"/><target ref="u0"/>
+      <label kind="guard">ammoU &gt; 0 &amp;&amp; engU[t] &amp;&amp; upCnt[t] == 0</label>
+      <label kind="assignment">ammoU--, inflU++, upCnt[t]++, tgt = t, f = 0</label></transition>
+    <!-- 발사 대상 없음 -->
+    <transition><source ref="u1"/><target ref="u0"/></transition>
+    <!-- 비행시간 경과 후 판정 (성공/실패 비결정) -->
+    <transition><source ref="u2"/><target ref="u0"/>
       <label kind="guard">f &gt;= FLYOUT_U</label>
-      <label kind="synchronisation">hit[tgt]!</label>
-      <label kind="assignment">inflU--</label></transition>
-    <transition><source ref="u1"/><target ref="u0"/>
+      <label kind="synchronisation">hitU[tgt]!</label>
+      <label kind="assignment">inflU--, upCnt[tgt]--</label></transition>
+    <transition><source ref="u2"/><target ref="u0"/>
       <label kind="guard">f &gt;= FLYOUT_U</label>
-      <label kind="synchronisation">miss[tgt]!</label>
-      <label kind="assignment">inflU--</label></transition>
+      <label kind="synchronisation">missU[tgt]!</label>
+      <label kind="assignment">inflU--, upCnt[tgt]--</label></transition>
   </template>
 
+  <!-- ===================== InterceptorL (하층 채널) ===================== -->
   <template>
     <name>InterceptorL</name>
     <declaration>clock f; int tgt;</declaration>
-    <location id="l0" x="-400" y="0"><name>Idle</name></location>
-    <location id="l1" x="-160" y="0"><name>Flying</name>
+    <location id="l0" x="-560" y="0"><name>Idle</name></location>
+    <location id="l1" x="-320" y="0"><name>Ready</name><committed/></location>
+    <location id="l2" x="-80" y="0"><name>Flying</name>
       <label kind="invariant">f &lt;= FLYOUT_L</label></location>
     <init ref="l0"/>
+
     <transition><source ref="l0"/><target ref="l1"/>
+      <label kind="synchronisation">plan?</label></transition>
+    <transition><source ref="l1"/><target ref="l2"/>
       <label kind="select">t : int[0,MAXT-1]</label>
-      <label kind="guard">ammoL &gt; 0</label>
-      <label kind="synchronisation">assign[t]!</label>
-      <label kind="assignment">ammoL--, inflL++, tgt = t, f = 0</label></transition>
-    <transition><source ref="l1"/><target ref="l0"/>
+      <label kind="guard">ammoL &gt; 0 &amp;&amp; engL[t] &amp;&amp; loCnt[t] == 0</label>
+      <label kind="assignment">ammoL--, inflL++, loCnt[t]++, tgt = t, f = 0</label></transition>
+    <transition><source ref="l1"/><target ref="l0"/></transition>
+    <transition><source ref="l2"/><target ref="l0"/>
       <label kind="guard">f &gt;= FLYOUT_L</label>
-      <label kind="synchronisation">hit[tgt]!</label>
-      <label kind="assignment">inflL--</label></transition>
-    <transition><source ref="l1"/><target ref="l0"/>
+      <label kind="synchronisation">hitL[tgt]!</label>
+      <label kind="assignment">inflL--, loCnt[tgt]--</label></transition>
+    <transition><source ref="l2"/><target ref="l0"/>
       <label kind="guard">f &gt;= FLYOUT_L</label>
-      <label kind="synchronisation">miss[tgt]!</label>
-      <label kind="assignment">inflL--</label></transition>
+      <label kind="synchronisation">missL[tgt]!</label>
+      <label kind="assignment">inflL--, loCnt[tgt]--</label></transition>
   </template>
 
+  <!-- ===================== Planner (주기 클럭) ===================== -->
   <template>
     <name>Planner</name>
     <declaration>clock cp;</declaration>
     <location id="p0" x="0" y="0"><name>Tick</name>
       <label kind="invariant">cp &lt;= PERIOD_P</label></location>
     <init ref="p0"/>
-    <!-- 주기 클럭: 반드시 PERIOD_P 마다 발화 (불변식 cp<=PERIOD_P + 가드 cp>=PERIOD_P) -->
     <transition><source ref="p0"/><target ref="p0"/>
       <label kind="guard">cp &gt;= PERIOD_P</label>
+      <label kind="synchronisation">plan!</label>
       <label kind="assignment">cp = 0</label></transition>
   </template>
 
@@ -122,21 +163,44 @@ system T0, T1, T2, U0, U1, L0, L1, P;
   </system>
 
   <queries>
+    <!-- ===== 안전성 (Safety, A[]) ===== -->
     <query><formula>A[] not deadlock</formula>
-      <comment>교착 없음</comment></query>
-    <query><formula>A[] ammoU &gt;= 0 &amp;&amp; ammoL &gt;= 0</formula>
-      <comment>계층별 잔여탄 음수 불가</comment></query>
-    <query><formula>A[] inflU &gt;= 0 &amp;&amp; inflU &lt;= CH_U</formula>
-      <comment>상층 비행 요격탄 ≤ 상층 유도 채널</comment></query>
-    <query><formula>A[] inflL &gt;= 0 &amp;&amp; inflL &lt;= CH_L</formula>
-      <comment>하층 비행 요격탄 ≤ 하층 유도 채널</comment></query>
+      <comment>S1 교착 없음</comment></query>
+    <query><formula>A[] (ammoU &gt;= 0 &amp;&amp; ammoL &gt;= 0)</formula>
+      <comment>S2 계층별 잔여탄 음수 불가 (자원 안전)</comment></query>
+    <query><formula>A[] (inflU &gt;= 0 &amp;&amp; inflU &lt;= CH_U)</formula>
+      <comment>S3 상층 비행 요격탄 ≤ 상층 유도채널</comment></query>
+    <query><formula>A[] (inflL &gt;= 0 &amp;&amp; inflL &lt;= CH_L)</formula>
+      <comment>S4 하층 비행 요격탄 ≤ 하층 유도채널</comment></query>
+    <query><formula>A[] forall (t : int[0,MAXT-1]) upCnt[t] &lt;= 1</formula>
+      <comment>S5 충돌회피: 한 위협에 상층 포대는 최대 1개 (다포대 L-SAM 중복 금지)</comment></query>
+    <query><formula>A[] forall (t : int[0,MAXT-1]) loCnt[t] &lt;= 1</formula>
+      <comment>S6 충돌회피: 한 위협에 하층 포대는 최대 1개</comment></query>
+    <query><formula>A[] (killed + leaked &lt;= MAXT)</formula>
+      <comment>S7 종결 위협 수 ≤ 전체 위협 수 (이중 계수 없음)</comment></query>
+    <query><formula>A[] forall (t : int[0,MAXT-1]) (upCnt[t] + loCnt[t] &lt;= 2)</formula>
+      <comment>S8 위협당 동시 교전 요격탄 ≤ 2 (상1+하1, 다층요격 상한)</comment></query>
+
+    <!-- ===== 타이밍/데드라인 (Timing, A[]) ===== -->
     <query><formula>A[] P.cp &lt;= PERIOD_P</formula>
-      <comment>계획수립 주기 보장: 클럭이 주기를 초과하지 않음 (데드라인)</comment></query>
-    <query><formula>A&lt;&gt; (T0.Killed || T0.Leaked)</formula>
-      <comment>모든 위협은 결국 종결 (라이브니스)</comment></query>
+      <comment>T1 계획수립 주기 데드라인: 주기 클럭이 PERIOD_P 초과 불가</comment></query>
+    <query><formula>A[] (T0.Live imply T0.x &lt;= IMPACT)</formula>
+      <comment>T2 교전창 불변: 활성(Live) 위협은 항상 탄착시각 이내 (교전 데드라인)</comment></query>
+
+    <!-- ===== 라이브니스 (Liveness) ===== -->
+    <query><formula>A&lt;&gt; (killed + leaked == MAXT)</formula>
+      <comment>L1 모든 위협은 결국 격추 또는 누설로 종결</comment></query>
+    <query><formula>T0.Live --&gt; (T0.Killed || T0.Leaked)</formula>
+      <comment>L2 교전대 진입 위협은 결국 종결된다 (응답성, leads-to)</comment></query>
+
+    <!-- ===== 도달성 (Reachability, E&lt;&gt;) ===== -->
     <query><formula>E&lt;&gt; killed == MAXT</formula>
-      <comment>전량 요격 가능한 실행 존재</comment></query>
+      <comment>R1 전량 격추(완전 방어) 가능한 실행 존재</comment></query>
     <query><formula>E&lt;&gt; (inflU &gt; 0 &amp;&amp; inflL &gt; 0)</formula>
-      <comment>상·하층 동시 교전(둘 다 비행중)이 가능</comment></query>
+      <comment>R2 상·하층 동시 교전(둘 다 비행중) 도달 가능</comment></query>
+    <query><formula>E&lt;&gt; (upCnt[0] &gt; 0 &amp;&amp; loCnt[0] &gt; 0)</formula>
+      <comment>R3 동일 위협 상·하층 동시 교전(다층요격) 도달 가능</comment></query>
+    <query><formula>E&lt;&gt; leaked &gt; 0</formula>
+      <comment>R4 자원 부족/요격 실패로 누설 발생 가능 (포화 한계)</comment></query>
   </queries>
 </nta>

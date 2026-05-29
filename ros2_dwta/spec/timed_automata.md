@@ -98,52 +98,93 @@ Run --[c >= PERIOD_W]--> Run : world_state! ; c := 0      // latched 발행 -> �
 Run --event(detected/intercept/impact)?--> Run : world_state!  // 이벤트 즉시 공유
 ```
 
-## 4. 생명주기 오토마타 (검증 모델의 핵심)
+## 4. 생명주기 오토마타 (강화 모델 `dwta_model.xml`)
 
-### 4.1 Threat (적 탄도탄)
+전역 공유: `ammoU/ammoL`(계층 잔여탄), `inflU/inflL`(계층 비행중), `upCnt[t]/loCnt[t]`
+(위협 t의 상/하층 동시 교전 수 — 충돌-자유 정형화), `engU[t]/engL[t]`(상/하층 교전대
+진입), `killed/leaked`(누계). 채널: `plan`(주기 틱, broadcast), `hitU/missU/hitL/missL`
+(broadcast — 종결 위협이어도 요격탄이 판정 가능).
+
+### 4.1 Threat(id) — 적 탄도탄
 ```
-Inbound --[x>=ENTER]--> Engageable --assign[id]?--> Engaged --hit[id]?--> Killed
-   │                        │                          │
-   │                        │ [x>=IMPACT]              │ miss[id]?  -> Engageable (재교전)
-   └──────────────[x>=IMPACT]┴──────────────────────────┴ [x>=IMPACT] -> Leaked
+Inbound --[x>=ENTER_U] engU:=T--> Live --hitU?|hitL?--> Killed (killed++)
+   │                       │  ⤺ [x>=ENTER_L] engL:=T (하층 중첩대 진입)
+   │                       │  ⤺ missU?|missL? (재교전)
+   └────[x>=IMPACT]────────┴── [x>=IMPACT] --> Leaked (leaked++)
 ```
-불변식: 모든 비종결 위치에서 `x <= IMPACT`.
+상층은 `ENTER_U`(원거리)부터, 하층은 `ENTER_L`(근거리)부터 교전대 → **중첩대에서
+상·하층 동시 교전**. 불변식: 비종결 위치에서 `x ≤ IMPACT`.
 
-### 4.2 Interceptor (아군 요격탄 슬롯, CAP개 병렬)
+### 4.2 InterceptorU / InterceptorL — 포대 계층별 유도채널 슬롯
+인스턴스 수 = 그 계층 채널 수(`CH_U`/`CH_L`). 발사는 **계획주기(`plan?`)에만** 결심.
 ```
-Idle --[ammo>0] assign[t]!--> Flying(f<=FLYOUT) --[f>=FLYOUT] hit[t]!|miss[t]!--> Idle
+Idle --plan?--> Ready(committed) --[ammo>0 && eng[t] && cnt[t]==0] cnt[t]++,infl++,ammo-- --> Flying
+Flying(f<=FLYOUT) --[f>=FLYOUT] hit[t]!|miss[t]! ; infl--, cnt[t]-- --> Idle
 ```
-인스턴스 수가 `CAP`이므로 `inflight <= CAP`가 구조적으로 보장됨.
+- `cnt[t]==0` 가드 = **동일 위협·동일 계층 중복 교전 금지**(다포대 충돌회피).
+- 인스턴스 수 제한으로 `infl ≤ CH` 가 구조적 보장.
 
-## 5. 검증 속성 (TCTL 쿼리)
+### 4.3 Planner — 계획수립 주기 클럭
+```
+Tick(cp<=PERIOD_P) --[cp>=PERIOD_P] plan! ; cp:=0--> Tick
+```
+발사 cadence를 주기에 묶어 타이밍 속성을 인과적으로 만든다.
 
-`dwta_model.xml`에 포함. 의미:
+## 5. 검증 속성 & 쿼리 (TCTL, 16개)
 
-| 쿼리 | 의미 |
-|---|---|
-| `A[] not deadlock` | 교착 없음 |
-| `A[] ammoU>=0 && ammoL>=0` | 계층별 잔여탄 음수 불가 (자원 안전) |
-| `A[] inflU<=CH_U` / `A[] inflL<=CH_L` | 계층별 비행 요격탄 ≤ 그 계층 유도 채널 |
-| `A[] P.cp <= PERIOD_P` | 계획수립 **주기 클럭** 데드라인 보장 |
-| `A<> (T.Killed \|\| T.Leaked)` | 모든 위협은 결국 종결 (라이브니스) |
-| `E<> killed == N` | 전량 요격 가능한 실행 존재 |
-| `E<> (inflU>0 && inflL>0)` | **상·하층 동시 교전** 가능 |
+`dwta_model.xml` `<queries>`에 포함. 4범주로 구성:
 
-모델은 상층(`InterceptorU`×CH_U)/하층(`InterceptorL`×CH_L) 채널 풀과 `Planner`의
-주기 클럭(`cp<=PERIOD_P`)으로 확장되어, 포대 계층별 채널 한계·계획 주기·동시교전을
-함께 검증한다.
+### 안전성 (Safety, `A[]`)
+| ID | 쿼리 | 의미 |
+|---|---|---|
+| S1 | `A[] not deadlock` | 교착 없음 |
+| S2 | `A[] (ammoU>=0 && ammoL>=0)` | 잔여탄 음수 불가 |
+| S3/S4 | `A[] inflU<=CH_U` / `A[] inflL<=CH_L` | 비행 요격탄 ≤ 계층 채널 |
+| S5/S6 | `A[] forall(t) upCnt[t]<=1` / `loCnt[t]<=1` | **충돌회피**: 위협당 계층별 ≤1 포대 |
+| S7 | `A[] (killed+leaked<=MAXT)` | 종결 위협 ≤ 전체 (이중계수 없음) |
+| S8 | `A[] forall(t) upCnt[t]+loCnt[t]<=2` | 위협당 동시 요격탄 ≤ 2 (상1+하1) |
+
+### 타이밍/데드라인 (Timing, `A[]`)
+| ID | 쿼리 | 의미 |
+|---|---|---|
+| T1 | `A[] P.cp<=PERIOD_P` | 계획수립 **주기 데드라인** 보장 |
+| T2 | `A[] (T0.Live imply T0.x<=IMPACT)` | 활성 위협은 교전창(탄착시각) 이내 |
+
+### 라이브니스 (Liveness)
+| ID | 쿼리 | 의미 |
+|---|---|---|
+| L1 | `A<> (killed+leaked==MAXT)` | 모든 위협은 결국 종결 |
+| L2 | `T0.Live --> (T0.Killed \|\| T0.Leaked)` | 교전대 진입 위협은 결국 종결 (응답성) |
+
+### 도달성 (Reachability, `E<>`)
+| ID | 쿼리 | 의미 |
+|---|---|---|
+| R1 | `E<> killed==MAXT` | 전량 격추(완전 방어) 가능 |
+| R2 | `E<> (inflU>0 && inflL>0)` | 상·하층 동시 교전 도달 가능 |
+| R3 | `E<> (upCnt[0]>0 && loCnt[0]>0)` | 동일 위협 다층요격 도달 가능 |
+| R4 | `E<> leaked>0` | 자원부족/요격실패 누설 가능 (포화 한계) |
+
+> 자원 설정 `ammoU=ammoL=2, MAXT=3` 은 R1(전량격추)과 R4(누설) 둘 다 도달 가능하게
+> 하여, 모델이 완전방어와 포화실패를 모두 표현하는지 점검한다.
+
+## 6. UPPAAL로 검증하는 법
+```
+verifyta -q ros2_dwta/spec/dwta_model.xml     # CLI 일괄 검증
+# 또는 UPPAAL GUI에서 파일 열기 -> Verifier 탭 -> 각 쿼리 Check
+```
+구현(`dwta_nodes/`) 변경 시 이 모델/쿼리를 함께 갱신·재검증한다(graphify 그래프도 동기).
 
 추가로 명세할 수 있는 속성(설계 확장 시):
 - 데드라인: `A[] (T.Engageable imply T.x <= IMPACT)` — 교전창 내 처리.
 - 무낭비: `A[] not (두 요격탄이 동일 위협에 동시 비행)` (terminal/covered 제외 규칙의 정형화).
 - 포화 한계: `E<> leaked >= 1` (자원 부족 시 누설 발생 가능 — 시나리오 설계 검증).
 
-## 6. 워크플로 (spec-first)
+## 7. 워크플로 (spec-first)
 
 1. 본 명세로 노드/채널/타이밍을 합의 → `dwta_model.xml`로 속성 검증.
 2. 검증 통과한 구조를 `dwta_nodes/`에 구현 (현재 PoC가 이 명세를 따름).
 3. 구현 변경 시 명세/모델을 함께 갱신하고 재검증 (graphify 그래프도 동기 갱신).
 
-> 참고: XML 모델은 검증을 위해 작게 추상화(N=3, CAP=2, 정수 시간)했습니다. 실제
+> 참고: XML 모델은 검증을 위해 작게 추상화(N=3, CH_U=CH_L=2, 정수 시간)했습니다. 실제
 > 파이프라인의 연속 동역학(궤적/Pk)은 구현이 담당하고, 모델은 **타이밍·자원·생명주기
 > 불변식**의 정형 보증에 집중합니다.

@@ -180,7 +180,7 @@
       "source_file": "multi_missile_tracker_gui.py",
       "source_location": "L62",
       "id": "dwta_optimizer_multi_missile_tracker_gui_mipconfig_create_realistic_scenario",
-      "community": 56,
+      "community": 35,
       "norm_label": ".create_realistic_scenario()"
     },
     {
@@ -189,7 +189,7 @@
       "source_file": "multi_missile_tracker_gui.py",
       "source_location": "L64",
       "id": "dwta_optimizer_multi_missile_tracker_gui_enhancedengagementmatrix",
-      "community": 56,
+      "community": 0,
       "norm_label": "enhancedengagementmatrix"
     },
     {
@@ -198,7 +198,7 @@
       "source_file": "multi_missile_tracker_gui.py",
       "source_location": "L65",
       "id": "dwta_optimizer_multi_missile_tracker_gui_enhancedengagementmatrix_init",
-      "community": 56,
+      "community": 0,
       "norm_label": ".__init__()"
     },
     {
@@ -207,7 +207,7 @@
       "source_file": "multi_missile_tracker_gui.py",
       "source_location": "L66",
       "id": "dwta_optimizer_multi_missile_tracker_gui_enhancedengagementmatrix_precompute_all",
-      "community": 56,
+      "community": 35,
       "norm_label": ".precompute_all()"
     },
     {
@@ -234,7 +234,7 @@
       "source_file": "multi_missile_tracker_gui.py",
       "source_location": "L70",
       "id": "dwta_optimizer_multi_missile_tracker_gui_cleanslateoptimizer",
-      "community": 0,
+      "community": 35,
       "norm_label": "cleanslateoptimizer"
     },
     {
@@ -243,7 +243,7 @@
       "source_file": "multi_missile_tracker_gui.py",
       "source_location": "L71",
       "id": "dwta_optimizer_multi_missile_tracker_gui_cleanslateoptimizer_init",
-      "community": 0,
+      "community": 35,
       "norm_label": ".__init__()"
     },
     {
@@ -360,7 +360,7 @@
       "source_file": "multi_missile_tracker_gui.py",
       "source_location": "L132",
       "id": "multi_missile_tracker_gui_py_int",
-      "community": 0,
+      "community": 53,
       "norm_label": "int"
     },
     {
@@ -423,7 +423,7 @@
       "source_file": "multi_missile_tracker_gui.py",
       "source_location": "L217",
       "id": "dwta_optimizer_multi_missile_tracker_gui_optimizedassignmentmanager_get_batteries_for_threat",
-      "community": 53,
+      "community": 44,
       "norm_label": ".get_batteries_for_threat()"
     },
     {
@@ -459,7 +459,7 @@
       "source_file": "multi_missile_tracker_gui.py",
       "source_location": "L241",
       "id": "dwta_optimizer_multi_missile_tracker_gui_optimizedassignmentmanager_keys",
-      "community": 35,
+      "community": 91,
       "norm_label": ".keys()"
     },
     {
@@ -468,7 +468,7 @@
       "source_file": "multi_missile_tracker_gui.py",
       "source_location": "L247",
       "id": "dwta_optimizer_multi_missile_tracker_gui_optimizedassignmentmanager_values",
-      "community": 35,
+      "community": 53,
       "norm_label": ".values()"
     },
     {
@@ -513,7 +513,7 @@
       "source_file": "multi_missile_tracker_gui.py",
       "source_location": "L287",
       "id": "dwta_optimizer_multi_missile_tracker_gui_optimizedassignmentmanager_get_total_assignments",
-      "community": 6,
+      "community": 53,
       "norm_label": ".get_total_assignments()"
     },
     {
@@ -531,7 +531,7 @@
       "source_file": "multi_missile_tracker_gui.py",
       "source_location": "L297",
       "id": "dwta_optimizer_multi_missile_tracker_gui_optimizedassignmentmanager_clear",
-      "community": 9,
+      "community": 56,
       "norm_label": ".clear()"
     },
     {
@@ -621,7 +621,7 @@
       "source_file": "multi_missile_tracker_gui.py",
       "source_location": "L563",
       "id": "dwta_optimizer_multi_missile_tracker_gui_dwtamainwindow_build_sim_controls",
-      "community": 9,
+      "community": 91,
       "norm_label": "._build_sim_controls()"
     },
     {
@@ -693,7 +693,7 @@
       "source_file": "multi_missile_tracker_gui.py",
       "source_location": "L763",
       "id": "dwta_optimizer_multi_missile_tracker_gui_dwtamainwindow_on_start",
-      "community": 9,
+      "community": 56,
       "norm_label": ".on_start()"
     },
     {
@@ -702,7 +702,7 @@
       "source_file": "multi_missile_tracker_gui.py",
       "source_location": "L803",
       "id": "dwta_optimizer_multi_missile_tracker_gui_dwtamainwindow_on_pause",
-      "community": 9,
+      "community": 56,
       "norm_label": ".on_pause()"
     },
     {
@@ -711,7 +711,7 @@
       "source_file": "multi_missile_tracker_gui.py",
       "source_location": "L813",
       "id": "dwta_optimizer_multi_missile_tracker_gui_dwtamainwindow_on_stop",
-      "community": 9,
+      "community": 56,
       "norm_label": ".on_stop()"
     },
     {
@@ -720,7 +720,7 @@
       "source_file": "multi_missile_tracker_gui.py",
       "source_location": "L828",
       "id": "dwta_optimizer_multi_missile_tracker_gui_dwtamainwindow_on_reset",
-      "community": 9,
+      "community": 56,
       "norm_label": ".on_reset()"
     },
     {
@@ -729,7 +729,7 @@
       "source_file": "multi_missile_tracker_gui.py",
       "source_location": "L861",
       "id": "dwta_optimizer_multi_missile_tracker_gui_dwtamainwindow_on_scenario_changed",
-      "community": 9,
+      "community": 56,
       "norm_label": "._on_scenario_changed()"
     },
     {
@@ -738,7 +738,7 @@
       "source_file": "multi_missile_tracker_gui.py",
       "source_location": "L905",
       "id": "dwta_optimizer_multi_missile_tracker_gui_dwtamainwindow_on_objective_changed",
-      "community": 9,
+      "community": 56,
       "norm_label": "._on_objective_changed()"
     },
     {
@@ -747,7 +747,7 @@
       "source_file": "multi_missile_tracker_gui.py",
       "source_location": "L910",
       "id": "dwta_optimizer_multi_missile_tracker_gui_dwtamainwindow_on_algo_changed",
-      "community": 9,
+      "community": 56,
       "norm_label": "._on_algo_changed()"
     },
     {
@@ -756,7 +756,7 @@
       "source_file": "multi_missile_tracker_gui.py",
       "source_location": "L921",
       "id": "dwta_optimizer_multi_missile_tracker_gui_dwtamainwindow_on_warmstart_toggled",
-      "community": 9,
+      "community": 56,
       "norm_label": "._on_warmstart_toggled()"
     },
     {
@@ -774,7 +774,7 @@
       "source_file": "multi_missile_tracker_gui.py",
       "source_location": "L937",
       "id": "dwta_optimizer_multi_missile_tracker_gui_dwtamainwindow_run_sim_thread",
-      "community": 44,
+      "community": 92,
       "norm_label": "._run_sim_thread()"
     },
     {
@@ -783,7 +783,7 @@
       "source_file": "multi_missile_tracker_gui.py",
       "source_location": "L992",
       "id": "dwta_optimizer_multi_missile_tracker_gui_dwtamainwindow_should_terminate",
-      "community": 44,
+      "community": 92,
       "norm_label": "._should_terminate()"
     },
     {
@@ -873,7 +873,7 @@
       "source_file": "multi_missile_tracker_gui.py",
       "source_location": "L1248",
       "id": "dwta_optimizer_multi_missile_tracker_gui_dwtamainwindow_append_log",
-      "community": 9,
+      "community": 56,
       "norm_label": "._append_log()"
     },
     {
@@ -891,7 +891,7 @@
       "source_file": "multi_missile_tracker_gui.py",
       "source_location": "L1300",
       "id": "dwta_optimizer_multi_missile_tracker_gui_dwtamainwindow_update_solver_info",
-      "community": 53,
+      "community": 9,
       "norm_label": "._update_solver_info()"
     },
     {
@@ -927,7 +927,7 @@
       "source_file": "multi_missile_tracker_gui.py",
       "source_location": "L1336",
       "id": "dwta_optimizer_multi_missile_tracker_gui_dwtamainwindow_closeevent",
-      "community": 9,
+      "community": 56,
       "norm_label": ".closeevent()"
     },
     {
@@ -945,7 +945,7 @@
       "source_file": "multi_missile_tracker_gui.py",
       "source_location": "L1364",
       "id": "dwta_optimizer_multi_missile_tracker_gui_multimissiletracker_init",
-      "community": 0,
+      "community": 35,
       "norm_label": ".__init__()"
     },
     {
@@ -981,7 +981,7 @@
       "source_file": "multi_missile_tracker_gui.py",
       "source_location": "L1501",
       "id": "dwta_optimizer_multi_missile_tracker_gui_multimissiletracker_rebuild_battery_lookup",
-      "community": 6,
+      "community": 35,
       "norm_label": "._rebuild_battery_lookup()"
     },
     {
@@ -990,7 +990,7 @@
       "source_file": "multi_missile_tracker_gui.py",
       "source_location": "L1507",
       "id": "dwta_optimizer_multi_missile_tracker_gui_multimissiletracker_load_scenario",
-      "community": 56,
+      "community": 35,
       "norm_label": "._load_scenario()"
     },
     {
@@ -999,7 +999,7 @@
       "source_file": "multi_missile_tracker_gui.py",
       "source_location": "L1596",
       "id": "dwta_optimizer_multi_missile_tracker_gui_multimissiletracker_calculate_trajectory",
-      "community": 6,
+      "community": 92,
       "norm_label": "._calculate_trajectory()"
     },
     {
@@ -1008,7 +1008,7 @@
       "source_file": "multi_missile_tracker_gui.py",
       "source_location": "L1603",
       "id": "dwta_optimizer_multi_missile_tracker_gui_multimissiletracker_reset_for_next_iteration",
-      "community": 35,
+      "community": 56,
       "norm_label": ".reset_for_next_iteration()"
     },
     {
@@ -1017,7 +1017,7 @@
       "source_file": "multi_missile_tracker_gui.py",
       "source_location": "L1647",
       "id": "dwta_optimizer_multi_missile_tracker_gui_multimissiletracker_start_scenario",
-      "community": 44,
+      "community": 92,
       "norm_label": ".start_scenario()"
     },
     {
@@ -1071,7 +1071,7 @@
       "source_file": "multi_missile_tracker_gui.py",
       "source_location": "L2555",
       "id": "dwta_optimizer_multi_missile_tracker_gui_multimissiletracker_process_optimization_results",
-      "community": 6,
+      "community": 53,
       "norm_label": "._process_optimization_results()"
     },
     {
@@ -1107,7 +1107,7 @@
       "source_file": "multi_missile_tracker_gui.py",
       "source_location": "L2823",
       "id": "dwta_optimizer_multi_missile_tracker_gui_multimissiletracker_finalize_simulation",
-      "community": 35,
+      "community": 91,
       "norm_label": ".finalize_simulation()"
     },
     {
@@ -1116,7 +1116,7 @@
       "source_file": "multi_missile_tracker_gui.py",
       "source_location": "L2956",
       "id": "dwta_optimizer_multi_missile_tracker_gui_multimissiletracker_save_run_log",
-      "community": 35,
+      "community": 91,
       "norm_label": "._save_run_log()"
     },
     {
@@ -1125,7 +1125,7 @@
       "source_file": "multi_missile_tracker_gui.py",
       "source_location": "L2994",
       "id": "dwta_optimizer_multi_missile_tracker_gui_multimissiletracker_save_performance_metrics",
-      "community": 35,
+      "community": 91,
       "norm_label": ".save_performance_metrics()"
     },
     {
@@ -1179,7 +1179,7 @@
       "source_file": "multi_missile_tracker_gui.py",
       "source_location": "L938",
       "id": "dwta_optimizer_multi_missile_tracker_gui_rationale_938",
-      "community": 44,
+      "community": 92,
       "norm_label": "simulation background thread (mirrors controlpanel.run_simulation_thread)."
     },
     {
@@ -1224,7 +1224,7 @@
       "source_file": "multi_missile_tracker_gui.py",
       "source_location": "L1249",
       "id": "dwta_optimizer_multi_missile_tracker_gui_rationale_1249",
-      "community": 9,
+      "community": 56,
       "norm_label": "insert a colour-coded log entry (always runs on main thread via signal)."
     },
     {
@@ -1242,7 +1242,7 @@
       "source_file": "multi_missile_tracker_gui.py",
       "source_location": "L1301",
       "id": "dwta_optimizer_multi_missile_tracker_gui_rationale_1301",
-      "community": 53,
+      "community": 9,
       "norm_label": "update solver time, warm-start, or objective value labels."
     },
     {
@@ -1305,7 +1305,7 @@
       "source_file": "multi_missile_tracker_gui.py",
       "source_location": "L1502",
       "id": "dwta_optimizer_multi_missile_tracker_gui_rationale_1502",
-      "community": 6,
+      "community": 35,
       "norm_label": "rebuild persistent battery lookup cache"
     },
     {
@@ -1314,7 +1314,7 @@
       "source_file": "multi_missile_tracker_gui.py",
       "source_location": "L1508",
       "id": "dwta_optimizer_multi_missile_tracker_gui_rationale_1508",
-      "community": 56,
+      "community": 35,
       "norm_label": "load realistic scenario with comprehensive threat configuration."
     },
     {
@@ -1323,7 +1323,7 @@
       "source_file": "multi_missile_tracker_gui.py",
       "source_location": "L1597",
       "id": "dwta_optimizer_multi_missile_tracker_gui_rationale_1597",
-      "community": 6,
+      "community": 92,
       "norm_label": "simple linear trajectory for visualization."
     },
     {
@@ -1332,7 +1332,7 @@
       "source_file": "multi_missile_tracker_gui.py",
       "source_location": "L1604",
       "id": "dwta_optimizer_multi_missile_tracker_gui_rationale_1604",
-      "community": 35,
+      "community": 56,
       "norm_label": "\u1103\u1161\u110b\u1173\u11b7 iteration\u110b\u1173\u11af \u110b\u1171\u1112\u1161\u11ab \u1109\u1175\u1106\u1172\u11af\u1105\u1166\u110b\u1175\u1109\u1167\u11ab \u1109\u1161\u11bc\u1110\u1162 \u1105\u1175\u1109\u1166\u11ba (compare \u1106\u1169\u1103\u1173 \u110c\u1165\u11ab\u110b\u116d\u11bc)"
     },
     {
@@ -1341,7 +1341,7 @@
       "source_file": "multi_missile_tracker_gui.py",
       "source_location": "L1648",
       "id": "dwta_optimizer_multi_missile_tracker_gui_rationale_1648",
-      "community": 44,
+      "community": 92,
       "norm_label": "initialize the fixed scenario threats."
     },
     {
@@ -1395,7 +1395,7 @@
       "source_file": "multi_missile_tracker_gui.py",
       "source_location": "L2556",
       "id": "dwta_optimizer_multi_missile_tracker_gui_rationale_2556",
-      "community": 6,
+      "community": 53,
       "norm_label": "process comprehensive optimization results with enhanced assignment validation."
     },
     {
@@ -1431,7 +1431,7 @@
       "source_file": "multi_missile_tracker_gui.py",
       "source_location": "L2824",
       "id": "dwta_optimizer_multi_missile_tracker_gui_rationale_2824",
-      "community": 35,
+      "community": 91,
       "norm_label": "final reporting (\u110b\u116f\u11ab\u1107\u1169\u11ab \u110f\u1169\u1103\u1173 \u110b\u1172\u110c\u1175)"
     },
     {
@@ -1440,7 +1440,7 @@
       "source_file": "multi_missile_tracker_gui.py",
       "source_location": "L2995",
       "id": "dwta_optimizer_multi_missile_tracker_gui_rationale_2995",
-      "community": 35,
+      "community": 91,
       "norm_label": "\u1109\u1165\u11bc\u1102\u1173\u11bc \u110c\u1175\u1111\u116d\u1105\u1173\u11af csv \u1111\u1161\u110b\u1175\u11af\u1105\u1169 \u110c\u1165\u110c\u1161\u11bc (\u1112\u116a\u11a8\u110c\u1161\u11bc\u1103\u116c\u11ab \u1106\u1166\u1110\u1173\u1105\u1175\u11a8)"
     },
     {
@@ -1611,7 +1611,7 @@
       "source_file": "ga_optimizer.py",
       "source_location": "L1",
       "id": "ga_optimizer_py",
-      "community": 38,
+      "community": 88,
       "norm_label": "ga_optimizer.py"
     },
     {
@@ -1620,7 +1620,7 @@
       "source_file": "ga_optimizer.py",
       "source_location": "L21",
       "id": "dwta_optimizer_ga_optimizer_asset",
-      "community": 38,
+      "community": 88,
       "norm_label": "asset"
     },
     {
@@ -1629,7 +1629,7 @@
       "source_file": "ga_optimizer.py",
       "source_location": "L30",
       "id": "dwta_optimizer_ga_optimizer_interceptorsystem",
-      "community": 38,
+      "community": 88,
       "norm_label": "interceptorsystem"
     },
     {
@@ -1638,7 +1638,7 @@
       "source_file": "ga_optimizer.py",
       "source_location": "L41",
       "id": "dwta_optimizer_ga_optimizer_threat",
-      "community": 38,
+      "community": 88,
       "norm_label": "threat"
     },
     {
@@ -1647,7 +1647,7 @@
       "source_file": "ga_optimizer.py",
       "source_location": "L55",
       "id": "dwta_optimizer_ga_optimizer_threat_post_init",
-      "community": 38,
+      "community": 88,
       "norm_label": ".__post_init__()"
     },
     {
@@ -1674,7 +1674,7 @@
       "source_file": "ga_optimizer.py",
       "source_location": "L114",
       "id": "dwta_optimizer_ga_optimizer_geneticalgorithmoptimizer_create_model",
-      "community": 38,
+      "community": 88,
       "norm_label": ".create_model()"
     },
     {
@@ -1791,7 +1791,7 @@
       "source_file": "ga_optimizer.py",
       "source_location": "L1",
       "id": "dwta_optimizer_ga_optimizer_rationale_1",
-      "community": 38,
+      "community": 88,
       "norm_label": "genetic algorithm dwta optimizer ================================= \u110b\u1172\u110c\u1165\u11ab \u110b\u1161\u11af\u1100\u1169\u1105\u1175\u110c\u1173\u11b7 \u1100\u1175\u1107\u1161\u11ab dw"
     },
     {
@@ -1809,7 +1809,7 @@
       "source_file": "ga_optimizer.py",
       "source_location": "L120",
       "id": "dwta_optimizer_ga_optimizer_rationale_120",
-      "community": 38,
+      "community": 88,
       "norm_label": "ga \u1106\u1169\u1103\u1166\u11af \u1109\u1162\u11bc\u1109\u1165\u11bc - \u1103\u1166\u110b\u1175\u1110\u1165 \u1100\u116e\u110c\u1169 \u110e\u1169\u1100\u1175\u1112\u116a"
     },
     {
@@ -1917,7 +1917,7 @@
       "source_file": "stress_test_metrics.py",
       "source_location": "L42",
       "id": "dwta_optimizer_stress_test_metrics_stresstestmetrics",
-      "community": 16,
+      "community": 0,
       "norm_label": "stresstestmetrics"
     },
     {
@@ -2016,7 +2016,7 @@
       "source_file": "stress_test_metrics.py",
       "source_location": "L43",
       "id": "dwta_optimizer_stress_test_metrics_rationale_43",
-      "community": 16,
+      "community": 0,
       "norm_label": "stress test \u110c\u1165\u11ab\u110e\u1166 \u1106\u1166\u1110\u1173\u1105\u1175\u11a8 \u1109\u116e\u110c\u1175\u11b8 (\u110b\u1167\u11ab\u1100\u116e \u1102\u1169\u11ab\u1106\u116e\u11ab\u110b\u116d\u11bc \u1112\u116a\u11a8\u110c\u1161\u11bc)"
     },
     {
@@ -2565,7 +2565,7 @@
       "source_file": "config_mip.py",
       "source_location": "L1696",
       "id": "dwta_optimizer_config_mip_kfactorcache",
-      "community": 38,
+      "community": 0,
       "norm_label": "kfactorcache"
     },
     {
@@ -2583,7 +2583,7 @@
       "source_file": "config_mip.py",
       "source_location": "L1712",
       "id": "dwta_optimizer_config_mip_kfactorcache_precompute",
-      "community": 38,
+      "community": 0,
       "norm_label": ".precompute()"
     },
     {
@@ -3447,7 +3447,7 @@
       "source_file": "config_mip.py",
       "source_location": "L1697",
       "id": "dwta_optimizer_config_mip_rationale_1697",
-      "community": 38,
+      "community": 0,
       "norm_label": "k-factor \u1109\u1161\u110c\u1165\u11ab \u1100\u1168\u1109\u1161\u11ab \u110f\u1162\u1109\u1175 + \u1100\u1167\u11bc\u1105\u1163\u11bc \u1109\u1175\u11af\u1109\u1175\u1100\u1161\u11ab \u1100\u1168\u1109\u1161\u11ab (\u110e\u116c\u110c\u1165\u11a8\u1112\u116a #3)"
     },
     {
@@ -3456,7 +3456,7 @@
       "source_file": "config_mip.py",
       "source_location": "L1713",
       "id": "dwta_optimizer_config_mip_rationale_1713",
-      "community": 38,
+      "community": 0,
       "norm_label": "\u1106\u1169\u1103\u1173\u11ab (threat, system) \u110c\u1169\u1112\u1161\u11b8\u110b\u1174 k-factor \u1100\u1168\u1109\u1161\u11ab                  args:             threats:"
     },
     {
@@ -4284,7 +4284,7 @@
       "source_file": "greedy_optimizer.py",
       "source_location": "L64",
       "id": "dwta_optimizer_greedy_optimizer_greedyoptimizer",
-      "community": 20,
+      "community": 0,
       "norm_label": "greedyoptimizer"
     },
     {
@@ -4293,7 +4293,7 @@
       "source_file": "greedy_optimizer.py",
       "source_location": "L67",
       "id": "dwta_optimizer_greedy_optimizer_greedyoptimizer_init",
-      "community": 20,
+      "community": 0,
       "norm_label": ".__init__()"
     },
     {
@@ -4311,7 +4311,7 @@
       "source_file": "greedy_optimizer.py",
       "source_location": "L142",
       "id": "dwta_optimizer_greedy_optimizer_greedyoptimizer_set_intercept_probabilities",
-      "community": 20,
+      "community": 93,
       "norm_label": ".set_intercept_probabilities()"
     },
     {
@@ -4347,7 +4347,7 @@
       "source_file": "greedy_optimizer.py",
       "source_location": "L412",
       "id": "dwta_optimizer_greedy_optimizer_greedyoptimizer_get_assignment_details",
-      "community": 20,
+      "community": 0,
       "norm_label": ".get_assignment_details()"
     },
     {
@@ -4365,7 +4365,7 @@
       "source_file": "greedy_optimizer.py",
       "source_location": "L65",
       "id": "dwta_optimizer_greedy_optimizer_rationale_65",
-      "community": 20,
+      "community": 0,
       "norm_label": "greedy \u110b\u1161\u11af\u1100\u1169\u1105\u1175\u110c\u1173\u11b7 \u1100\u1175\u1107\u1161\u11ab dwta \u110e\u116c\u110c\u1165\u11a8\u1112\u116a\u1100\u1175"
     },
     {
@@ -4383,7 +4383,7 @@
       "source_file": "greedy_optimizer.py",
       "source_location": "L143",
       "id": "dwta_optimizer_greedy_optimizer_rationale_143",
-      "community": 20,
+      "community": 93,
       "norm_label": "\u1106\u1169\u11ab\u1110\u1166\u110f\u1161\u1105\u1173\u11af\u1105\u1169 \u1109\u1175\u1106\u1172\u11af\u1105\u1166\u110b\u1175\u1109\u1167\u11ab\u110b\u1166\u1109\u1165 \u1109\u1162\u11b7\u1111\u1173\u11af\u1105\u1175\u11bc\u1103\u116c\u11ab \u110b\u116d\u1100\u1167\u11a8\u1112\u116a\u11a8\u1105\u1172\u11af \u1109\u1165\u11af\u110c\u1165\u11bc"
     },
     {
@@ -4761,7 +4761,7 @@
       "source_file": "clean_slate_optimizer.py",
       "source_location": "L50",
       "id": "dwta_optimizer_clean_slate_optimizer_threat",
-      "community": 0,
+      "community": 7,
       "norm_label": "threat"
     },
     {
@@ -4770,7 +4770,7 @@
       "source_file": "clean_slate_optimizer.py",
       "source_location": "L63",
       "id": "dwta_optimizer_clean_slate_optimizer_threat_post_init",
-      "community": 0,
+      "community": 7,
       "norm_label": ".__post_init__()"
     },
     {
@@ -4914,7 +4914,7 @@
       "source_file": "clean_slate_optimizer.py",
       "source_location": "L878",
       "id": "dwta_optimizer_clean_slate_optimizer_cleanslateoptimizer",
-      "community": 7,
+      "community": 87,
       "norm_label": "cleanslateoptimizer"
     },
     {
@@ -4923,7 +4923,7 @@
       "source_file": "clean_slate_optimizer.py",
       "source_location": "L888",
       "id": "dwta_optimizer_clean_slate_optimizer_cleanslateoptimizer_init",
-      "community": 7,
+      "community": 87,
       "norm_label": ".__init__()"
     },
     {
@@ -4941,7 +4941,7 @@
       "source_file": "clean_slate_optimizer.py",
       "source_location": "L909",
       "id": "dwta_optimizer_clean_slate_optimizer_cleanslateoptimizer_set_k_factor_cache",
-      "community": 7,
+      "community": 87,
       "norm_label": ".set_k_factor_cache()"
     },
     {
@@ -4977,7 +4977,7 @@
       "source_file": "clean_slate_optimizer.py",
       "source_location": "L1056",
       "id": "dwta_optimizer_clean_slate_optimizer_cleanslateoptimizer_enable_warmstart",
-      "community": 7,
+      "community": 87,
       "norm_label": ".enable_warmstart()"
     },
     {
@@ -4986,7 +4986,7 @@
       "source_file": "clean_slate_optimizer.py",
       "source_location": "L1059",
       "id": "dwta_optimizer_clean_slate_optimizer_cleanslateoptimizer_disable_warmstart",
-      "community": 7,
+      "community": 87,
       "norm_label": ".disable_warmstart()"
     },
     {
@@ -4995,7 +4995,7 @@
       "source_file": "clean_slate_optimizer.py",
       "source_location": "L1062",
       "id": "dwta_optimizer_clean_slate_optimizer_cleanslateoptimizer_get_assignment_details",
-      "community": 7,
+      "community": 87,
       "norm_label": ".get_assignment_details()"
     },
     {
@@ -5103,7 +5103,7 @@
       "source_file": "clean_slate_optimizer.py",
       "source_location": "L879",
       "id": "dwta_optimizer_clean_slate_optimizer_rationale_879",
-      "community": 7,
+      "community": 87,
       "norm_label": "drop-in replacement for nonlinearmipoptimizer.      interface contract:"
     },
     {
@@ -5121,7 +5121,7 @@
       "source_file": "clean_slate_optimizer.py",
       "source_location": "L910",
       "id": "dwta_optimizer_clean_slate_optimizer_rationale_910",
-      "community": 7,
+      "community": 87,
       "norm_label": "provide k-factor cache for distance/time-based k computation."
     },
     {
@@ -5148,7 +5148,7 @@
       "source_file": "clean_slate_optimizer.py",
       "source_location": "L1063",
       "id": "dwta_optimizer_clean_slate_optimizer_rationale_1063",
-      "community": 7,
+      "community": 87,
       "norm_label": "backward compatibility."
     },
     {
@@ -10363,67 +10363,184 @@
       "norm_label": "code:block9 (run --tracks?/scores?/matrix?/status?/event?--> run : (\u1110\u1169\u11bc\u1112\u1161\u11b8 \u1109\u1161\u11bc\u1112\u116a\u11bc)"
     },
     {
+      "label": "4. \uc0dd\uba85\uc8fc\uae30 \uc624\ud1a0\ub9c8\ud0c0 (\uac15\ud654 \ubaa8\ub378 `dwta_model.xml`)",
+      "file_type": "document",
+      "source_file": "ros2_dwta/spec/timed_automata.md",
+      "source_location": "L101",
+      "id": "spec_timed_automata_4_\uc0dd\uba85\uc8fc\uae30_\uc624\ud1a0\ub9c8\ud0c0_\uac15\ud654_\ubaa8\ub378_dwta_model_xml",
+      "community": 10,
+      "norm_label": "4. \u1109\u1162\u11bc\u1106\u1167\u11bc\u110c\u116e\u1100\u1175 \u110b\u1169\u1110\u1169\u1106\u1161\u1110\u1161 (\u1100\u1161\u11bc\u1112\u116a \u1106\u1169\u1103\u1166\u11af `dwta_model.xml`)"
+    },
+    {
+      "label": "4.1 Threat(id) \u2014 \uc801 \ud0c4\ub3c4\ud0c4",
+      "file_type": "document",
+      "source_file": "ros2_dwta/spec/timed_automata.md",
+      "source_location": "L108",
+      "id": "spec_timed_automata_4_1_threat_id_\uc801_\ud0c4\ub3c4\ud0c4",
+      "community": 10,
+      "norm_label": "4.1 threat(id) \u2014 \u110c\u1165\u11a8 \u1110\u1161\u11ab\u1103\u1169\u1110\u1161\u11ab"
+    },
+    {
+      "label": "code:block10 (Inbound --[x>=ENTER_U] engU:=T--> Live --hitU?|hitL?--> Kill)",
+      "file_type": "document",
+      "source_file": "ros2_dwta/spec/timed_automata.md",
+      "source_location": "L109",
+      "id": "spec_timed_automata_codeblock_10",
+      "community": 10,
+      "norm_label": "code:block10 (inbound --[x>=enter_u] engu:=t--> live --hitu?|hitl?--> kill)"
+    },
+    {
+      "label": "4.2 InterceptorU / InterceptorL \u2014 \ud3ec\ub300 \uacc4\uce35\ubcc4 \uc720\ub3c4\ucc44\ub110 \uc2ac\ub86f",
+      "file_type": "document",
+      "source_file": "ros2_dwta/spec/timed_automata.md",
+      "source_location": "L118",
+      "id": "spec_timed_automata_4_2_interceptoru_interceptorl_\ud3ec\ub300_\uacc4\uce35\ubcc4_\uc720\ub3c4\ucc44\ub110_\uc2ac\ub86f",
+      "community": 10,
+      "norm_label": "4.2 interceptoru / interceptorl \u2014 \u1111\u1169\u1103\u1162 \u1100\u1168\u110e\u1173\u11bc\u1107\u1167\u11af \u110b\u1172\u1103\u1169\u110e\u1162\u1102\u1165\u11af \u1109\u1173\u11af\u1105\u1169\u11ba"
+    },
+    {
+      "label": "code:block11 (Idle --plan?--> Ready(committed) --[ammo>0 && eng[t] && cnt[)",
+      "file_type": "document",
+      "source_file": "ros2_dwta/spec/timed_automata.md",
+      "source_location": "L120",
+      "id": "spec_timed_automata_codeblock_11",
+      "community": 10,
+      "norm_label": "code:block11 (idle --plan?--> ready(committed) --[ammo>0 && eng[t] && cnt[)"
+    },
+    {
+      "label": "4.3 Planner \u2014 \uacc4\ud68d\uc218\ub9bd \uc8fc\uae30 \ud074\ub7ed",
+      "file_type": "document",
+      "source_file": "ros2_dwta/spec/timed_automata.md",
+      "source_location": "L127",
+      "id": "spec_timed_automata_4_3_planner_\uacc4\ud68d\uc218\ub9bd_\uc8fc\uae30_\ud074\ub7ed",
+      "community": 10,
+      "norm_label": "4.3 planner \u2014 \u1100\u1168\u1112\u116c\u11a8\u1109\u116e\u1105\u1175\u11b8 \u110c\u116e\u1100\u1175 \u110f\u1173\u11af\u1105\u1165\u11a8"
+    },
+    {
+      "label": "code:block12 (Tick(cp<=PERIOD_P) --[cp>=PERIOD_P] plan! ; cp:=0--> Tick)",
+      "file_type": "document",
+      "source_file": "ros2_dwta/spec/timed_automata.md",
+      "source_location": "L128",
+      "id": "spec_timed_automata_codeblock_12",
+      "community": 10,
+      "norm_label": "code:block12 (tick(cp<=period_p) --[cp>=period_p] plan! ; cp:=0--> tick)"
+    },
+    {
+      "label": "5. \uac80\uc99d \uc18d\uc131 & \ucffc\ub9ac (TCTL, 16\uac1c)",
+      "file_type": "document",
+      "source_file": "ros2_dwta/spec/timed_automata.md",
+      "source_location": "L133",
+      "id": "spec_timed_automata_5_\uac80\uc99d_\uc18d\uc131_\ucffc\ub9ac_tctl_16\uac1c",
+      "community": 10,
+      "norm_label": "5. \u1100\u1165\u11b7\u110c\u1173\u11bc \u1109\u1169\u11a8\u1109\u1165\u11bc & \u110f\u116f\u1105\u1175 (tctl, 16\u1100\u1162)"
+    },
+    {
+      "label": "\uc548\uc804\uc131 (Safety, `A[]`)",
+      "file_type": "document",
+      "source_file": "ros2_dwta/spec/timed_automata.md",
+      "source_location": "L137",
+      "id": "spec_timed_automata_\uc548\uc804\uc131_safety_a",
+      "community": 10,
+      "norm_label": "\u110b\u1161\u11ab\u110c\u1165\u11ab\u1109\u1165\u11bc (safety, `a[]`)"
+    },
+    {
+      "label": "\ud0c0\uc774\ubc0d/\ub370\ub4dc\ub77c\uc778 (Timing, `A[]`)",
+      "file_type": "document",
+      "source_file": "ros2_dwta/spec/timed_automata.md",
+      "source_location": "L147",
+      "id": "spec_timed_automata_\ud0c0\uc774\ubc0d_\ub370\ub4dc\ub77c\uc778_timing_a",
+      "community": 10,
+      "norm_label": "\u1110\u1161\u110b\u1175\u1106\u1175\u11bc/\u1103\u1166\u1103\u1173\u1105\u1161\u110b\u1175\u11ab (timing, `a[]`)"
+    },
+    {
+      "label": "\ub77c\uc774\ube0c\ub2c8\uc2a4 (Liveness)",
+      "file_type": "document",
+      "source_file": "ros2_dwta/spec/timed_automata.md",
+      "source_location": "L153",
+      "id": "spec_timed_automata_\ub77c\uc774\ube0c\ub2c8\uc2a4_liveness",
+      "community": 10,
+      "norm_label": "\u1105\u1161\u110b\u1175\u1107\u1173\u1102\u1175\u1109\u1173 (liveness)"
+    },
+    {
+      "label": "\ub3c4\ub2ec\uc131 (Reachability, `E<>`)",
+      "file_type": "document",
+      "source_file": "ros2_dwta/spec/timed_automata.md",
+      "source_location": "L159",
+      "id": "spec_timed_automata_\ub3c4\ub2ec\uc131_reachability_e",
+      "community": 10,
+      "norm_label": "\u1103\u1169\u1103\u1161\u11af\u1109\u1165\u11bc (reachability, `e<>`)"
+    },
+    {
+      "label": "6. UPPAAL\ub85c \uac80\uc99d\ud558\ub294 \ubc95",
+      "file_type": "document",
+      "source_file": "ros2_dwta/spec/timed_automata.md",
+      "source_location": "L170",
+      "id": "spec_timed_automata_6_uppaal\ub85c_\uac80\uc99d\ud558\ub294_\ubc95",
+      "community": 10,
+      "norm_label": "6. uppaal\u1105\u1169 \u1100\u1165\u11b7\u110c\u1173\u11bc\u1112\u1161\u1102\u1173\u11ab \u1107\u1165\u11b8"
+    },
+    {
+      "label": "code:block13 (verifyta -q ros2_dwta/spec/dwta_model.xml     # CLI \uc77c\uad04 \uac80\uc99d)",
+      "file_type": "document",
+      "source_file": "ros2_dwta/spec/timed_automata.md",
+      "source_location": "L171",
+      "id": "spec_timed_automata_codeblock_13",
+      "community": 10,
+      "norm_label": "code:block13 (verifyta -q ros2_dwta/spec/dwta_model.xml     # cli \u110b\u1175\u11af\u1100\u116a\u11af \u1100\u1165\u11b7\u110c\u1173\u11bc)"
+    },
+    {
+      "label": "7. \uc6cc\ud06c\ud50c\ub85c (spec-first)",
+      "file_type": "document",
+      "source_file": "ros2_dwta/spec/timed_automata.md",
+      "source_location": "L182",
+      "id": "spec_timed_automata_7_\uc6cc\ud06c\ud50c\ub85c_spec_first",
+      "community": 10,
+      "norm_label": "7. \u110b\u116f\u110f\u1173\u1111\u1173\u11af\u1105\u1169 (spec-first)"
+    },
+    {
       "label": "4. \uc0dd\uba85\uc8fc\uae30 \uc624\ud1a0\ub9c8\ud0c0 (\uac80\uc99d \ubaa8\ub378\uc758 \ud575\uc2ec)",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/timed_automata.md",
       "source_location": "L101",
-      "id": "spec_timed_automata_4_\uc0dd\uba85\uc8fc\uae30_\uc624\ud1a0\ub9c8\ud0c0_\uac80\uc99d_\ubaa8\ub378\uc758_\ud575\uc2ec",
       "community": 10,
-      "norm_label": "4. \u1109\u1162\u11bc\u1106\u1167\u11bc\u110c\u116e\u1100\u1175 \u110b\u1169\u1110\u1169\u1106\u1161\u1110\u1161 (\u1100\u1165\u11b7\u110c\u1173\u11bc \u1106\u1169\u1103\u1166\u11af\u110b\u1174 \u1112\u1162\u11a8\u1109\u1175\u11b7)"
+      "norm_label": "4. \u1109\u1162\u11bc\u1106\u1167\u11bc\u110c\u116e\u1100\u1175 \u110b\u1169\u1110\u1169\u1106\u1161\u1110\u1161 (\u1100\u1165\u11b7\u110c\u1173\u11bc \u1106\u1169\u1103\u1166\u11af\u110b\u1174 \u1112\u1162\u11a8\u1109\u1175\u11b7)",
+      "id": "spec_timed_automata_4_\uc0dd\uba85\uc8fc\uae30_\uc624\ud1a0\ub9c8\ud0c0_\uac80\uc99d_\ubaa8\ub378\uc758_\ud575\uc2ec"
     },
     {
       "label": "4.1 Threat (\uc801 \ud0c4\ub3c4\ud0c4)",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/timed_automata.md",
       "source_location": "L103",
-      "id": "spec_timed_automata_4_1_threat_\uc801_\ud0c4\ub3c4\ud0c4",
       "community": 10,
-      "norm_label": "4.1 threat (\u110c\u1165\u11a8 \u1110\u1161\u11ab\u1103\u1169\u1110\u1161\u11ab)"
-    },
-    {
-      "label": "code:block10 (Inbound --[x>=ENTER]--> Engageable --assign[id]?--> Engaged )",
-      "file_type": "document",
-      "source_file": "ros2_dwta/spec/timed_automata.md",
-      "source_location": "L104",
-      "id": "spec_timed_automata_codeblock_10",
-      "community": 10,
-      "norm_label": "code:block10 (inbound --[x>=enter]--> engageable --assign[id]?--> engaged )"
+      "norm_label": "4.1 threat (\u110c\u1165\u11a8 \u1110\u1161\u11ab\u1103\u1169\u1110\u1161\u11ab)",
+      "id": "spec_timed_automata_4_1_threat_\uc801_\ud0c4\ub3c4\ud0c4"
     },
     {
       "label": "4.2 Interceptor (\uc544\uad70 \uc694\uaca9\ud0c4 \uc2ac\ub86f, CAP\uac1c \ubcd1\ub82c)",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/timed_automata.md",
       "source_location": "L112",
-      "id": "spec_timed_automata_4_2_interceptor_\uc544\uad70_\uc694\uaca9\ud0c4_\uc2ac\ub86f_cap\uac1c_\ubcd1\ub82c",
       "community": 10,
-      "norm_label": "4.2 interceptor (\u110b\u1161\u1100\u116e\u11ab \u110b\u116d\u1100\u1167\u11a8\u1110\u1161\u11ab \u1109\u1173\u11af\u1105\u1169\u11ba, cap\u1100\u1162 \u1107\u1167\u11bc\u1105\u1167\u11af)"
-    },
-    {
-      "label": "code:block11 (Idle --[ammo>0] assign[t]!--> Flying(f<=FLYOUT) --[f>=FLYOUT)",
-      "file_type": "document",
-      "source_file": "ros2_dwta/spec/timed_automata.md",
-      "source_location": "L113",
-      "id": "spec_timed_automata_codeblock_11",
-      "community": 10,
-      "norm_label": "code:block11 (idle --[ammo>0] assign[t]!--> flying(f<=flyout) --[f>=flyout)"
+      "norm_label": "4.2 interceptor (\u110b\u1161\u1100\u116e\u11ab \u110b\u116d\u1100\u1167\u11a8\u1110\u1161\u11ab \u1109\u1173\u11af\u1105\u1169\u11ba, cap\u1100\u1162 \u1107\u1167\u11bc\u1105\u1167\u11af)",
+      "id": "spec_timed_automata_4_2_interceptor_\uc544\uad70_\uc694\uaca9\ud0c4_\uc2ac\ub86f_cap\uac1c_\ubcd1\ub82c"
     },
     {
       "label": "5. \uac80\uc99d \uc18d\uc131 (TCTL \ucffc\ub9ac)",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/timed_automata.md",
       "source_location": "L118",
-      "id": "spec_timed_automata_5_\uac80\uc99d_\uc18d\uc131_tctl_\ucffc\ub9ac",
       "community": 10,
-      "norm_label": "5. \u1100\u1165\u11b7\u110c\u1173\u11bc \u1109\u1169\u11a8\u1109\u1165\u11bc (tctl \u110f\u116f\u1105\u1175)"
+      "norm_label": "5. \u1100\u1165\u11b7\u110c\u1173\u11bc \u1109\u1169\u11a8\u1109\u1165\u11bc (tctl \u110f\u116f\u1105\u1175)",
+      "id": "spec_timed_automata_5_\uac80\uc99d_\uc18d\uc131_tctl_\ucffc\ub9ac"
     },
     {
       "label": "6. \uc6cc\ud06c\ud50c\ub85c (spec-first)",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/timed_automata.md",
       "source_location": "L141",
-      "id": "spec_timed_automata_6_\uc6cc\ud06c\ud50c\ub85c_spec_first",
       "community": 10,
-      "norm_label": "6. \u110b\u116f\u110f\u1173\u1111\u1173\u11af\u1105\u1169 (spec-first)"
+      "norm_label": "6. \u110b\u116f\u110f\u1173\u1111\u1173\u11af\u1105\u1169 (spec-first)",
+      "id": "spec_timed_automata_6_\uc6cc\ud06c\ud50c\ub85c_spec_first"
     },
     {
       "label": "\uc815\uc801 \ub808\uc774\uc5b4 \uc815\ubcf4 \uc8fc\uc785 (UPPER/LOWER \ud45c\uc2dc\uc6a9).",
@@ -30256,9 +30373,9 @@
       "source_file": "ros2_dwta/dwta_nodes/world_state_node.py",
       "source_location": "L87",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "dwta_nodes_world_state_node_rationale_87",
-      "target": "dwta_nodes_world_state_node_worldstatenode_set_battery_layers",
-      "confidence_score": 1.0
+      "target": "dwta_nodes_world_state_node_worldstatenode_set_battery_layers"
     },
     {
       "relation": "references",
@@ -37464,6 +37581,16 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "ros2_dwta/spec/timed_automata.md",
+      "source_location": "L101",
+      "weight": 1.0,
+      "source": "spec_timed_automata_dwta_\uc2e4\uc2dc\uac04_\ud30c\uc774\ud504\ub77c\uc778_\ud0c0\uc784\ub4dc_\uc624\ud1a0\ub9c8\ud0c0_timed_automata_\uba85\uc138",
+      "target": "spec_timed_automata_4_\uc0dd\uba85\uc8fc\uae30_\uc624\ud1a0\ub9c8\ud0c0_\uac15\ud654_\ubaa8\ub378_dwta_model_xml",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ros2_dwta/spec/timed_automata.md",
       "source_location": "L93",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -37484,11 +37611,41 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "ros2_dwta/spec/timed_automata.md",
+      "source_location": "L133",
+      "weight": 1.0,
+      "source": "spec_timed_automata_dwta_\uc2e4\uc2dc\uac04_\ud30c\uc774\ud504\ub77c\uc778_\ud0c0\uc784\ub4dc_\uc624\ud1a0\ub9c8\ud0c0_timed_automata_\uba85\uc138",
+      "target": "spec_timed_automata_5_\uac80\uc99d_\uc18d\uc131_\ucffc\ub9ac_tctl_16\uac1c",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ros2_dwta/spec/timed_automata.md",
+      "source_location": "L170",
+      "weight": 1.0,
+      "source": "spec_timed_automata_dwta_\uc2e4\uc2dc\uac04_\ud30c\uc774\ud504\ub77c\uc778_\ud0c0\uc784\ub4dc_\uc624\ud1a0\ub9c8\ud0c0_timed_automata_\uba85\uc138",
+      "target": "spec_timed_automata_6_uppaal\ub85c_\uac80\uc99d\ud558\ub294_\ubc95",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ros2_dwta/spec/timed_automata.md",
       "source_location": "L128",
       "weight": 1.0,
       "confidence_score": 1.0,
       "source": "spec_timed_automata_dwta_\uc2e4\uc2dc\uac04_\ud30c\uc774\ud504\ub77c\uc778_\ud0c0\uc784\ub4dc_\uc624\ud1a0\ub9c8\ud0c0_timed_automata_\uba85\uc138",
       "target": "spec_timed_automata_6_\uc6cc\ud06c\ud50c\ub85c_spec_first"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ros2_dwta/spec/timed_automata.md",
+      "source_location": "L182",
+      "weight": 1.0,
+      "source": "spec_timed_automata_dwta_\uc2e4\uc2dc\uac04_\ud30c\uc774\ud504\ub77c\uc778_\ud0c0\uc784\ub4dc_\uc624\ud1a0\ub9c8\ud0c0_timed_automata_\uba85\uc138",
+      "target": "spec_timed_automata_7_\uc6cc\ud06c\ud50c\ub85c_spec_first",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -37754,21 +37911,41 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "ros2_dwta/spec/timed_automata.md",
-      "source_location": "L95",
+      "source_location": "L108",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "spec_timed_automata_4_\uc0dd\uba85\uc8fc\uae30_\uc624\ud1a0\ub9c8\ud0c0_\uac80\uc99d_\ubaa8\ub378\uc758_\ud575\uc2ec",
-      "target": "spec_timed_automata_4_1_threat_\uc801_\ud0c4\ub3c4\ud0c4"
+      "source": "spec_timed_automata_4_\uc0dd\uba85\uc8fc\uae30_\uc624\ud1a0\ub9c8\ud0c0_\uac15\ud654_\ubaa8\ub378_dwta_model_xml",
+      "target": "spec_timed_automata_4_1_threat_id_\uc801_\ud0c4\ub3c4\ud0c4",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "ros2_dwta/spec/timed_automata.md",
-      "source_location": "L104",
+      "source_location": "L118",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "spec_timed_automata_4_\uc0dd\uba85\uc8fc\uae30_\uc624\ud1a0\ub9c8\ud0c0_\uac80\uc99d_\ubaa8\ub378\uc758_\ud575\uc2ec",
-      "target": "spec_timed_automata_4_2_interceptor_\uc544\uad70_\uc694\uaca9\ud0c4_\uc2ac\ub86f_cap\uac1c_\ubcd1\ub82c"
+      "source": "spec_timed_automata_4_\uc0dd\uba85\uc8fc\uae30_\uc624\ud1a0\ub9c8\ud0c0_\uac15\ud654_\ubaa8\ub378_dwta_model_xml",
+      "target": "spec_timed_automata_4_2_interceptoru_interceptorl_\ud3ec\ub300_\uacc4\uce35\ubcc4_\uc720\ub3c4\ucc44\ub110_\uc2ac\ub86f",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ros2_dwta/spec/timed_automata.md",
+      "source_location": "L127",
+      "weight": 1.0,
+      "source": "spec_timed_automata_4_\uc0dd\uba85\uc8fc\uae30_\uc624\ud1a0\ub9c8\ud0c0_\uac15\ud654_\ubaa8\ub378_dwta_model_xml",
+      "target": "spec_timed_automata_4_3_planner_\uacc4\ud68d\uc218\ub9bd_\uc8fc\uae30_\ud074\ub7ed",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ros2_dwta/spec/timed_automata.md",
+      "source_location": "L109",
+      "weight": 1.0,
+      "source": "spec_timed_automata_4_1_threat_id_\uc801_\ud0c4\ub3c4\ud0c4",
+      "target": "spec_timed_automata_codeblock_10",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -37794,11 +37971,101 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "ros2_dwta/spec/timed_automata.md",
+      "source_location": "L120",
+      "weight": 1.0,
+      "source": "spec_timed_automata_4_2_interceptoru_interceptorl_\ud3ec\ub300_\uacc4\uce35\ubcc4_\uc720\ub3c4\ucc44\ub110_\uc2ac\ub86f",
+      "target": "spec_timed_automata_codeblock_11",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ros2_dwta/spec/timed_automata.md",
       "source_location": "L113",
       "weight": 1.0,
       "confidence_score": 1.0,
       "source": "spec_timed_automata_4_2_interceptor_\uc544\uad70_\uc694\uaca9\ud0c4_\uc2ac\ub86f_cap\uac1c_\ubcd1\ub82c",
       "target": "spec_timed_automata_codeblock_11"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ros2_dwta/spec/timed_automata.md",
+      "source_location": "L128",
+      "weight": 1.0,
+      "source": "spec_timed_automata_4_3_planner_\uacc4\ud68d\uc218\ub9bd_\uc8fc\uae30_\ud074\ub7ed",
+      "target": "spec_timed_automata_codeblock_12",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ros2_dwta/spec/timed_automata.md",
+      "source_location": "L159",
+      "weight": 1.0,
+      "source": "spec_timed_automata_5_\uac80\uc99d_\uc18d\uc131_\ucffc\ub9ac_tctl_16\uac1c",
+      "target": "spec_timed_automata_\ub3c4\ub2ec\uc131_reachability_e",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ros2_dwta/spec/timed_automata.md",
+      "source_location": "L153",
+      "weight": 1.0,
+      "source": "spec_timed_automata_5_\uac80\uc99d_\uc18d\uc131_\ucffc\ub9ac_tctl_16\uac1c",
+      "target": "spec_timed_automata_\ub77c\uc774\ube0c\ub2c8\uc2a4_liveness",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ros2_dwta/spec/timed_automata.md",
+      "source_location": "L137",
+      "weight": 1.0,
+      "source": "spec_timed_automata_5_\uac80\uc99d_\uc18d\uc131_\ucffc\ub9ac_tctl_16\uac1c",
+      "target": "spec_timed_automata_\uc548\uc804\uc131_safety_a",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ros2_dwta/spec/timed_automata.md",
+      "source_location": "L147",
+      "weight": 1.0,
+      "source": "spec_timed_automata_5_\uac80\uc99d_\uc18d\uc131_\ucffc\ub9ac_tctl_16\uac1c",
+      "target": "spec_timed_automata_\ud0c0\uc774\ubc0d_\ub370\ub4dc\ub77c\uc778_timing_a",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ros2_dwta/spec/timed_automata.md",
+      "source_location": "L171",
+      "weight": 1.0,
+      "source": "spec_timed_automata_6_uppaal\ub85c_\uac80\uc99d\ud558\ub294_\ubc95",
+      "target": "spec_timed_automata_codeblock_13",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ros2_dwta/spec/timed_automata.md",
+      "source_location": "L95",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "spec_timed_automata_4_\uc0dd\uba85\uc8fc\uae30_\uc624\ud1a0\ub9c8\ud0c0_\uac80\uc99d_\ubaa8\ub378\uc758_\ud575\uc2ec",
+      "target": "spec_timed_automata_4_1_threat_\uc801_\ud0c4\ub3c4\ud0c4"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ros2_dwta/spec/timed_automata.md",
+      "source_location": "L104",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "spec_timed_automata_4_\uc0dd\uba85\uc8fc\uae30_\uc624\ud1a0\ub9c8\ud0c0_\uac80\uc99d_\ubaa8\ub378\uc758_\ud575\uc2ec",
+      "target": "spec_timed_automata_4_2_interceptor_\uc544\uad70_\uc694\uaca9\ud0c4_\uc2ac\ub86f_cap\uac1c_\ubcd1\ub82c"
     },
     {
       "relation": "references",
@@ -38967,5 +39234,5 @@
       "source_file": "clean_slate_optimizer.py"
     }
   ],
-  "built_at_commit": "282763266325240145de4405125986f7ca1d0bf1"
+  "built_at_commit": "28fa1e4aeda8525032eae35b2a3497f288b541f0"
 }
