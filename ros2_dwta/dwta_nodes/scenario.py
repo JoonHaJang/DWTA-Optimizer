@@ -44,9 +44,9 @@ class ThreatSpawn:
 
 # --- 임의 미사일/포대 스펙 프리셋 -------------------------------------------------
 def lsam(bid: str, pos: Tuple[float, float]) -> Battery:
-    """L-SAM (장거리·상층): 넓은 사거리, 유도 채널 적음(고가치). 임의 스펙."""
+    """L-SAM (장거리·상층): 넓은 사거리·고Pk, 탄약/채널 제한(고가치). 임의 스펙."""
     return Battery(bid, "UPPER", pos, engagement_range=160.0, base_pk=0.86,
-                   available_missiles=16, fire_control_channels=4, interceptor_flyout=2.5)
+                   available_missiles=8, fire_control_channels=3, interceptor_flyout=5.0)
 
 
 def msam(bid: str, pos: Tuple[float, float]) -> Battery:
@@ -88,20 +88,19 @@ def saturation_scenario() -> Tuple[List[Asset], List[Battery], List[ThreatSpawn]
         ("A1_Command", (0.0, 0.0)), ("A2_Airbase", (0.0, 45.0)),
     ]
     spawns: List[ThreatSpawn] = []
-    # 고속·집중 버스트 -> 상층(L) 교전 진행 중에 하층(M) 중첩 사거리 진입 -> 상하층 동시 교전
-    import_seed = [
-        # (target_idx, x, y, speed, t)
-        (0, 190, 10, 5.4, 0.0), (0, 200, -20, 5.6, 0.4), (1, 195, 70, 5.3, 0.8),
-        (0, 205, 30, 5.8, 1.2), (1, 190, 95, 5.2, 1.6), (0, 185, -40, 5.5, 2.0),
-        (0, 210, 50, 5.7, 2.4), (1, 200, 35, 5.4, 2.8), (0, 195, -10, 5.5, 3.2),
-        (1, 205, 110, 5.3, 3.6), (0, 215, 20, 5.9, 4.0), (0, 190, 60, 5.4, 4.4),
-        (1, 198, 40, 5.4, 4.8), (0, 208, -30, 5.7, 5.2), (1, 202, 95, 5.5, 5.6),
-        (0, 192, 5, 5.4, 6.0), (0, 212, 45, 5.6, 6.4), (1, 196, 80, 5.3, 6.8),
-        (0, 188, -15, 5.5, 7.2), (1, 204, 60, 5.4, 7.6),
-    ]
-    for i, (tidx, x, y, spd, t) in enumerate(import_seed, start=1):
-        tgt = waves[tidx][0]
-        spawns.append(ThreatSpawn(f"T{i:02d}", tgt, (float(x), float(y)), spd, t))
+    # 고속·집중 30발 포화: 상층(L-SAM 2포대) 화력 포화 -> 일부가 하층(M-SAM) 중첩
+    # 사거리로 진입 -> 상·하층 동시 교전 + 다포대 분산이 함께 발생하도록 균형.
+    n = 30
+    a1_ys = [-45, -25, -10, 5, 20, 40]   # A1 방향 위협 y 분포
+    a2_ys = [40, 55, 70, 85, 100, 110]   # A2 방향 위협 y 분포
+    for i in range(n):
+        tidx = i % 2                      # A1 / A2 번갈아
+        ys = a1_ys if tidx == 0 else a2_ys
+        y = float(ys[(i // 2) % len(ys)])
+        x = 185.0 + (i % 8) * 5.0         # 185~220
+        spd = 5.2 + (i % 5) * 0.2         # 5.2~6.0
+        t = round(i * 0.4, 1)             # 0~11.6s 집중 버스트
+        spawns.append(ThreatSpawn(f"T{i + 1:02d}", waves[tidx][0], (x, y), spd, t))
     return assets, batteries, spawns
 
 

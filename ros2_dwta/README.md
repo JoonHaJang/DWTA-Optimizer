@@ -47,10 +47,11 @@ control_station_node ──/policy(전시·평시, SLS/SSL, 위협당 최대탄)
 ## 시나리오 (포화 / 상하층 동시)
 
 `SCENARIOS = {balanced, saturation}` (`scenario.py`). 기본은 `saturation`:
-- 임의 스펙: L-SAM(사거리160·Pk0.86·채널4), M-SAM(중첩사거리130·Pk0.90·채널5) ×2,
-  고속 위협 20발 집중 버스트.
-- 결과: 상층(L) 교전 진행 중 하층(M) 중첩 사거리 진입 → **상·하층 동시 교전**
-  (예: L1 4발 + M1/M2 각 1~2발 동시 비행). `python3 run_poc.py 60 saturation`.
+- 임의 스펙: **L-SAM ×2**(사거리160·Pk0.86·탄8·채널3·비행5s), **M-SAM ×2**
+  (중첩사거리130·Pk0.90·탄16·채널5·비행1.6s), 고속 위협 **30발** 집중 버스트(0~12s).
+- 균형 결과(검증): 4개 포대 모두 사용 **L1:8 L2:8 M1:14 M2:15**, 상층 **중복 교전 0**
+  (충돌회피), **상·하층 동시 비행 26개 구간**(예: L1·L2 각 3비행 + M2 1비행), 다층요격.
+  `python3 run_poc.py 75 saturation`.
 - 소규모 기능 확인: `python3 run_poc.py 45 balanced`.
 
 ## 정보 공유 / 이벤트 / COP
@@ -131,6 +132,31 @@ ros2 launch dwta_ros2 dwta_poc.launch.py     # 또는: ros2 run dwta_ros2 dwta_p
 - 켜기: `python3 run_poc.py 60 saturation viz`. 표시를 꺼도/교체해도 파이프라인 무영향.
 - 실 ROS2에서는 `viz_pyqtgraph.TacticalView`를 Qt 메인루프 + `rclpy.spin`(스레드)로 구동
   (모듈 docstring 참고). 기존 `pyqtgraph_display.TacticalMapWidget`도 같은 방식으로 연결 가능.
+
+ASCII 프레임 샘플 (t=15.5s, 상·하층 동시 비행 중):
+```
+[t= 15.50s] 위협 30  ASSESSED=23 ENGAGEABLE=1 ENGAGED=6
+포대: L1_LSAM:5탄/3비행  L2_LSAM:5탄/3비행  M1_MSAM:16탄/0비행  M2_MSAM:15탄/1비행
+----------------------------------------------------------------
+                                                   *
+                                         *       *
+                                    x
+                                           **       *
+       L                                 *
+       M                           x            **
+       A                         x         *  *
+                                                  *
+                                        *
+                                               *
+       M                          x       *
+       A
+                                  x o   *         *
+       L                                    *  *
+                                 x        *
+                                           *
+----------------------------------------------------------------
+범례: A=자산  L=L-SAM포대  M=M-SAM포대  *=평가  o=교전가능  x=교전중  !=탄착
+```
 
 ## 현재 PoC의 단순화 (다음 단계)
 
