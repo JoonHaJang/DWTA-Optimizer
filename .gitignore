@@ -12,8 +12,11 @@ build/
 !requirements.txt
 performance_results/
 
-# graphify knowledge graph: commit the queryable DB (graph.json / report / manifest),
-# ignore machine-specific and regenerable local state.
+# graphify knowledge graph.
+# Track the queryable DB (graph.json), human-readable analysis (GRAPH_REPORT.md),
+# and manifest so the graph is consistent across clones. The interactive viz
+# (graph.html) is large and regenerable, and local state is machine-specific.
+graphify-out/graph.html
 graphify-out/cache/
 graphify-out/cost.json
 graphify-out/.graphify_python
