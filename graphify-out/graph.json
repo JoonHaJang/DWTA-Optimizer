@@ -225,7 +225,7 @@
       "source_file": "clean_slate_optimizer.py",
       "source_location": "L355",
       "id": "dwta_optimizer_clean_slate_optimizer_compute_distance",
-      "community": 7,
+      "community": 0,
       "norm_label": "_compute_distance()"
     },
     {
@@ -234,7 +234,7 @@
       "source_file": "clean_slate_optimizer.py",
       "source_location": "L362",
       "id": "dwta_optimizer_clean_slate_optimizer_check_feasibility",
-      "community": 7,
+      "community": 0,
       "norm_label": "_check_feasibility()"
     },
     {
@@ -243,7 +243,7 @@
       "source_file": "clean_slate_optimizer.py",
       "source_location": "L362",
       "id": "clean_slate_optimizer_py_bool",
-      "community": 7,
+      "community": 0,
       "norm_label": "bool"
     },
     {
@@ -252,7 +252,7 @@
       "source_file": "clean_slate_optimizer.py",
       "source_location": "L407",
       "id": "dwta_optimizer_clean_slate_optimizer_compute_k",
-      "community": 7,
+      "community": 0,
       "norm_label": "_compute_k()"
     },
     {
@@ -333,7 +333,7 @@
       "source_file": "clean_slate_optimizer.py",
       "source_location": "L909",
       "id": "dwta_optimizer_clean_slate_optimizer_cleanslateoptimizer_set_k_factor_cache",
-      "community": 0,
+      "community": 69,
       "norm_label": ".set_k_factor_cache()"
     },
     {
@@ -387,7 +387,7 @@
       "source_file": "clean_slate_optimizer.py",
       "source_location": "L1062",
       "id": "dwta_optimizer_clean_slate_optimizer_cleanslateoptimizer_get_assignment_details",
-      "community": 0,
+      "community": 66,
       "norm_label": ".get_assignment_details()"
     },
     {
@@ -441,7 +441,7 @@
       "source_file": "clean_slate_optimizer.py",
       "source_location": "L356",
       "id": "dwta_optimizer_clean_slate_optimizer_rationale_356",
-      "community": 7,
+      "community": 0,
       "norm_label": "\u1112\u1167\u11ab\u110c\u1162 \u110b\u1171\u110e\u1175 \u1100\u1175\u1107\u1161\u11ab 2d \u1100\u1165\u1105\u1175 \u1100\u1168\u1109\u1161\u11ab (km)."
     },
     {
@@ -450,7 +450,7 @@
       "source_file": "clean_slate_optimizer.py",
       "source_location": "L364",
       "id": "dwta_optimizer_clean_slate_optimizer_rationale_364",
-      "community": 7,
+      "community": 0,
       "norm_label": "\u1112\u1167\u11ab\u110c\u1162 \u110b\u1171\u110e\u1175 \u1100\u1175\u1107\u1161\u11ab \u1100\u116d\u110c\u1165\u11ab \u1100\u1161\u1102\u1173\u11bc \u110b\u1167\u1107\u116e \u1111\u1161\u11ab\u1103\u1161\u11ab.      \u1112\u1162\u11a8\u1109\u1175\u11b7 \u110b\u116f\u11ab\u110e\u1175\u11a8: \u110b\u1171\u1112\u1167\u11b8\u110b\u1175 \u1112\u1167\u11ab\u110c\u1162 \u1109\u1161\u1100\u1165\u1105\u1175 \u110b\u1161\u11ab\u110b\u1166 \u110b\u1175\u11bb\u110b\u1173\u1106\u1167\u11ab \u1100\u116d\u110c\u1165\u11ab \u1100\u1161\u1102\u1173\u11bc.     engagement_mat"
     },
     {
@@ -459,7 +459,7 @@
       "source_file": "clean_slate_optimizer.py",
       "source_location": "L409",
       "id": "dwta_optimizer_clean_slate_optimizer_rationale_409",
-      "community": 7,
+      "community": 0,
       "norm_label": "\u1112\u1167\u11ab\u110c\u1162 \u110b\u1171\u110e\u1175 \u1100\u1175\u1107\u1161\u11ab k-factor \u1100\u1168\u1109\u1161\u11ab.      \u1100\u1165\u1105\u1175\u1105\u1173\u11af current_position\u110b\u1166\u1109\u1165 \u110c\u1175\u11a8\u110c\u1165\u11b8 \u1100\u1168\u1109\u1161\u11ab\u1112\u1161\u110b\u1167     engagement_matr"
     },
     {
@@ -513,7 +513,7 @@
       "source_file": "clean_slate_optimizer.py",
       "source_location": "L910",
       "id": "dwta_optimizer_clean_slate_optimizer_rationale_910",
-      "community": 0,
+      "community": 69,
       "norm_label": "provide k-factor cache for distance/time-based k computation."
     },
     {
@@ -540,7 +540,7 @@
       "source_file": "clean_slate_optimizer.py",
       "source_location": "L1063",
       "id": "dwta_optimizer_clean_slate_optimizer_rationale_1063",
-      "community": 0,
+      "community": 66,
       "norm_label": "backward compatibility."
     },
     {
@@ -1188,7 +1188,7 @@
       "source_file": "config_mip.py",
       "source_location": "L1349",
       "id": "dwta_optimizer_config_mip_enhancedengagementmatrix_precompute_all",
-      "community": 0,
+      "community": 70,
       "norm_label": ".precompute_all()"
     },
     {
@@ -1782,7 +1782,7 @@
       "source_file": "config_mip.py",
       "source_location": "L325",
       "id": "dwta_optimizer_config_mip_rationale_325",
-      "community": 29,
+      "community": 27,
       "norm_label": "\u110b\u116e\u1109\u1165\u11ab\u1109\u116e\u11ab\u110b\u1171 \u1100\u1175\u1107\u1161\u11ab \u110c\u116e\u110b\u116d \u1107\u1161\u11bc\u110b\u1165 \u110c\u1161\u1109\u1161\u11ab 10\u1100\u1162 \u1109\u1165\u11ab\u1110\u1162\u11a8"
     },
     {
@@ -1818,7 +1818,7 @@
       "source_file": "config_mip.py",
       "source_location": "L611",
       "id": "dwta_optimizer_config_mip_rationale_611",
-      "community": 29,
+      "community": 27,
       "norm_label": "\u1106\u1175\u1109\u1161\u110b\u1175\u11af \u1100\u1170\u110c\u1165\u11a8\u110b\u1166\u1109\u1165 \u1100\u116d\u110c\u1165\u11ab \u1109\u1175\u110c\u1165\u11b7\u110b\u1174 \u110b\u1171\u110e\u1175\u110b\u116a \u1100\u1169\u1103\u1169 \u1100\u1168\u1109\u1161\u11ab"
     },
     {
@@ -1827,7 +1827,7 @@
       "source_file": "config_mip.py",
       "source_location": "L672",
       "id": "dwta_optimizer_config_mip_rationale_672",
-      "community": 29,
+      "community": 27,
       "norm_label": "\u1100\u1170\u110c\u1165\u11a8 \u1100\u1175\u1107\u1161\u11ab \u1100\u116d\u110c\u1165\u11ab \u1100\u1161\u1102\u1173\u11bc\u1109\u1165\u11bc \u1106\u1175\u11be \u1100\u116d\u110c\u1165\u11ab \u1109\u1175\u1100\u1161\u11ab \u110b\u1171\u11ab\u1103\u1169\u110b\u116e \u1100\u1168\u1109\u1161\u11ab"
     },
     {
@@ -1854,7 +1854,7 @@
       "source_file": "config_mip.py",
       "source_location": "L800",
       "id": "dwta_optimizer_config_mip_rationale_800",
-      "community": 29,
+      "community": 27,
       "norm_label": "\u1100\u116d\u110c\u1165\u11ab \u1110\u1161\u110b\u1175\u11b7 \u110b\u1171\u11ab\u1103\u1169\u110b\u116e \u1100\u1168\u1109\u1161\u11ab - \u1100\u116e\u11bc\u110c\u1165\u11a8 \u1100\u1175\u1107\u1161\u11ab \u1109\u1175\u11af\u1109\u1175\u1100\u1161\u11ab \u1107\u116e\u11ab\u1109\u1165\u11a8"
     },
     {
@@ -1863,7 +1863,7 @@
       "source_file": "config_mip.py",
       "source_location": "L920",
       "id": "dwta_optimizer_config_mip_rationale_920",
-      "community": 29,
+      "community": 27,
       "norm_label": "\u1100\u116d\u110c\u1165\u11ab \u110b\u1171\u11ab\u1103\u1169\u110b\u116e \u1100\u1175\u1107\u1161\u11ab \u110c\u1169\u110c\u1165\u11bc\u1103\u116c\u11ab \u110b\u116d\u1100\u1167\u11a8 \u1112\u116a\u11a8\u1105\u1172\u11af \u1100\u1168\u1109\u1161\u11ab"
     },
     {
@@ -1890,7 +1890,7 @@
       "source_file": "config_mip.py",
       "source_location": "L982",
       "id": "dwta_optimizer_config_mip_rationale_982",
-      "community": 0,
+      "community": 88,
       "norm_label": "\u110e\u1169\u1109\u1169\u1100\u1172\u1106\u1169 \u1100\u1169\u11bc\u1100\u1167\u11a8 \u1109\u1175\u1102\u1161\u1105\u1175\u110b\u1169 (3\u1107\u1161\u11af - \u110b\u1161\u11af\u1100\u1169\u1105\u1175\u110c\u1173\u11b7 \u1100\u1165\u11b7\u110c\u1173\u11bc)"
     },
     {
@@ -1899,7 +1899,7 @@
       "source_file": "config_mip.py",
       "source_location": "L994",
       "id": "dwta_optimizer_config_mip_rationale_994",
-      "community": 0,
+      "community": 93,
       "norm_label": "\u1109\u1169\u1100\u1172\u1106\u1169 \u1100\u1169\u11bc\u1100\u1167\u11a8 \u1109\u1175\u1102\u1161\u1105\u1175\u110b\u1169 (5\u1107\u1161\u11af - \u1100\u1175\u1107\u1169\u11ab \u1109\u1165\u11bc\u1102\u1173\u11bc)"
     },
     {
@@ -1908,7 +1908,7 @@
       "source_file": "config_mip.py",
       "source_location": "L1006",
       "id": "dwta_optimizer_config_mip_rationale_1006",
-      "community": 0,
+      "community": 78,
       "norm_label": "\u1109\u1169\u110c\u116e\u11bc\u1100\u1172\u1106\u1169 \u1100\u1169\u11bc\u1100\u1167\u11a8 \u1109\u1175\u1102\u1161\u1105\u1175\u110b\u1169 (8\u1107\u1161\u11af - \u110c\u1165\u11ab\u1112\u116a\u11ab\u110c\u1165\u11b7 \u1110\u1166\u1109\u1173\u1110\u1173)"
     },
     {
@@ -1917,7 +1917,7 @@
       "source_file": "config_mip.py",
       "source_location": "L1018",
       "id": "dwta_optimizer_config_mip_rationale_1018",
-      "community": 0,
+      "community": 79,
       "norm_label": "\u110c\u116e\u11bc\u1109\u1169\u1100\u1172\u1106\u1169 \u1100\u1169\u11bc\u1100\u1167\u11a8 \u1109\u1175\u1102\u1161\u1105\u1175\u110b\u1169 (10\u1107\u1161\u11af - \u110b\u1175\u11af\u1107\u1161\u11ab \u1100\u1169\u11bc\u1100\u1167\u11a8)"
     },
     {
@@ -1926,7 +1926,7 @@
       "source_file": "config_mip.py",
       "source_location": "L1030",
       "id": "dwta_optimizer_config_mip_rationale_1030",
-      "community": 0,
+      "community": 81,
       "norm_label": "\u110c\u116e\u11bc\u1103\u1162\u1100\u1172\u1106\u1169 \u1100\u1169\u11bc\u1100\u1167\u11a8 \u1109\u1175\u1102\u1161\u1105\u1175\u110b\u1169 (20\u1107\u1161\u11af - \u1100\u1172\u11ab\u1112\u1167\u11bc \u1100\u1169\u11bc\u1100\u1167\u11a8)"
     },
     {
@@ -1935,7 +1935,7 @@
       "source_file": "config_mip.py",
       "source_location": "L1046",
       "id": "dwta_optimizer_config_mip_rationale_1046",
-      "community": 0,
+      "community": 82,
       "norm_label": "\u1103\u1162\u1100\u1172\u1106\u1169 \u1111\u1169\u1112\u116a \u1100\u1169\u11bc\u1100\u1167\u11a8 \u1109\u1175\u1102\u1161\u1105\u1175\u110b\u1169 (30\u1107\u1161\u11af - \u110c\u1175\u11b8\u110c\u116e\u11bc \u1107\u1161\u11af\u1109\u1161)"
     },
     {
@@ -1944,7 +1944,7 @@
       "source_file": "config_mip.py",
       "source_location": "L1063",
       "id": "dwta_optimizer_config_mip_rationale_1063",
-      "community": 0,
+      "community": 83,
       "norm_label": "\u110e\u1169\u1103\u1162\u1100\u1172\u1106\u1169 \u1100\u1169\u11bc\u1100\u1167\u11a8 \u1109\u1175\u1102\u1161\u1105\u1175\u110b\u1169 (40\u1107\u1161\u11af - \u1112\u1161\u11ab\u1100\u1168 \u1110\u1166\u1109\u1173\u1110\u1173)"
     },
     {
@@ -1953,7 +1953,7 @@
       "source_file": "config_mip.py",
       "source_location": "L1079",
       "id": "dwta_optimizer_config_mip_rationale_1079",
-      "community": 0,
+      "community": 86,
       "norm_label": "\u1109\u116e\u11ab\u110e\u1161 \u1100\u1169\u11bc\u1100\u1167\u11a8 \u1109\u1175\u1102\u1161\u1105\u1175\u110b\u1169 (15\u1107\u1161\u11af - \u1109\u116e\u11ab\u110e\u1161 \u1107\u1161\u11af\u1109\u1161)"
     },
     {
@@ -1962,7 +1962,7 @@
       "source_file": "config_mip.py",
       "source_location": "L1095",
       "id": "dwta_optimizer_config_mip_rationale_1095",
-      "community": 0,
+      "community": 87,
       "norm_label": "\u1103\u1169\u11bc\u1109\u1175 \u1100\u1169\u11bc\u1100\u1167\u11a8 \u1109\u1175\u1102\u1161\u1105\u1175\u110b\u1169 (15\u1107\u1161\u11af - \u1103\u1169\u11bc\u1109\u1175 \u1107\u1161\u11af\u1109\u1161)"
     },
     {
@@ -2070,7 +2070,7 @@
       "source_file": "config_mip.py",
       "source_location": "L1350",
       "id": "dwta_optimizer_config_mip_rationale_1350",
-      "community": 0,
+      "community": 70,
       "norm_label": "\u1106\u1169\u1103\u1173\u11ab (battery, threat) \u110c\u1169\u1112\u1161\u11b8\u110b\u1174 \u1111\u1161\u1105\u1161\u1106\u1175\u1110\u1165\u1105\u1173\u11af \u1106\u1175\u1105\u1175 \u1100\u1168\u1109\u1161\u11ab                  args:             batte"
     },
     {
@@ -2781,7 +2781,7 @@
       "source_file": "greedy_optimizer.py",
       "source_location": "L142",
       "id": "dwta_optimizer_greedy_optimizer_greedyoptimizer_set_intercept_probabilities",
-      "community": 0,
+      "community": 149,
       "norm_label": ".set_intercept_probabilities()"
     },
     {
@@ -2853,7 +2853,7 @@
       "source_file": "greedy_optimizer.py",
       "source_location": "L143",
       "id": "dwta_optimizer_greedy_optimizer_rationale_143",
-      "community": 0,
+      "community": 149,
       "norm_label": "\u1106\u1169\u11ab\u1110\u1166\u110f\u1161\u1105\u1173\u11af\u1105\u1169 \u1109\u1175\u1106\u1172\u11af\u1105\u1166\u110b\u1175\u1109\u1167\u11ab\u110b\u1166\u1109\u1165 \u1109\u1162\u11b7\u1111\u1173\u11af\u1105\u1175\u11bc\u1103\u116c\u11ab \u110b\u116d\u1100\u1167\u11a8\u1112\u116a\u11a8\u1105\u1172\u11af \u1109\u1165\u11af\u110c\u1165\u11bc"
     },
     {
@@ -3393,7 +3393,7 @@
       "source_file": "multi_missile_tracker_gui.py",
       "source_location": "L563",
       "id": "qgroupbox",
-      "community": 9,
+      "community": 0,
       "norm_label": "qgroupbox"
     },
     {
@@ -3555,7 +3555,7 @@
       "source_file": "multi_missile_tracker_gui.py",
       "source_location": "L1005",
       "id": "dwta_optimizer_multi_missile_tracker_gui_dwtamainwindow_on_sim_finished",
-      "community": 9,
+      "community": 53,
       "norm_label": "._on_sim_finished()"
     },
     {
@@ -3564,7 +3564,7 @@
       "source_file": "multi_missile_tracker_gui.py",
       "source_location": "L1055",
       "id": "dwta_optimizer_multi_missile_tracker_gui_dwtamainwindow_on_display_tick",
-      "community": 9,
+      "community": 53,
       "norm_label": "._on_display_tick()"
     },
     {
@@ -3573,7 +3573,7 @@
       "source_file": "multi_missile_tracker_gui.py",
       "source_location": "L1073",
       "id": "dwta_optimizer_multi_missile_tracker_gui_compute_tta",
-      "community": 9,
+      "community": 53,
       "norm_label": "_compute_tta()"
     },
     {
@@ -3591,7 +3591,7 @@
       "source_file": "multi_missile_tracker_gui.py",
       "source_location": "L1079",
       "id": "dwta_optimizer_multi_missile_tracker_gui_dwtamainwindow_refresh_threat_table",
-      "community": 9,
+      "community": 53,
       "norm_label": "._refresh_threat_table()"
     },
     {
@@ -3600,7 +3600,7 @@
       "source_file": "multi_missile_tracker_gui.py",
       "source_location": "L1157",
       "id": "dwta_optimizer_multi_missile_tracker_gui_dwtamainwindow_refresh_battery_table",
-      "community": 9,
+      "community": 53,
       "norm_label": "._refresh_battery_table()"
     },
     {
@@ -3609,7 +3609,7 @@
       "source_file": "multi_missile_tracker_gui.py",
       "source_location": "L1194",
       "id": "dwta_optimizer_multi_missile_tracker_gui_dwtamainwindow_refresh_alert_bar",
-      "community": 9,
+      "community": 53,
       "norm_label": "._refresh_alert_bar()"
     },
     {
@@ -3843,7 +3843,7 @@
       "source_file": "multi_missile_tracker_gui.py",
       "source_location": "L2727",
       "id": "dwta_optimizer_multi_missile_tracker_gui_multimissiletracker_update_display",
-      "community": 9,
+      "community": 53,
       "norm_label": ".update_display()"
     },
     {
@@ -3951,7 +3951,7 @@
       "source_file": "multi_missile_tracker_gui.py",
       "source_location": "L1006",
       "id": "dwta_optimizer_multi_missile_tracker_gui_rationale_1006",
-      "community": 9,
+      "community": 53,
       "norm_label": "called on main thread when simulation thread exits."
     },
     {
@@ -3960,7 +3960,7 @@
       "source_file": "multi_missile_tracker_gui.py",
       "source_location": "L1056",
       "id": "dwta_optimizer_multi_missile_tracker_gui_rationale_1056",
-      "community": 9,
+      "community": 53,
       "norm_label": "fires every 250 ms on the main thread \u2014 refresh all visual elements."
     },
     {
@@ -3969,7 +3969,7 @@
       "source_file": "multi_missile_tracker_gui.py",
       "source_location": "L1080",
       "id": "dwta_optimizer_multi_missile_tracker_gui_rationale_1080",
-      "community": 9,
+      "community": 53,
       "norm_label": "\u1102\u116e\u110c\u1165\u11a8 \u1105\u1169\u1100\u1173 \u1107\u1161\u11bc\u1109\u1175\u11a8: \u1109\u1175\u11ab\u1100\u1172 \u110b\u1171\u1112\u1167\u11b8\u110b\u1173\u11ab \u1112\u1162\u11bc \u110e\u116e\u1100\u1161, \u1100\u1175\u110c\u1169\u11ab \u110b\u1171\u1112\u1167\u11b8\u110b\u1173\u11ab \u1109\u1161\u11bc\u1110\u1162\u1106\u1161\u11ab \u1100\u1162\u11bc\u1109\u1175\u11ab."
     },
     {
@@ -3978,7 +3978,7 @@
       "source_file": "multi_missile_tracker_gui.py",
       "source_location": "L1195",
       "id": "dwta_optimizer_multi_missile_tracker_gui_rationale_1195",
-      "community": 9,
+      "community": 53,
       "norm_label": "flash alert bar if there are unengaged high-danger threats."
     },
     {
@@ -4167,7 +4167,7 @@
       "source_file": "multi_missile_tracker_gui.py",
       "source_location": "L2728",
       "id": "dwta_optimizer_multi_missile_tracker_gui_rationale_2728",
-      "community": 9,
+      "community": 53,
       "norm_label": "dwtamainwindow qtimer(_on_display_tick)\u1100\u1161 tacticalmapwidget\u110b\u1173\u11af \u110c\u1175\u11a8\u110c\u1165\u11b8 \u1100\u1162\u11bc\u1109\u1175\u11ab\u1112\u1161\u11ab\u1103\u1161."
     },
     {
@@ -4275,7 +4275,7 @@
       "source_file": "pyqtgraph_display.py",
       "source_location": "L147",
       "id": "dwta_optimizer_pyqtgraph_display_tacticalmapwidget",
-      "community": 14,
+      "community": 0,
       "norm_label": "tacticalmapwidget"
     },
     {
@@ -4329,7 +4329,7 @@
       "source_file": "pyqtgraph_display.py",
       "source_location": "L274",
       "id": "dwta_optimizer_pyqtgraph_display_tacticalmapwidget_resizeevent",
-      "community": 14,
+      "community": 441,
       "norm_label": ".resizeevent()"
     },
     {
@@ -4527,7 +4527,7 @@
       "source_file": "pyqtgraph_display.py",
       "source_location": "L148",
       "id": "dwta_optimizer_pyqtgraph_display_rationale_148",
-      "community": 14,
+      "community": 0,
       "norm_label": "high-performance pyqtgraph tactical map widget.     designed for mlad (multi-la"
     },
     {
@@ -4572,7 +4572,7 @@
       "source_file": "pyqtgraph_display.py",
       "source_location": "L275",
       "id": "dwta_optimizer_pyqtgraph_display_rationale_275",
-      "community": 14,
+      "community": 441,
       "norm_label": "\u110b\u1171\u110c\u1166\u11ba \u110f\u1173\u1100\u1175 \u1107\u1167\u11ab\u1100\u1167\u11bc \u1109\u1175 \u1107\u1165\u11b7\u1105\u1168\u00b7hud \u110b\u1171\u110e\u1175 \u110c\u1162\u1100\u1169\u110c\u1165\u11bc."
     },
     {
@@ -6111,7 +6111,7 @@
       "source_file": "stress_test_metrics.py",
       "source_location": "L42",
       "id": "dwta_optimizer_stress_test_metrics_stresstestmetrics",
-      "community": 16,
+      "community": 0,
       "norm_label": "stresstestmetrics"
     },
     {
@@ -6210,7 +6210,7 @@
       "source_file": "stress_test_metrics.py",
       "source_location": "L43",
       "id": "dwta_optimizer_stress_test_metrics_rationale_43",
-      "community": 16,
+      "community": 0,
       "norm_label": "stress test \u110c\u1165\u11ab\u110e\u1166 \u1106\u1166\u1110\u1173\u1105\u1175\u11a8 \u1109\u116e\u110c\u1175\u11b8 (\u110b\u1167\u11ab\u1100\u116e \u1102\u1169\u11ab\u1106\u116e\u11ab\u110b\u116d\u11bc \u1112\u116a\u11a8\u110c\u1161\u11bc)"
     },
     {
@@ -24309,7 +24309,7 @@
       "source_file": "uncertainty_modeling.py",
       "source_location": "L27",
       "id": "dwta_optimizer_uncertainty_modeling_uncertaintymodeling",
-      "community": 48,
+      "community": 0,
       "norm_label": "uncertaintymodeling"
     },
     {
@@ -24318,7 +24318,7 @@
       "source_file": "uncertainty_modeling.py",
       "source_location": "L30",
       "id": "dwta_optimizer_uncertainty_modeling_uncertaintymodeling_init",
-      "community": 48,
+      "community": 0,
       "norm_label": ".__init__()"
     },
     {
@@ -24408,7 +24408,7 @@
       "source_file": "uncertainty_modeling.py",
       "source_location": "L28",
       "id": "dwta_optimizer_uncertainty_modeling_rationale_28",
-      "community": 48,
+      "community": 0,
       "norm_label": "\u1107\u116e\u11af\u1112\u116a\u11a8\u1109\u1175\u11af\u1109\u1165\u11bc \u1106\u1169\u1103\u1166\u11af\u1105\u1175\u11bc \u1106\u1175\u11be \u1106\u1169\u11ab\u1110\u1166\u110f\u1161\u1105\u1173\u11af\u1105\u1169 \u1109\u1175\u1106\u1172\u11af\u1105\u1166\u110b\u1175\u1109\u1167\u11ab"
     },
     {
@@ -24471,7 +24471,7 @@
       "source_file": "ros2_dwta/dwta_nodes/control_station_node.py",
       "source_location": "L1",
       "id": "ros2_dwta_dwta_nodes_control_station_node_py",
-      "community": 34,
+      "community": 33,
       "norm_label": "control_station_node.py"
     },
     {
@@ -24525,7 +24525,7 @@
       "source_file": "ros2_dwta/dwta_nodes/control_station_node.py",
       "source_location": "L1",
       "id": "dwta_nodes_control_station_node_rationale_1",
-      "community": 34,
+      "community": 33,
       "norm_label": "\u1110\u1169\u11bc\u110c\u1166\u1109\u1169 \u1102\u1169\u1103\u1173 \u2014 \u1107\u1161\u11bc\u110b\u1165\u110c\u1165\u11bc\u110e\u1162\u11a8 \u1107\u1161\u11af\u1112\u1162\u11bc (\u110c\u1165\u11ab\u1109\u1175/\u1111\u1167\u11bc\u1109\u1175, \u1103\u1161\u11ab\u1107\u1161\u11af/\u110b\u1167\u11ab\u1109\u1169\u11a8, \u110b\u1171\u1112\u1167\u11b8\u1103\u1161\u11bc \u110e\u116c\u1103\u1162 \u110b\u116d\u1100\u1167\u11a8\u1110\u1161\u11ab)."
     },
     {
@@ -24534,7 +24534,7 @@
       "source_file": "ros2_dwta/dwta_nodes/engageability_node.py",
       "source_location": "L1",
       "id": "ros2_dwta_dwta_nodes_engageability_node_py",
-      "community": 34,
+      "community": 33,
       "norm_label": "engageability_node.py"
     },
     {
@@ -24561,7 +24561,7 @@
       "source_file": "ros2_dwta/dwta_nodes/engageability_node.py",
       "source_location": "L22",
       "id": "ros2_dwta_dwta_nodes_engageability_node_py_battery",
-      "community": 33,
+      "community": 41,
       "norm_label": "battery"
     },
     {
@@ -24579,7 +24579,7 @@
       "source_file": "ros2_dwta/dwta_nodes/engageability_node.py",
       "source_location": "L33",
       "id": "ros2_dwta_dwta_nodes_engageability_node_py_trackarray",
-      "community": 33,
+      "community": 41,
       "norm_label": "trackarray"
     },
     {
@@ -24597,7 +24597,7 @@
       "source_file": "ros2_dwta/dwta_nodes/engageability_node.py",
       "source_location": "L36",
       "id": "ros2_dwta_dwta_nodes_engageability_node_py_interceptorstatus",
-      "community": 33,
+      "community": 41,
       "norm_label": "interceptorstatus"
     },
     {
@@ -24606,7 +24606,7 @@
       "source_file": "ros2_dwta/dwta_nodes/engageability_node.py",
       "source_location": "L40",
       "id": "dwta_nodes_engageability_node_engageabilitynode_tick",
-      "community": 33,
+      "community": 46,
       "norm_label": "._tick()"
     },
     {
@@ -24615,7 +24615,7 @@
       "source_file": "ros2_dwta/dwta_nodes/engageability_node.py",
       "source_location": "L1",
       "id": "dwta_nodes_engageability_node_rationale_1",
-      "community": 34,
+      "community": 33,
       "norm_label": "oo \u1100\u1161\u1102\u1173\u11bc\u1109\u1165\u11bc \u1111\u1167\u11bc\u1100\u1161 \u1102\u1169\u1103\u1173 \u2014 \u1100\u116d\u110c\u1165\u11ab \u1100\u1161\u1102\u1173\u11bc\u1109\u1165\u11bc/\u1106\u1167\u11bc\u110c\u116e\u11bc\u1105\u1172\u11af \u1106\u1162\u1110\u1173\u1105\u1175\u11a8\u1109\u1173.  \u1110\u1161\u11ab\u1103\u1169\u1110\u1161\u11ab \u110b\u1168\u1109\u1161\u11bc\u1100\u1170\u110c\u1165\u11a8(/tracks) + \u110b\u116d\u1100\u1167\u11a8\u110e\u1166\u1100\u1168 \u1109\u1161\u11bc\u1110\u1162(/interceptor_stat"
     },
     {
@@ -24624,7 +24624,7 @@
       "source_file": "ros2_dwta/dwta_nodes/fire_control_radar_node.py",
       "source_location": "L1",
       "id": "ros2_dwta_dwta_nodes_fire_control_radar_node_py",
-      "community": 34,
+      "community": 33,
       "norm_label": "fire_control_radar_node.py"
     },
     {
@@ -24633,7 +24633,7 @@
       "source_file": "ros2_dwta/dwta_nodes/fire_control_radar_node.py",
       "source_location": "L19",
       "id": "dwta_nodes_fire_control_radar_node_firecontrolradarnode",
-      "community": 61,
+      "community": 33,
       "norm_label": "firecontrolradarnode"
     },
     {
@@ -24642,7 +24642,7 @@
       "source_file": "ros2_dwta/dwta_nodes/fire_control_radar_node.py",
       "source_location": "L23",
       "id": "dwta_nodes_fire_control_radar_node_firecontrolradarnode_init",
-      "community": 61,
+      "community": 33,
       "norm_label": ".__init__()"
     },
     {
@@ -24651,7 +24651,7 @@
       "source_file": "ros2_dwta/dwta_nodes/fire_control_radar_node.py",
       "source_location": "L23",
       "id": "ros2_dwta_dwta_nodes_fire_control_radar_node_py_battery",
-      "community": 61,
+      "community": 34,
       "norm_label": "battery"
     },
     {
@@ -24660,7 +24660,7 @@
       "source_file": "ros2_dwta/dwta_nodes/fire_control_radar_node.py",
       "source_location": "L37",
       "id": "dwta_nodes_fire_control_radar_node_firecontrolradarnode_on_clock",
-      "community": 61,
+      "community": 33,
       "norm_label": "._on_clock()"
     },
     {
@@ -24669,7 +24669,7 @@
       "source_file": "ros2_dwta/dwta_nodes/fire_control_radar_node.py",
       "source_location": "L37",
       "id": "ros2_dwta_dwta_nodes_fire_control_radar_node_py_radarstatus",
-      "community": 61,
+      "community": 34,
       "norm_label": "radarstatus"
     },
     {
@@ -24678,7 +24678,7 @@
       "source_file": "ros2_dwta/dwta_nodes/fire_control_radar_node.py",
       "source_location": "L40",
       "id": "dwta_nodes_fire_control_radar_node_firecontrolradarnode_on_event",
-      "community": 61,
+      "community": 33,
       "norm_label": "._on_event()"
     },
     {
@@ -24687,7 +24687,7 @@
       "source_file": "ros2_dwta/dwta_nodes/fire_control_radar_node.py",
       "source_location": "L40",
       "id": "ros2_dwta_dwta_nodes_fire_control_radar_node_py_event",
-      "community": 61,
+      "community": 33,
       "norm_label": "event"
     },
     {
@@ -24696,7 +24696,7 @@
       "source_file": "ros2_dwta/dwta_nodes/fire_control_radar_node.py",
       "source_location": "L51",
       "id": "dwta_nodes_fire_control_radar_node_firecontrolradarnode_resolve",
-      "community": 61,
+      "community": 33,
       "norm_label": "._resolve()"
     },
     {
@@ -24705,7 +24705,7 @@
       "source_file": "ros2_dwta/dwta_nodes/fire_control_radar_node.py",
       "source_location": "L67",
       "id": "dwta_nodes_fire_control_radar_node_firecontrolradarnode_tick",
-      "community": 61,
+      "community": 33,
       "norm_label": "._tick()"
     },
     {
@@ -24714,7 +24714,7 @@
       "source_file": "ros2_dwta/dwta_nodes/fire_control_radar_node.py",
       "source_location": "L1",
       "id": "dwta_nodes_fire_control_radar_node_rationale_1",
-      "community": 34,
+      "community": 33,
       "norm_label": "\u1111\u1169\u1103\u1162 \u1109\u1161\u1100\u1167\u11a8\u1110\u1169\u11bc\u110c\u1166\u1105\u1166\u110b\u1175\u1103\u1161 \u1102\u1169\u1103\u1173 (fire-control radar, fcr) \u2014 \u110b\u116d\u1100\u1167\u11a8\u1110\u1161\u11ab \u110b\u1172\u1103\u1169\u110b\u116d\u11bc.  \u1111\u1169\u1103\u1162\u1106\u1161\u1103\u1161 1\u1100\u1162. \u110c\u1161\u1100\u1175 \u1111\u1169\u1103\u1162\u110b\u1174 \u1107\u1161\u11af\u1109\u1161(launch)"
     },
     {
@@ -24975,7 +24975,7 @@
       "source_file": "ros2_dwta/dwta_nodes/messages.py",
       "source_location": "L106",
       "id": "dwta_nodes_messages_interceptorstatus",
-      "community": 61,
+      "community": 41,
       "norm_label": "interceptorstatus"
     },
     {
@@ -25074,7 +25074,7 @@
       "source_file": "ros2_dwta/dwta_nodes/messages.py",
       "source_location": "L94",
       "id": "dwta_nodes_messages_rationale_94",
-      "community": 61,
+      "community": 34,
       "norm_label": "\u110b\u1161\u1100\u116e\u11ab \u110b\u116d\u1100\u1167\u11a8\u1110\u1161\u11ab \u1112\u1161\u11ab \u1107\u1161\u11af\u110b\u1174 \u1109\u1161\u11bc\u1110\u1162 (\u1107\u1175\u1112\u1162\u11bc\u110c\u116e\u11bc \u110b\u1172\u1103\u1169\u1110\u1161\u11ab)."
     },
     {
@@ -25083,7 +25083,7 @@
       "source_file": "ros2_dwta/dwta_nodes/messages.py",
       "source_location": "L107",
       "id": "dwta_nodes_messages_rationale_107",
-      "community": 61,
+      "community": 41,
       "norm_label": "\u1107\u1161\u11af\u1109\u1161\u1103\u1162/\u110b\u116d\u1100\u1167\u11a8\u110e\u1166\u1100\u1168 \u1109\u1161\u11bc\u1110\u1162 (\u110c\u1161\u11ab\u110b\u1167\u1110\u1161\u11ab\u00b7\u1107\u1175\u1112\u1162\u11bc\u110c\u116e\u11bc \u110b\u116d\u1100\u1167\u11a8\u1110\u1161\u11ab\u00b7\u1100\u116d\u110c\u1165\u11ab \u1109\u1161\u11bc\u1110\u1162) \u2014 \u110c\u1165\u11ab \u1102\u1169\u1103\u1173 \u1100\u1169\u11bc\u110b\u1172."
     },
     {
@@ -25371,7 +25371,7 @@
       "source_file": "ros2_dwta/dwta_nodes/ros_compat.py",
       "source_location": "L1",
       "id": "ros2_dwta_dwta_nodes_ros_compat_py",
-      "community": 34,
+      "community": 33,
       "norm_label": "ros_compat.py"
     },
     {
@@ -25398,7 +25398,7 @@
       "source_file": "ros2_dwta/dwta_nodes/ros_compat.py",
       "source_location": "L1",
       "id": "dwta_nodes_ros_compat_rationale_1",
-      "community": 34,
+      "community": 33,
       "norm_label": "selects the real ros2 (rclpy) backend if available, else the in-process shim."
     },
     {
@@ -25425,7 +25425,7 @@
       "source_file": "ros2_dwta/dwta_nodes/scenario.py",
       "source_location": "L18",
       "id": "dwta_nodes_scenario_asset",
-      "community": 12,
+      "community": 61,
       "norm_label": "asset"
     },
     {
@@ -25776,7 +25776,7 @@
       "source_file": "ros2_dwta/dwta_nodes/sim_bus.py",
       "source_location": "L81",
       "id": "dwta_nodes_sim_bus_node",
-      "community": 33,
+      "community": 36,
       "norm_label": "node"
     },
     {
@@ -25857,7 +25857,7 @@
       "source_file": "ros2_dwta/dwta_nodes/sim_bus.py",
       "source_location": "L122",
       "id": "dwta_nodes_sim_bus_singlethreadedexecutor_add_node",
-      "community": 33,
+      "community": 36,
       "norm_label": ".add_node()"
     },
     {
@@ -25929,7 +25929,7 @@
       "source_file": "ros2_dwta/dwta_nodes/sim_bus.py",
       "source_location": "L82",
       "id": "dwta_nodes_sim_bus_rationale_82",
-      "community": 33,
+      "community": 36,
       "norm_label": "minimal rclpy.node.node lookalike."
     },
     {
@@ -25947,7 +25947,7 @@
       "source_file": "ros2_dwta/dwta_nodes/surveillance_radar_node.py",
       "source_location": "L1",
       "id": "ros2_dwta_dwta_nodes_surveillance_radar_node_py",
-      "community": 34,
+      "community": 12,
       "norm_label": "surveillance_radar_node.py"
     },
     {
@@ -25992,7 +25992,7 @@
       "source_file": "ros2_dwta/dwta_nodes/surveillance_radar_node.py",
       "source_location": "L20",
       "id": "threatspawn",
-      "community": 12,
+      "community": 34,
       "norm_label": "threatspawn"
     },
     {
@@ -26055,7 +26055,7 @@
       "source_file": "ros2_dwta/dwta_nodes/surveillance_radar_node.py",
       "source_location": "L1",
       "id": "dwta_nodes_surveillance_radar_node_rationale_1",
-      "community": 34,
+      "community": 12,
       "norm_label": "\u110c\u116e\u11bc\u110b\u1161\u11bc \u1100\u1161\u11b7\u1109\u1175\u1105\u1166\u110b\u1175\u1103\u1161 \u1102\u1169\u1103\u1173 (surveillance radar) \u2014 \u1110\u1161\u11b7\u110c\u1175/\u110e\u116e\u110c\u1165\u11a8/\u1111\u116d\u110c\u1165\u11a8\u1112\u1161\u11af\u1103\u1161\u11bc\u110b\u116d\u11bc.  \u110c\u1165\u11ab\u1100\u116e \u1103\u1161\u11ab\u110b\u1171 1\u1100\u1162. \u110c\u1165\u11a8 \u1110\u1161\u11ab\u1103\u1169\u1110\u1161\u11ab\u110b\u1173\u11af \u1110\u1161\u11b7\u110c\u1175\u00b7\u110e\u116e\u110c\u1165\u11a8\u1112\u1161\u1100\u1169 \u110e\u116e\u110c\u1165\u11a8\u110c\u1165\u11bc\u1107\u1169"
     },
     {
@@ -26064,7 +26064,7 @@
       "source_file": "ros2_dwta/dwta_nodes/threat_assessment_node.py",
       "source_location": "L1",
       "id": "ros2_dwta_dwta_nodes_threat_assessment_node_py",
-      "community": 41,
+      "community": 33,
       "norm_label": "threat_assessment_node.py"
     },
     {
@@ -26073,7 +26073,7 @@
       "source_file": "ros2_dwta/dwta_nodes/threat_assessment_node.py",
       "source_location": "L15",
       "id": "dwta_nodes_threat_assessment_node_threatassessmentnode",
-      "community": 41,
+      "community": 33,
       "norm_label": "threatassessmentnode"
     },
     {
@@ -26118,7 +26118,7 @@
       "source_file": "ros2_dwta/dwta_nodes/threat_assessment_node.py",
       "source_location": "L30",
       "id": "dwta_nodes_threat_assessment_node_threatassessmentnode_tick",
-      "community": 41,
+      "community": 33,
       "norm_label": "._tick()"
     },
     {
@@ -26127,7 +26127,7 @@
       "source_file": "ros2_dwta/dwta_nodes/threat_assessment_node.py",
       "source_location": "L1",
       "id": "dwta_nodes_threat_assessment_node_rationale_1",
-      "community": 41,
+      "community": 33,
       "norm_label": "oo\u1111\u1167\u11bc\u1100\u1161 \u1102\u1169\u1103\u1173 \u2014 \u110b\u1171\u1112\u1167\u11b8 \u1111\u1167\u11bc\u1100\u1161/\u110c\u1165\u11b7\u1109\u116e\u1112\u116a.  \u1110\u1161\u11ab\u1103\u1169\u1110\u1161\u11ab \u110c\u1165\u11bc\u1107\u1169(/tracks) + \u1107\u1161\u11bc\u110b\u1165\u110c\u1161\u1109\u1161\u11ab \u110c\u1165\u11bc\u1107\u1169(\u1109\u1161\u110c\u1165\u11ab\u110b\u1175\u11b8\u1105\u1167\u11a8)\u1105\u1173\u11af \u1107\u1161\u11ae\u110b\u1161 \u110b\u1171\u1112\u1167\u11b8\u110b\u1173\u11af \u110c\u1165\u11b7\u1109\u116e\u1112\u116a\u1112\u1161\u1100\u1169 /threat_s"
     },
     {
@@ -26253,7 +26253,7 @@
       "source_file": "ros2_dwta/dwta_nodes/viz_pyqtgraph.py",
       "source_location": "L1",
       "id": "ros2_dwta_dwta_nodes_viz_pyqtgraph_py",
-      "community": 12,
+      "community": 61,
       "norm_label": "viz_pyqtgraph.py"
     },
     {
@@ -26271,7 +26271,7 @@
       "source_file": "ros2_dwta/dwta_nodes/viz_pyqtgraph.py",
       "source_location": "L37",
       "id": "dwta_nodes_viz_pyqtgraph_tacticalview_init",
-      "community": 12,
+      "community": 61,
       "norm_label": ".__init__()"
     },
     {
@@ -26280,7 +26280,7 @@
       "source_file": "ros2_dwta/dwta_nodes/viz_pyqtgraph.py",
       "source_location": "L37",
       "id": "ros2_dwta_dwta_nodes_viz_pyqtgraph_py_asset",
-      "community": 12,
+      "community": 61,
       "norm_label": "asset"
     },
     {
@@ -26289,7 +26289,7 @@
       "source_file": "ros2_dwta/dwta_nodes/viz_pyqtgraph.py",
       "source_location": "L37",
       "id": "ros2_dwta_dwta_nodes_viz_pyqtgraph_py_battery",
-      "community": 12,
+      "community": 61,
       "norm_label": "battery"
     },
     {
@@ -26307,7 +26307,7 @@
       "source_file": "ros2_dwta/dwta_nodes/viz_pyqtgraph.py",
       "source_location": "L61",
       "id": "ros2_dwta_dwta_nodes_viz_pyqtgraph_py_worldstate",
-      "community": 12,
+      "community": 61,
       "norm_label": "worldstate"
     },
     {
@@ -26316,7 +26316,7 @@
       "source_file": "ros2_dwta/dwta_nodes/viz_pyqtgraph.py",
       "source_location": "L1",
       "id": "dwta_nodes_viz_pyqtgraph_rationale_1",
-      "community": 12,
+      "community": 61,
       "norm_label": "pyqtgraph \u1109\u1175\u11af\u1109\u1175\u1100\u1161\u11ab \u110c\u1165\u11ab\u1109\u116e\u11af\u1112\u116a\u1106\u1167\u11ab (tacticalview) \u2014 viz_node \u110b\u1174 pyqtgraph \u1107\u1162\u11a8\u110b\u1166\u11ab\u1103\u1173.  \u1103\u1175\u1109\u1173\u1111\u1173\u11af\u1105\u1166\u110b\u1175\u1100\u1161 \u110b\u1175\u11bb\u1102\u1173\u11ab \u1112\u116a\u11ab\u1100\u1167\u11bc\u110b\u1166\u1109\u1165\u1106\u1161\u11ab"
     },
     {
@@ -26721,7 +26721,7 @@
       "source_file": "ros2_dwta/dwta_nodes/__init__.py",
       "source_location": "L1",
       "id": "ros2_dwta_dwta_nodes_init_py",
-      "community": 34,
+      "community": 33,
       "norm_label": "__init__.py"
     },
     {
@@ -26730,7 +26730,7 @@
       "source_file": "ros2_dwta/dwta_nodes/__init__.py",
       "source_location": "L1",
       "id": "dwta_nodes_init_rationale_1",
-      "community": 34,
+      "community": 33,
       "norm_label": "dwta ros2 nodes (rclpy-compatible; runs under real ros2 or the in-process shim)."
     },
     {
@@ -26739,7 +26739,7 @@
       "source_file": "ros2_dwta/launch/dwta_poc.launch.py",
       "source_location": "L1",
       "id": "ros2_dwta_launch_dwta_poc_launch_py",
-      "community": 441,
+      "community": 36,
       "norm_label": "dwta_poc.launch.py"
     },
     {
@@ -26748,7 +26748,7 @@
       "source_file": "ros2_dwta/launch/dwta_poc.launch.py",
       "source_location": "L13",
       "id": "launch_dwta_poc_launch_generate_launch_description",
-      "community": 441,
+      "community": 36,
       "norm_label": "generate_launch_description()"
     },
     {
@@ -26757,7 +26757,7 @@
       "source_file": "ros2_dwta/launch/dwta_poc.launch.py",
       "source_location": "L13",
       "id": "launchdescription",
-      "community": 441,
+      "community": 36,
       "norm_label": "launchdescription"
     },
     {
@@ -26766,7 +26766,7 @@
       "source_file": "ros2_dwta/launch/dwta_poc.launch.py",
       "source_location": "L1",
       "id": "launch_dwta_poc_launch_rationale_1",
-      "community": 441,
+      "community": 36,
       "norm_label": "ros2 launch file for the dwta poc (composition: all nodes in one process)."
     },
     {
@@ -26971,7 +26971,7 @@
       "label": "1. \ub300\uc751 \uad00\uacc4 (ROS2 \u2194 TA)",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/timed_automata.md",
-      "source_location": "L10",
+      "source_location": "L12",
       "id": "spec_timed_automata_1_\ub300\uc751_\uad00\uacc4_ros2_ta",
       "community": 10,
       "norm_label": "1. \u1103\u1162\u110b\u1173\u11bc \u1100\u116a\u11ab\u1100\u1168 (ros2 \u2194 ta)"
@@ -26980,7 +26980,7 @@
       "label": "2. \uc804\uc5ed \uc120\uc5b8 (shared)",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/timed_automata.md",
-      "source_location": "L21",
+      "source_location": "L23",
       "id": "spec_timed_automata_2_\uc804\uc5ed_\uc120\uc5b8_shared",
       "community": 10,
       "norm_label": "2. \u110c\u1165\u11ab\u110b\u1167\u11a8 \u1109\u1165\u11ab\u110b\u1165\u11ab (shared)"
@@ -26989,7 +26989,7 @@
       "label": "code:block1 (const int N;            // \uc704\ud611 \uc218)",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/timed_automata.md",
-      "source_location": "L23",
+      "source_location": "L25",
       "id": "spec_timed_automata_codeblock_1",
       "community": 10,
       "norm_label": "code:block1 (const int n;            // \u110b\u1171\u1112\u1167\u11b8 \u1109\u116e)"
@@ -26998,7 +26998,7 @@
       "label": "3. \ub178\ub4dc \ud15c\ud50c\ub9bf \uba85\uc138",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/timed_automata.md",
-      "source_location": "L38",
+      "source_location": "L40",
       "id": "spec_timed_automata_3_\ub178\ub4dc_\ud15c\ud50c\ub9bf_\uba85\uc138",
       "community": 10,
       "norm_label": "3. \u1102\u1169\u1103\u1173 \u1110\u1166\u11b7\u1111\u1173\u11af\u1105\u1175\u11ba \u1106\u1167\u11bc\u1109\u1166"
@@ -27007,7 +27007,7 @@
       "label": "3.1 surveillance_radar_node (\uc911\uc559 \uac10\uc2dc\ub808\uc774\ub2e4, 10 Hz, \uc2dc\uac04/\uc6d4\ub4dc \uad8c\uc704)",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/timed_automata.md",
-      "source_location": "L42",
+      "source_location": "L44",
       "id": "spec_timed_automata_3_1_surveillance_radar_node_\uc911\uc559_\uac10\uc2dc\ub808\uc774\ub2e4_10_hz_\uc2dc\uac04_\uc6d4\ub4dc_\uad8c\uc704",
       "community": 10,
       "norm_label": "3.1 surveillance_radar_node (\u110c\u116e\u11bc\u110b\u1161\u11bc \u1100\u1161\u11b7\u1109\u1175\u1105\u1166\u110b\u1175\u1103\u1161, 10 hz, \u1109\u1175\u1100\u1161\u11ab/\u110b\u116f\u11af\u1103\u1173 \u1100\u116f\u11ab\u110b\u1171)"
@@ -27016,7 +27016,7 @@
       "label": "code:block2 (clock c;  loc Run (invariant c <= PERIOD_R))",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/timed_automata.md",
-      "source_location": "L43",
+      "source_location": "L45",
       "id": "spec_timed_automata_codeblock_2",
       "community": 10,
       "norm_label": "code:block2 (clock c;  loc run (invariant c <= period_r))"
@@ -27025,7 +27025,7 @@
       "label": "3.1b fire_control_radar_node[b] (\ud3ec\ub300 \uc0ac\uaca9\ud1b5\uc81c\ub808\uc774\ub2e4, \ud3ec\ub300\ub2f9 1\uac1c)",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/timed_automata.md",
-      "source_location": "L51",
+      "source_location": "L53",
       "id": "spec_timed_automata_3_1b_fire_control_radar_node_b_\ud3ec\ub300_\uc0ac\uaca9\ud1b5\uc81c\ub808\uc774\ub2e4_\ud3ec\ub300\ub2f9_1\uac1c",
       "community": 10,
       "norm_label": "3.1b fire_control_radar_node[b] (\u1111\u1169\u1103\u1162 \u1109\u1161\u1100\u1167\u11a8\u1110\u1169\u11bc\u110c\u1166\u1105\u1166\u110b\u1175\u1103\u1161, \u1111\u1169\u1103\u1162\u1103\u1161\u11bc 1\u1100\u1162)"
@@ -27034,7 +27034,7 @@
       "label": "code:block3 (loc Idle \u2500\u2500launch[b,t]?\u2500\u2500> Guiding(f <= FLYOUT[b]) \u2500\u2500[f>=FLY)",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/timed_automata.md",
-      "source_location": "L54",
+      "source_location": "L56",
       "id": "spec_timed_automata_codeblock_3",
       "community": 10,
       "norm_label": "code:block3 (loc idle \u2500\u2500launch[b,t]?\u2500\u2500> guiding(f <= flyout[b]) \u2500\u2500[f>=fly)"
@@ -27043,7 +27043,7 @@
       "label": "3.2 threat_assessment_node (5 Hz)",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/timed_automata.md",
-      "source_location": "L59",
+      "source_location": "L61",
       "id": "spec_timed_automata_3_2_threat_assessment_node_5_hz",
       "community": 10,
       "norm_label": "3.2 threat_assessment_node (5 hz)"
@@ -27052,7 +27052,7 @@
       "label": "code:block4 (clock c;  loc Run (inv c <= PERIOD_A))",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/timed_automata.md",
-      "source_location": "L60",
+      "source_location": "L62",
       "id": "spec_timed_automata_codeblock_4",
       "community": 10,
       "norm_label": "code:block4 (clock c;  loc run (inv c <= period_a))"
@@ -27061,7 +27061,7 @@
       "label": "3.3 engageability_node (5 Hz, Pk \uac8c\uc774\ud2b8)",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/timed_automata.md",
-      "source_location": "L66",
+      "source_location": "L68",
       "id": "spec_timed_automata_3_3_engageability_node_5_hz_pk_\uac8c\uc774\ud2b8",
       "community": 10,
       "norm_label": "3.3 engageability_node (5 hz, pk \u1100\u1166\u110b\u1175\u1110\u1173)"
@@ -27070,7 +27070,7 @@
       "label": "code:block5 (Run --tracks?/status?--> Run : (\uc0c1\ud0dc \uac31\uc2e0))",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/timed_automata.md",
-      "source_location": "L67",
+      "source_location": "L69",
       "id": "spec_timed_automata_codeblock_5",
       "community": 10,
       "norm_label": "code:block5 (run --tracks?/status?--> run : (\u1109\u1161\u11bc\u1110\u1162 \u1100\u1162\u11bc\u1109\u1175\u11ab))"
@@ -27079,7 +27079,7 @@
       "label": "3.4 planning_node (2 Hz, WTA)",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/timed_automata.md",
-      "source_location": "L73",
+      "source_location": "L75",
       "id": "spec_timed_automata_3_4_planning_node_2_hz_wta",
       "community": 10,
       "norm_label": "3.4 planning_node (2 hz, wta)"
@@ -27088,7 +27088,7 @@
       "label": "code:block6 (Run --scores?/matrix?/policy?/status?/event?--> Run : (\uc785\ub825 \uac31\uc2e0)",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/timed_automata.md",
-      "source_location": "L74",
+      "source_location": "L76",
       "id": "spec_timed_automata_codeblock_6",
       "community": 10,
       "norm_label": "code:block6 (run --scores?/matrix?/policy?/status?/event?--> run : (\u110b\u1175\u11b8\u1105\u1167\u11a8 \u1100\u1162\u11bc\u1109\u1175\u11ab)"
@@ -27097,7 +27097,7 @@
       "label": "3.5 launcher_node (\uc774\ubca4\ud2b8 + 5 Hz)  \u2014 `Interceptor` \uc2ac\ub86f\uacfc \uacb0\ud569",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/timed_automata.md",
-      "source_location": "L80",
+      "source_location": "L82",
       "id": "spec_timed_automata_3_5_launcher_node_\uc774\ubca4\ud2b8_5_hz_interceptor_\uc2ac\ub86f\uacfc_\uacb0\ud569",
       "community": 10,
       "norm_label": "3.5 launcher_node (\u110b\u1175\u1107\u1166\u11ab\u1110\u1173 + 5 hz)  \u2014 `interceptor` \u1109\u1173\u11af\u1105\u1169\u11ba\u1100\u116a \u1100\u1167\u11af\u1112\u1161\u11b8"
@@ -27106,7 +27106,7 @@
       "label": "code:block7 (loc Ready)",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/timed_automata.md",
-      "source_location": "L81",
+      "source_location": "L83",
       "id": "spec_timed_automata_codeblock_7",
       "community": 10,
       "norm_label": "code:block7 (loc ready)"
@@ -27115,7 +27115,7 @@
       "label": "3.6 control_station_node (1 Hz)",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/timed_automata.md",
-      "source_location": "L89",
+      "source_location": "L91",
       "id": "spec_timed_automata_3_6_control_station_node_1_hz",
       "community": 10,
       "norm_label": "3.6 control_station_node (1 hz)"
@@ -27124,7 +27124,7 @@
       "label": "code:block8 (clock c; Run --[c >= PERIOD_C]--> Run : policy! ; c := 0  //)",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/timed_automata.md",
-      "source_location": "L90",
+      "source_location": "L92",
       "id": "spec_timed_automata_codeblock_8",
       "community": 10,
       "norm_label": "code:block8 (clock c; run --[c >= period_c]--> run : policy! ; c := 0  //)"
@@ -27133,7 +27133,7 @@
       "label": "3.7 world_state_node (2 Hz, COP)",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/timed_automata.md",
-      "source_location": "L94",
+      "source_location": "L96",
       "id": "spec_timed_automata_3_7_world_state_node_2_hz_cop",
       "community": 10,
       "norm_label": "3.7 world_state_node (2 hz, cop)"
@@ -27142,7 +27142,7 @@
       "label": "code:block9 (Run --tracks?/scores?/matrix?/status?/event?--> Run : (\ud1b5\ud569 \uc0c1\ud669)",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/timed_automata.md",
-      "source_location": "L95",
+      "source_location": "L97",
       "id": "spec_timed_automata_codeblock_9",
       "community": 10,
       "norm_label": "code:block9 (run --tracks?/scores?/matrix?/status?/event?--> run : (\u1110\u1169\u11bc\u1112\u1161\u11b8 \u1109\u1161\u11bc\u1112\u116a\u11bc)"
@@ -27151,7 +27151,7 @@
       "label": "4. \uc0dd\uba85\uc8fc\uae30 \uc624\ud1a0\ub9c8\ud0c0 (\uac15\ud654 \ubaa8\ub378 `dwta_model.xml`)",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/timed_automata.md",
-      "source_location": "L101",
+      "source_location": "L103",
       "id": "spec_timed_automata_4_\uc0dd\uba85\uc8fc\uae30_\uc624\ud1a0\ub9c8\ud0c0_\uac15\ud654_\ubaa8\ub378_dwta_model_xml",
       "community": 10,
       "norm_label": "4. \u1109\u1162\u11bc\u1106\u1167\u11bc\u110c\u116e\u1100\u1175 \u110b\u1169\u1110\u1169\u1106\u1161\u1110\u1161 (\u1100\u1161\u11bc\u1112\u116a \u1106\u1169\u1103\u1166\u11af `dwta_model.xml`)"
@@ -27160,7 +27160,7 @@
       "label": "4.1 Threat(id) \u2014 \uc801 \ud0c4\ub3c4\ud0c4",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/timed_automata.md",
-      "source_location": "L108",
+      "source_location": "L110",
       "id": "spec_timed_automata_4_1_threat_id_\uc801_\ud0c4\ub3c4\ud0c4",
       "community": 10,
       "norm_label": "4.1 threat(id) \u2014 \u110c\u1165\u11a8 \u1110\u1161\u11ab\u1103\u1169\u1110\u1161\u11ab"
@@ -27169,7 +27169,7 @@
       "label": "code:block10 (Inbound --[x>=ENTER_U] engU:=T--> Live --hitU?|hitL?--> Kill)",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/timed_automata.md",
-      "source_location": "L109",
+      "source_location": "L111",
       "id": "spec_timed_automata_codeblock_10",
       "community": 10,
       "norm_label": "code:block10 (inbound --[x>=enter_u] engu:=t--> live --hitu?|hitl?--> kill)"
@@ -27178,7 +27178,7 @@
       "label": "4.2 InterceptorU / InterceptorL \u2014 \ud3ec\ub300 \uacc4\uce35\ubcc4 \uc720\ub3c4\ucc44\ub110 \uc2ac\ub86f",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/timed_automata.md",
-      "source_location": "L118",
+      "source_location": "L120",
       "id": "spec_timed_automata_4_2_interceptoru_interceptorl_\ud3ec\ub300_\uacc4\uce35\ubcc4_\uc720\ub3c4\ucc44\ub110_\uc2ac\ub86f",
       "community": 10,
       "norm_label": "4.2 interceptoru / interceptorl \u2014 \u1111\u1169\u1103\u1162 \u1100\u1168\u110e\u1173\u11bc\u1107\u1167\u11af \u110b\u1172\u1103\u1169\u110e\u1162\u1102\u1165\u11af \u1109\u1173\u11af\u1105\u1169\u11ba"
@@ -27187,7 +27187,7 @@
       "label": "code:block11 (Idle --plan?--> Ready(committed) --[ammo>0 && eng[t] && cnt[)",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/timed_automata.md",
-      "source_location": "L120",
+      "source_location": "L122",
       "id": "spec_timed_automata_codeblock_11",
       "community": 10,
       "norm_label": "code:block11 (idle --plan?--> ready(committed) --[ammo>0 && eng[t] && cnt[)"
@@ -27196,7 +27196,7 @@
       "label": "4.3 Planner \u2014 \uacc4\ud68d\uc218\ub9bd \uc8fc\uae30 \ud074\ub7ed",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/timed_automata.md",
-      "source_location": "L127",
+      "source_location": "L129",
       "id": "spec_timed_automata_4_3_planner_\uacc4\ud68d\uc218\ub9bd_\uc8fc\uae30_\ud074\ub7ed",
       "community": 10,
       "norm_label": "4.3 planner \u2014 \u1100\u1168\u1112\u116c\u11a8\u1109\u116e\u1105\u1175\u11b8 \u110c\u116e\u1100\u1175 \u110f\u1173\u11af\u1105\u1165\u11a8"
@@ -27205,7 +27205,7 @@
       "label": "code:block12 (Tick(cp<=PERIOD_P) --[cp>=PERIOD_P] plan! ; cp:=0--> Tick)",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/timed_automata.md",
-      "source_location": "L128",
+      "source_location": "L130",
       "id": "spec_timed_automata_codeblock_12",
       "community": 10,
       "norm_label": "code:block12 (tick(cp<=period_p) --[cp>=period_p] plan! ; cp:=0--> tick)"
@@ -27214,7 +27214,7 @@
       "label": "4.2 \ub450 \ubaa8\ub378 \u2014 SPEC vs IMPL (v2 Radar-driven)",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/timed_automata.md",
-      "source_location": "L133",
+      "source_location": "L135",
       "id": "spec_timed_automata_4_2_\ub450_\ubaa8\ub378_spec_vs_impl_v2_radar_driven",
       "community": 10,
       "norm_label": "4.2 \u1103\u116e \u1106\u1169\u1103\u1166\u11af \u2014 spec vs impl (v2 radar-driven)"
@@ -27223,7 +27223,7 @@
       "label": "5. \uac80\uc99d \uc18d\uc131 & \ucffc\ub9ac (TCTL)",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/timed_automata.md",
-      "source_location": "L158",
+      "source_location": "L160",
       "id": "spec_timed_automata_5_\uac80\uc99d_\uc18d\uc131_\ucffc\ub9ac_tctl",
       "community": 10,
       "norm_label": "5. \u1100\u1165\u11b7\u110c\u1173\u11bc \u1109\u1169\u11a8\u1109\u1165\u11bc & \u110f\u116f\u1105\u1175 (tctl)"
@@ -27232,7 +27232,7 @@
       "label": "\uc548\uc804\uc131 (Safety, `A[]`)",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/timed_automata.md",
-      "source_location": "L162",
+      "source_location": "L164",
       "id": "spec_timed_automata_\uc548\uc804\uc131_safety_a",
       "community": 10,
       "norm_label": "\u110b\u1161\u11ab\u110c\u1165\u11ab\u1109\u1165\u11bc (safety, `a[]`)"
@@ -27241,7 +27241,7 @@
       "label": "\ud0c0\uc774\ubc0d/\ub370\ub4dc\ub77c\uc778 (Timing, `A[]`)",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/timed_automata.md",
-      "source_location": "L172",
+      "source_location": "L174",
       "id": "spec_timed_automata_\ud0c0\uc774\ubc0d_\ub370\ub4dc\ub77c\uc778_timing_a",
       "community": 10,
       "norm_label": "\u1110\u1161\u110b\u1175\u1106\u1175\u11bc/\u1103\u1166\u1103\u1173\u1105\u1161\u110b\u1175\u11ab (timing, `a[]`)"
@@ -27250,7 +27250,7 @@
       "label": "\ub77c\uc774\ube0c\ub2c8\uc2a4 (Liveness)",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/timed_automata.md",
-      "source_location": "L178",
+      "source_location": "L180",
       "id": "spec_timed_automata_\ub77c\uc774\ube0c\ub2c8\uc2a4_liveness",
       "community": 10,
       "norm_label": "\u1105\u1161\u110b\u1175\u1107\u1173\u1102\u1175\u1109\u1173 (liveness)"
@@ -27259,7 +27259,7 @@
       "label": "\ub3c4\ub2ec\uc131 (Reachability, `E<>`)",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/timed_automata.md",
-      "source_location": "L184",
+      "source_location": "L186",
       "id": "spec_timed_automata_\ub3c4\ub2ec\uc131_reachability_e",
       "community": 10,
       "norm_label": "\u1103\u1169\u1103\u1161\u11af\u1109\u1165\u11bc (reachability, `e<>`)"
@@ -27268,7 +27268,7 @@
       "label": "6. IMPL \ubaa8\ub378 \ucd94\uac00 \ucffc\ub9ac (\uc815\ucc45-\ud2b9\ud654, D1~D4)",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/timed_automata.md",
-      "source_location": "L195",
+      "source_location": "L197",
       "id": "spec_timed_automata_6_impl_\ubaa8\ub378_\ucd94\uac00_\ucffc\ub9ac_\uc815\ucc45_\ud2b9\ud654_d1_d4",
       "community": 10,
       "norm_label": "6. impl \u1106\u1169\u1103\u1166\u11af \u110e\u116e\u1100\u1161 \u110f\u116f\u1105\u1175 (\u110c\u1165\u11bc\u110e\u1162\u11a8-\u1110\u1173\u11a8\u1112\u116a, d1~d4)"
@@ -27277,7 +27277,7 @@
       "label": "ROS2 \uc2dc\ubbac\ub808\uc774\ud130 \u2194 IMPL \ubaa8\ub378 \uc815\ud569",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/timed_automata.md",
-      "source_location": "L210",
+      "source_location": "L212",
       "id": "spec_timed_automata_ros2_\uc2dc\ubbac\ub808\uc774\ud130_impl_\ubaa8\ub378_\uc815\ud569",
       "community": 10,
       "norm_label": "ros2 \u1109\u1175\u1106\u1172\u11af\u1105\u1166\u110b\u1175\u1110\u1165 \u2194 impl \u1106\u1169\u1103\u1166\u11af \u110c\u1165\u11bc\u1112\u1161\u11b8"
@@ -27286,7 +27286,7 @@
       "label": "7. UPPAAL\ub85c \uac80\uc99d\ud558\ub294 \ubc95",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/timed_automata.md",
-      "source_location": "L221",
+      "source_location": "L223",
       "id": "spec_timed_automata_7_uppaal\ub85c_\uac80\uc99d\ud558\ub294_\ubc95",
       "community": 10,
       "norm_label": "7. uppaal\u1105\u1169 \u1100\u1165\u11b7\u110c\u1173\u11bc\u1112\u1161\u1102\u1173\u11ab \u1107\u1165\u11b8"
@@ -27295,7 +27295,7 @@
       "label": "code:powershell (# CLI \uc77c\uad04 \uac80\uc99d)",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/timed_automata.md",
-      "source_location": "L227",
+      "source_location": "L229",
       "id": "spec_timed_automata_codeblock_13",
       "community": 10,
       "norm_label": "code:powershell (# cli \u110b\u1175\u11af\u1100\u116a\u11af \u1100\u1165\u11b7\u110c\u1173\u11bc)"
@@ -27304,10 +27304,289 @@
       "label": "8. \uc6cc\ud06c\ud50c\ub85c (spec-first)",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/timed_automata.md",
-      "source_location": "L241",
+      "source_location": "L243",
       "id": "spec_timed_automata_8_\uc6cc\ud06c\ud50c\ub85c_spec_first",
       "community": 10,
       "norm_label": "8. \u110b\u116f\u110f\u1173\u1111\u1173\u11af\u1105\u1169 (spec-first)"
+    },
+    {
+      "label": "uppaal_design.md",
+      "file_type": "document",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L1",
+      "id": "ros2_dwta_spec_uppaal_design_md",
+      "community": 35,
+      "norm_label": "uppaal_design.md"
+    },
+    {
+      "label": "UPPAAL \ubaa8\ub378 \ub3d9\uc791 \uc124\uacc4 \ubb38\uc11c",
+      "file_type": "document",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L1",
+      "id": "spec_uppaal_design_uppaal_\ubaa8\ub378_\ub3d9\uc791_\uc124\uacc4_\ubb38\uc11c",
+      "community": 35,
+      "norm_label": "uppaal \u1106\u1169\u1103\u1166\u11af \u1103\u1169\u11bc\u110c\u1161\u11a8 \u1109\u1165\u11af\u1100\u1168 \u1106\u116e\u11ab\u1109\u1165"
+    },
+    {
+      "label": "1. \ubaa8\ub378 \ud55c \uc7a5 \uc694\uc57d",
+      "file_type": "document",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L9",
+      "id": "spec_uppaal_design_1_\ubaa8\ub378_\ud55c_\uc7a5_\uc694\uc57d",
+      "community": 35,
+      "norm_label": "1. \u1106\u1169\u1103\u1166\u11af \u1112\u1161\u11ab \u110c\u1161\u11bc \u110b\u116d\u110b\u1163\u11a8"
+    },
+    {
+      "label": "code:c (R0=Radar(0); R1=Radar(1); R2=Radar(2);)",
+      "file_type": "document",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L23",
+      "id": "spec_uppaal_design_codeblock_1",
+      "community": 35,
+      "norm_label": "code:c (r0=radar(0); r1=radar(1); r2=radar(2);)"
+    },
+    {
+      "label": "2. Broadcast \ucc44\ub110 \u2014 \"\ub204\uac00 \ub204\uad6c\uc5d0\uac8c \ubb34\uc5c7\uc744\"",
+      "file_type": "document",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L35",
+      "id": "spec_uppaal_design_2_broadcast_\ucc44\ub110_\ub204\uac00_\ub204\uad6c\uc5d0\uac8c_\ubb34\uc5c7\uc744",
+      "community": 35,
+      "norm_label": "2. broadcast \u110e\u1162\u1102\u1165\u11af \u2014 \"\u1102\u116e\u1100\u1161 \u1102\u116e\u1100\u116e\u110b\u1166\u1100\u1166 \u1106\u116e\u110b\u1165\u11ba\u110b\u1173\u11af\""
+    },
+    {
+      "label": "3. \ud55c \uc704\ud611\uc758 \uc804\uccb4 lifecycle (\uc2dc\uac04\uc21c)",
+      "file_type": "document",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L58",
+      "id": "spec_uppaal_design_3_\ud55c_\uc704\ud611\uc758_\uc804\uccb4_lifecycle_\uc2dc\uac04\uc21c",
+      "community": 35,
+      "norm_label": "3. \u1112\u1161\u11ab \u110b\u1171\u1112\u1167\u11b8\u110b\u1174 \u110c\u1165\u11ab\u110e\u1166 lifecycle (\u1109\u1175\u1100\u1161\u11ab\u1109\u116e\u11ab)"
+    },
+    {
+      "label": "code:block2 (\uc2dc\uac04       Radar(0)              Threat(0)                Inte)",
+      "file_type": "document",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L62",
+      "id": "spec_uppaal_design_codeblock_2",
+      "community": 35,
+      "norm_label": "code:block2 (\u1109\u1175\u1100\u1161\u11ab       radar(0)              threat(0)                inte)"
+    },
+    {
+      "label": "4. \uc0ac\uc6a9\uc790\uac00 \ubcf8 \uc2a4\ud06c\ub9b0\uc0f7 \ud574\uc11d",
+      "file_type": "document",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L102",
+      "id": "spec_uppaal_design_4_\uc0ac\uc6a9\uc790\uac00_\ubcf8_\uc2a4\ud06c\ub9b0\uc0f7_\ud574\uc11d",
+      "community": 35,
+      "norm_label": "4. \u1109\u1161\u110b\u116d\u11bc\u110c\u1161\u1100\u1161 \u1107\u1169\u11ab \u1109\u1173\u110f\u1173\u1105\u1175\u11ab\u1109\u1163\u11ba \u1112\u1162\u1109\u1165\u11a8"
+    },
+    {
+      "label": "5. MSC \uc77d\ub294 \ubc95",
+      "file_type": "document",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L121",
+      "id": "spec_uppaal_design_5_msc_\uc77d\ub294_\ubc95",
+      "community": 35,
+      "norm_label": "5. msc \u110b\u1175\u11b0\u1102\u1173\u11ab \u1107\u1165\u11b8"
+    },
+    {
+      "label": "6. \ud754\ud788 \ud5f7\uac08\ub9ac\ub294 \ub3d9\uc791 3\uac00\uc9c0",
+      "file_type": "document",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L142",
+      "id": "spec_uppaal_design_6_\ud754\ud788_\ud5f7\uac08\ub9ac\ub294_\ub3d9\uc791_3\uac00\uc9c0",
+      "community": 35,
+      "norm_label": "6. \u1112\u1173\u11ab\u1112\u1175 \u1112\u1166\u11ba\u1100\u1161\u11af\u1105\u1175\u1102\u1173\u11ab \u1103\u1169\u11bc\u110c\u1161\u11a8 3\u1100\u1161\u110c\u1175"
+    },
+    {
+      "label": "(1) \"plan\uc744 \ubc1b\uc558\ub294\ub370 \uc65c \ubc1c\uc0ac \uc548 \ud558\ub098\"",
+      "file_type": "document",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L144",
+      "id": "spec_uppaal_design_1_plan\uc744_\ubc1b\uc558\ub294\ub370_\uc65c_\ubc1c\uc0ac_\uc548_\ud558\ub098",
+      "community": 35,
+      "norm_label": "(1) \"plan\u110b\u1173\u11af \u1107\u1161\u11ae\u110b\u1161\u11bb\u1102\u1173\u11ab\u1103\u1166 \u110b\u116b \u1107\u1161\u11af\u1109\u1161 \u110b\u1161\u11ab \u1112\u1161\u1102\u1161\""
+    },
+    {
+      "label": "(2) \"\uc65c \ubaa8\ub4e0 Interceptor\uac00 \ub3d9\uc2dc\uc5d0 Ready\ub85c \uac00\ub098\"",
+      "file_type": "document",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L153",
+      "id": "spec_uppaal_design_2_\uc65c_\ubaa8\ub4e0_interceptor\uac00_\ub3d9\uc2dc\uc5d0_ready\ub85c_\uac00\ub098",
+      "community": 35,
+      "norm_label": "(2) \"\u110b\u116b \u1106\u1169\u1103\u1173\u11ab interceptor\u1100\u1161 \u1103\u1169\u11bc\u1109\u1175\u110b\u1166 ready\u1105\u1169 \u1100\u1161\u1102\u1161\""
+    },
+    {
+      "label": "(3) \"hitU[0]! \uc9c1\uc804\uc5d0 \uc704\ud611 T0\uac00 Killed\ub85c \uc548 \uac00\ub294\ub370?\"",
+      "file_type": "document",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L157",
+      "id": "spec_uppaal_design_3_hitu_0_\uc9c1\uc804\uc5d0_\uc704\ud611_t0\uac00_killed\ub85c_\uc548_\uac00\ub294\ub370",
+      "community": 35,
+      "norm_label": "(3) \"hitu[0]! \u110c\u1175\u11a8\u110c\u1165\u11ab\u110b\u1166 \u110b\u1171\u1112\u1167\u11b8 t0\u1100\u1161 killed\u1105\u1169 \u110b\u1161\u11ab \u1100\u1161\u1102\u1173\u11ab\u1103\u1166?\""
+    },
+    {
+      "label": "7. \uc2dc\ub098\ub9ac\uc624 \u2192 UPPAAL \uc815\ud569",
+      "file_type": "document",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L164",
+      "id": "spec_uppaal_design_7_\uc2dc\ub098\ub9ac\uc624_uppaal_\uc815\ud569",
+      "community": 35,
+      "norm_label": "7. \u1109\u1175\u1102\u1161\u1105\u1175\u110b\u1169 \u2192 uppaal \u110c\u1165\u11bc\u1112\u1161\u11b8"
+    },
+    {
+      "label": "8. PoC \ud65c\uc6a9 \ub808\uc2dc\ud53c",
+      "file_type": "document",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L184",
+      "id": "spec_uppaal_design_8_poc_\ud65c\uc6a9_\ub808\uc2dc\ud53c",
+      "community": 35,
+      "norm_label": "8. poc \u1112\u116a\u11af\u110b\u116d\u11bc \u1105\u1166\u1109\u1175\u1111\u1175"
+    },
+    {
+      "label": "(A) GUI\ub85c \ud55c step\uc529 \ub530\ub77c\uac00\uae30 (\uac00\uc7a5 \uc9c1\uad00\uc801)",
+      "file_type": "document",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L186",
+      "id": "spec_uppaal_design_a_gui\ub85c_\ud55c_step\uc529_\ub530\ub77c\uac00\uae30_\uac00\uc7a5_\uc9c1\uad00\uc801",
+      "community": 35,
+      "norm_label": "(a) gui\u1105\u1169 \u1112\u1161\u11ab step\u110a\u1175\u11a8 \u1104\u1161\u1105\u1161\u1100\u1161\u1100\u1175 (\u1100\u1161\u110c\u1161\u11bc \u110c\u1175\u11a8\u1100\u116a\u11ab\u110c\u1165\u11a8)"
+    },
+    {
+      "label": "code:block3 (1. UPPAAL \uc2e4\ud589 \u2192 File\u2192Open \u2192 dwta_model.xml (\ub610\ub294 _impl))",
+      "file_type": "document",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L187",
+      "id": "spec_uppaal_design_codeblock_3",
+      "community": 35,
+      "norm_label": "code:block3 (1. uppaal \u1109\u1175\u11af\u1112\u1162\u11bc \u2192 file\u2192open \u2192 dwta_model.xml (\u1104\u1169\u1102\u1173\u11ab _impl))"
+    },
+    {
+      "label": "(B) verifyta\ub85c trace \uc790\ub3d9 \uc0dd\uc131",
+      "file_type": "document",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L195",
+      "id": "spec_uppaal_design_b_verifyta\ub85c_trace_\uc790\ub3d9_\uc0dd\uc131",
+      "community": 35,
+      "norm_label": "(b) verifyta\u1105\u1169 trace \u110c\u1161\u1103\u1169\u11bc \u1109\u1162\u11bc\u1109\u1165\u11bc"
+    },
+    {
+      "label": "code:powershell (# R1 = \"\uc804\ub7c9 \uaca9\ucd94 \uac00\ub2a5\" trace \uc0dd\uc131 (\uac00\uc7a5 \uc88b\uc740 \uc2dc\ub098\ub9ac\uc624))",
+      "file_type": "document",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L196",
+      "id": "spec_uppaal_design_codeblock_4",
+      "community": 35,
+      "norm_label": "code:powershell (# r1 = \"\u110c\u1165\u11ab\u1105\u1163\u11bc \u1100\u1167\u11a8\u110e\u116e \u1100\u1161\u1102\u1173\u11bc\" trace \u1109\u1162\u11bc\u1109\u1165\u11bc (\u1100\u1161\u110c\u1161\u11bc \u110c\u1169\u11c2\u110b\u1173\u11ab \u1109\u1175\u1102\u1161\u1105\u1175\u110b\u1169))"
+    },
+    {
+      "label": "(C) \uc790\uc8fc \ubcf4\uace0 \uc2f6\uc740 trace",
+      "file_type": "document",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L202",
+      "id": "spec_uppaal_design_c_\uc790\uc8fc_\ubcf4\uace0_\uc2f6\uc740_trace",
+      "community": 35,
+      "norm_label": "(c) \u110c\u1161\u110c\u116e \u1107\u1169\u1100\u1169 \u1109\u1175\u11c1\u110b\u1173\u11ab trace"
+    },
+    {
+      "label": "9. \ucc38\uace0: \uc774 \ubaa8\ub378\uc774 \ub2e4\ub8e8\uc9c0 \uc54a\ub294 \uac83",
+      "file_type": "document",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L209",
+      "id": "spec_uppaal_design_9_\ucc38\uace0_\uc774_\ubaa8\ub378\uc774_\ub2e4\ub8e8\uc9c0_\uc54a\ub294_\uac83",
+      "community": 35,
+      "norm_label": "9. \u110e\u1161\u11b7\u1100\u1169: \u110b\u1175 \u1106\u1169\u1103\u1166\u11af\u110b\u1175 \u1103\u1161\u1105\u116e\u110c\u1175 \u110b\u1161\u11ad\u1102\u1173\u11ab \u1100\u1165\u11ba"
+    },
+    {
+      "label": "10. `clean_slate_optimizer.py`\ub294 UPPAAL\uacfc \uc5b4\ub5bb\uac8c \uc5f0\uacb0\ub418\ub098?",
+      "file_type": "document",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L225",
+      "id": "spec_uppaal_design_10_clean_slate_optimizer_py_\ub294_uppaal\uacfc_\uc5b4\ub5bb\uac8c_\uc5f0\uacb0\ub418\ub098",
+      "community": 35,
+      "norm_label": "10. `clean_slate_optimizer.py`\u1102\u1173\u11ab uppaal\u1100\u116a \u110b\u1165\u1104\u1165\u11c2\u1100\u1166 \u110b\u1167\u11ab\u1100\u1167\u11af\u1103\u116c\u1102\u1161?"
+    },
+    {
+      "label": "\uc65c \uc9c1\uc811 \uc548 \uc4f0\ub294\uac00",
+      "file_type": "document",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L230",
+      "id": "spec_uppaal_design_\uc65c_\uc9c1\uc811_\uc548_\uc4f0\ub294\uac00",
+      "community": 35,
+      "norm_label": "\u110b\u116b \u110c\u1175\u11a8\u110c\u1165\u11b8 \u110b\u1161\u11ab \u110a\u1173\u1102\u1173\u11ab\u1100\u1161"
+    },
+    {
+      "label": "\uadf8\ub798\uc11c \uc5b4\ub5bb\uac8c \"\uc5f0\uacb0\" \ub418\uc5b4 \uc788\ub098",
+      "file_type": "document",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L239",
+      "id": "spec_uppaal_design_\uadf8\ub798\uc11c_\uc5b4\ub5bb\uac8c_\uc5f0\uacb0_\ub418\uc5b4_\uc788\ub098",
+      "community": 35,
+      "norm_label": "\u1100\u1173\u1105\u1162\u1109\u1165 \u110b\u1165\u1104\u1165\u11c2\u1100\u1166 \"\u110b\u1167\u11ab\u1100\u1167\u11af\" \u1103\u116c\u110b\u1165 \u110b\u1175\u11bb\u1102\u1161"
+    },
+    {
+      "label": "code:python (# \uc758\uc0ac \ucf54\ub4dc (\uc2e4\uc81c CleanSlate\ub294 MIP\ub85c \ud55c \ubc29\uc5d0 \ud480\uc9c0\ub9cc \uc758\ubbf8\ub294 \uac19\uc74c))",
+      "file_type": "document",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L245",
+      "id": "spec_uppaal_design_codeblock_5",
+      "community": 35,
+      "norm_label": "code:python (# \u110b\u1174\u1109\u1161 \u110f\u1169\u1103\u1173 (\u1109\u1175\u11af\u110c\u1166 cleanslate\u1102\u1173\u11ab mip\u1105\u1169 \u1112\u1161\u11ab \u1107\u1161\u11bc\u110b\u1166 \u1111\u116e\u11af\u110c\u1175\u1106\u1161\u11ab \u110b\u1174\u1106\u1175\u1102\u1173\u11ab \u1100\u1161\u11c0\u110b\u1173\u11b7))"
+    },
+    {
+      "label": "code:c (int best_u() {                  // \u2460 \uc791\uc740 id (= danger DESC \ucd94\uc0c1)",
+      "file_type": "document",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L258",
+      "id": "spec_uppaal_design_codeblock_6",
+      "community": 35,
+      "norm_label": "code:c (int best_u() {                  // 1 \u110c\u1161\u11a8\u110b\u1173\u11ab id (= danger desc \u110e\u116e\u1109\u1161\u11bc)"
+    },
+    {
+      "label": "code:c (ammoU > 0 && best_u() >= 0 && t == best_u())",
+      "file_type": "document",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L269",
+      "id": "spec_uppaal_design_codeblock_7",
+      "community": 35,
+      "norm_label": "code:c (ammou > 0 && best_u() >= 0 && t == best_u())"
+    },
+    {
+      "label": "\uacb0\uacfc: \uc5b4\ub5a4 \ubcf4\uc7a5\uc774 \ub530\ub77c\uc624\ub098",
+      "file_type": "document",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L274",
+      "id": "spec_uppaal_design_\uacb0\uacfc_\uc5b4\ub5a4_\ubcf4\uc7a5\uc774_\ub530\ub77c\uc624\ub098",
+      "community": 35,
+      "norm_label": "\u1100\u1167\u11af\u1100\u116a: \u110b\u1165\u1104\u1165\u11ab \u1107\u1169\u110c\u1161\u11bc\u110b\u1175 \u1104\u1161\u1105\u1161\u110b\u1169\u1102\u1161"
+    },
+    {
+      "label": "\uc815\ud569\uc131\uc744 \uc5b4\ub5bb\uac8c \uc810\uac80\ud558\ub098",
+      "file_type": "document",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L285",
+      "id": "spec_uppaal_design_\uc815\ud569\uc131\uc744_\uc5b4\ub5bb\uac8c_\uc810\uac80\ud558\ub098",
+      "community": 35,
+      "norm_label": "\u110c\u1165\u11bc\u1112\u1161\u11b8\u1109\u1165\u11bc\u110b\u1173\u11af \u110b\u1165\u1104\u1165\u11c2\u1100\u1166 \u110c\u1165\u11b7\u1100\u1165\u11b7\u1112\u1161\u1102\u1161"
+    },
+    {
+      "label": "code:block8 ([ROS2 \uc2dc\ubbac\ub808\uc774\ud130]                          [UPPAAL])",
+      "file_type": "document",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L288",
+      "id": "spec_uppaal_design_codeblock_8",
+      "community": 35,
+      "norm_label": "code:block8 ([ros2 \u1109\u1175\u1106\u1172\u11af\u1105\u1166\u110b\u1175\u1110\u1165]                          [uppaal])"
+    },
+    {
+      "label": "\ub2e4\ub978 \uc635\ud2f0\ub9c8\uc774\uc800(GA, MIP, Greedy)\ub3c4 \uac19\uc740 \ubc29\uc2dd",
+      "file_type": "document",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L300",
+      "id": "spec_uppaal_design_\ub2e4\ub978_\uc635\ud2f0\ub9c8\uc774\uc800_ga_mip_greedy_\ub3c4_\uac19\uc740_\ubc29\uc2dd",
+      "community": 35,
+      "norm_label": "\u1103\u1161\u1105\u1173\u11ab \u110b\u1169\u11b8\u1110\u1175\u1106\u1161\u110b\u1175\u110c\u1165(ga, mip, greedy)\u1103\u1169 \u1100\u1161\u11c0\u110b\u1173\u11ab \u1107\u1161\u11bc\u1109\u1175\u11a8"
     },
     {
       "label": "DWTA_MIP_7Techniques_EN.md",
@@ -30446,7 +30725,7 @@
       "file_type": "code",
       "source_file": "multi_missile_tracker_gui.py",
       "source_location": "L1073",
-      "community": 9,
+      "community": 53,
       "norm_label": "._compute_tta()",
       "id": "dwta_optimizer_multi_missile_tracker_gui_dwtamainwindow_compute_tta"
     },
@@ -30536,7 +30815,7 @@
       "file_type": "code",
       "source_file": "config_mip.py",
       "source_location": "L324",
-      "community": 29,
+      "community": 27,
       "norm_label": ".create_priority_defense_assets()",
       "id": "dwta_optimizer_config_mip_assetconfig_create_priority_defense_assets"
     },
@@ -30563,7 +30842,7 @@
       "file_type": "code",
       "source_file": "config_mip.py",
       "source_location": "L610",
-      "community": 29,
+      "community": 27,
       "norm_label": ".calculate_trajectory_intercept_point()",
       "id": "dwta_optimizer_config_mip_engagementzoneconfig_calculate_trajectory_intercept_point"
     },
@@ -30572,7 +30851,7 @@
       "file_type": "code",
       "source_file": "config_mip.py",
       "source_location": "L671",
-      "community": 29,
+      "community": 27,
       "norm_label": ".can_engage_trajectory()",
       "id": "dwta_optimizer_config_mip_engagementzoneconfig_can_engage_trajectory"
     },
@@ -30599,7 +30878,7 @@
       "file_type": "code",
       "source_file": "config_mip.py",
       "source_location": "L799",
-      "community": 29,
+      "community": 27,
       "norm_label": ".calculate_engagement_time_window()",
       "id": "dwta_optimizer_config_mip_engagementzoneconfig_calculate_engagement_time_window"
     },
@@ -30608,7 +30887,7 @@
       "file_type": "code",
       "source_file": "config_mip.py",
       "source_location": "L919",
-      "community": 29,
+      "community": 27,
       "norm_label": ".calculate_window_adjusted_probability()",
       "id": "dwta_optimizer_config_mip_engagementzoneconfig_calculate_window_adjusted_probability"
     },
@@ -30626,7 +30905,7 @@
       "file_type": "code",
       "source_file": "config_mip.py",
       "source_location": "L981",
-      "community": 0,
+      "community": 88,
       "norm_label": ".create_small_attack_3()",
       "id": "dwta_optimizer_config_mip_scenariomanager_create_small_attack_3"
     },
@@ -30635,7 +30914,7 @@
       "file_type": "code",
       "source_file": "config_mip.py",
       "source_location": "L993",
-      "community": 0,
+      "community": 93,
       "norm_label": ".create_small_attack_5()",
       "id": "dwta_optimizer_config_mip_scenariomanager_create_small_attack_5"
     },
@@ -30644,7 +30923,7 @@
       "file_type": "code",
       "source_file": "config_mip.py",
       "source_location": "L1005",
-      "community": 0,
+      "community": 78,
       "norm_label": ".create_small_attack_8()",
       "id": "dwta_optimizer_config_mip_scenariomanager_create_small_attack_8"
     },
@@ -30653,7 +30932,7 @@
       "file_type": "code",
       "source_file": "config_mip.py",
       "source_location": "L1017",
-      "community": 0,
+      "community": 79,
       "norm_label": ".create_medium_attack_10()",
       "id": "dwta_optimizer_config_mip_scenariomanager_create_medium_attack_10"
     },
@@ -30662,7 +30941,7 @@
       "file_type": "code",
       "source_file": "config_mip.py",
       "source_location": "L1029",
-      "community": 0,
+      "community": 81,
       "norm_label": ".create_medium_attack_20()",
       "id": "dwta_optimizer_config_mip_scenariomanager_create_medium_attack_20"
     },
@@ -30671,7 +30950,7 @@
       "file_type": "code",
       "source_file": "config_mip.py",
       "source_location": "L1045",
-      "community": 0,
+      "community": 82,
       "norm_label": ".create_heavy_attack_30()",
       "id": "dwta_optimizer_config_mip_scenariomanager_create_heavy_attack_30"
     },
@@ -30680,7 +30959,7 @@
       "file_type": "code",
       "source_file": "config_mip.py",
       "source_location": "L1062",
-      "community": 0,
+      "community": 83,
       "norm_label": ".create_large_attack_40()",
       "id": "dwta_optimizer_config_mip_scenariomanager_create_large_attack_40"
     },
@@ -30689,7 +30968,7 @@
       "file_type": "code",
       "source_file": "config_mip.py",
       "source_location": "L1078",
-      "community": 0,
+      "community": 86,
       "norm_label": ".create_sequential_attack_15()",
       "id": "dwta_optimizer_config_mip_scenariomanager_create_sequential_attack_15"
     },
@@ -30698,7 +30977,7 @@
       "file_type": "code",
       "source_file": "config_mip.py",
       "source_location": "L1094",
-      "community": 0,
+      "community": 87,
       "norm_label": ".create_simultaneous_attack_15()",
       "id": "dwta_optimizer_config_mip_scenariomanager_create_simultaneous_attack_15"
     },
@@ -31031,7 +31310,7 @@
       "file_type": "rationale",
       "source_file": "ros2_dwta/dwta_nodes/messages.py",
       "source_location": "L106",
-      "community": 61,
+      "community": 41,
       "norm_label": "\u1107\u1161\u11af\u1109\u1161\u1103\u1162/\u110b\u116d\u1100\u1167\u11a8\u110e\u1166\u1100\u1168 \u1109\u1161\u11bc\u1110\u1162 (\u110c\u1161\u11ab\u110b\u1167\u1110\u1161\u11ab\u00b7\u1107\u1175\u1112\u1162\u11bc\u110c\u116e\u11bc \u110b\u116d\u1100\u1167\u11a8\u1110\u1161\u11ab\u00b7\u1100\u116d\u110c\u1165\u11ab \u1109\u1161\u11bc\u1110\u1162) \u2014 \u110c\u1165\u11ab \u1102\u1169\u1103\u1173 \u1100\u1169\u11bc\u110b\u1172.",
       "id": "dwta_nodes_messages_rationale_106"
     },
@@ -76699,9 +76978,9 @@
       "source_file": "ros2_dwta/dwta_nodes/scenario.py",
       "source_location": "L108",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ros2_dwta_dwta_nodes_scenario_py",
-      "target": "dwta_nodes_scenario_random_saturation_scenario",
-      "confidence_score": 1.0
+      "target": "dwta_nodes_scenario_random_saturation_scenario"
     },
     {
       "relation": "contains",
@@ -76827,9 +77106,9 @@
       "source_file": "ros2_dwta/dwta_nodes/scenario.py",
       "source_location": "L133",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "dwta_nodes_scenario_random_saturation_scenario",
-      "target": "dwta_nodes_scenario_asset",
-      "confidence_score": 1.0
+      "target": "dwta_nodes_scenario_asset"
     },
     {
       "relation": "imports",
@@ -77238,9 +77517,9 @@
       "source_file": "ros2_dwta/dwta_nodes/scenario.py",
       "source_location": "L108",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "dwta_nodes_scenario_random_saturation_scenario",
-      "target": "dwta_nodes_scenario_battery",
-      "confidence_score": 1.0
+      "target": "dwta_nodes_scenario_battery"
     },
     {
       "relation": "rationale_for",
@@ -77626,9 +77905,9 @@
       "source_file": "ros2_dwta/dwta_nodes/scenario.py",
       "source_location": "L153",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "dwta_nodes_scenario_random_saturation_scenario",
-      "target": "dwta_nodes_scenario_threatspawn",
-      "confidence_score": 1.0
+      "target": "dwta_nodes_scenario_threatspawn"
     },
     {
       "relation": "imports",
@@ -77763,9 +78042,9 @@
       "source_file": "ros2_dwta/dwta_nodes/scenario.py",
       "source_location": "L136",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "dwta_nodes_scenario_random_saturation_scenario",
-      "target": "dwta_nodes_scenario_lsam",
-      "confidence_score": 1.0
+      "target": "dwta_nodes_scenario_lsam"
     },
     {
       "relation": "rationale_for",
@@ -77816,9 +78095,9 @@
       "source_file": "ros2_dwta/dwta_nodes/scenario.py",
       "source_location": "L108",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "dwta_nodes_scenario_random_saturation_scenario",
-      "target": "ros2_dwta_dwta_nodes_scenario_py_float",
-      "confidence_score": 1.0
+      "target": "ros2_dwta_dwta_nodes_scenario_py_float"
     },
     {
       "relation": "references",
@@ -77882,9 +78161,9 @@
       "source_file": "ros2_dwta/dwta_nodes/scenario.py",
       "source_location": "L138",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "dwta_nodes_scenario_random_saturation_scenario",
-      "target": "dwta_nodes_scenario_msam",
-      "confidence_score": 1.0
+      "target": "dwta_nodes_scenario_msam"
     },
     {
       "relation": "rationale_for",
@@ -77944,9 +78223,9 @@
       "source_file": "ros2_dwta/dwta_nodes/scenario.py",
       "source_location": "L108",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "dwta_nodes_scenario_random_saturation_scenario",
-      "target": "ros2_dwta_dwta_nodes_scenario_py_int",
-      "confidence_score": 1.0
+      "target": "ros2_dwta_dwta_nodes_scenario_py_int"
     },
     {
       "relation": "rationale_for",
@@ -77954,9 +78233,9 @@
       "source_file": "ros2_dwta/dwta_nodes/scenario.py",
       "source_location": "L115",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "dwta_nodes_scenario_rationale_115",
-      "target": "dwta_nodes_scenario_random_saturation_scenario",
-      "confidence_score": 1.0
+      "target": "dwta_nodes_scenario_random_saturation_scenario"
     },
     {
       "relation": "imports",
@@ -80938,6 +81217,306 @@
       "confidence_score": 1.0,
       "source": "spec_timed_automata_6_uppaal\ub85c_\uac80\uc99d\ud558\ub294_\ubc95",
       "target": "spec_timed_automata_codeblock_13"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "ros2_dwta_spec_uppaal_design_md",
+      "target": "spec_uppaal_design_uppaal_\ubaa8\ub378_\ub3d9\uc791_\uc124\uacc4_\ubb38\uc11c",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L9",
+      "weight": 1.0,
+      "source": "spec_uppaal_design_uppaal_\ubaa8\ub378_\ub3d9\uc791_\uc124\uacc4_\ubb38\uc11c",
+      "target": "spec_uppaal_design_1_\ubaa8\ub378_\ud55c_\uc7a5_\uc694\uc57d",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L35",
+      "weight": 1.0,
+      "source": "spec_uppaal_design_uppaal_\ubaa8\ub378_\ub3d9\uc791_\uc124\uacc4_\ubb38\uc11c",
+      "target": "spec_uppaal_design_2_broadcast_\ucc44\ub110_\ub204\uac00_\ub204\uad6c\uc5d0\uac8c_\ubb34\uc5c7\uc744",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L58",
+      "weight": 1.0,
+      "source": "spec_uppaal_design_uppaal_\ubaa8\ub378_\ub3d9\uc791_\uc124\uacc4_\ubb38\uc11c",
+      "target": "spec_uppaal_design_3_\ud55c_\uc704\ud611\uc758_\uc804\uccb4_lifecycle_\uc2dc\uac04\uc21c",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L102",
+      "weight": 1.0,
+      "source": "spec_uppaal_design_uppaal_\ubaa8\ub378_\ub3d9\uc791_\uc124\uacc4_\ubb38\uc11c",
+      "target": "spec_uppaal_design_4_\uc0ac\uc6a9\uc790\uac00_\ubcf8_\uc2a4\ud06c\ub9b0\uc0f7_\ud574\uc11d",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L121",
+      "weight": 1.0,
+      "source": "spec_uppaal_design_uppaal_\ubaa8\ub378_\ub3d9\uc791_\uc124\uacc4_\ubb38\uc11c",
+      "target": "spec_uppaal_design_5_msc_\uc77d\ub294_\ubc95",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L142",
+      "weight": 1.0,
+      "source": "spec_uppaal_design_uppaal_\ubaa8\ub378_\ub3d9\uc791_\uc124\uacc4_\ubb38\uc11c",
+      "target": "spec_uppaal_design_6_\ud754\ud788_\ud5f7\uac08\ub9ac\ub294_\ub3d9\uc791_3\uac00\uc9c0",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L164",
+      "weight": 1.0,
+      "source": "spec_uppaal_design_uppaal_\ubaa8\ub378_\ub3d9\uc791_\uc124\uacc4_\ubb38\uc11c",
+      "target": "spec_uppaal_design_7_\uc2dc\ub098\ub9ac\uc624_uppaal_\uc815\ud569",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L184",
+      "weight": 1.0,
+      "source": "spec_uppaal_design_uppaal_\ubaa8\ub378_\ub3d9\uc791_\uc124\uacc4_\ubb38\uc11c",
+      "target": "spec_uppaal_design_8_poc_\ud65c\uc6a9_\ub808\uc2dc\ud53c",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L209",
+      "weight": 1.0,
+      "source": "spec_uppaal_design_uppaal_\ubaa8\ub378_\ub3d9\uc791_\uc124\uacc4_\ubb38\uc11c",
+      "target": "spec_uppaal_design_9_\ucc38\uace0_\uc774_\ubaa8\ub378\uc774_\ub2e4\ub8e8\uc9c0_\uc54a\ub294_\uac83",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L225",
+      "weight": 1.0,
+      "source": "spec_uppaal_design_uppaal_\ubaa8\ub378_\ub3d9\uc791_\uc124\uacc4_\ubb38\uc11c",
+      "target": "spec_uppaal_design_10_clean_slate_optimizer_py_\ub294_uppaal\uacfc_\uc5b4\ub5bb\uac8c_\uc5f0\uacb0\ub418\ub098",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L23",
+      "weight": 1.0,
+      "source": "spec_uppaal_design_1_\ubaa8\ub378_\ud55c_\uc7a5_\uc694\uc57d",
+      "target": "spec_uppaal_design_codeblock_1",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L62",
+      "weight": 1.0,
+      "source": "spec_uppaal_design_3_\ud55c_\uc704\ud611\uc758_\uc804\uccb4_lifecycle_\uc2dc\uac04\uc21c",
+      "target": "spec_uppaal_design_codeblock_2",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L144",
+      "weight": 1.0,
+      "source": "spec_uppaal_design_6_\ud754\ud788_\ud5f7\uac08\ub9ac\ub294_\ub3d9\uc791_3\uac00\uc9c0",
+      "target": "spec_uppaal_design_1_plan\uc744_\ubc1b\uc558\ub294\ub370_\uc65c_\ubc1c\uc0ac_\uc548_\ud558\ub098",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L153",
+      "weight": 1.0,
+      "source": "spec_uppaal_design_6_\ud754\ud788_\ud5f7\uac08\ub9ac\ub294_\ub3d9\uc791_3\uac00\uc9c0",
+      "target": "spec_uppaal_design_2_\uc65c_\ubaa8\ub4e0_interceptor\uac00_\ub3d9\uc2dc\uc5d0_ready\ub85c_\uac00\ub098",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L157",
+      "weight": 1.0,
+      "source": "spec_uppaal_design_6_\ud754\ud788_\ud5f7\uac08\ub9ac\ub294_\ub3d9\uc791_3\uac00\uc9c0",
+      "target": "spec_uppaal_design_3_hitu_0_\uc9c1\uc804\uc5d0_\uc704\ud611_t0\uac00_killed\ub85c_\uc548_\uac00\ub294\ub370",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L186",
+      "weight": 1.0,
+      "source": "spec_uppaal_design_8_poc_\ud65c\uc6a9_\ub808\uc2dc\ud53c",
+      "target": "spec_uppaal_design_a_gui\ub85c_\ud55c_step\uc529_\ub530\ub77c\uac00\uae30_\uac00\uc7a5_\uc9c1\uad00\uc801",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L195",
+      "weight": 1.0,
+      "source": "spec_uppaal_design_8_poc_\ud65c\uc6a9_\ub808\uc2dc\ud53c",
+      "target": "spec_uppaal_design_b_verifyta\ub85c_trace_\uc790\ub3d9_\uc0dd\uc131",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L202",
+      "weight": 1.0,
+      "source": "spec_uppaal_design_8_poc_\ud65c\uc6a9_\ub808\uc2dc\ud53c",
+      "target": "spec_uppaal_design_c_\uc790\uc8fc_\ubcf4\uace0_\uc2f6\uc740_trace",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L187",
+      "weight": 1.0,
+      "source": "spec_uppaal_design_a_gui\ub85c_\ud55c_step\uc529_\ub530\ub77c\uac00\uae30_\uac00\uc7a5_\uc9c1\uad00\uc801",
+      "target": "spec_uppaal_design_codeblock_3",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L196",
+      "weight": 1.0,
+      "source": "spec_uppaal_design_b_verifyta\ub85c_trace_\uc790\ub3d9_\uc0dd\uc131",
+      "target": "spec_uppaal_design_codeblock_4",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L230",
+      "weight": 1.0,
+      "source": "spec_uppaal_design_10_clean_slate_optimizer_py_\ub294_uppaal\uacfc_\uc5b4\ub5bb\uac8c_\uc5f0\uacb0\ub418\ub098",
+      "target": "spec_uppaal_design_\uc65c_\uc9c1\uc811_\uc548_\uc4f0\ub294\uac00",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L239",
+      "weight": 1.0,
+      "source": "spec_uppaal_design_10_clean_slate_optimizer_py_\ub294_uppaal\uacfc_\uc5b4\ub5bb\uac8c_\uc5f0\uacb0\ub418\ub098",
+      "target": "spec_uppaal_design_\uadf8\ub798\uc11c_\uc5b4\ub5bb\uac8c_\uc5f0\uacb0_\ub418\uc5b4_\uc788\ub098",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L274",
+      "weight": 1.0,
+      "source": "spec_uppaal_design_10_clean_slate_optimizer_py_\ub294_uppaal\uacfc_\uc5b4\ub5bb\uac8c_\uc5f0\uacb0\ub418\ub098",
+      "target": "spec_uppaal_design_\uacb0\uacfc_\uc5b4\ub5a4_\ubcf4\uc7a5\uc774_\ub530\ub77c\uc624\ub098",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L285",
+      "weight": 1.0,
+      "source": "spec_uppaal_design_10_clean_slate_optimizer_py_\ub294_uppaal\uacfc_\uc5b4\ub5bb\uac8c_\uc5f0\uacb0\ub418\ub098",
+      "target": "spec_uppaal_design_\uc815\ud569\uc131\uc744_\uc5b4\ub5bb\uac8c_\uc810\uac80\ud558\ub098",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L300",
+      "weight": 1.0,
+      "source": "spec_uppaal_design_10_clean_slate_optimizer_py_\ub294_uppaal\uacfc_\uc5b4\ub5bb\uac8c_\uc5f0\uacb0\ub418\ub098",
+      "target": "spec_uppaal_design_\ub2e4\ub978_\uc635\ud2f0\ub9c8\uc774\uc800_ga_mip_greedy_\ub3c4_\uac19\uc740_\ubc29\uc2dd",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L245",
+      "weight": 1.0,
+      "source": "spec_uppaal_design_\uadf8\ub798\uc11c_\uc5b4\ub5bb\uac8c_\uc5f0\uacb0_\ub418\uc5b4_\uc788\ub098",
+      "target": "spec_uppaal_design_codeblock_5",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L258",
+      "weight": 1.0,
+      "source": "spec_uppaal_design_\uadf8\ub798\uc11c_\uc5b4\ub5bb\uac8c_\uc5f0\uacb0_\ub418\uc5b4_\uc788\ub098",
+      "target": "spec_uppaal_design_codeblock_6",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L269",
+      "weight": 1.0,
+      "source": "spec_uppaal_design_\uadf8\ub798\uc11c_\uc5b4\ub5bb\uac8c_\uc5f0\uacb0_\ub418\uc5b4_\uc788\ub098",
+      "target": "spec_uppaal_design_codeblock_7",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L288",
+      "weight": 1.0,
+      "source": "spec_uppaal_design_\uc815\ud569\uc131\uc744_\uc5b4\ub5bb\uac8c_\uc810\uac80\ud558\ub098",
+      "target": "spec_uppaal_design_codeblock_8",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -85737,5 +86316,5 @@
       "source_file": "clean_slate_optimizer.py"
     }
   ],
-  "built_at_commit": "53da66642076cad3963a0aca469383c8a5bc6978"
+  "built_at_commit": "cdaf9e0fb3a2453219a723d3e506fdb8c4ad4487"
 }

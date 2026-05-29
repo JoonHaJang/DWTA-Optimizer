@@ -330,8 +330,8 @@
     "semantic_hash": ""
   },
   "C:\\Users\\USER\\Desktop\\DWTA-Optimizer\\ros2_dwta\\spec\\timed_automata.md": {
-    "mtime": 1780061506.0022388,
-    "ast_hash": "b2ec23a20016eb86600d81bf773d2ba8",
+    "mtime": 1780067017.2794797,
+    "ast_hash": "094f9b4326d22c72e02699b274d13821",
     "semantic_hash": ""
   },
   "C:\\Users\\USER\\Desktop\\DWTA-Optimizer\\\ubb38\uc11c\\DWTA_MIP_7Techniques_EN.md": {
@@ -357,6 +357,11 @@
   "C:\\Users\\USER\\Desktop\\DWTA-Optimizer\\\ubb38\uc11c\\The plan for great DWTA.md": {
     "mtime": 1774272336.5957613,
     "ast_hash": "864cb2efe583d4e62379b74423fbda26",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\USER\\Desktop\\DWTA-Optimizer\\ros2_dwta\\spec\\uppaal_design.md": {
+    "mtime": 1780067012.840075,
+    "ast_hash": "3d44755fe95d1130ee7ab0f7508e26f1",
     "semantic_hash": ""
   }
 }

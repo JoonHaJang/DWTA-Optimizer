@@ -6,6 +6,8 @@ ROS2 노드 구조를 **먼저 형식 명세**로 고정해 두기 위한 문서
 
 - 검증 가능한 축약 모델: [`dwta_model.xml`](./dwta_model.xml) (UPPAAL에서 바로 로드).
 - 본 문서: 전체 노드 망(網)의 형식 명세 + 검증 속성.
+- **모델 동작 설명·MSC 읽는 법**: [`uppaal_design.md`](./uppaal_design.md)
+  (특히 `clean_slate_optimizer.py`와 UPPAAL의 연결 방식은 거기 §10 참조).
 
 ## 1. 대응 관계 (ROS2 ↔ TA)
 
