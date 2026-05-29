@@ -24,49 +24,53 @@ class WTABackend:
 
 
 class GreedyWTA(WTABackend):
-    """Danger-first greedy with layer + capacity + ammo constraints.
+    """Danger-first greedy with layer + capacity + ammo + multi-battery balancing.
 
     - Threats handled in descending danger order.
-    - Each threat may get at most one UPPER and one LOWER interceptor
-      (multi-layer defence), capped by `max_per_threat`.
-    - Respects each battery's simultaneous-engagement capacity and remaining
-      ammo. Picks the highest-Pk feasible battery for each (threat, layer).
+    - Each threat gets at most one battery PER LAYER (no two same-layer batteries
+      on the same threat -> conflict-free across multiple L-SAMs / M-SAMs),
+      capped by `max_per_threat` layers (multi-layer defence).
+    - Among same-layer batteries that can engage a threat, picks by (Pk, then
+      least-loaded) so load spreads across batteries instead of piling on one.
+    - Respects each battery's fire-control channels (simultaneous) and ammo.
     """
 
     name = "GreedyWTA"
 
     def __init__(self, simultaneous: Dict[str, int]):
-        self._simultaneous = dict(simultaneous)  # system_id -> max concurrent
+        self._simultaneous = dict(simultaneous)  # system_id -> max concurrent (FCR channels)
 
     def solve(self, scores, cells, available, max_per_threat):
-        # index feasible cells by threat
-        by_threat: Dict[str, List[EngagementCell]] = {}
+        # feasible cells grouped by (threat, layer) -> candidate batteries
+        by_tl: Dict[tuple, List[EngagementCell]] = {}
         for c in cells:
-            by_threat.setdefault(c.threat_id, []).append(c)
+            by_tl.setdefault((c.threat_id, c.layer), []).append(c)
 
         remaining = dict(available)                 # ammo left
         used = {sid: 0 for sid in available}        # concurrent engagements this plan
         assignments: List[Assignment] = []
 
         for s in sorted(scores, key=lambda x: x.danger, reverse=True):
-            options = by_threat.get(s.threat_id, [])
-            if not options:
-                continue
-            picked_layers = set()
-            # best Pk first
-            for cell in sorted(options, key=lambda c: c.pk, reverse=True):
-                if len(picked_layers) >= max_per_threat:
+            layers_done = 0
+            # 위협당 레이어 우선순위: 더 높은 최선 Pk 레이어 먼저
+            layers = sorted(
+                {c.layer for c in cells if c.threat_id == s.threat_id},
+                key=lambda L: -max((c.pk for c in by_tl.get((s.threat_id, L), [])), default=0))
+            for layer in layers:
+                if layers_done >= max_per_threat:
                     break
-                if cell.layer in picked_layers:
+                cands = by_tl.get((s.threat_id, layer), [])
+                # 동일 레이어 후보 포대 중: 잔여탄>0, 채널 여유 -> (Pk 우선, 부하 적은 순)
+                feasible = [c for c in cands
+                            if remaining.get(c.system_id, 0) > 0
+                            and used.get(c.system_id, 0) < self._simultaneous.get(c.system_id, 1)]
+                if not feasible:
                     continue
-                if remaining.get(cell.system_id, 0) <= 0:
-                    continue
-                if used.get(cell.system_id, 0) >= self._simultaneous.get(cell.system_id, 1):
-                    continue
-                assignments.append(Assignment(cell.system_id, cell.threat_id, cell.layer, cell.pk))
-                remaining[cell.system_id] -= 1
-                used[cell.system_id] += 1
-                picked_layers.add(cell.layer)
+                best = min(feasible, key=lambda c: (-round(c.pk * 20), used.get(c.system_id, 0)))
+                assignments.append(Assignment(best.system_id, best.threat_id, best.layer, best.pk))
+                remaining[best.system_id] -= 1
+                used[best.system_id] += 1
+                layers_done += 1
         return assignments
 
     @staticmethod

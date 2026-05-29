@@ -78,7 +78,8 @@ def saturation_scenario() -> Tuple[List[Asset], List[Battery], List[ThreatSpawn]
     assets = [Asset("A1_Command", (0.0, 0.0), 100.0),
               Asset("A2_Airbase", (0.0, 45.0), 75.0)]
     batteries = [
-        lsam("L1_LSAM", (0.0, -20.0)),       # 상층 1포대 (채널 3) — 포화 유발
+        lsam("L1_LSAM", (0.0, -20.0)),       # 상층 #1 (남측 섹터)
+        lsam("L2_LSAM", (0.0, 65.0)),        # 상층 #2 (북측 섹터) — 다포대 충돌회피 검증
         msam("M1_MSAM", (0.0, 8.0)),         # 하층: A1 방어
         msam("M2_MSAM", (0.0, 50.0)),        # 하층: A2 방어
     ]

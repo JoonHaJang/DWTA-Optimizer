@@ -11,11 +11,12 @@ import sys
 from .ros_compat import rclpy, USING_ROS2
 from . import (ControlStationNode, EngageabilityNode, FireControlRadarNode,
                LauncherNode, PlanningNode, SurveillanceRadarNode,
-               ThreatAssessmentNode, WorldStateNode)
+               ThreatAssessmentNode, VizNode, WorldStateNode)
 from .scenario import SCENARIOS
 
 
-def build_nodes(scenario: str = "saturation"):
+def build_nodes(scenario: str = "saturation", viz: bool = False,
+                viz_backend: str = "ascii"):
     assets, batteries, spawns = SCENARIOS[scenario]()
     radar = SurveillanceRadarNode(assets, batteries, spawns)   # 중앙 감시레이다 (1개)
     fcrs = [FireControlRadarNode(b) for b in batteries]        # 포대 사격통제레이다 (포대당 1개)
@@ -26,14 +27,16 @@ def build_nodes(scenario: str = "saturation"):
     control = ControlStationNode()
     world = WorldStateNode()
     world.set_battery_layers({b.id: b.layer for b in batteries})
-    # control & radar first; FCR before launcher so guidance reacts promptly; world last
     nodes = [control, radar, *fcrs, assessment, engage, planning, launcher, world]
+    if viz:
+        nodes.append(VizNode(assets, batteries, backend=viz_backend))  # 표시 전용 (분리)
     return nodes, batteries, launcher
 
 
-def main(duration: float = 70.0, scenario: str = "saturation", args=None) -> None:
+def main(duration: float = 70.0, scenario: str = "saturation",
+         viz: bool = False, args=None) -> None:
     rclpy.init(args=args)
-    nodes, batteries, launcher = build_nodes(scenario)
+    nodes, batteries, launcher = build_nodes(scenario, viz=viz)
 
     mode = "REAL ROS2 (rclpy)" if USING_ROS2 else "in-process shim (deterministic)"
     print("=" * 78)
@@ -78,7 +81,8 @@ def _summary(launcher, batteries) -> None:
 def cli() -> None:
     dur = float(sys.argv[1]) if len(sys.argv) > 1 else 70.0
     scenario = sys.argv[2] if len(sys.argv) > 2 else "saturation"
-    main(dur, scenario)
+    viz = "viz" in sys.argv[3:]
+    main(dur, scenario, viz)
 
 
 if __name__ == "__main__":

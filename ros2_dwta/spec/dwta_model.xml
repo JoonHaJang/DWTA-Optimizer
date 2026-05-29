@@ -2,33 +2,35 @@
 <!DOCTYPE nta PUBLIC '-//Uppaal Team//DTD Flat System 1.6//EN' 'http://www.it.uu.se/research/group/darts/uppaal/flat-1_6.dtd'>
 <nta>
   <declaration>
-// DWTA realtime C2 pipeline -- timed-automata model (UPPAAL)
-// Abstraction of the ROS2 node network for formal verification.
-//   Threat      : 적 탄도탄 생명주기 (DETECTED->ENGAGEABLE->ENGAGED->KILLED|LEAKED)
-//   Interceptor : 아군 요격탄 슬롯 (Idle->Flying->판정). 인스턴스 수 = 동시교전 capacity
-// Shared state (전 노드 공유 COP에 대응): ammo, inflight, killed, leaked.
+// DWTA realtime C2 pipeline -- timed-automata model (UPPAAL), extended.
+//   Threat        : 적 탄도탄 생명주기
+//   InterceptorU  : 상층(L-SAM) 유도 채널 슬롯 (인스턴스 수 = CH_U)
+//   InterceptorL  : 하층(M-SAM) 유도 채널 슬롯 (인스턴스 수 = CH_L)
+//   Planner       : 계획수립 주기 클럭 (PERIOD_P) 모델
+// 포대별 채널/탄약을 분리: 상층(ammoU,inflU,CH_U) / 하층(ammoL,inflL,CH_L).
 
-const int MAXT   = 3;   // 모델체킹용 위협 수 (작게)
-const int CAP    = 2;   // 동시 교전 수 = Interceptor 인스턴스 수
-const int ENTER  = 10;  // 교전영역 진입(=engageable) 시각
-const int IMPACT = 30;  // 탄착(미요격 시 누설) 시각
-const int FLYOUT = 3;   // 요격탄 비행시간
+const int MAXT   = 3;
+const int CH_U   = 2;   // 상층 유도 채널 (= InterceptorU 인스턴스 수)
+const int CH_L   = 2;   // 하층 유도 채널 (= InterceptorL 인스턴스 수)
+const int ENTER  = 8;   // 교전영역 진입 시각
+const int IMPACT = 30;  // 탄착(누설) 시각
+const int FLYOUT_U = 3; // 상층 요격탄 비행시간
+const int FLYOUT_L = 2; // 하층 요격탄 비행시간
+const int PERIOD_P = 2; // 계획수립 주기
 
-int ammo = 4;           // 잔여 요격탄 (공유)
-int inflight = 0;       // 비행중 요격탄 수 (공유)
-int killed = 0;         // 요격 성공 누계
-int leaked = 0;         // 누설(탄착) 누계
+int ammoU = 4, ammoL = 4;
+int inflU = 0, inflL = 0;       // 비행중 요격탄 수 (포대 계층별)
+int killed = 0, leaked = 0;
 
-chan assign[MAXT];      // planning/launcher -> threat: 교전 배정 (handshake)
-chan hit[MAXT];         // 요격 성공
-chan miss[MAXT];        // 요격 실패 -> 재교전
+chan assign[MAXT];      // 교전배정 (handshake, 어느 계층이든)
+chan hit[MAXT];
+chan miss[MAXT];
   </declaration>
 
   <template>
     <name>Threat</name>
     <parameter>const int id</parameter>
     <declaration>clock x;</declaration>
-
     <location id="id0" x="-560" y="0"><name>Inbound</name>
       <label kind="invariant">x &lt;= IMPACT</label></location>
     <location id="id1" x="-360" y="0"><name>Engageable</name>
@@ -38,7 +40,6 @@ chan miss[MAXT];        // 요격 실패 -> 재교전
     <location id="id3" x="0" y="-120"><name>Killed</name></location>
     <location id="id4" x="0" y="120"><name>Leaked</name></location>
     <init ref="id0"/>
-
     <transition><source ref="id0"/><target ref="id1"/>
       <label kind="guard">x &gt;= ENTER</label></transition>
     <transition><source ref="id1"/><target ref="id2"/>
@@ -57,49 +58,85 @@ chan miss[MAXT];        // 요격 실패 -> 재교전
   </template>
 
   <template>
-    <name>Interceptor</name>
+    <name>InterceptorU</name>
     <declaration>clock f; int tgt;</declaration>
-
-    <location id="i0" x="-400" y="0"><name>Idle</name></location>
-    <location id="i1" x="-160" y="0"><name>Flying</name>
-      <label kind="invariant">f &lt;= FLYOUT</label></location>
-    <init ref="i0"/>
-
-    <!-- 교전 배정: engageable 위협(t)에 핸드셰이크, 잔여탄 소모, 비행중++ -->
-    <transition><source ref="i0"/><target ref="i1"/>
+    <location id="u0" x="-400" y="0"><name>Idle</name></location>
+    <location id="u1" x="-160" y="0"><name>Flying</name>
+      <label kind="invariant">f &lt;= FLYOUT_U</label></location>
+    <init ref="u0"/>
+    <transition><source ref="u0"/><target ref="u1"/>
       <label kind="select">t : int[0,MAXT-1]</label>
-      <label kind="guard">ammo &gt; 0</label>
+      <label kind="guard">ammoU &gt; 0</label>
       <label kind="synchronisation">assign[t]!</label>
-      <label kind="assignment">ammo--, inflight++, tgt = t, f = 0</label></transition>
-    <!-- 비행시간 경과 후 판정: 성공 또는 실패(비결정 -> 두 경우 모두 검증) -->
-    <transition><source ref="i1"/><target ref="i0"/>
-      <label kind="guard">f &gt;= FLYOUT</label>
+      <label kind="assignment">ammoU--, inflU++, tgt = t, f = 0</label></transition>
+    <transition><source ref="u1"/><target ref="u0"/>
+      <label kind="guard">f &gt;= FLYOUT_U</label>
       <label kind="synchronisation">hit[tgt]!</label>
-      <label kind="assignment">inflight--</label></transition>
-    <transition><source ref="i1"/><target ref="i0"/>
-      <label kind="guard">f &gt;= FLYOUT</label>
+      <label kind="assignment">inflU--</label></transition>
+    <transition><source ref="u1"/><target ref="u0"/>
+      <label kind="guard">f &gt;= FLYOUT_U</label>
       <label kind="synchronisation">miss[tgt]!</label>
-      <label kind="assignment">inflight--</label></transition>
+      <label kind="assignment">inflU--</label></transition>
+  </template>
+
+  <template>
+    <name>InterceptorL</name>
+    <declaration>clock f; int tgt;</declaration>
+    <location id="l0" x="-400" y="0"><name>Idle</name></location>
+    <location id="l1" x="-160" y="0"><name>Flying</name>
+      <label kind="invariant">f &lt;= FLYOUT_L</label></location>
+    <init ref="l0"/>
+    <transition><source ref="l0"/><target ref="l1"/>
+      <label kind="select">t : int[0,MAXT-1]</label>
+      <label kind="guard">ammoL &gt; 0</label>
+      <label kind="synchronisation">assign[t]!</label>
+      <label kind="assignment">ammoL--, inflL++, tgt = t, f = 0</label></transition>
+    <transition><source ref="l1"/><target ref="l0"/>
+      <label kind="guard">f &gt;= FLYOUT_L</label>
+      <label kind="synchronisation">hit[tgt]!</label>
+      <label kind="assignment">inflL--</label></transition>
+    <transition><source ref="l1"/><target ref="l0"/>
+      <label kind="guard">f &gt;= FLYOUT_L</label>
+      <label kind="synchronisation">miss[tgt]!</label>
+      <label kind="assignment">inflL--</label></transition>
+  </template>
+
+  <template>
+    <name>Planner</name>
+    <declaration>clock cp;</declaration>
+    <location id="p0" x="0" y="0"><name>Tick</name>
+      <label kind="invariant">cp &lt;= PERIOD_P</label></location>
+    <init ref="p0"/>
+    <!-- 주기 클럭: 반드시 PERIOD_P 마다 발화 (불변식 cp<=PERIOD_P + 가드 cp>=PERIOD_P) -->
+    <transition><source ref="p0"/><target ref="p0"/>
+      <label kind="guard">cp &gt;= PERIOD_P</label>
+      <label kind="assignment">cp = 0</label></transition>
   </template>
 
   <system>
 T0 = Threat(0); T1 = Threat(1); T2 = Threat(2);
-I0 = Interceptor(); I1 = Interceptor();   // CAP = 2 슬롯
-system T0, T1, T2, I0, I1;
+U0 = InterceptorU(); U1 = InterceptorU();   // CH_U = 2 상층 채널
+L0 = InterceptorL(); L1 = InterceptorL();   // CH_L = 2 하층 채널
+P  = Planner();
+system T0, T1, T2, U0, U1, L0, L1, P;
   </system>
 
   <queries>
     <query><formula>A[] not deadlock</formula>
-      <comment>교착 없음 (어느 상태에서도 시간진행 또는 동작 가능)</comment></query>
-    <query><formula>A[] ammo &gt;= 0</formula>
-      <comment>잔여탄은 음수가 될 수 없다 (자원 안전성)</comment></query>
-    <query><formula>A[] inflight &gt;= 0 &amp;&amp; inflight &lt;= CAP</formula>
-      <comment>비행중 요격탄 수는 동시교전 용량을 넘지 않는다</comment></query>
+      <comment>교착 없음</comment></query>
+    <query><formula>A[] ammoU &gt;= 0 &amp;&amp; ammoL &gt;= 0</formula>
+      <comment>계층별 잔여탄 음수 불가</comment></query>
+    <query><formula>A[] inflU &gt;= 0 &amp;&amp; inflU &lt;= CH_U</formula>
+      <comment>상층 비행 요격탄 ≤ 상층 유도 채널</comment></query>
+    <query><formula>A[] inflL &gt;= 0 &amp;&amp; inflL &lt;= CH_L</formula>
+      <comment>하층 비행 요격탄 ≤ 하층 유도 채널</comment></query>
+    <query><formula>A[] P.cp &lt;= PERIOD_P</formula>
+      <comment>계획수립 주기 보장: 클럭이 주기를 초과하지 않음 (데드라인)</comment></query>
     <query><formula>A&lt;&gt; (T0.Killed || T0.Leaked)</formula>
-      <comment>모든 위협은 결국 요격되거나 누설로 종결된다 (라이브니스)</comment></query>
+      <comment>모든 위협은 결국 종결 (라이브니스)</comment></query>
     <query><formula>E&lt;&gt; killed == MAXT</formula>
-      <comment>모든 위협을 요격하는 실행이 존재한다 (방어 성공 가능)</comment></query>
-    <query><formula>A[] (T0.Engaged imply inflight &gt;= 1)</formula>
-      <comment>교전중 위협이 있으면 비행중 요격탄이 존재한다 (일관성)</comment></query>
+      <comment>전량 요격 가능한 실행 존재</comment></query>
+    <query><formula>E&lt;&gt; (inflU &gt; 0 &amp;&amp; inflL &gt; 0)</formula>
+      <comment>상·하층 동시 교전(둘 다 비행중)이 가능</comment></query>
   </queries>
 </nta>

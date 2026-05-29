@@ -19,4 +19,5 @@ from dwta_nodes.poc_app import main  # noqa: E402
 if __name__ == "__main__":
     dur = float(sys.argv[1]) if len(sys.argv) > 1 else 70.0
     scenario = sys.argv[2] if len(sys.argv) > 2 else "saturation"
-    main(dur, scenario)
+    viz = "viz" in sys.argv[3:]
+    main(dur, scenario, viz)

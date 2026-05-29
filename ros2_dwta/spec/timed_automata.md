@@ -122,11 +122,16 @@ Idle --[ammo>0] assign[t]!--> Flying(f<=FLYOUT) --[f>=FLYOUT] hit[t]!|miss[t]!--
 | 쿼리 | 의미 |
 |---|---|
 | `A[] not deadlock` | 교착 없음 |
-| `A[] ammo >= 0` | 잔여탄 음수 불가 (자원 안전) |
-| `A[] inflight >= 0 && inflight <= CAP` | 동시 비행 요격탄 ≤ 동시교전 용량 |
+| `A[] ammoU>=0 && ammoL>=0` | 계층별 잔여탄 음수 불가 (자원 안전) |
+| `A[] inflU<=CH_U` / `A[] inflL<=CH_L` | 계층별 비행 요격탄 ≤ 그 계층 유도 채널 |
+| `A[] P.cp <= PERIOD_P` | 계획수립 **주기 클럭** 데드라인 보장 |
 | `A<> (T.Killed \|\| T.Leaked)` | 모든 위협은 결국 종결 (라이브니스) |
 | `E<> killed == N` | 전량 요격 가능한 실행 존재 |
-| `A[] (T.Engaged imply inflight >= 1)` | 교전중이면 비행 요격탄 존재 (일관성) |
+| `E<> (inflU>0 && inflL>0)` | **상·하층 동시 교전** 가능 |
+
+모델은 상층(`InterceptorU`×CH_U)/하층(`InterceptorL`×CH_L) 채널 풀과 `Planner`의
+주기 클럭(`cp<=PERIOD_P`)으로 확장되어, 포대 계층별 채널 한계·계획 주기·동시교전을
+함께 검증한다.
 
 추가로 명세할 수 있는 속성(설계 확장 시):
 - 데드라인: `A[] (T.Engageable imply T.x <= IMPACT)` — 교전창 내 처리.

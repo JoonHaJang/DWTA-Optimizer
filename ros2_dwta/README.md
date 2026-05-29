@@ -29,6 +29,7 @@ control_station_node ──/policy(전시·평시, SLS/SSL, 위협당 최대탄)
 | 발사대 | `launcher_node` | 이벤트+5 Hz | `/engagement_plan` → `/launch_events`, `/interceptor_status` |
 | 통제소 | `control_station_node` | 1 Hz | → `/policy` |
 | 상황도(COP) | `world_state_node` | 2 Hz | 전 토픽 구독 → `/world_state`(latched) |
+| 표시(분리) | `viz_node` | 0.5 Hz | `/world_state` 구독 → PyQtGraph/ASCII 전술화면 |
 
 ## 레이다 다중 객체 처리 (중앙 vs 포대)
 
@@ -122,6 +123,14 @@ ros2 launch dwta_ros2 dwta_poc.launch.py     # 또는: ros2 run dwta_ros2 dwta_p
 
 요약: **개발·시뮬레이션은 Windows로 충분**하지만, **경성 실시간 보장(하드 RT)은
 리눅스/RTOS**가 필요합니다.
+
+## 표시 분리 (viz_node)
+
+표시는 `/world_state`만 구독하는 **별도 노드**로 분리되어 시뮬레이션과 완전 독립:
+- 백엔드 `pyqtgraph`(실시간 전술화면, 디스플레이 필요) / `ascii`(헤드리스 폴백, 기본).
+- 켜기: `python3 run_poc.py 60 saturation viz`. 표시를 꺼도/교체해도 파이프라인 무영향.
+- 실 ROS2에서는 `viz_pyqtgraph.TacticalView`를 Qt 메인루프 + `rclpy.spin`(스레드)로 구동
+  (모듈 docstring 참고). 기존 `pyqtgraph_display.TacticalMapWidget`도 같은 방식으로 연결 가능.
 
 ## 현재 PoC의 단순화 (다음 단계)
 
