@@ -181,3 +181,131 @@ def velocity_toward(src: Tuple[float, float], dst: Tuple[float, float], speed: f
 
 def distance(a: Tuple[float, float], b: Tuple[float, float]) -> float:
     return math.hypot(a[0] - b[0], a[1] - b[1])
+
+
+# ---------------------------------------------------------------------------
+# UPPAAL geometry helper: precompute (range AND altitude) engagement windows
+# ---------------------------------------------------------------------------
+# UPPAAL only knows integer time, so we sample the trajectory in ROS2 and
+# emit the resulting [enter, exit] window per (threat, battery).  The altitude
+# is a simple parabola peaking at MAX_ALT_KM, which is the abstraction the
+# UPPAAL v3 model expects.  L-SAM is gated to 40-150 km, M-SAM to 5-40 km --
+# tune via alt_window_km if your scenario differs.
+
+UPPER_ALT_WINDOW_KM = (40.0, 150.0)
+LOWER_ALT_WINDOW_KM = (5.0, 40.0)
+
+
+def compute_engagement_window(
+    spawn: ThreatSpawn,
+    battery: Battery,
+    assets: List[Asset],
+    *,
+    max_alt_km: float = 80.0,
+    dt: float = 0.05,
+    alt_window_km: Optional[Tuple[float, float]] = None,
+) -> Optional[Tuple[float, float]]:
+    """Time window in which (range OK) AND (altitude OK) for this pair.
+
+    Returns ``(enter_s, exit_s)`` in absolute seconds (i.e. wall-clock from
+    t=0), or ``None`` if the trajectory never enters this battery's effective
+    envelope.  The parabolic-altitude model is a rough abstraction that lets
+    L-SAM (high-altitude) and M-SAM (low-altitude) windows naturally separate.
+    """
+    if alt_window_km is None:
+        alt_window_km = (UPPER_ALT_WINDOW_KM if battery.layer == "UPPER"
+                         else LOWER_ALT_WINDOW_KM)
+    target = next(a for a in assets if a.id == spawn.target_asset_id)
+    lx, ly = spawn.launch_position
+    ix, iy = target.position
+    horiz = math.hypot(ix - lx, iy - ly)
+    flight = horiz / max(spawn.speed, 1e-6)
+    enter: Optional[float] = None
+    exit_: Optional[float] = None
+    steps = int(flight / dt) + 1
+    for k in range(steps):
+        rel = k * dt
+        u = min(1.0, rel / flight)
+        x = lx + (ix - lx) * u
+        y = ly + (iy - ly) * u
+        h = 4.0 * max_alt_km * u * (1.0 - u)        # apex = max_alt_km at u=0.5
+        d = math.hypot(x - battery.position[0], y - battery.position[1])
+        ok = (d <= battery.engagement_range
+              and alt_window_km[0] <= h <= alt_window_km[1])
+        if ok:
+            t_abs = spawn.launch_time + rel
+            if enter is None:
+                enter = t_abs
+            exit_ = t_abs
+    if enter is None:
+        return None
+    return (round(enter, 1), round(exit_, 1))
+
+
+def dump_uppaal_windows(
+    seed: Optional[int] = 42,
+    n_threats: int = 3,
+    *,
+    max_alt_km: float = 80.0,
+) -> str:
+    """Render the random scenario's per-threat / per-battery windows as the
+    UPPAAL declaration block consumed by ``dwta_model_v3_geometry.xml``.
+
+    Sentinel ``-1`` is emitted when a battery cannot engage a threat at all
+    (e.g. wrong altitude band).  The v3 model treats ``-1`` as "never fires".
+    """
+    assets, batteries, spawns = random_saturation_scenario(
+        seed=seed, n_threats=n_threats)
+    upper = [b for b in batteries if b.layer == "UPPER"]
+    lower = [b for b in batteries if b.layer == "LOWER"]
+    asset_lookup = {a.id: a for a in assets}
+
+    def windows(layer_batts: List[Battery]) -> List[List[Tuple[int, int]]]:
+        rows: List[List[Tuple[int, int]]] = []
+        for s in spawns:
+            row: List[Tuple[int, int]] = []
+            for b in layer_batts:
+                w = compute_engagement_window(s, b, assets, max_alt_km=max_alt_km)
+                row.append((int(w[0]), int(w[1])) if w is not None else (-1, -1))
+            rows.append(row)
+        return rows
+
+    u_w = windows(upper)
+    l_w = windows(lower)
+
+    def fmt_2d(rows: List[List[Tuple[int, int]]], idx: int) -> str:
+        outer = ", ".join(
+            "{" + ", ".join(str(r[i][idx]) for i in range(len(r))) + "}"
+            for r in rows
+        )
+        return "{ " + outer + " }"
+
+    appear = [int(round(s.launch_time)) for s in spawns]
+    impacts: List[int] = []
+    for s in spawns:
+        target = asset_lookup[s.target_asset_id]
+        horiz = math.hypot(target.position[0] - s.launch_position[0],
+                           target.position[1] - s.launch_position[1])
+        impacts.append(int(math.ceil(s.launch_time + horiz / s.speed)))
+
+    lines = [
+        f"// auto-generated from random_saturation_scenario(seed={seed}, n_threats={n_threats})",
+        f"const int MAXT             = {n_threats};",
+        f"const int NB_U             = {len(upper)};",
+        f"const int NB_L             = {len(lower)};",
+        "const int CH_PER_U[NB_U]   = "
+            f"{{ {', '.join(str(b.fire_control_channels) for b in upper)} }};",
+        "const int CH_PER_L[NB_L]   = "
+            f"{{ {', '.join(str(b.fire_control_channels) for b in lower)} }};",
+        "const int AMMO0_U[NB_U]    = "
+            f"{{ {', '.join(str(b.available_missiles) for b in upper)} }};",
+        "const int AMMO0_L[NB_L]    = "
+            f"{{ {', '.join(str(b.available_missiles) for b in lower)} }};",
+        f"const int APPEAR[MAXT]    = {{ {', '.join(map(str, appear))} }};",
+        f"const int IMPACT_AT[MAXT] = {{ {', '.join(map(str, impacts))} }};",
+        f"const int U_ENTER[MAXT][NB_U] = {fmt_2d(u_w, 0)};",
+        f"const int U_EXIT [MAXT][NB_U] = {fmt_2d(u_w, 1)};",
+        f"const int L_ENTER[MAXT][NB_L] = {fmt_2d(l_w, 0)};",
+        f"const int L_EXIT [MAXT][NB_L] = {fmt_2d(l_w, 1)};",
+    ]
+    return "\n".join(lines)

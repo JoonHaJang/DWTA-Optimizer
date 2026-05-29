@@ -533,6 +533,30 @@ UPPAAL state space는 인스턴스 수와 변수 도메인의 곱이라 다음 �
 
 ---
 
-이 §11 / §12 패턴을 그대로 적용한 **`dwta_model_v3_geometry.xml`** (2D 윈도우 +
-포대별 슬롯 + 검증 쿼리)을 별도 파일로 만들고 싶으시면 알려주세요. 모델 컴파일과
-verifyta 가능 여부까지 함께 확인하겠습니다.
+**구현됨**: 이 §11 / §12 패턴을 그대로 적용한
+[`dwta_model_v3_geometry.xml`](./dwta_model_v3_geometry.xml) 이 함께 들어 있습니다
+(MAXT=3, NB_U=NB_L=2, CH_PER={2,1}/{2,1}, 13개 인스턴스, 19개 TCTL 쿼리). UPPAAL
+GUI에서 바로 로드 가능.
+
+### v3 사용 흐름
+
+1. **ROS2 측에서 시나리오 dump**:
+   ```powershell
+   cd c:\Users\USER\Desktop\DWTA-Optimizer
+   python -c "import sys; sys.path.insert(0, 'ros2_dwta'); from dwta_nodes.scenario import dump_uppaal_windows; print(dump_uppaal_windows(seed=42, n_threats=3))"
+   ```
+   출력은 UPPAAL declaration용 const 블록.
+
+2. **v3 모델 declaration의 const 블록을 출력으로 교체** (또는 v3을 시작점으로 복사한
+   별도 파일에 붙여넣기). MAXT / NB_U / NB_L 등 일치 확인.
+
+3. **GUI 또는 verifyta로 검증**:
+   ```powershell
+   verifyta.exe -q ros2_dwta\spec\dwta_model_v3_geometry.xml
+   ```
+   19개 쿼리(S1~S8, RD1~RD2, D1~D2, T1, L1, R1~R6) 일괄 검증.
+
+> 큰 시나리오(MAXT 5+, sum(CH) 20+)는 state space가 빠르게 커집니다. v3 데모는
+> 검증 가능 범위 안에서 작게 잡혀 있고, ROS2 PoC의 실제 30발 시나리오는 §12 끝
+> 표의 가이드대로 "축소 대표 시나리오로 invariant 보증 → 대규모 trace에 일반화" 가
+> 정석입니다.
