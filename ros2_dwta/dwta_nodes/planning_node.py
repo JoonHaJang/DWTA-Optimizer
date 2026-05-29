@@ -1,36 +1,44 @@
-"""OO계획 수립/전송 노드 — WTA 교전계획.
+"""Planning node -- DWTA engagement-plan generator.
 
-위협 점수(/threat_scores) + 교전 매트릭스(/engagement_matrix) + 방어정책
-(/policy) + 요격체계 상태(/interceptor_status)를 종합해 WTA(Weapon-Target
-Assignment)를 풀고 교전계획(/engagement_plan)을 전송한다. WTA 백엔드는 교체식
-(GreedyWTA 기본; GA/Clean-Slate/MIP 어댑터 가능).
+Subscribes to /threat_scores, /engagement_matrix, /policy, /interceptor_status,
+/events, /tracks, and publishes /engagement_plan.  The WTA backend is the
+project's canonical optimizer: clean_slate_optimizer.CleanSlateOptimizer
+(MIP/HiGHS) wrapped in CleanSlateAdapter.
 """
 from __future__ import annotations
 
 from typing import Dict, List, Optional
 
-from .messages import (DefensePolicy, EngagementMatrix, EngagementPlan,
-                       Event, EV_IMPACT, EV_INTERCEPT, InterceptorStatus,
-                       ThreatScores)
+from .messages import (Assignment, BallisticTrack, DefensePolicy,
+                       EngagementMatrix, EngagementPlan, Event, EV_IMPACT,
+                       EV_INTERCEPT, InterceptorStatus, ThreatScores,
+                       TrackArray)
 from .ros_compat import Node
-from .scenario import Battery
-from .wta_backend import GreedyWTA, WTABackend
+from .scenario import Asset, Battery
+from .wta_backend import CleanSlateAdapter, WTABackend, WTAInput
 
 
 class PlanningNode(Node):
     PERIOD = 0.5  # 2 Hz
 
-    def __init__(self, batteries: List[Battery], backend: Optional[WTABackend] = None):
+    def __init__(self, batteries: List[Battery],
+                 assets: Optional[List[Asset]] = None,
+                 backend: Optional[WTABackend] = None) -> None:
         super().__init__("planning_node")
-        self._backend = backend or GreedyWTA(
-            {b.id: b.fire_control_channels for b in batteries})
-        self._available = {b.id: b.available_missiles for b in batteries}
-        self._layer = {b.id: b.layer for b in batteries}
+        # Default backend: project's canonical CleanSlateOptimizer.
+        # Construction does a lazy import of clean_slate_optimizer; failure
+        # surfaces as a clear error rather than silently switching to a stub.
+        self._backend: WTABackend = backend or CleanSlateAdapter()
+        self._batteries: List[Battery] = list(batteries)
+        self._assets: List[Asset] = list(assets or [])
+        self._available: Dict[str, int] = {b.id: b.available_missiles for b in batteries}
+        self._layer: Dict[str, str] = {b.id: b.layer for b in batteries}
         self._scores: Optional[ThreatScores] = None
         self._matrix: Optional[EngagementMatrix] = None
         self._policy = DefensePolicy(stamp=0.0)
-        self._covered: set = set()    # (threat, layer) 비행중/교전중 (레이어별 — 상하층 동시 허용)
-        self._terminal: set = set()   # 요격성공/탄착으로 종결된 위협 (재할당 금지)
+        self._tracks: Dict[str, BallisticTrack] = {}
+        self._covered: set = set()    # (threat_id, layer) -- in-flight or engaging
+        self._terminal: set = set()   # threat ids that hit Killed or Leaked
 
         self._pub = self.create_publisher(EngagementPlan, "/engagement_plan", 10)
         self.create_subscription(ThreatScores, "/threat_scores", self._on_scores, 10)
@@ -38,18 +46,29 @@ class PlanningNode(Node):
         self.create_subscription(DefensePolicy, "/policy", self._on_policy, 10)
         self.create_subscription(InterceptorStatus, "/interceptor_status", self._on_status, 10)
         self.create_subscription(Event, "/events", self._on_event, 10)
+        self.create_subscription(TrackArray, "/tracks", self._on_tracks, 10)
         self.create_timer(self.PERIOD, self._tick)
 
+    # ---- callbacks --------------------------------------------------------
     def _on_event(self, ev: Event) -> None:
         if ev.kind in (EV_INTERCEPT, EV_IMPACT):
             self._terminal.add(ev.threat_id)
 
-    def _on_scores(self, msg): self._scores = msg
-    def _on_matrix(self, msg): self._matrix = msg
-    def _on_policy(self, msg): self._policy = msg
+    def _on_scores(self, msg: ThreatScores) -> None: self._scores = msg
+    def _on_matrix(self, msg: EngagementMatrix) -> None: self._matrix = msg
+    def _on_policy(self, msg: DefensePolicy) -> None: self._policy = msg
+
+    def _on_tracks(self, msg: TrackArray) -> None:
+        seen = set()
+        for tr in msg.tracks:
+            seen.add(tr.threat_id)
+            self._tracks[tr.threat_id] = tr
+        # drop stale tracks (the radar has dropped them)
+        for tid in list(self._tracks):
+            if tid not in seen:
+                self._tracks.pop(tid, None)
 
     def _on_status(self, msg: InterceptorStatus) -> None:
-        # 공유 요격체계 상태가 단일 진실원: 잔여탄 + (위협,레이어)별 커버 현황
         if msg.available:
             self._available.update(msg.available)
         covered = set()
@@ -61,11 +80,13 @@ class PlanningNode(Node):
             covered.add((i.target_threat_id, i.layer))
         self._covered = covered
 
+    # ---- main loop --------------------------------------------------------
     def _tick(self) -> None:
         if self._scores is None or self._matrix is None:
             return
-        # 종결(terminal) 위협은 완전 제외. (위협,레이어)가 이미 커버된 칸만 제외하므로
-        # 상층 교전 중이어도 하층은 동시 가담 가능(다층요격). MISS 시 자동 재교전.
+
+        # Filter terminal threats out and already-covered (threat, layer) cells.
+        # MISS leaves both sets untouched, so re-engagement happens automatically.
         scores = [s for s in self._scores.scores if s.threat_id not in self._terminal]
         cells = [c for c in self._matrix.cells
                  if c.threat_id not in self._terminal
@@ -73,13 +94,35 @@ class PlanningNode(Node):
         if not scores or not cells:
             return
 
-        assignments = self._backend.solve(
-            scores, cells, self._available, self._policy.max_interceptors_per_threat)
+        # Tracks supply geometry (position, launch_position, TTA) the optimizer needs.
+        # Skip threats we have no track for -- the optimizer can't reason about them.
+        scores = [s for s in scores if s.threat_id in self._tracks]
+        cells = [c for c in cells if c.threat_id in self._tracks]
+        if not scores or not cells:
+            return
+
+        wta_in = WTAInput(
+            scores=scores,
+            cells=cells,
+            tracks=dict(self._tracks),
+            assets=self._assets,
+            batteries=self._batteries,
+            available=dict(self._available),
+            max_per_threat=self._policy.max_interceptors_per_threat,
+        )
+
+        assignments: List[Assignment] = self._backend.solve(wta_in)
         if not assignments:
             return
-        obj = GreedyWTA.objective(assignments, scores)
+
+        obj = CleanSlateAdapter.objective(assignments, scores)
         self._pub.publish(EngagementPlan(
-            stamp=self._matrix.stamp, assignments=assignments,
-            objective_value=round(obj, 4), solver=self._backend.name))
-        plan = ", ".join(f"{a.system_id}->{a.threat_id}(Pk{a.pk})" for a in assignments)
+            stamp=self._matrix.stamp,
+            assignments=assignments,
+            objective_value=round(obj, 4),
+            solver=self._backend.name,
+        ))
+        plan = ", ".join(
+            f"{a.system_id}->{a.threat_id}({a.layer} Pk{a.pk:.2f})" for a in assignments
+        )
         self.get_logger().info(f"교전계획[{self._backend.name}] obj={obj:.2f}: {plan}")

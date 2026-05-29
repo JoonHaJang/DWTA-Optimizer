@@ -130,14 +130,20 @@ Tick(cp<=PERIOD_P) --[cp>=PERIOD_P] plan! ; cp:=0--> Tick
 ```
 발사 cadence를 주기에 묶어 타이밍 속성을 인과적으로 만든다.
 
-## 4.2 두 모델 — SPEC vs IMPL
+## 4.2 두 모델 — SPEC vs IMPL (v2 Radar-driven)
 
-검증 모델은 두 개로 분리해 둡니다.
+검증 모델은 두 개로 분리해 둡니다. v2부터 **Radar 템플릿**이 위협별 타이밍을 소유하고 broadcast(`detect/crossU/crossL/impact`)로 전 노드에 전파하며, Threat은 순수 signal-driven consumer입니다 (`clock x` 제거).
 
 | 파일 | 정책 | 목적 |
 |---|---|---|
-| `dwta_model.xml` (**SPEC**) | 비결정 `select t`: 채널이 임의의 feasible 대상 선택 | **어떤 합리적 WTA 정책이든** 만족해야 하는 안전·타이밍·라이브니스를 검증 (강제 검증) |
-| `dwta_model_impl.xml` (**IMPL**) | `select t` + 가드 `t == best_u()/best_l()` → ROS2 시뮬레이터의 `GreedyWTA`와 동일한 결정적 정책 | **실제 코드의 정책**이 같은 속성을 보존하는지, 그리고 정책 고유의 invariants(D3/D4: danger DESC 우선순위)를 검증 |
+| `dwta_model.xml` (**SPEC**) | 비결정 `select t`: 채널이 임의의 feasible 대상 선택 | **어떤 합리적 WTA 정책이든** 만족해야 하는 안전·타이밍·라이브니스를 검증 |
+| `dwta_model_impl.xml` (**IMPL**) | `select t` + 가드 `t == best_u()/best_l()` → ROS2 시뮬레이터의 **CleanSlateOptimizer**가 따르는 결정적 우선순위 (danger DESC) | **실제 백엔드 정책**이 같은 속성을 보존하는지 + 정책 고유 invariants(D3/D4) |
+
+> ROS2 PoC의 WTA 백엔드는 **`CleanSlateOptimizer` (HiGHS MIP) 하나만** 정식 채택합니다.
+> `dwta_nodes/wta_backend.py`의 `CleanSlateAdapter`가 `clean_slate_optimizer.CleanSlateOptimizer`를
+> 직접 호출하며, 이전의 GreedyWTA / GA / LegacyGreedy 스텁은 제거됐습니다. IMPL 모델의
+> `best_u()/best_l()`는 그 옵티마이저의 **우선순위 추상**이지(MIP의 정수 해는 검증대상 너무 큼)
+> Pk·잔여탄·채널 제약은 SPEC와 동일하게 직접 모델링됩니다.
 
 IMPL 모델의 declaration에는 `best_u()` / `best_l()` 함수가 정의되어 있고
 (`dwta_nodes/wta_backend.py` `GreedyWTA.solve()` 의 핵심 루프 ―

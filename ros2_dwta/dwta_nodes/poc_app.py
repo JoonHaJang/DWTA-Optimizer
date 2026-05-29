@@ -22,7 +22,7 @@ def build_nodes(scenario: str = "saturation", viz: bool = False,
     fcrs = [FireControlRadarNode(b) for b in batteries]        # 포대 사격통제레이다 (포대당 1개)
     assessment = ThreatAssessmentNode(assets)
     engage = EngageabilityNode(batteries)
-    planning = PlanningNode(batteries)
+    planning = PlanningNode(batteries, assets=assets)
     launcher = LauncherNode(batteries)
     control = ControlStationNode()
     world = WorldStateNode()

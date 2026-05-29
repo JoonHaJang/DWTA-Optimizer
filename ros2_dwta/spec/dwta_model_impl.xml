@@ -3,35 +3,30 @@
 <nta>
   <declaration>
 // ============================================================================
-// DWTA realtime C2 pipeline -- IMPL model (deterministic GreedyWTA policy)
+// DWTA realtime C2 pipeline -- IMPL model (Radar-driven, deterministic
+// GreedyWTA policy from dwta_nodes/wta_backend.py)
 // ----------------------------------------------------------------------------
-//  This model is the deterministic counterpart of dwta_model.xml.  Instead of
-//  letting interceptors pick targets nondeterministically, it embeds the
-//  policy implemented by GreedyWTA in dwta_nodes/wta_backend.py:
+//  This model mirrors dwta_model.xml (Radar broadcaster + signal-driven Threat)
+//  but the InterceptorU/L target selection is locked to the GreedyWTA policy:
+//  the smallest-id eligible threat (a danger-DESC abstraction of
+//  GreedyWTA.solve's "sorted(scores, key=danger, reverse=True)" loop).
 //
-//    solve(scores, cells):
-//      for s in sorted(scores, key=danger, DESC):
-//        if upper feasible (ammo, channel, conflict-free): assign upper
-//        if lower feasible (ammo, channel, conflict-free): assign lower
-//
-//  In this abstraction "danger DESC" is encoded by threat id order: a smaller
-//  id is more dangerous (the simulator pre-sorts scores before calling the
-//  per-layer solver).  Functions best_u() / best_l() return the smallest id
-//  whose engagement is still uncovered (conflict-free); InterceptorU/L use
-//  these as a deterministic gate over their select t.
-//
-//  Everything else (state, channels, layout, terminology) matches the SPEC
-//  model so the two can be compared side-by-side.
+//  best_u() / best_l() are global C-style functions inside the declaration, so
+//  the Ready -> Flying transition's guard t == best_u() makes the choice
+//  deterministic.  Everything else (Radar, Threat, Planner) is identical to
+//  the SPEC model, enabling side-by-side property comparison.
 // ============================================================================
 const int MAXT     = 3;
 const int CH_U     = 2;
 const int CH_L     = 2;
-const int ENTER_U  = 6;
-const int ENTER_L  = 12;
-const int IMPACT   = 30;
+const int PERIOD_P = 2;
 const int FLYOUT_U = 5;
 const int FLYOUT_L = 2;
-const int PERIOD_P = 2;
+
+const int APPEAR  [MAXT] = {0, 4, 7};
+const int CROSS_U [MAXT] = {6, 10, 13};
+const int CROSS_L [MAXT] = {12, 16, 19};
+const int IMPACT_AT[MAXT] = {30, 32, 35};
 
 int  ammoU = 2, ammoL = 2;
 int  inflU = 0, inflL = 0;
@@ -42,15 +37,16 @@ bool engL[MAXT];
 int  killed = 0, leaked = 0;
 
 broadcast chan plan;
+broadcast chan detect[MAXT];
+broadcast chan crossU[MAXT];
+broadcast chan crossL[MAXT];
+broadcast chan impact[MAXT];
 broadcast chan hitU[MAXT], missU[MAXT];
 broadcast chan hitL[MAXT], missL[MAXT];
 
 // ----------------------------------------------------------------------------
-// Deterministic GreedyWTA selection: smallest id first (danger DESC abstraction)
+// Deterministic GreedyWTA selection: smallest-id first (danger DESC abstraction)
 // ----------------------------------------------------------------------------
-// best_u(): top-priority threat that the upper layer can still cover.
-//   Eligible if it is engageable by upper (in UpperEng or BothEng -> engU set)
-//   and not already locked by an upper battery (upCnt[t] == 0).
 int best_u() {
     int i = 0;
     while (i &lt; MAXT) {
@@ -59,8 +55,6 @@ int best_u() {
     }
     return -1;
 }
-// best_l(): top-priority threat that the lower layer can still cover.
-//   Eligible if it has entered the overlap zone (engL) and is conflict-free.
 int best_l() {
     int i = 0;
     while (i &lt; MAXT) {
@@ -72,34 +66,65 @@ int best_l() {
   </declaration>
 
   <!-- ============================================================== -->
+  <!--                            Radar                               -->
+  <!-- ============================================================== -->
+  <template>
+    <name>Radar</name>
+    <parameter>const int id</parameter>
+    <declaration>clock t;</declaration>
+
+    <location id="r0" x="-800" y="0"><name x="-840" y="-32">Pre</name>
+      <label kind="invariant" x="-840" y="16">t &lt;= APPEAR[id]</label></location>
+    <location id="r1" x="-480" y="0"><name x="-520" y="-32">Track</name>
+      <label kind="invariant" x="-520" y="16">t &lt;= CROSS_U[id]</label></location>
+    <location id="r2" x="-160" y="0"><name x="-200" y="-32">UpperCovered</name>
+      <label kind="invariant" x="-200" y="16">t &lt;= CROSS_L[id]</label></location>
+    <location id="r3" x="160"  y="0"><name x="120" y="-32">LowerCovered</name>
+      <label kind="invariant" x="120" y="16">t &lt;= IMPACT_AT[id]</label></location>
+    <location id="r4" x="480"  y="0"><name x="440" y="-32">Done</name></location>
+    <init ref="r0"/>
+
+    <transition><source ref="r0"/><target ref="r1"/>
+      <label kind="guard"           x="-720" y="-32">t &gt;= APPEAR[id]</label>
+      <label kind="synchronisation" x="-720" y="-12">detect[id]!</label></transition>
+    <transition><source ref="r1"/><target ref="r2"/>
+      <label kind="guard"           x="-400" y="-32">t &gt;= CROSS_U[id]</label>
+      <label kind="synchronisation" x="-400" y="-12">crossU[id]!</label></transition>
+    <transition><source ref="r2"/><target ref="r3"/>
+      <label kind="guard"           x="-80" y="-32">t &gt;= CROSS_L[id]</label>
+      <label kind="synchronisation" x="-80" y="-12">crossL[id]!</label></transition>
+    <transition><source ref="r3"/><target ref="r4"/>
+      <label kind="guard"           x="240" y="-32">t &gt;= IMPACT_AT[id]</label>
+      <label kind="synchronisation" x="240" y="-12">impact[id]!</label></transition>
+  </template>
+
+  <!-- ============================================================== -->
   <!--                          Threat                                -->
   <!-- ============================================================== -->
   <template>
     <name>Threat</name>
     <parameter>const int id</parameter>
-    <declaration>clock x;</declaration>
 
-    <location id="t_in"    x="-800" y="0"><name x="-840" y="-32">Inbound</name>
-      <label kind="invariant" x="-840" y="16">x &lt;= IMPACT</label></location>
-    <location id="t_up"    x="-400" y="0"><name x="-432" y="-32">UpperEng</name>
-      <label kind="invariant" x="-432" y="16">x &lt;= IMPACT</label></location>
-    <location id="t_both"  x="0"    y="0"><name x="-32" y="-32">BothEng</name>
-      <label kind="invariant" x="-32" y="16">x &lt;= IMPACT</label></location>
-    <location id="t_kill"  x="400"  y="-240"><name x="384" y="-272">Killed</name></location>
-    <location id="t_leak"  x="400"  y="240"><name x="384" y="264">Leaked</name></location>
+    <location id="t_in"   x="-960" y="0"><name x="-1000" y="-32">Inbound</name></location>
+    <location id="t_tr"   x="-640" y="0"><name x="-680"  y="-32">Tracked</name></location>
+    <location id="t_up"   x="-320" y="0"><name x="-360"  y="-32">UpperEng</name></location>
+    <location id="t_both" x="0"    y="0"><name x="-32"   y="-32">BothEng</name></location>
+    <location id="t_kill" x="320"  y="-220"><name x="304" y="-252">Killed</name></location>
+    <location id="t_leak" x="320"  y="220"><name x="304" y="244">Leaked</name></location>
     <init ref="t_in"/>
 
-    <transition><source ref="t_in"/><target ref="t_up"/>
-      <label kind="guard"      x="-720" y="-32">x &gt;= ENTER_U</label>
-      <label kind="assignment" x="-720" y="-12">engU[id] = true</label></transition>
-
+    <transition><source ref="t_in"/><target ref="t_tr"/>
+      <label kind="synchronisation" x="-880" y="-20">detect[id]?</label></transition>
+    <transition><source ref="t_tr"/><target ref="t_up"/>
+      <label kind="synchronisation" x="-560" y="-20">crossU[id]?</label>
+      <label kind="assignment"      x="-560" y="0">engU[id] = true</label></transition>
     <transition><source ref="t_up"/><target ref="t_both"/>
-      <label kind="guard"      x="-320" y="-32">x &gt;= ENTER_L</label>
-      <label kind="assignment" x="-320" y="-12">engL[id] = true</label></transition>
+      <label kind="synchronisation" x="-240" y="-20">crossL[id]?</label>
+      <label kind="assignment"      x="-240" y="0">engL[id] = true</label></transition>
 
     <transition><source ref="t_up"/><target ref="t_up"/>
-      <label kind="synchronisation" x="-420" y="-160">missU[id]?</label>
-      <nail x="-480" y="-120"/><nail x="-320" y="-120"/></transition>
+      <label kind="synchronisation" x="-340" y="-160">missU[id]?</label>
+      <nail x="-400" y="-120"/><nail x="-240" y="-120"/></transition>
     <transition><source ref="t_both"/><target ref="t_both"/>
       <label kind="synchronisation" x="-20" y="-160">missU[id]?</label>
       <nail x="-80" y="-120"/><nail x="80" y="-120"/></transition>
@@ -108,34 +133,36 @@ int best_l() {
       <nail x="-80" y="120"/><nail x="80" y="120"/></transition>
 
     <transition><source ref="t_up"/><target ref="t_kill"/>
-      <label kind="synchronisation" x="-160" y="-260">hitU[id]?</label>
-      <label kind="assignment"      x="-160" y="-240">engU[id]=false, killed++</label>
-      <nail x="-400" y="-220"/></transition>
+      <label kind="synchronisation" x="-200" y="-240">hitU[id]?</label>
+      <label kind="assignment"      x="-200" y="-220">engU[id]=false, killed++</label>
+      <nail x="-320" y="-200"/></transition>
     <transition><source ref="t_both"/><target ref="t_kill"/>
-      <label kind="synchronisation" x="120" y="-180">hitU[id]?</label>
-      <label kind="assignment"      x="120" y="-160">engU[id]=false, engL[id]=false, killed++</label></transition>
+      <label kind="synchronisation" x="100" y="-180">hitU[id]?</label>
+      <label kind="assignment"      x="100" y="-160">engU[id]=false, engL[id]=false, killed++</label></transition>
     <transition><source ref="t_both"/><target ref="t_kill"/>
-      <label kind="synchronisation" x="220" y="-100">hitL[id]?</label>
-      <label kind="assignment"      x="220" y="-80">engU[id]=false, engL[id]=false, killed++</label>
-      <nail x="180" y="-120"/></transition>
+      <label kind="synchronisation" x="180" y="-100">hitL[id]?</label>
+      <label kind="assignment"      x="180" y="-80">engU[id]=false, engL[id]=false, killed++</label>
+      <nail x="160" y="-120"/></transition>
 
     <transition><source ref="t_in"/><target ref="t_leak"/>
-      <label kind="guard"      x="-440" y="320">x &gt;= IMPACT</label>
-      <label kind="assignment" x="-440" y="340">leaked++</label>
-      <nail x="-800" y="400"/><nail x="400" y="400"/></transition>
+      <label kind="synchronisation" x="-560" y="320">impact[id]?</label>
+      <label kind="assignment"      x="-560" y="340">leaked++</label>
+      <nail x="-960" y="380"/><nail x="320" y="380"/></transition>
+    <transition><source ref="t_tr"/><target ref="t_leak"/>
+      <label kind="synchronisation" x="-360" y="280">impact[id]?</label>
+      <label kind="assignment"      x="-360" y="300">leaked++</label>
+      <nail x="-640" y="320"/><nail x="320" y="320"/></transition>
     <transition><source ref="t_up"/><target ref="t_leak"/>
-      <label kind="guard"      x="-200" y="200">x &gt;= IMPACT</label>
-      <label kind="assignment" x="-200" y="220">engU[id]=false, leaked++</label>
-      <nail x="-400" y="240"/></transition>
+      <label kind="synchronisation" x="-120" y="220">impact[id]?</label>
+      <label kind="assignment"      x="-120" y="240">engU[id]=false, leaked++</label>
+      <nail x="-320" y="260"/></transition>
     <transition><source ref="t_both"/><target ref="t_leak"/>
-      <label kind="guard"      x="120" y="180">x &gt;= IMPACT</label>
-      <label kind="assignment" x="120" y="200">engU[id]=false, engL[id]=false, leaked++</label></transition>
+      <label kind="synchronisation" x="100" y="180">impact[id]?</label>
+      <label kind="assignment"      x="100" y="200">engU[id]=false, engL[id]=false, leaked++</label></transition>
   </template>
 
   <!-- ============================================================== -->
-  <!--                   InterceptorU (deterministic)                 -->
-  <!--   Ready -> Flying fires ONLY at best_u(), so the upper layer   -->
-  <!--   tracks the GreedyWTA policy (danger DESC, conflict-free).    -->
+  <!--                  InterceptorU (deterministic)                  -->
   <!-- ============================================================== -->
   <template>
     <name>InterceptorU</name>
@@ -150,13 +177,11 @@ int best_l() {
     <transition><source ref="u_idle"/><target ref="u_ready"/>
       <label kind="synchronisation" x="-480" y="-20">plan?</label></transition>
 
-    <!-- Deterministic launch: select t but force t == best_u() -->
     <transition><source ref="u_ready"/><target ref="u_fly"/>
       <label kind="select"     x="-260" y="-100">t : int[0,MAXT-1]</label>
       <label kind="guard"      x="-260" y="-80">ammoU&gt;0 &amp;&amp; best_u()&gt;=0 &amp;&amp; t==best_u()</label>
       <label kind="assignment" x="-260" y="-60">ammoU--, inflU++, upCnt[t]++, tgt=t, f=0</label></transition>
 
-    <!-- skip when GreedyWTA returns no candidate -->
     <transition><source ref="u_ready"/><target ref="u_idle"/>
       <label kind="guard"    x="-480" y="60">best_u() &lt; 0 || ammoU == 0</label>
       <label kind="comments" x="-480" y="80">no GreedyWTA candidate</label>
@@ -176,7 +201,7 @@ int best_l() {
   </template>
 
   <!-- ============================================================== -->
-  <!--                   InterceptorL (deterministic)                 -->
+  <!--                  InterceptorL (deterministic)                  -->
   <!-- ============================================================== -->
   <template>
     <name>InterceptorL</name>
@@ -231,15 +256,16 @@ int best_l() {
   </template>
 
   <system>
+R0 = Radar(0); R1 = Radar(1); R2 = Radar(2);
 T0 = Threat(0); T1 = Threat(1); T2 = Threat(2);
 U0 = InterceptorU(); U1 = InterceptorU();
 L0 = InterceptorL(); L1 = InterceptorL();
 P  = Planner();
-system T0, T1, T2, U0, U1, L0, L1, P;
+system R0, R1, R2, T0, T1, T2, U0, U1, L0, L1, P;
   </system>
 
   <queries>
-    <!-- ====== Safety (carried over from SPEC) ====== -->
+    <!-- ====== Safety (carried over) ====== -->
     <query><formula>A[] not deadlock</formula>
       <comment>S1  Deadlock-free under the deterministic policy</comment></query>
     <query><formula>A[] (ammoU &gt;= 0 &amp;&amp; ammoL &gt;= 0)</formula>
@@ -249,23 +275,27 @@ system T0, T1, T2, U0, U1, L0, L1, P;
     <query><formula>A[] (inflL &gt;= 0 &amp;&amp; inflL &lt;= CH_L)</formula>
       <comment>S4  Lower in-flight &lt;= channels</comment></query>
     <query><formula>A[] forall (t : int[0,MAXT-1]) upCnt[t] &lt;= 1</formula>
-      <comment>S5  Conflict-free upper (built into the policy)</comment></query>
+      <comment>S5  Conflict-free upper</comment></query>
     <query><formula>A[] forall (t : int[0,MAXT-1]) loCnt[t] &lt;= 1</formula>
-      <comment>S6  Conflict-free lower (built into the policy)</comment></query>
+      <comment>S6  Conflict-free lower</comment></query>
 
     <!-- ====== Policy-specific (D = deterministic) ====== -->
     <query><formula>A[] (best_u() &gt;= -1 &amp;&amp; best_u() &lt; MAXT)</formula>
-      <comment>D1  best_u() always returns a valid id or -1 (function totality)</comment></query>
+      <comment>D1  best_u() always returns a valid id or -1</comment></query>
     <query><formula>A[] (best_l() &gt;= -1 &amp;&amp; best_l() &lt; MAXT)</formula>
       <comment>D2  best_l() always returns a valid id or -1</comment></query>
     <query><formula>A[] forall (i : int[0,MAXT-1]) forall (j : int[0,MAXT-1])
       ((upCnt[i] &gt; 0 &amp;&amp; upCnt[j] == 0 &amp;&amp; engU[j]) imply i &lt;= j)</formula>
-      <comment>D3  GreedyWTA priority: an upper engagement on threat i exists only if
-              every more-dangerous threat (smaller id) is either already covered
-              or not engageable.  This is the "danger DESC" invariant.</comment></query>
+      <comment>D3  GreedyWTA priority: more-dangerous (smaller id) is covered first (upper)</comment></query>
     <query><formula>A[] forall (i : int[0,MAXT-1]) forall (j : int[0,MAXT-1])
       ((loCnt[i] &gt; 0 &amp;&amp; loCnt[j] == 0 &amp;&amp; engL[j]) imply i &lt;= j)</formula>
       <comment>D4  Same priority invariant for the lower layer</comment></query>
+
+    <!-- ====== Radar-driven invariants (RD) ====== -->
+    <query><formula>A[] forall (t : int[0,MAXT-1]) (upCnt[t] &gt; 0 imply engU[t])</formula>
+      <comment>RD1  No upper-layer fire before crossU detection</comment></query>
+    <query><formula>A[] forall (t : int[0,MAXT-1]) (loCnt[t] &gt; 0 imply engL[t])</formula>
+      <comment>RD2  No lower-layer fire before crossL detection</comment></query>
 
     <!-- ====== Timing ====== -->
     <query><formula>A[] P.cp &lt;= PERIOD_P</formula>
@@ -283,8 +313,8 @@ system T0, T1, T2, U0, U1, L0, L1, P;
     <query><formula>E&lt;&gt; (inflU &gt; 0 &amp;&amp; inflL &gt; 0)</formula>
       <comment>R2  Simultaneous upper + lower engagement reachable</comment></query>
     <query><formula>E&lt;&gt; (upCnt[0] &gt; 0 &amp;&amp; loCnt[0] &gt; 0)</formula>
-      <comment>R3  Same threat hit by upper AND lower (layered defence reachable)</comment></query>
+      <comment>R3  Same threat hit by upper AND lower (layered defence)</comment></query>
     <query><formula>E&lt;&gt; leaked &gt; 0</formula>
-      <comment>R4  GreedyWTA can still leak under saturation (resource limit)</comment></query>
+      <comment>R4  GreedyWTA can still leak under saturation</comment></query>
   </queries>
 </nta>

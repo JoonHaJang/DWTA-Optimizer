@@ -3,39 +3,41 @@
 <nta>
   <declaration>
 // ============================================================================
-// DWTA realtime C2 pipeline -- SPEC model (nondeterministic policy)
+// DWTA realtime C2 pipeline -- SPEC model (Radar-driven, nondeterministic WTA)
 // ----------------------------------------------------------------------------
-//  Threat(id)    : ballistic threat lifecycle. Upper band opens at ENTER_U
-//                  (long range), lower band at ENTER_L (overlap zone) -->
-//                  enables simultaneous multi-layer engagement.
-//  InterceptorU  : upper (L-SAM) guidance channel slot.  Instances = CH_U.
-//  InterceptorL  : lower (M-SAM) guidance channel slot.  Instances = CH_L.
-//                  Both launch only on planner tick (plan!).
-//  Planner       : period clock (cp &lt;= PERIOD_P) gates launch cadence.
+//  v2: a single clock per Threat no longer carries enough information.  The
+//  Radar template owns the per-threat timing (appearance / upper-range crossing
+//  / lower-range crossing / impact) and broadcasts each event on dedicated
+//  channels, mirroring ROS2 surveillance_radar_node's /events stream.
+//  Threats are now signal-driven: their state advances only on detect[id]?,
+//  crossU[id]?, crossL[id]?, impact[id]?, hitU/L[id]?, missU/L[id]?.
 //
-//  This SPEC picks targets NONDETERMINISTICALLY (select t : ...).  It thus
-//  verifies safety / timing / liveness under EVERY admissible policy, giving
-//  the strongest properties any concrete WTA implementation must preserve.
-//  The deterministic GreedyWTA policy of the ROS2 simulator is modelled
-//  separately in dwta_model_impl.xml.
+//  Templates
+//    Radar(id)     : owns clock t; emits detect / crossU / crossL / impact
+//                    at per-threat times APPEAR / CROSS_U / CROSS_L / IMPACT_AT.
+//    Threat(id)    : pure consumer.  Inbound -> Tracked -> UpperEng -> BothEng,
+//                    terminating at Killed or Leaked.
+//    InterceptorU  : upper-layer guidance channel (instances = CH_U).  Picks
+//                    target NONDETERMINISTICALLY in this SPEC model.
+//    InterceptorL  : lower-layer guidance channel (instances = CH_L).
+//    Planner       : period clock; broadcasts plan! every PERIOD_P.
 //
-//  Shared state (mirrors the COP):
-//    ammoU/ammoL          per-layer remaining missiles
-//    inflU/inflL          per-layer interceptors currently in flight
-//    upCnt[t]/loCnt[t]    per-(threat, layer) concurrent engagement counter
-//                         (used to verify multi-battery conflict freedom)
-//    engU[t]/engL[t]      whether threat t has entered upper / lower band
-//    killed / leaked      terminal counters
+//  Per-threat timing arrays (model the geometry-derived schedule the radar
+//  would compute in the simulator).  Tweaking these gives the user the same
+//  freedom as a random scenario.
 // ============================================================================
 const int MAXT     = 3;
-const int CH_U     = 2;     // upper guidance channels
-const int CH_L     = 2;     // lower guidance channels
-const int ENTER_U  = 6;     // upper band entry time (long range)
-const int ENTER_L  = 12;    // lower band entry time (overlap)
-const int IMPACT   = 30;    // impact / leak time
-const int FLYOUT_U = 5;     // upper interceptor flyout
-const int FLYOUT_L = 2;     // lower interceptor flyout
-const int PERIOD_P = 2;     // planner period
+const int CH_U     = 2;
+const int CH_L     = 2;
+const int PERIOD_P = 2;
+const int FLYOUT_U = 5;
+const int FLYOUT_L = 2;
+
+// Per-threat timing (seconds).  APPEAR &lt; CROSS_U &lt; CROSS_L &lt; IMPACT_AT for every id.
+const int APPEAR  [MAXT] = {0, 4, 7};
+const int CROSS_U [MAXT] = {6, 10, 13};
+const int CROSS_L [MAXT] = {12, 16, 19};
+const int IMPACT_AT[MAXT] = {30, 32, 35};
 
 int  ammoU = 2, ammoL = 2;
 int  inflU = 0, inflL = 0;
@@ -46,45 +48,81 @@ bool engL[MAXT];
 int  killed = 0, leaked = 0;
 
 broadcast chan plan;
+broadcast chan detect[MAXT];
+broadcast chan crossU[MAXT];
+broadcast chan crossL[MAXT];
+broadcast chan impact[MAXT];
 broadcast chan hitU[MAXT], missU[MAXT];
 broadcast chan hitL[MAXT], missL[MAXT];
   </declaration>
 
   <!-- ============================================================== -->
+  <!--                            Radar                               -->
+  <!--   One instance per threat.  Drives the entire Threat lifecycle -->
+  <!--   by broadcasting detect / crossU / crossL / impact at fixed   -->
+  <!--   per-id times.                                                -->
+  <!-- ============================================================== -->
+  <template>
+    <name>Radar</name>
+    <parameter>const int id</parameter>
+    <declaration>clock t;</declaration>
+
+    <location id="r0" x="-800" y="0"><name x="-840" y="-32">Pre</name>
+      <label kind="invariant" x="-840" y="16">t &lt;= APPEAR[id]</label></location>
+    <location id="r1" x="-480" y="0"><name x="-520" y="-32">Track</name>
+      <label kind="invariant" x="-520" y="16">t &lt;= CROSS_U[id]</label></location>
+    <location id="r2" x="-160" y="0"><name x="-200" y="-32">UpperCovered</name>
+      <label kind="invariant" x="-200" y="16">t &lt;= CROSS_L[id]</label></location>
+    <location id="r3" x="160"  y="0"><name x="120" y="-32">LowerCovered</name>
+      <label kind="invariant" x="120" y="16">t &lt;= IMPACT_AT[id]</label></location>
+    <location id="r4" x="480"  y="0"><name x="440" y="-32">Done</name></location>
+    <init ref="r0"/>
+
+    <transition><source ref="r0"/><target ref="r1"/>
+      <label kind="guard"           x="-720" y="-32">t &gt;= APPEAR[id]</label>
+      <label kind="synchronisation" x="-720" y="-12">detect[id]!</label></transition>
+    <transition><source ref="r1"/><target ref="r2"/>
+      <label kind="guard"           x="-400" y="-32">t &gt;= CROSS_U[id]</label>
+      <label kind="synchronisation" x="-400" y="-12">crossU[id]!</label></transition>
+    <transition><source ref="r2"/><target ref="r3"/>
+      <label kind="guard"           x="-80" y="-32">t &gt;= CROSS_L[id]</label>
+      <label kind="synchronisation" x="-80" y="-12">crossL[id]!</label></transition>
+    <transition><source ref="r3"/><target ref="r4"/>
+      <label kind="guard"           x="240" y="-32">t &gt;= IMPACT_AT[id]</label>
+      <label kind="synchronisation" x="240" y="-12">impact[id]!</label></transition>
+  </template>
+
+  <!-- ============================================================== -->
   <!--                          Threat                                -->
-  <!--   Inbound -> UpperEng -> BothEng -> Killed | Leaked            -->
-  <!--   Splitting Live into UpperEng / BothEng spreads the           -->
-  <!--   self-loops (miss, late-arming) across distinct locations.    -->
+  <!--   Signal-driven.  No internal clock; Radar owns timing.        -->
+  <!--   Inbound -> Tracked -> UpperEng -> BothEng -> Killed | Leaked -->
   <!-- ============================================================== -->
   <template>
     <name>Threat</name>
     <parameter>const int id</parameter>
-    <declaration>clock x;</declaration>
 
-    <location id="t_in"    x="-800" y="0"><name x="-840" y="-32">Inbound</name>
-      <label kind="invariant" x="-840" y="16">x &lt;= IMPACT</label></location>
-    <location id="t_up"    x="-400" y="0"><name x="-432" y="-32">UpperEng</name>
-      <label kind="invariant" x="-432" y="16">x &lt;= IMPACT</label></location>
-    <location id="t_both"  x="0"    y="0"><name x="-32" y="-32">BothEng</name>
-      <label kind="invariant" x="-32" y="16">x &lt;= IMPACT</label></location>
-    <location id="t_kill"  x="400"  y="-240"><name x="384" y="-272">Killed</name></location>
-    <location id="t_leak"  x="400"  y="240"><name x="384" y="264">Leaked</name></location>
+    <location id="t_in"   x="-960" y="0"><name x="-1000" y="-32">Inbound</name></location>
+    <location id="t_tr"   x="-640" y="0"><name x="-680"  y="-32">Tracked</name></location>
+    <location id="t_up"   x="-320" y="0"><name x="-360"  y="-32">UpperEng</name></location>
+    <location id="t_both" x="0"    y="0"><name x="-32"   y="-32">BothEng</name></location>
+    <location id="t_kill" x="320"  y="-220"><name x="304" y="-252">Killed</name></location>
+    <location id="t_leak" x="320"  y="220"><name x="304" y="244">Leaked</name></location>
     <init ref="t_in"/>
 
-    <!-- Inbound -> UpperEng (long-range band opens) -->
-    <transition><source ref="t_in"/><target ref="t_up"/>
-      <label kind="guard"      x="-720" y="-32">x &gt;= ENTER_U</label>
-      <label kind="assignment" x="-720" y="-12">engU[id] = true</label></transition>
-
-    <!-- UpperEng -> BothEng (overlap zone reached) -->
+    <!-- ===== Radar-driven progression ===== -->
+    <transition><source ref="t_in"/><target ref="t_tr"/>
+      <label kind="synchronisation" x="-880" y="-20">detect[id]?</label></transition>
+    <transition><source ref="t_tr"/><target ref="t_up"/>
+      <label kind="synchronisation" x="-560" y="-20">crossU[id]?</label>
+      <label kind="assignment"      x="-560" y="0">engU[id] = true</label></transition>
     <transition><source ref="t_up"/><target ref="t_both"/>
-      <label kind="guard"      x="-320" y="-32">x &gt;= ENTER_L</label>
-      <label kind="assignment" x="-320" y="-12">engL[id] = true</label></transition>
+      <label kind="synchronisation" x="-240" y="-20">crossL[id]?</label>
+      <label kind="assignment"      x="-240" y="0">engL[id] = true</label></transition>
 
-    <!-- miss loops -->
+    <!-- ===== Misses keep the threat in its current location ===== -->
     <transition><source ref="t_up"/><target ref="t_up"/>
-      <label kind="synchronisation" x="-420" y="-160">missU[id]?</label>
-      <nail x="-480" y="-120"/><nail x="-320" y="-120"/></transition>
+      <label kind="synchronisation" x="-340" y="-160">missU[id]?</label>
+      <nail x="-400" y="-120"/><nail x="-240" y="-120"/></transition>
     <transition><source ref="t_both"/><target ref="t_both"/>
       <label kind="synchronisation" x="-20" y="-160">missU[id]?</label>
       <nail x="-80" y="-120"/><nail x="80" y="-120"/></transition>
@@ -92,36 +130,39 @@ broadcast chan hitL[MAXT], missL[MAXT];
       <label kind="synchronisation" x="-20" y="120">missL[id]?</label>
       <nail x="-80" y="120"/><nail x="80" y="120"/></transition>
 
-    <!-- kills -->
+    <!-- ===== Kills ===== -->
     <transition><source ref="t_up"/><target ref="t_kill"/>
-      <label kind="synchronisation" x="-160" y="-260">hitU[id]?</label>
-      <label kind="assignment"      x="-160" y="-240">engU[id]=false, killed++</label>
-      <nail x="-400" y="-220"/></transition>
+      <label kind="synchronisation" x="-200" y="-240">hitU[id]?</label>
+      <label kind="assignment"      x="-200" y="-220">engU[id]=false, killed++</label>
+      <nail x="-320" y="-200"/></transition>
     <transition><source ref="t_both"/><target ref="t_kill"/>
-      <label kind="synchronisation" x="120" y="-180">hitU[id]?</label>
-      <label kind="assignment"      x="120" y="-160">engU[id]=false, engL[id]=false, killed++</label></transition>
+      <label kind="synchronisation" x="100" y="-180">hitU[id]?</label>
+      <label kind="assignment"      x="100" y="-160">engU[id]=false, engL[id]=false, killed++</label></transition>
     <transition><source ref="t_both"/><target ref="t_kill"/>
-      <label kind="synchronisation" x="220" y="-100">hitL[id]?</label>
-      <label kind="assignment"      x="220" y="-80">engU[id]=false, engL[id]=false, killed++</label>
-      <nail x="180" y="-120"/></transition>
+      <label kind="synchronisation" x="180" y="-100">hitL[id]?</label>
+      <label kind="assignment"      x="180" y="-80">engU[id]=false, engL[id]=false, killed++</label>
+      <nail x="160" y="-120"/></transition>
 
-    <!-- leaks -->
+    <!-- ===== Impacts (driven by Radar.impact[id]!) ===== -->
     <transition><source ref="t_in"/><target ref="t_leak"/>
-      <label kind="guard"      x="-440" y="320">x &gt;= IMPACT</label>
-      <label kind="assignment" x="-440" y="340">leaked++</label>
-      <nail x="-800" y="400"/><nail x="400" y="400"/></transition>
+      <label kind="synchronisation" x="-560" y="320">impact[id]?</label>
+      <label kind="assignment"      x="-560" y="340">leaked++</label>
+      <nail x="-960" y="380"/><nail x="320" y="380"/></transition>
+    <transition><source ref="t_tr"/><target ref="t_leak"/>
+      <label kind="synchronisation" x="-360" y="280">impact[id]?</label>
+      <label kind="assignment"      x="-360" y="300">leaked++</label>
+      <nail x="-640" y="320"/><nail x="320" y="320"/></transition>
     <transition><source ref="t_up"/><target ref="t_leak"/>
-      <label kind="guard"      x="-200" y="200">x &gt;= IMPACT</label>
-      <label kind="assignment" x="-200" y="220">engU[id]=false, leaked++</label>
-      <nail x="-400" y="240"/></transition>
+      <label kind="synchronisation" x="-120" y="220">impact[id]?</label>
+      <label kind="assignment"      x="-120" y="240">engU[id]=false, leaked++</label>
+      <nail x="-320" y="260"/></transition>
     <transition><source ref="t_both"/><target ref="t_leak"/>
-      <label kind="guard"      x="120" y="180">x &gt;= IMPACT</label>
-      <label kind="assignment" x="120" y="200">engU[id]=false, engL[id]=false, leaked++</label></transition>
+      <label kind="synchronisation" x="100" y="180">impact[id]?</label>
+      <label kind="assignment"      x="100" y="200">engU[id]=false, engL[id]=false, leaked++</label></transition>
   </template>
 
   <!-- ============================================================== -->
   <!--                       InterceptorU                             -->
-  <!--   Idle -> Ready -> Flying -> (hit | miss) -> Idle              -->
   <!-- ============================================================== -->
   <template>
     <name>InterceptorU</name>
@@ -213,37 +254,40 @@ broadcast chan hitL[MAXT], missL[MAXT];
   </template>
 
   <system>
+R0 = Radar(0); R1 = Radar(1); R2 = Radar(2);
 T0 = Threat(0); T1 = Threat(1); T2 = Threat(2);
 U0 = InterceptorU(); U1 = InterceptorU();   // CH_U = 2
 L0 = InterceptorL(); L1 = InterceptorL();   // CH_L = 2
 P  = Planner();
-system T0, T1, T2, U0, U1, L0, L1, P;
+system R0, R1, R2, T0, T1, T2, U0, U1, L0, L1, P;
   </system>
 
   <queries>
     <!-- ===== Safety (A[]) ===== -->
     <query><formula>A[] not deadlock</formula>
-      <comment>S1  Deadlock-free</comment></query>
+      <comment>S1  Deadlock-free under any nondeterministic WTA</comment></query>
     <query><formula>A[] (ammoU &gt;= 0 &amp;&amp; ammoL &gt;= 0)</formula>
       <comment>S2  Per-layer ammo never negative</comment></query>
     <query><formula>A[] (inflU &gt;= 0 &amp;&amp; inflU &lt;= CH_U)</formula>
-      <comment>S3  Upper in-flight &lt;= upper guidance channels</comment></query>
+      <comment>S3  Upper in-flight &lt;= channels</comment></query>
     <query><formula>A[] (inflL &gt;= 0 &amp;&amp; inflL &lt;= CH_L)</formula>
-      <comment>S4  Lower in-flight &lt;= lower guidance channels</comment></query>
+      <comment>S4  Lower in-flight &lt;= channels</comment></query>
     <query><formula>A[] forall (t : int[0,MAXT-1]) upCnt[t] &lt;= 1</formula>
-      <comment>S5  At most one upper battery per threat (conflict-free)</comment></query>
+      <comment>S5  Conflict-free upper</comment></query>
     <query><formula>A[] forall (t : int[0,MAXT-1]) loCnt[t] &lt;= 1</formula>
-      <comment>S6  At most one lower battery per threat (conflict-free)</comment></query>
+      <comment>S6  Conflict-free lower</comment></query>
     <query><formula>A[] (killed + leaked &lt;= MAXT)</formula>
-      <comment>S7  Terminal counters cannot exceed MAXT</comment></query>
-    <query><formula>A[] forall (t : int[0,MAXT-1]) (upCnt[t] + loCnt[t] &lt;= 2)</formula>
-      <comment>S8  At most one upper + one lower in flight per threat</comment></query>
+      <comment>S7  Terminal counters bounded</comment></query>
 
-    <!-- ===== Timing (A[]) ===== -->
+    <!-- ===== Radar / detection invariants (R*) ===== -->
+    <query><formula>A[] forall (t : int[0,MAXT-1]) (upCnt[t] &gt; 0 imply engU[t])</formula>
+      <comment>RD1  No upper-layer engagement before the upper-range crossing signal</comment></query>
+    <query><formula>A[] forall (t : int[0,MAXT-1]) (loCnt[t] &gt; 0 imply engL[t])</formula>
+      <comment>RD2  No lower-layer engagement before the lower-range crossing signal</comment></query>
+
+    <!-- ===== Timing ===== -->
     <query><formula>A[] P.cp &lt;= PERIOD_P</formula>
       <comment>T1  Planner period deadline</comment></query>
-    <query><formula>A[] ((T0.UpperEng || T0.BothEng) imply T0.x &lt;= IMPACT)</formula>
-      <comment>T2  Engagement-window invariant for an active threat</comment></query>
 
     <!-- ===== Liveness ===== -->
     <query><formula>A&lt;&gt; (killed + leaked == MAXT)</formula>
@@ -253,12 +297,12 @@ system T0, T1, T2, U0, U1, L0, L1, P;
 
     <!-- ===== Reachability (E&lt;&gt;) ===== -->
     <query><formula>E&lt;&gt; killed == MAXT</formula>
-      <comment>R1  Full-intercept run is reachable</comment></query>
+      <comment>R1  Full-intercept run reachable</comment></query>
     <query><formula>E&lt;&gt; (inflU &gt; 0 &amp;&amp; inflL &gt; 0)</formula>
       <comment>R2  Simultaneous upper + lower engagement reachable</comment></query>
     <query><formula>E&lt;&gt; (upCnt[0] &gt; 0 &amp;&amp; loCnt[0] &gt; 0)</formula>
       <comment>R3  Same threat hit by upper AND lower (layered defence)</comment></query>
     <query><formula>E&lt;&gt; leaked &gt; 0</formula>
-      <comment>R4  Leakage reachable (saturation limit)</comment></query>
+      <comment>R4  Leakage reachable (saturation)</comment></query>
   </queries>
 </nta>

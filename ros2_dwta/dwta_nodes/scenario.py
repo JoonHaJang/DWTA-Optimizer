@@ -9,8 +9,9 @@
 from __future__ import annotations
 
 import math
+import random
 from dataclasses import dataclass
-from typing import List, Tuple
+from typing import List, Optional, Tuple
 
 
 @dataclass
@@ -104,7 +105,68 @@ def saturation_scenario() -> Tuple[List[Asset], List[Battery], List[ThreatSpawn]
     return assets, batteries, spawns
 
 
-SCENARIOS = {"balanced": balanced_scenario, "saturation": saturation_scenario}
+def random_saturation_scenario(
+    seed: Optional[int] = 42,
+    n_threats: int = 24,
+    burst_window: Tuple[float, float] = (0.0, 12.0),
+    speed_range: Tuple[float, float] = (4.5, 6.5),
+    launch_x_range: Tuple[float, float] = (170.0, 230.0),
+) -> Tuple[List[Asset], List[Battery], List[ThreatSpawn]]:
+    """Random saturation scenario (seeded for reproducibility).
+
+    Goal: every run produces a different but multi-layer-defence-friendly
+    saturation:
+      * Targets are picked uniformly from the asset list so both A1 / A2 are
+        loaded simultaneously, forcing the L-SAMs to share fire.
+      * Launch y-position is sampled around each target's y so the trajectory
+        crosses both the L-SAM (long range) and M-SAM (medium range, overlap)
+        engagement zones -- the geometry that lets the overlap zone fire.
+      * Speeds are picked from a moderate-high band so the planner cannot
+        defeat the burst with one layer alone (forces lower-layer follow-up).
+
+    The total ammo of the default 2x LSAM + 2x MSAM layout (16+16 missiles)
+    sits a bit below n_threats * 2 so the optimiser must pick which threats
+    to layer and which to gamble with a single shot, surfacing R3 (layered
+    intercept) and R4 (leakage under saturation) at the same time.
+    """
+    rng = random.Random(seed)
+    assets = [Asset("A1_Command", (0.0, 0.0), 100.0),
+              Asset("A2_Airbase", (0.0, 45.0), 75.0)]
+    batteries = [
+        lsam("L1_LSAM", (0.0, -20.0)),
+        lsam("L2_LSAM", (0.0, 65.0)),
+        msam("M1_MSAM", (0.0, 8.0)),
+        msam("M2_MSAM", (0.0, 50.0)),
+    ]
+    t_lo, t_hi = burst_window
+    s_lo, s_hi = speed_range
+    x_lo, x_hi = launch_x_range
+    spawns: List[ThreatSpawn] = []
+    for i in range(n_threats):
+        target = rng.choice(assets)
+        # y around the target +/- 35 km so the trajectory threads the overlap
+        # of both layers' engagement disks (radii 160 / 130 around (0, y_bat)).
+        y = target.position[1] + rng.uniform(-35.0, 35.0)
+        x = rng.uniform(x_lo, x_hi)
+        spd = rng.uniform(s_lo, s_hi)
+        t = round(rng.uniform(t_lo, t_hi), 2)
+        spawns.append(ThreatSpawn(
+            threat_id=f"T{i + 1:02d}",
+            target_asset_id=target.id,
+            launch_position=(x, y),
+            speed=spd,
+            launch_time=t,
+        ))
+    # sort by launch_time so the log reads chronologically
+    spawns.sort(key=lambda s: s.launch_time)
+    return assets, batteries, spawns
+
+
+SCENARIOS = {
+    "balanced": balanced_scenario,
+    "saturation": saturation_scenario,
+    "random": random_saturation_scenario,
+}
 
 
 def default_scenario():

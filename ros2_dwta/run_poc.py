@@ -12,7 +12,9 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parent))
+_here = Path(__file__).resolve().parent
+sys.path.insert(0, str(_here))            # ros2_dwta/  -> dwta_nodes.*
+sys.path.insert(0, str(_here.parent))     # project root -> clean_slate_optimizer
 
 from dwta_nodes.poc_app import main  # noqa: E402
 
