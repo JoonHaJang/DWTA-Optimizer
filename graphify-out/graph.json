@@ -738,7 +738,7 @@
       "source_file": "config_mip.py",
       "source_location": "L34",
       "id": "dwta_optimizer_config_mip_get_lsam_specs",
-      "community": 35,
+      "community": 28,
       "norm_label": "get_lsam_specs()"
     },
     {
@@ -747,7 +747,7 @@
       "source_file": "config_mip.py",
       "source_location": "L70",
       "id": "dwta_optimizer_config_mip_get_msam_specs",
-      "community": 35,
+      "community": 28,
       "norm_label": "get_msam_specs()"
     },
     {
@@ -774,7 +774,7 @@
       "source_file": "config_mip.py",
       "source_location": "L165",
       "id": "dwta_optimizer_config_mip_create_battery_deployment",
-      "community": 35,
+      "community": 28,
       "norm_label": "create_battery_deployment()"
     },
     {
@@ -828,7 +828,7 @@
       "source_file": "config_mip.py",
       "source_location": "L546",
       "id": "dwta_optimizer_config_mip_create_north_korean_bases",
-      "community": 11,
+      "community": 2,
       "norm_label": "create_north_korean_bases()"
     },
     {
@@ -837,7 +837,7 @@
       "source_file": "config_mip.py",
       "source_location": "L546",
       "id": "config_mip_py_str",
-      "community": 11,
+      "community": 2,
       "norm_label": "str"
     },
     {
@@ -855,7 +855,7 @@
       "source_file": "config_mip.py",
       "source_location": "L606",
       "id": "dwta_optimizer_config_mip_engagementzoneconfig",
-      "community": 29,
+      "community": 27,
       "norm_label": "engagementzoneconfig"
     },
     {
@@ -900,7 +900,7 @@
       "source_file": "config_mip.py",
       "source_location": "L725",
       "id": "config_mip_py_bool",
-      "community": 29,
+      "community": 27,
       "norm_label": "bool"
     },
     {
@@ -945,7 +945,7 @@
       "source_file": "config_mip.py",
       "source_location": "L952",
       "id": "dwta_optimizer_config_mip_get_scenario_list",
-      "community": 11,
+      "community": 29,
       "norm_label": "get_scenario_list()"
     },
     {
@@ -1107,7 +1107,7 @@
       "source_file": "config_mip.py",
       "source_location": "L1205",
       "id": "dwta_optimizer_config_mip_mipconfig_get_battery_deployment",
-      "community": 35,
+      "community": 29,
       "norm_label": ".get_battery_deployment()"
     },
     {
@@ -1116,7 +1116,7 @@
       "source_file": "config_mip.py",
       "source_location": "L1217",
       "id": "dwta_optimizer_config_mip_mipconfig_get_threat_missiles",
-      "community": 11,
+      "community": 29,
       "norm_label": ".get_threat_missiles()"
     },
     {
@@ -1134,7 +1134,7 @@
       "source_file": "config_mip.py",
       "source_location": "L1237",
       "id": "dwta_optimizer_config_mip_mipconfig_get_interceptor_specs",
-      "community": 35,
+      "community": 28,
       "norm_label": ".get_interceptor_specs()"
     },
     {
@@ -1143,7 +1143,7 @@
       "source_file": "config_mip.py",
       "source_location": "L1246",
       "id": "dwta_optimizer_config_mip_mipconfig_get_launch_bases",
-      "community": 11,
+      "community": 2,
       "norm_label": ".get_launch_bases()"
     },
     {
@@ -1161,7 +1161,7 @@
       "source_file": "config_mip.py",
       "source_location": "L1254",
       "id": "dwta_optimizer_config_mip_mipconfig_create_realistic_scenario",
-      "community": 11,
+      "community": 29,
       "norm_label": ".create_realistic_scenario()"
     },
     {
@@ -1197,7 +1197,7 @@
       "source_file": "config_mip.py",
       "source_location": "L1468",
       "id": "dwta_optimizer_config_mip_enhancedengagementmatrix_is_feasible",
-      "community": 29,
+      "community": 27,
       "norm_label": ".is_feasible()"
     },
     {
@@ -1242,7 +1242,7 @@
       "source_file": "config_mip.py",
       "source_location": "L1696",
       "id": "dwta_optimizer_config_mip_kfactorcache",
-      "community": 0,
+      "community": 4,
       "norm_label": "kfactorcache"
     },
     {
@@ -1269,7 +1269,7 @@
       "source_file": "config_mip.py",
       "source_location": "L1742",
       "id": "dwta_optimizer_config_mip_kfactorcache_get_k",
-      "community": 11,
+      "community": 4,
       "norm_label": ".get_k()"
     },
     {
@@ -1323,7 +1323,7 @@
       "source_file": "config_mip.py",
       "source_location": "L1913",
       "id": "dwta_optimizer_config_mip_kfactorcache_get_k_value",
-      "community": 11,
+      "community": 4,
       "norm_label": ".get_k_value()"
     },
     {
@@ -1377,7 +1377,7 @@
       "source_file": "config_mip.py",
       "source_location": "L2039",
       "id": "dwta_optimizer_config_mip_mccormickcoefficients",
-      "community": 11,
+      "community": 4,
       "norm_label": "mccormickcoefficients"
     },
     {
@@ -1386,7 +1386,7 @@
       "source_file": "config_mip.py",
       "source_location": "L2042",
       "id": "dwta_optimizer_config_mip_mccormickcoefficients_init",
-      "community": 11,
+      "community": 4,
       "norm_label": ".__init__()"
     },
     {
@@ -1395,7 +1395,7 @@
       "source_file": "config_mip.py",
       "source_location": "L2048",
       "id": "dwta_optimizer_config_mip_mccormickcoefficients_precompute",
-      "community": 11,
+      "community": 4,
       "norm_label": ".precompute()"
     },
     {
@@ -1404,7 +1404,7 @@
       "source_file": "config_mip.py",
       "source_location": "L2092",
       "id": "dwta_optimizer_config_mip_mccormickcoefficients_get_coeffs",
-      "community": 11,
+      "community": 4,
       "norm_label": ".get_coeffs()"
     },
     {
@@ -1548,7 +1548,7 @@
       "source_file": "config_mip.py",
       "source_location": "L2250",
       "id": "dwta_optimizer_config_mip_feasibilitycache_get_active_pairs_by_layer",
-      "community": 11,
+      "community": 2,
       "norm_label": ".get_active_pairs_by_layer()"
     },
     {
@@ -1602,7 +1602,7 @@
       "source_file": "config_mip.py",
       "source_location": "L2402",
       "id": "dwta_optimizer_config_mip_density",
-      "community": 4,
+      "community": 28,
       "norm_label": "density()"
     },
     {
@@ -1611,7 +1611,7 @@
       "source_file": "config_mip.py",
       "source_location": "L2411",
       "id": "dwta_optimizer_config_mip_upper_pairs",
-      "community": 11,
+      "community": 2,
       "norm_label": "upper_pairs()"
     },
     {
@@ -1620,7 +1620,7 @@
       "source_file": "config_mip.py",
       "source_location": "L2415",
       "id": "dwta_optimizer_config_mip_lower_pairs",
-      "community": 11,
+      "community": 2,
       "norm_label": "lower_pairs()"
     },
     {
@@ -1629,7 +1629,7 @@
       "source_file": "config_mip.py",
       "source_location": "L2419",
       "id": "dwta_optimizer_config_mip_all_pairs",
-      "community": 11,
+      "community": 2,
       "norm_label": "all_pairs()"
     },
     {
@@ -1728,7 +1728,7 @@
       "source_file": "config_mip.py",
       "source_location": "L35",
       "id": "dwta_optimizer_config_mip_rationale_35",
-      "community": 35,
+      "community": 29,
       "norm_label": "l-sam (\u110c\u1161\u11bc\u1100\u1165\u1105\u1175 \u110c\u1175\u1103\u1162\u1100\u1169\u11bc \u1106\u1175\u1109\u1161\u110b\u1175\u11af) \u1109\u1175\u11af\u110c\u1166 \u1109\u1173\u1111\u1166\u11a8"
     },
     {
@@ -1737,7 +1737,7 @@
       "source_file": "config_mip.py",
       "source_location": "L71",
       "id": "dwta_optimizer_config_mip_rationale_71",
-      "community": 35,
+      "community": 29,
       "norm_label": "m-sam (\u110c\u116e\u11bc\u1100\u1165\u1105\u1175 \u110c\u1175\u1103\u1162\u1100\u1169\u11bc \u1106\u1175\u1109\u1161\u110b\u1175\u11af) \u1109\u1175\u11af\u110c\u1166 \u1109\u1173\u1111\u1166\u11a8 - \u1112\u1161\u11ab\u1100\u116e\u11a8\u1112\u1167\u11bc \u110e\u1165\u11ab\u1100\u116e\u11bc-ii"
     },
     {
@@ -1764,7 +1764,7 @@
       "source_file": "config_mip.py",
       "source_location": "L166",
       "id": "dwta_optimizer_config_mip_rationale_166",
-      "community": 35,
+      "community": 29,
       "norm_label": "\u110c\u1165\u11ab\u1100\u116e \u1107\u1161\u11bc\u110b\u1165 \u1100\u116e\u110b\u1167\u11a8 \u1100\u1175\u1107\u1161\u11ab \u1111\u1169\u1103\u1162 \u1107\u1162\u110e\u1175 - \u1100\u1161\u11a8 \u110c\u1161\u1109\u1161\u11ab\u1103\u1161\u11bc \u110c\u1165\u11ab\u1103\u1161\u11b7 \u1109\u1161\u11bc\u110e\u1173\u11bc/\u1112\u1161\u110e\u1173\u11bc \u1109\u1175\u1109\u1173\u1110\u1166\u11b7 \u1107\u1162\u110c\u1165\u11bc"
     },
     {
@@ -1800,7 +1800,7 @@
       "source_file": "config_mip.py",
       "source_location": "L547",
       "id": "dwta_optimizer_config_mip_rationale_547",
-      "community": 11,
+      "community": 2,
       "norm_label": "north korean missile launch bases information"
     },
     {
@@ -1809,7 +1809,7 @@
       "source_file": "config_mip.py",
       "source_location": "L607",
       "id": "dwta_optimizer_config_mip_rationale_607",
-      "community": 29,
+      "community": 27,
       "norm_label": "\u1100\u116d\u110c\u1165\u11ab \u110b\u1167\u11bc\u110b\u1167\u11a8 \u1100\u1168\u1109\u1161\u11ab \u1109\u1165\u11af\u110c\u1165\u11bc - \u1100\u116e\u11bc\u110c\u1165\u11a8 \u1100\u1175\u1107\u1161\u11ab \u1100\u116d\u110c\u1165\u11ab \u110b\u1167\u11bc\u110b\u1167\u11a8 \u1106\u1169\u1103\u1166\u11af\u1105\u1175\u11bc"
     },
     {
@@ -1836,7 +1836,7 @@
       "source_file": "config_mip.py",
       "source_location": "L726",
       "id": "dwta_optimizer_config_mip_rationale_726",
-      "community": 29,
+      "community": 27,
       "norm_label": "\u1111\u1169\u1103\u1162\u1100\u1161 \u110b\u1171\u1112\u1167\u11b8\u110b\u1173\u11af \u1100\u116d\u110c\u1165\u11ab\u1112\u1161\u11af \u1109\u116e \u110b\u1175\u11bb\u1102\u1173\u11ab\u110c\u1175 \u1100\u1168\u1109\u1161\u11ab (\u1100\u116e\u11bc\u110c\u1165\u11a8 \u1100\u1175\u1107\u1161\u11ab)"
     },
     {
@@ -1881,7 +1881,7 @@
       "source_file": "config_mip.py",
       "source_location": "L953",
       "id": "dwta_optimizer_config_mip_rationale_953",
-      "community": 11,
+      "community": 29,
       "norm_label": "\u1109\u1161\u110b\u116d\u11bc \u1100\u1161\u1102\u1173\u11bc\u1112\u1161\u11ab \u1109\u1175\u1102\u1161\u1105\u1175\u110b\u1169 \u1106\u1169\u11a8\u1105\u1169\u11a8 \u1107\u1161\u11ab\u1112\u116a\u11ab (\u1112\u116a\u11a8\u110c\u1161\u11bc\u1109\u1165\u11bc \u1110\u1166\u1109\u1173\u1110\u1173 \u110e\u116c\u110c\u1165\u11a8\u1112\u116a)"
     },
     {
@@ -2034,7 +2034,7 @@
       "source_file": "config_mip.py",
       "source_location": "L1206",
       "id": "dwta_optimizer_config_mip_rationale_1206",
-      "community": 35,
+      "community": 29,
       "norm_label": "\u1111\u1169\u1103\u1162 \u1107\u1162\u110e\u1175 \u1106\u1169\u11a8\u1105\u1169\u11a8 \u1107\u1161\u11ab\u1112\u116a\u11ab - scenario_dwta_balanced.py\u110b\u1174 scenariomanager \u1109\u1161\u110b\u116d\u11bc"
     },
     {
@@ -2043,7 +2043,7 @@
       "source_file": "config_mip.py",
       "source_location": "L1218",
       "id": "dwta_optimizer_config_mip_rationale_1218",
-      "community": 11,
+      "community": 29,
       "norm_label": "\u110b\u1171\u1112\u1167\u11b8 \u1106\u1175\u1109\u1161\u110b\u1175\u11af \u1106\u1169\u11a8\u1105\u1169\u11a8 \u1107\u1161\u11ab\u1112\u116a\u11ab - scenario_dwta_balanced.py\u110b\u1174 scenariomanager \u1109\u1161\u110b\u116d\u11bc"
     },
     {
@@ -2052,7 +2052,7 @@
       "source_file": "config_mip.py",
       "source_location": "L1255",
       "id": "dwta_optimizer_config_mip_rationale_1255",
-      "community": 11,
+      "community": 29,
       "norm_label": "\u1112\u1167\u11ab\u1109\u1175\u11af\u110c\u1165\u11a8\u110b\u1175\u11ab \u1109\u1175\u1102\u1161\u1105\u1175\u110b\u1169 \u1109\u1162\u11bc\u1109\u1165\u11bc - \u1109\u1175\u1102\u1161\u1105\u1175\u110b\u1169 \u1110\u1161\u110b\u1175\u11b8\u110b\u1166 \u1104\u1161\u1105\u1161 \u1103\u1161\u1105\u1173\u11ab \u110b\u1171\u1112\u1167\u11b8 \u1100\u116e\u1109\u1165\u11bc"
     },
     {
@@ -2079,7 +2079,7 @@
       "source_file": "config_mip.py",
       "source_location": "L1470",
       "id": "dwta_optimizer_config_mip_rationale_1470",
-      "community": 29,
+      "community": 27,
       "norm_label": "\u1100\u116d\u110c\u1165\u11ab \u1100\u1161\u1102\u1173\u11bc \u110b\u1167\u1107\u116e (\u110c\u1165\u11bc\u110c\u1165\u11a8 precompute + \u1109\u1175\u11af\u1109\u1175\u1100\u1161\u11ab \u1100\u1165\u1105\u1175 \u110e\u1166\u110f\u1173)                  args:             batte"
     },
     {
@@ -2115,7 +2115,7 @@
       "source_file": "config_mip.py",
       "source_location": "L1697",
       "id": "dwta_optimizer_config_mip_rationale_1697",
-      "community": 0,
+      "community": 4,
       "norm_label": "k-factor \u1109\u1161\u110c\u1165\u11ab \u1100\u1168\u1109\u1161\u11ab \u110f\u1162\u1109\u1175 + \u1100\u1167\u11bc\u1105\u1163\u11bc \u1109\u1175\u11af\u1109\u1175\u1100\u1161\u11ab \u1100\u1168\u1109\u1161\u11ab (\u110e\u116c\u110c\u1165\u11a8\u1112\u116a #3)"
     },
     {
@@ -2133,7 +2133,7 @@
       "source_file": "config_mip.py",
       "source_location": "L1743",
       "id": "dwta_optimizer_config_mip_rationale_1743",
-      "community": 11,
+      "community": 4,
       "norm_label": "k-factor \u110c\u1169\u1112\u116c (\u110f\u1162\u1109\u1175\u110b\u1166\u1109\u1165, o(1))"
     },
     {
@@ -2187,7 +2187,7 @@
       "source_file": "config_mip.py",
       "source_location": "L1914",
       "id": "dwta_optimizer_config_mip_rationale_1914",
-      "community": 11,
+      "community": 4,
       "norm_label": "warmstart\u110b\u116d\u11bc k\u1100\u1161\u11b9 \u110c\u1169\u1112\u116c (\u1107\u1167\u11af\u110e\u1175\u11bc)"
     },
     {
@@ -2214,7 +2214,7 @@
       "source_file": "config_mip.py",
       "source_location": "L2040",
       "id": "dwta_optimizer_config_mip_rationale_2040",
-      "community": 11,
+      "community": 4,
       "norm_label": "mccormick relaxation \u1100\u1168\u1109\u116e \u1109\u1161\u110c\u1165\u11ab \u1100\u1168\u1109\u1161\u11ab (\u110e\u116c\u110c\u1165\u11a8\u1112\u116a #3)"
     },
     {
@@ -2223,7 +2223,7 @@
       "source_file": "config_mip.py",
       "source_location": "L2049",
       "id": "dwta_optimizer_config_mip_rationale_2049",
-      "community": 11,
+      "community": 4,
       "norm_label": "\u1106\u1169\u1103\u1173\u11ab \u110c\u1169\u1112\u1161\u11b8\u110b\u1174 mccormick linearization \u1100\u1168\u1109\u116e \u1100\u1168\u1109\u1161\u11ab                  args:             threa"
     },
     {
@@ -2313,7 +2313,7 @@
       "source_file": "config_mip.py",
       "source_location": "L2251",
       "id": "dwta_optimizer_config_mip_rationale_2251",
-      "community": 11,
+      "community": 2,
       "norm_label": "\u1110\u1173\u11a8\u110c\u1165\u11bc \u1105\u1166\u110b\u1175\u110b\u1165\u110b\u1174 feasible (system_id, threat_id) \u110a\u1161\u11bc \u1107\u1161\u11ab\u1112\u116a\u11ab"
     },
     {
@@ -2421,7 +2421,7 @@
       "source_file": "ga_optimizer.py",
       "source_location": "L1",
       "id": "ga_optimizer_py",
-      "community": 8,
+      "community": 11,
       "norm_label": "ga_optimizer.py"
     },
     {
@@ -2430,7 +2430,7 @@
       "source_file": "ga_optimizer.py",
       "source_location": "L21",
       "id": "dwta_optimizer_ga_optimizer_asset",
-      "community": 8,
+      "community": 11,
       "norm_label": "asset"
     },
     {
@@ -2439,7 +2439,7 @@
       "source_file": "ga_optimizer.py",
       "source_location": "L30",
       "id": "dwta_optimizer_ga_optimizer_interceptorsystem",
-      "community": 8,
+      "community": 11,
       "norm_label": "interceptorsystem"
     },
     {
@@ -2448,7 +2448,7 @@
       "source_file": "ga_optimizer.py",
       "source_location": "L41",
       "id": "dwta_optimizer_ga_optimizer_threat",
-      "community": 8,
+      "community": 11,
       "norm_label": "threat"
     },
     {
@@ -2457,7 +2457,7 @@
       "source_file": "ga_optimizer.py",
       "source_location": "L55",
       "id": "dwta_optimizer_ga_optimizer_threat_post_init",
-      "community": 8,
+      "community": 11,
       "norm_label": ".__post_init__()"
     },
     {
@@ -2484,7 +2484,7 @@
       "source_file": "ga_optimizer.py",
       "source_location": "L114",
       "id": "dwta_optimizer_ga_optimizer_geneticalgorithmoptimizer_create_model",
-      "community": 8,
+      "community": 11,
       "norm_label": ".create_model()"
     },
     {
@@ -2601,7 +2601,7 @@
       "source_file": "ga_optimizer.py",
       "source_location": "L1",
       "id": "dwta_optimizer_ga_optimizer_rationale_1",
-      "community": 8,
+      "community": 11,
       "norm_label": "genetic algorithm dwta optimizer ================================= \u110b\u1172\u110c\u1165\u11ab \u110b\u1161\u11af\u1100\u1169\u1105\u1175\u110c\u1173\u11b7 \u1100\u1175\u1107\u1161\u11ab"
     },
     {
@@ -2619,7 +2619,7 @@
       "source_file": "ga_optimizer.py",
       "source_location": "L120",
       "id": "dwta_optimizer_ga_optimizer_rationale_120",
-      "community": 8,
+      "community": 11,
       "norm_label": "ga \u1106\u1169\u1103\u1166\u11af \u1109\u1162\u11bc\u1109\u1165\u11bc - \u1103\u1166\u110b\u1175\u1110\u1165 \u1100\u116e\u110c\u1169 \u110e\u1169\u1100\u1175\u1112\u116a"
     },
     {
@@ -2943,7 +2943,7 @@
       "source_file": "multi_missile_tracker_gui.py",
       "source_location": "L62",
       "id": "dwta_optimizer_multi_missile_tracker_gui_mipconfig_create_realistic_scenario",
-      "community": 9,
+      "community": 30,
       "norm_label": ".create_realistic_scenario()"
     },
     {
@@ -2970,7 +2970,7 @@
       "source_file": "multi_missile_tracker_gui.py",
       "source_location": "L66",
       "id": "dwta_optimizer_multi_missile_tracker_gui_enhancedengagementmatrix_precompute_all",
-      "community": 9,
+      "community": 30,
       "norm_label": ".precompute_all()"
     },
     {
@@ -3744,7 +3744,7 @@
       "source_file": "multi_missile_tracker_gui.py",
       "source_location": "L1501",
       "id": "dwta_optimizer_multi_missile_tracker_gui_multimissiletracker_rebuild_battery_lookup",
-      "community": 53,
+      "community": 30,
       "norm_label": "._rebuild_battery_lookup()"
     },
     {
@@ -3753,7 +3753,7 @@
       "source_file": "multi_missile_tracker_gui.py",
       "source_location": "L1507",
       "id": "dwta_optimizer_multi_missile_tracker_gui_multimissiletracker_load_scenario",
-      "community": 9,
+      "community": 30,
       "norm_label": "._load_scenario()"
     },
     {
@@ -3843,7 +3843,7 @@
       "source_file": "multi_missile_tracker_gui.py",
       "source_location": "L2727",
       "id": "dwta_optimizer_multi_missile_tracker_gui_multimissiletracker_update_display",
-      "community": 53,
+      "community": 9,
       "norm_label": ".update_display()"
     },
     {
@@ -4068,7 +4068,7 @@
       "source_file": "multi_missile_tracker_gui.py",
       "source_location": "L1502",
       "id": "dwta_optimizer_multi_missile_tracker_gui_rationale_1502",
-      "community": 53,
+      "community": 30,
       "norm_label": "rebuild persistent battery lookup cache"
     },
     {
@@ -4077,7 +4077,7 @@
       "source_file": "multi_missile_tracker_gui.py",
       "source_location": "L1508",
       "id": "dwta_optimizer_multi_missile_tracker_gui_rationale_1508",
-      "community": 9,
+      "community": 30,
       "norm_label": "load realistic scenario with comprehensive threat configuration."
     },
     {
@@ -4167,7 +4167,7 @@
       "source_file": "multi_missile_tracker_gui.py",
       "source_location": "L2728",
       "id": "dwta_optimizer_multi_missile_tracker_gui_rationale_2728",
-      "community": 53,
+      "community": 9,
       "norm_label": "dwtamainwindow qtimer(_on_display_tick)\u1100\u1161 tacticalmapwidget\u110b\u1173\u11af \u110c\u1175\u11a8\u110c\u1165\u11b8 \u1100\u1162\u11bc\u1109\u1175\u11ab\u1112\u1161\u11ab\u1103\u1161."
     },
     {
@@ -24732,7 +24732,7 @@
       "source_file": "ros2_dwta/dwta_nodes/launcher_node.py",
       "source_location": "L18",
       "id": "dwta_nodes_launcher_node_launchernode",
-      "community": 46,
+      "community": 34,
       "norm_label": "launchernode"
     },
     {
@@ -24741,7 +24741,7 @@
       "source_file": "ros2_dwta/dwta_nodes/launcher_node.py",
       "source_location": "L21",
       "id": "dwta_nodes_launcher_node_launchernode_init",
-      "community": 46,
+      "community": 34,
       "norm_label": ".__init__()"
     },
     {
@@ -24750,7 +24750,7 @@
       "source_file": "ros2_dwta/dwta_nodes/launcher_node.py",
       "source_location": "L21",
       "id": "ros2_dwta_dwta_nodes_launcher_node_py_battery",
-      "community": 46,
+      "community": 34,
       "norm_label": "battery"
     },
     {
@@ -24759,7 +24759,7 @@
       "source_file": "ros2_dwta/dwta_nodes/launcher_node.py",
       "source_location": "L38",
       "id": "dwta_nodes_launcher_node_launchernode_on_clock",
-      "community": 46,
+      "community": 34,
       "norm_label": "._on_clock()"
     },
     {
@@ -24768,7 +24768,7 @@
       "source_file": "ros2_dwta/dwta_nodes/launcher_node.py",
       "source_location": "L38",
       "id": "ros2_dwta_dwta_nodes_launcher_node_py_radarstatus",
-      "community": 46,
+      "community": 34,
       "norm_label": "radarstatus"
     },
     {
@@ -24777,7 +24777,7 @@
       "source_file": "ros2_dwta/dwta_nodes/launcher_node.py",
       "source_location": "L41",
       "id": "dwta_nodes_launcher_node_launchernode_battery_inflight",
-      "community": 46,
+      "community": 34,
       "norm_label": "._battery_inflight()"
     },
     {
@@ -24786,7 +24786,7 @@
       "source_file": "ros2_dwta/dwta_nodes/launcher_node.py",
       "source_location": "L41",
       "id": "ros2_dwta_dwta_nodes_launcher_node_py_str",
-      "community": 46,
+      "community": 34,
       "norm_label": "str"
     },
     {
@@ -24795,7 +24795,7 @@
       "source_file": "ros2_dwta/dwta_nodes/launcher_node.py",
       "source_location": "L41",
       "id": "ros2_dwta_dwta_nodes_launcher_node_py_int",
-      "community": 46,
+      "community": 34,
       "norm_label": "int"
     },
     {
@@ -24804,7 +24804,7 @@
       "source_file": "ros2_dwta/dwta_nodes/launcher_node.py",
       "source_location": "L44",
       "id": "dwta_nodes_launcher_node_launchernode_on_plan",
-      "community": 46,
+      "community": 34,
       "norm_label": "._on_plan()"
     },
     {
@@ -24813,7 +24813,7 @@
       "source_file": "ros2_dwta/dwta_nodes/launcher_node.py",
       "source_location": "L44",
       "id": "engagementplan",
-      "community": 46,
+      "community": 34,
       "norm_label": "engagementplan"
     },
     {
@@ -24822,7 +24822,7 @@
       "source_file": "ros2_dwta/dwta_nodes/launcher_node.py",
       "source_location": "L72",
       "id": "dwta_nodes_launcher_node_launchernode_on_event",
-      "community": 46,
+      "community": 34,
       "norm_label": "._on_event()"
     },
     {
@@ -24831,7 +24831,7 @@
       "source_file": "ros2_dwta/dwta_nodes/launcher_node.py",
       "source_location": "L72",
       "id": "ros2_dwta_dwta_nodes_launcher_node_py_event",
-      "community": 46,
+      "community": 34,
       "norm_label": "event"
     },
     {
@@ -24840,7 +24840,7 @@
       "source_file": "ros2_dwta/dwta_nodes/launcher_node.py",
       "source_location": "L80",
       "id": "dwta_nodes_launcher_node_launchernode_tick",
-      "community": 46,
+      "community": 34,
       "norm_label": "._tick()"
     },
     {
@@ -24849,7 +24849,7 @@
       "source_file": "ros2_dwta/dwta_nodes/launcher_node.py",
       "source_location": "L83",
       "id": "dwta_nodes_launcher_node_launchernode_publish_status",
-      "community": 46,
+      "community": 34,
       "norm_label": "._publish_status()"
     },
     {
@@ -24858,7 +24858,7 @@
       "source_file": "ros2_dwta/dwta_nodes/launcher_node.py",
       "source_location": "L83",
       "id": "ros2_dwta_dwta_nodes_launcher_node_py_float",
-      "community": 46,
+      "community": 34,
       "norm_label": "float"
     },
     {
@@ -24903,7 +24903,7 @@
       "source_file": "ros2_dwta/dwta_nodes/messages.py",
       "source_location": "L35",
       "id": "dwta_nodes_messages_radarstatus",
-      "community": 12,
+      "community": 34,
       "norm_label": "radarstatus"
     },
     {
@@ -24912,7 +24912,7 @@
       "source_file": "ros2_dwta/dwta_nodes/messages.py",
       "source_location": "L43",
       "id": "dwta_nodes_messages_threatscore",
-      "community": 30,
+      "community": 46,
       "norm_label": "threatscore"
     },
     {
@@ -24930,7 +24930,7 @@
       "source_file": "ros2_dwta/dwta_nodes/messages.py",
       "source_location": "L58",
       "id": "dwta_nodes_messages_engagementcell",
-      "community": 30,
+      "community": 46,
       "norm_label": "engagementcell"
     },
     {
@@ -24957,7 +24957,7 @@
       "source_file": "ros2_dwta/dwta_nodes/messages.py",
       "source_location": "L84",
       "id": "dwta_nodes_messages_engagementplan",
-      "community": 46,
+      "community": 34,
       "norm_label": "engagementplan"
     },
     {
@@ -24966,7 +24966,7 @@
       "source_file": "ros2_dwta/dwta_nodes/messages.py",
       "source_location": "L93",
       "id": "dwta_nodes_messages_interceptor",
-      "community": 46,
+      "community": 34,
       "norm_label": "interceptor"
     },
     {
@@ -24975,7 +24975,7 @@
       "source_file": "ros2_dwta/dwta_nodes/messages.py",
       "source_location": "L106",
       "id": "dwta_nodes_messages_interceptorstatus",
-      "community": 46,
+      "community": 61,
       "norm_label": "interceptorstatus"
     },
     {
@@ -25002,7 +25002,7 @@
       "source_file": "ros2_dwta/dwta_nodes/messages.py",
       "source_location": "L141",
       "id": "dwta_nodes_messages_event",
-      "community": 46,
+      "community": 34,
       "norm_label": "event"
     },
     {
@@ -25065,7 +25065,7 @@
       "source_file": "ros2_dwta/dwta_nodes/messages.py",
       "source_location": "L59",
       "id": "dwta_nodes_messages_rationale_59",
-      "community": 30,
+      "community": 46,
       "norm_label": "(\u110b\u116d\u1100\u1167\u11a8\u110e\u1166\u1100\u1168, \u1110\u1161\u11ab\u1103\u1169\u1110\u1161\u11ab) \u1100\u116d\u110c\u1165\u11ab \u1100\u1161\u1102\u1173\u11bc\u1109\u1165\u11bc \u1112\u1161\u11ab \u110f\u1161\u11ab: \u1100\u116d\u110c\u1165\u11ab\u110e\u1161\u11bc + \u1106\u1167\u11bc\u110c\u116e\u11bc\u1105\u1172\u11af."
     },
     {
@@ -25074,7 +25074,7 @@
       "source_file": "ros2_dwta/dwta_nodes/messages.py",
       "source_location": "L94",
       "id": "dwta_nodes_messages_rationale_94",
-      "community": 46,
+      "community": 61,
       "norm_label": "\u110b\u1161\u1100\u116e\u11ab \u110b\u116d\u1100\u1167\u11a8\u1110\u1161\u11ab \u1112\u1161\u11ab \u1107\u1161\u11af\u110b\u1174 \u1109\u1161\u11bc\u1110\u1162 (\u1107\u1175\u1112\u1162\u11bc\u110c\u116e\u11bc \u110b\u1172\u1103\u1169\u1110\u1161\u11ab)."
     },
     {
@@ -25083,7 +25083,7 @@
       "source_file": "ros2_dwta/dwta_nodes/messages.py",
       "source_location": "L107",
       "id": "dwta_nodes_messages_rationale_107",
-      "community": 46,
+      "community": 61,
       "norm_label": "\u1107\u1161\u11af\u1109\u1161\u1103\u1162/\u110b\u116d\u1100\u1167\u11a8\u110e\u1166\u1100\u1168 \u1109\u1161\u11bc\u1110\u1162 (\u110c\u1161\u11ab\u110b\u1167\u1110\u1161\u11ab\u00b7\u1107\u1175\u1112\u1162\u11bc\u110c\u116e\u11bc \u110b\u116d\u1100\u1167\u11a8\u1110\u1161\u11ab\u00b7\u1100\u116d\u110c\u1165\u11ab \u1109\u1161\u11bc\u1110\u1162) \u2014 \u110c\u1165\u11ab \u1102\u1169\u1103\u1173 \u1100\u1169\u11bc\u110b\u1172."
     },
     {
@@ -25425,7 +25425,7 @@
       "source_file": "ros2_dwta/dwta_nodes/scenario.py",
       "source_location": "L18",
       "id": "dwta_nodes_scenario_asset",
-      "community": 61,
+      "community": 12,
       "norm_label": "asset"
     },
     {
@@ -25434,7 +25434,7 @@
       "source_file": "ros2_dwta/dwta_nodes/scenario.py",
       "source_location": "L25",
       "id": "dwta_nodes_scenario_battery",
-      "community": 61,
+      "community": 12,
       "norm_label": "battery"
     },
     {
@@ -25501,10 +25501,28 @@
       "norm_label": "saturation_scenario()"
     },
     {
+      "label": "random_saturation_scenario()",
+      "file_type": "code",
+      "source_file": "ros2_dwta/dwta_nodes/scenario.py",
+      "source_location": "L108",
+      "id": "dwta_nodes_scenario_random_saturation_scenario",
+      "community": 12,
+      "norm_label": "random_saturation_scenario()"
+    },
+    {
+      "label": "int",
+      "file_type": "code",
+      "source_file": "ros2_dwta/dwta_nodes/scenario.py",
+      "source_location": "L108",
+      "id": "ros2_dwta_dwta_nodes_scenario_py_int",
+      "community": 12,
+      "norm_label": "int"
+    },
+    {
       "label": "default_scenario()",
       "file_type": "code",
       "source_file": "ros2_dwta/dwta_nodes/scenario.py",
-      "source_location": "L111",
+      "source_location": "L172",
       "id": "dwta_nodes_scenario_default_scenario",
       "community": 12,
       "norm_label": "default_scenario()"
@@ -25513,7 +25531,7 @@
       "label": "velocity_toward()",
       "file_type": "code",
       "source_file": "ros2_dwta/dwta_nodes/scenario.py",
-      "source_location": "L115",
+      "source_location": "L176",
       "id": "dwta_nodes_scenario_velocity_toward",
       "community": 12,
       "norm_label": "velocity_toward()"
@@ -25522,7 +25540,7 @@
       "label": "distance()",
       "file_type": "code",
       "source_file": "ros2_dwta/dwta_nodes/scenario.py",
-      "source_location": "L121",
+      "source_location": "L182",
       "id": "dwta_nodes_scenario_distance",
       "community": 12,
       "norm_label": "distance()"
@@ -25542,7 +25560,7 @@
       "source_file": "ros2_dwta/dwta_nodes/scenario.py",
       "source_location": "L26",
       "id": "dwta_nodes_scenario_rationale_26",
-      "community": 61,
+      "community": 12,
       "norm_label": "\u1107\u1161\u11bc\u110b\u1165 \u1111\u1169\u1103\u1162 = \u1107\u1161\u11af\u1109\u1161\u1103\u1162(\u1110\u1161\u11ab\u110b\u1163\u11a8) + \u1111\u1169\u1103\u1162 \u1109\u1161\u1100\u1167\u11a8\u1110\u1169\u11bc\u110c\u1166\u1105\u1166\u110b\u1175\u1103\u1161(\u110b\u1172\u1103\u1169 \u110e\u1162\u1102\u1165\u11af)."
     },
     {
@@ -25571,6 +25589,15 @@
       "id": "dwta_nodes_scenario_rationale_76",
       "community": 12,
       "norm_label": "\u1103\u1162\u1100\u1172\u1106\u1169 \u1111\u1169\u1112\u116a \u110b\u1170\u110b\u1175\u1107\u1173: \u1103\u1161\u1109\u116e \u110b\u1171\u1112\u1167\u11b8\u110b\u1175 \u110d\u1161\u11b2\u110b\u1173\u11ab \u1100\u1161\u11ab\u1100\u1167\u11a8\u110b\u1173\u1105\u1169 \u1103\u1169\u110e\u1161\u11a8 -> \u1109\u1161\u11bc\u110e\u1173\u11bc(l-sam) \u110b\u1172\u1103\u1169\u110e\u1162\u1102\u1165\u11af\u110b\u1175     \u1111\u1169\u1112\u116a\u1103\u116c\u110b\u1165 \u110b\u1175\u11af\u1107\u116e\u1100\u1161 \u1112\u1161\u110e\u1173\u11bc(m-sam) \u1109\u1161\u1100\u1165\u1105\u1175\u1105\u1169 \u110c\u1175\u11ab\u110b\u1175\u11b8"
+    },
+    {
+      "label": "Random saturation scenario (seeded for reproducibility).      Goal: every run",
+      "file_type": "rationale",
+      "source_file": "ros2_dwta/dwta_nodes/scenario.py",
+      "source_location": "L115",
+      "id": "dwta_nodes_scenario_rationale_115",
+      "community": 12,
+      "norm_label": "random saturation scenario (seeded for reproducibility).      goal: every run"
     },
     {
       "label": "sim_bus.py",
@@ -25920,7 +25947,7 @@
       "source_file": "ros2_dwta/dwta_nodes/surveillance_radar_node.py",
       "source_location": "L1",
       "id": "ros2_dwta_dwta_nodes_surveillance_radar_node_py",
-      "community": 12,
+      "community": 34,
       "norm_label": "surveillance_radar_node.py"
     },
     {
@@ -26028,7 +26055,7 @@
       "source_file": "ros2_dwta/dwta_nodes/surveillance_radar_node.py",
       "source_location": "L1",
       "id": "dwta_nodes_surveillance_radar_node_rationale_1",
-      "community": 12,
+      "community": 34,
       "norm_label": "\u110c\u116e\u11bc\u110b\u1161\u11bc \u1100\u1161\u11b7\u1109\u1175\u1105\u1166\u110b\u1175\u1103\u1161 \u1102\u1169\u1103\u1173 (surveillance radar) \u2014 \u1110\u1161\u11b7\u110c\u1175/\u110e\u116e\u110c\u1165\u11a8/\u1111\u116d\u110c\u1165\u11a8\u1112\u1161\u11af\u1103\u1161\u11bc\u110b\u116d\u11bc.  \u110c\u1165\u11ab\u1100\u116e \u1103\u1161\u11ab\u110b\u1171 1\u1100\u1162. \u110c\u1165\u11a8 \u1110\u1161\u11ab\u1103\u1169\u1110\u1161\u11ab\u110b\u1173\u11af \u1110\u1161\u11b7\u110c\u1175\u00b7\u110e\u116e\u110c\u1165\u11a8\u1112\u1161\u1100\u1169 \u110e\u116e\u110c\u1165\u11a8\u110c\u1165\u11bc\u1107\u1169"
     },
     {
@@ -26037,7 +26064,7 @@
       "source_file": "ros2_dwta/dwta_nodes/threat_assessment_node.py",
       "source_location": "L1",
       "id": "ros2_dwta_dwta_nodes_threat_assessment_node_py",
-      "community": 34,
+      "community": 41,
       "norm_label": "threat_assessment_node.py"
     },
     {
@@ -26046,7 +26073,7 @@
       "source_file": "ros2_dwta/dwta_nodes/threat_assessment_node.py",
       "source_location": "L15",
       "id": "dwta_nodes_threat_assessment_node_threatassessmentnode",
-      "community": 34,
+      "community": 41,
       "norm_label": "threatassessmentnode"
     },
     {
@@ -26091,7 +26118,7 @@
       "source_file": "ros2_dwta/dwta_nodes/threat_assessment_node.py",
       "source_location": "L30",
       "id": "dwta_nodes_threat_assessment_node_threatassessmentnode_tick",
-      "community": 34,
+      "community": 41,
       "norm_label": "._tick()"
     },
     {
@@ -26100,7 +26127,7 @@
       "source_file": "ros2_dwta/dwta_nodes/threat_assessment_node.py",
       "source_location": "L1",
       "id": "dwta_nodes_threat_assessment_node_rationale_1",
-      "community": 34,
+      "community": 41,
       "norm_label": "oo\u1111\u1167\u11bc\u1100\u1161 \u1102\u1169\u1103\u1173 \u2014 \u110b\u1171\u1112\u1167\u11b8 \u1111\u1167\u11bc\u1100\u1161/\u110c\u1165\u11b7\u1109\u116e\u1112\u116a.  \u1110\u1161\u11ab\u1103\u1169\u1110\u1161\u11ab \u110c\u1165\u11bc\u1107\u1169(/tracks) + \u1107\u1161\u11bc\u110b\u1165\u110c\u1161\u1109\u1161\u11ab \u110c\u1165\u11bc\u1107\u1169(\u1109\u1161\u110c\u1165\u11ab\u110b\u1175\u11b8\u1105\u1167\u11a8)\u1105\u1173\u11af \u1107\u1161\u11ae\u110b\u1161 \u110b\u1171\u1112\u1167\u11b8\u110b\u1173\u11af \u110c\u1165\u11b7\u1109\u116e\u1112\u116a\u1112\u1161\u1100\u1169 /threat_s"
     },
     {
@@ -26226,7 +26253,7 @@
       "source_file": "ros2_dwta/dwta_nodes/viz_pyqtgraph.py",
       "source_location": "L1",
       "id": "ros2_dwta_dwta_nodes_viz_pyqtgraph_py",
-      "community": 61,
+      "community": 12,
       "norm_label": "viz_pyqtgraph.py"
     },
     {
@@ -26244,7 +26271,7 @@
       "source_file": "ros2_dwta/dwta_nodes/viz_pyqtgraph.py",
       "source_location": "L37",
       "id": "dwta_nodes_viz_pyqtgraph_tacticalview_init",
-      "community": 61,
+      "community": 12,
       "norm_label": ".__init__()"
     },
     {
@@ -26253,7 +26280,7 @@
       "source_file": "ros2_dwta/dwta_nodes/viz_pyqtgraph.py",
       "source_location": "L37",
       "id": "ros2_dwta_dwta_nodes_viz_pyqtgraph_py_asset",
-      "community": 61,
+      "community": 12,
       "norm_label": "asset"
     },
     {
@@ -26262,7 +26289,7 @@
       "source_file": "ros2_dwta/dwta_nodes/viz_pyqtgraph.py",
       "source_location": "L37",
       "id": "ros2_dwta_dwta_nodes_viz_pyqtgraph_py_battery",
-      "community": 61,
+      "community": 12,
       "norm_label": "battery"
     },
     {
@@ -26280,7 +26307,7 @@
       "source_file": "ros2_dwta/dwta_nodes/viz_pyqtgraph.py",
       "source_location": "L61",
       "id": "ros2_dwta_dwta_nodes_viz_pyqtgraph_py_worldstate",
-      "community": 61,
+      "community": 12,
       "norm_label": "worldstate"
     },
     {
@@ -26289,7 +26316,7 @@
       "source_file": "ros2_dwta/dwta_nodes/viz_pyqtgraph.py",
       "source_location": "L1",
       "id": "dwta_nodes_viz_pyqtgraph_rationale_1",
-      "community": 61,
+      "community": 12,
       "norm_label": "pyqtgraph \u1109\u1175\u11af\u1109\u1175\u1100\u1161\u11ab \u110c\u1165\u11ab\u1109\u116e\u11af\u1112\u116a\u1106\u1167\u11ab (tacticalview) \u2014 viz_node \u110b\u1174 pyqtgraph \u1107\u1162\u11a8\u110b\u1166\u11ab\u1103\u1173.  \u1103\u1175\u1109\u1173\u1111\u1173\u11af\u1105\u1166\u110b\u1175\u1100\u1161 \u110b\u1175\u11bb\u1102\u1173\u11ab \u1112\u116a\u11ab\u1100\u1167\u11bc\u110b\u1166\u1109\u1165\u1106\u1161\u11ab"
     },
     {
@@ -26532,7 +26559,7 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L50",
       "id": "dwta_nodes_wta_backend_wtabackend_solve",
-      "community": 30,
+      "community": 46,
       "norm_label": ".solve()"
     },
     {
@@ -26541,7 +26568,7 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L50",
       "id": "assignment",
-      "community": 30,
+      "community": 46,
       "norm_label": "assignment"
     },
     {
@@ -26559,7 +26586,7 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L66",
       "id": "dwta_nodes_wta_backend_cleanslateadapter_init",
-      "community": 30,
+      "community": 46,
       "norm_label": ".__init__()"
     },
     {
@@ -26568,7 +26595,7 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L66",
       "id": "any",
-      "community": 30,
+      "community": 46,
       "norm_label": "any"
     },
     {
@@ -26577,7 +26604,7 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L71",
       "id": "dwta_nodes_wta_backend_battery_to_dict",
-      "community": 30,
+      "community": 46,
       "norm_label": "_battery_to_dict()"
     },
     {
@@ -26586,7 +26613,7 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L71",
       "id": "ros2_dwta_dwta_nodes_wta_backend_py_battery",
-      "community": 30,
+      "community": 46,
       "norm_label": "battery"
     },
     {
@@ -26595,7 +26622,7 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L71",
       "id": "ros2_dwta_dwta_nodes_wta_backend_py_str",
-      "community": 30,
+      "community": 46,
       "norm_label": "str"
     },
     {
@@ -26604,7 +26631,7 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L91",
       "id": "dwta_nodes_wta_backend_cleanslateadapter_solve",
-      "community": 30,
+      "community": 46,
       "norm_label": ".solve()"
     },
     {
@@ -26613,7 +26640,7 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L215",
       "id": "dwta_nodes_wta_backend_objective",
-      "community": 30,
+      "community": 46,
       "norm_label": "objective()"
     },
     {
@@ -26622,7 +26649,7 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L215",
       "id": "threatscore",
-      "community": 30,
+      "community": 46,
       "norm_label": "threatscore"
     },
     {
@@ -26631,7 +26658,7 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L215",
       "id": "ros2_dwta_dwta_nodes_wta_backend_py_float",
-      "community": 30,
+      "community": 46,
       "norm_label": "float"
     },
     {
@@ -30185,7 +30212,7 @@
       "file_type": "rationale",
       "source_file": "ros2_dwta/dwta_nodes/scenario.py",
       "source_location": "L25",
-      "community": 61,
+      "community": 12,
       "norm_label": "\u1107\u1161\u11bc\u110b\u1165 \u1111\u1169\u1103\u1162 = \u1107\u1161\u11af\u1109\u1161\u1103\u1162(\u1110\u1161\u11ab\u110b\u1163\u11a8) + \u1111\u1169\u1103\u1162 \u1109\u1161\u1100\u1167\u11a8\u1110\u1169\u11bc\u110c\u1166\u1105\u1166\u110b\u1175\u1103\u1161(\u110b\u1172\u1103\u1169 \u110e\u1162\u1102\u1165\u11af).",
       "id": "dwta_nodes_scenario_rationale_25"
     },
@@ -30239,7 +30266,7 @@
       "file_type": "code",
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L21",
-      "community": 30,
+      "community": 46,
       "norm_label": "engagementcell",
       "id": "engagementcell"
     },
@@ -30248,7 +30275,7 @@
       "file_type": "code",
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L21",
-      "community": 30,
+      "community": 46,
       "norm_label": "int",
       "id": "ros2_dwta_dwta_nodes_wta_backend_py_int"
     },
@@ -30266,7 +30293,7 @@
       "file_type": "code",
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L40",
-      "community": 30,
+      "community": 46,
       "norm_label": ".__init__()",
       "id": "dwta_nodes_wta_backend_greedywta_init"
     },
@@ -30275,7 +30302,7 @@
       "file_type": "code",
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L43",
-      "community": 30,
+      "community": 46,
       "norm_label": ".solve()",
       "id": "dwta_nodes_wta_backend_greedywta_solve"
     },
@@ -30284,7 +30311,7 @@
       "file_type": "code",
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L92",
-      "community": 30,
+      "community": 46,
       "norm_label": "legacygreedyadapter",
       "id": "dwta_nodes_wta_backend_legacygreedyadapter"
     },
@@ -30293,7 +30320,7 @@
       "file_type": "code",
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L104",
-      "community": 30,
+      "community": 46,
       "norm_label": ".solve()",
       "id": "dwta_nodes_wta_backend_legacygreedyadapter_solve"
     },
@@ -30320,7 +30347,7 @@
       "file_type": "rationale",
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L78",
-      "community": 30,
+      "community": 46,
       "norm_label": "expected protected value: sum over threats of danger * (1 - \u03c0(1-pk)).",
       "id": "dwta_nodes_wta_backend_rationale_78"
     },
@@ -30329,7 +30356,7 @@
       "file_type": "rationale",
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L93",
-      "community": 30,
+      "community": 46,
       "norm_label": "seam for the existing greedy_optimizer.greedyoptimizer.      not used by defau",
       "id": "dwta_nodes_wta_backend_rationale_93"
     },
@@ -30482,7 +30509,7 @@
       "file_type": "code",
       "source_file": "config_mip.py",
       "source_location": "L34",
-      "community": 35,
+      "community": 29,
       "norm_label": ".get_lsam_specs()",
       "id": "dwta_optimizer_config_mip_interceptorsystemconfig_get_lsam_specs"
     },
@@ -30491,7 +30518,7 @@
       "file_type": "code",
       "source_file": "config_mip.py",
       "source_location": "L70",
-      "community": 35,
+      "community": 29,
       "norm_label": ".get_msam_specs()",
       "id": "dwta_optimizer_config_mip_interceptorsystemconfig_get_msam_specs"
     },
@@ -30500,7 +30527,7 @@
       "file_type": "code",
       "source_file": "config_mip.py",
       "source_location": "L165",
-      "community": 35,
+      "community": 29,
       "norm_label": ".create_battery_deployment()",
       "id": "dwta_optimizer_config_mip_batterydeploymentconfig_create_battery_deployment"
     },
@@ -30527,7 +30554,7 @@
       "file_type": "code",
       "source_file": "config_mip.py",
       "source_location": "L546",
-      "community": 11,
+      "community": 2,
       "norm_label": ".create_north_korean_bases()",
       "id": "dwta_optimizer_config_mip_launchbaseconfig_create_north_korean_bases"
     },
@@ -30554,7 +30581,7 @@
       "file_type": "code",
       "source_file": "config_mip.py",
       "source_location": "L725",
-      "community": 29,
+      "community": 27,
       "norm_label": ".can_engage()",
       "id": "dwta_optimizer_config_mip_engagementzoneconfig_can_engage"
     },
@@ -30590,7 +30617,7 @@
       "file_type": "code",
       "source_file": "config_mip.py",
       "source_location": "L952",
-      "community": 11,
+      "community": 29,
       "norm_label": ".get_scenario_list()",
       "id": "dwta_optimizer_config_mip_scenariomanager_get_scenario_list"
     },
@@ -30752,7 +30779,7 @@
       "file_type": "code",
       "source_file": "config_mip.py",
       "source_location": "L2411",
-      "community": 11,
+      "community": 2,
       "norm_label": ".upper_pairs()",
       "id": "dwta_optimizer_config_mip_feasibilitycache_upper_pairs"
     },
@@ -30761,7 +30788,7 @@
       "file_type": "code",
       "source_file": "config_mip.py",
       "source_location": "L2415",
-      "community": 11,
+      "community": 2,
       "norm_label": ".lower_pairs()",
       "id": "dwta_optimizer_config_mip_feasibilitycache_lower_pairs"
     },
@@ -30770,7 +30797,7 @@
       "file_type": "code",
       "source_file": "config_mip.py",
       "source_location": "L2419",
-      "community": 11,
+      "community": 2,
       "norm_label": ".all_pairs()",
       "id": "dwta_optimizer_config_mip_feasibilitycache_all_pairs"
     },
@@ -30896,7 +30923,7 @@
       "file_type": "code",
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L77",
-      "community": 30,
+      "community": 46,
       "norm_label": ".objective()",
       "id": "dwta_nodes_wta_backend_greedywta_objective"
     },
@@ -30986,7 +31013,7 @@
       "file_type": "rationale",
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L74",
-      "community": 30,
+      "community": 46,
       "norm_label": "expected protected value: sum over threats of danger * (1 - \u03c0(1-pk)).",
       "id": "dwta_nodes_wta_backend_rationale_74"
     },
@@ -30995,7 +31022,7 @@
       "file_type": "rationale",
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L89",
-      "community": 30,
+      "community": 46,
       "norm_label": "seam for the existing greedy_optimizer.greedyoptimizer.      not used by default",
       "id": "dwta_nodes_wta_backend_rationale_89"
     },
@@ -31004,7 +31031,7 @@
       "file_type": "rationale",
       "source_file": "ros2_dwta/dwta_nodes/messages.py",
       "source_location": "L106",
-      "community": 46,
+      "community": 61,
       "norm_label": "\u1107\u1161\u11af\u1109\u1161\u1103\u1162/\u110b\u116d\u1100\u1167\u11a8\u110e\u1166\u1100\u1168 \u1109\u1161\u11bc\u1110\u1162 (\u110c\u1161\u11ab\u110b\u1167\u1110\u1161\u11ab\u00b7\u1107\u1175\u1112\u1162\u11bc\u110c\u116e\u11bc \u110b\u116d\u1100\u1167\u11a8\u1110\u1161\u11ab\u00b7\u1100\u116d\u110c\u1165\u11ab \u1109\u1161\u11bc\u1110\u1162) \u2014 \u110c\u1165\u11ab \u1102\u1169\u1103\u1173 \u1100\u1169\u11bc\u110b\u1172.",
       "id": "dwta_nodes_messages_rationale_106"
     },
@@ -31022,7 +31049,7 @@
       "file_type": "rationale",
       "source_file": "ros2_dwta/dwta_nodes/scenario.py",
       "source_location": "L24",
-      "community": 61,
+      "community": 12,
       "norm_label": "\u1107\u1161\u11bc\u110b\u1165 \u110c\u1161\u1109\u1161\u11ab(\u110b\u116d\u1100\u1167\u11a8\u110e\u1166\u1100\u1168/\u1107\u1161\u11af\u1109\u1161\u1103\u1162) \u1109\u1161\u110b\u1163\u11bc + \u1100\u1161\u110b\u116d\u11bc \u110c\u1161\u110b\u116f\u11ab.",
       "id": "dwta_nodes_scenario_rationale_24"
     },
@@ -31031,7 +31058,7 @@
       "file_type": "code",
       "source_file": "ros2_dwta/dwta_nodes/launcher_node.py",
       "source_location": "L39",
-      "community": 46,
+      "community": 34,
       "norm_label": "radarstatus",
       "id": "radarstatus"
     },
@@ -31040,7 +31067,7 @@
       "file_type": "code",
       "source_file": "ros2_dwta/dwta_nodes/launcher_node.py",
       "source_location": "L67",
-      "community": 46,
+      "community": 34,
       "norm_label": "._resolve()",
       "id": "dwta_nodes_launcher_node_launchernode_resolve"
     },
@@ -32482,9 +32509,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L92",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ros2_dwta_dwta_nodes_wta_backend_py",
-      "target": "dwta_optimizer_clean_slate_optimizer_asset",
-      "confidence_score": 1.0
+      "target": "dwta_optimizer_clean_slate_optimizer_asset"
     },
     {
       "relation": "uses",
@@ -32692,9 +32719,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L92",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "dwta_nodes_wta_backend_wtainput",
-      "target": "dwta_optimizer_clean_slate_optimizer_asset",
-      "confidence_score": 0.5
+      "target": "dwta_optimizer_clean_slate_optimizer_asset"
     },
     {
       "relation": "uses",
@@ -32702,9 +32729,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L92",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "dwta_nodes_wta_backend_wtabackend",
-      "target": "dwta_optimizer_clean_slate_optimizer_asset",
-      "confidence_score": 0.5
+      "target": "dwta_optimizer_clean_slate_optimizer_asset"
     },
     {
       "relation": "uses",
@@ -32712,9 +32739,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L92",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "assignment",
-      "target": "dwta_optimizer_clean_slate_optimizer_asset",
-      "confidence_score": 0.5
+      "target": "dwta_optimizer_clean_slate_optimizer_asset"
     },
     {
       "relation": "uses",
@@ -32722,9 +32749,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L92",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "dwta_nodes_wta_backend_cleanslateadapter",
-      "target": "dwta_optimizer_clean_slate_optimizer_asset",
-      "confidence_score": 0.5
+      "target": "dwta_optimizer_clean_slate_optimizer_asset"
     },
     {
       "relation": "uses",
@@ -32732,9 +32759,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L92",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "any",
-      "target": "dwta_optimizer_clean_slate_optimizer_asset",
-      "confidence_score": 0.5
+      "target": "dwta_optimizer_clean_slate_optimizer_asset"
     },
     {
       "relation": "uses",
@@ -32742,9 +32769,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L92",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_wta_backend_py_battery",
-      "target": "dwta_optimizer_clean_slate_optimizer_asset",
-      "confidence_score": 0.5
+      "target": "dwta_optimizer_clean_slate_optimizer_asset"
     },
     {
       "relation": "uses",
@@ -32752,9 +32779,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L92",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_wta_backend_py_str",
-      "target": "dwta_optimizer_clean_slate_optimizer_asset",
-      "confidence_score": 0.5
+      "target": "dwta_optimizer_clean_slate_optimizer_asset"
     },
     {
       "relation": "uses",
@@ -32762,9 +32789,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L92",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "threatscore",
-      "target": "dwta_optimizer_clean_slate_optimizer_asset",
-      "confidence_score": 0.5
+      "target": "dwta_optimizer_clean_slate_optimizer_asset"
     },
     {
       "relation": "uses",
@@ -32772,9 +32799,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L92",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_wta_backend_py_float",
-      "target": "dwta_optimizer_clean_slate_optimizer_asset",
-      "confidence_score": 0.5
+      "target": "dwta_optimizer_clean_slate_optimizer_asset"
     },
     {
       "relation": "references",
@@ -32838,9 +32865,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L93",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ros2_dwta_dwta_nodes_wta_backend_py",
-      "target": "dwta_optimizer_clean_slate_optimizer_interceptorsystem",
-      "confidence_score": 1.0
+      "target": "dwta_optimizer_clean_slate_optimizer_interceptorsystem"
     },
     {
       "relation": "uses",
@@ -33048,9 +33075,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L93",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "dwta_nodes_wta_backend_wtainput",
-      "target": "dwta_optimizer_clean_slate_optimizer_interceptorsystem",
-      "confidence_score": 0.5
+      "target": "dwta_optimizer_clean_slate_optimizer_interceptorsystem"
     },
     {
       "relation": "uses",
@@ -33058,9 +33085,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L93",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "dwta_nodes_wta_backend_wtabackend",
-      "target": "dwta_optimizer_clean_slate_optimizer_interceptorsystem",
-      "confidence_score": 0.5
+      "target": "dwta_optimizer_clean_slate_optimizer_interceptorsystem"
     },
     {
       "relation": "uses",
@@ -33068,9 +33095,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L93",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "assignment",
-      "target": "dwta_optimizer_clean_slate_optimizer_interceptorsystem",
-      "confidence_score": 0.5
+      "target": "dwta_optimizer_clean_slate_optimizer_interceptorsystem"
     },
     {
       "relation": "uses",
@@ -33078,9 +33105,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L93",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "dwta_nodes_wta_backend_cleanslateadapter",
-      "target": "dwta_optimizer_clean_slate_optimizer_interceptorsystem",
-      "confidence_score": 0.5
+      "target": "dwta_optimizer_clean_slate_optimizer_interceptorsystem"
     },
     {
       "relation": "uses",
@@ -33088,9 +33115,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L93",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "any",
-      "target": "dwta_optimizer_clean_slate_optimizer_interceptorsystem",
-      "confidence_score": 0.5
+      "target": "dwta_optimizer_clean_slate_optimizer_interceptorsystem"
     },
     {
       "relation": "uses",
@@ -33098,9 +33125,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L93",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_wta_backend_py_battery",
-      "target": "dwta_optimizer_clean_slate_optimizer_interceptorsystem",
-      "confidence_score": 0.5
+      "target": "dwta_optimizer_clean_slate_optimizer_interceptorsystem"
     },
     {
       "relation": "uses",
@@ -33108,9 +33135,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L93",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_wta_backend_py_str",
-      "target": "dwta_optimizer_clean_slate_optimizer_interceptorsystem",
-      "confidence_score": 0.5
+      "target": "dwta_optimizer_clean_slate_optimizer_interceptorsystem"
     },
     {
       "relation": "uses",
@@ -33118,9 +33145,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L93",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "threatscore",
-      "target": "dwta_optimizer_clean_slate_optimizer_interceptorsystem",
-      "confidence_score": 0.5
+      "target": "dwta_optimizer_clean_slate_optimizer_interceptorsystem"
     },
     {
       "relation": "uses",
@@ -33128,9 +33155,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L93",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_wta_backend_py_float",
-      "target": "dwta_optimizer_clean_slate_optimizer_interceptorsystem",
-      "confidence_score": 0.5
+      "target": "dwta_optimizer_clean_slate_optimizer_interceptorsystem"
     },
     {
       "relation": "method",
@@ -33215,9 +33242,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L94",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ros2_dwta_dwta_nodes_wta_backend_py",
-      "target": "dwta_optimizer_clean_slate_optimizer_threat",
-      "confidence_score": 1.0
+      "target": "dwta_optimizer_clean_slate_optimizer_threat"
     },
     {
       "relation": "uses",
@@ -33425,9 +33452,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L94",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "dwta_nodes_wta_backend_wtainput",
-      "target": "dwta_optimizer_clean_slate_optimizer_threat",
-      "confidence_score": 0.5
+      "target": "dwta_optimizer_clean_slate_optimizer_threat"
     },
     {
       "relation": "uses",
@@ -33435,9 +33462,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L94",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "dwta_nodes_wta_backend_wtabackend",
-      "target": "dwta_optimizer_clean_slate_optimizer_threat",
-      "confidence_score": 0.5
+      "target": "dwta_optimizer_clean_slate_optimizer_threat"
     },
     {
       "relation": "uses",
@@ -33445,9 +33472,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L94",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "assignment",
-      "target": "dwta_optimizer_clean_slate_optimizer_threat",
-      "confidence_score": 0.5
+      "target": "dwta_optimizer_clean_slate_optimizer_threat"
     },
     {
       "relation": "uses",
@@ -33455,9 +33482,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L94",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "dwta_nodes_wta_backend_cleanslateadapter",
-      "target": "dwta_optimizer_clean_slate_optimizer_threat",
-      "confidence_score": 0.5
+      "target": "dwta_optimizer_clean_slate_optimizer_threat"
     },
     {
       "relation": "uses",
@@ -33465,9 +33492,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L94",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "any",
-      "target": "dwta_optimizer_clean_slate_optimizer_threat",
-      "confidence_score": 0.5
+      "target": "dwta_optimizer_clean_slate_optimizer_threat"
     },
     {
       "relation": "uses",
@@ -33475,9 +33502,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L94",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_wta_backend_py_battery",
-      "target": "dwta_optimizer_clean_slate_optimizer_threat",
-      "confidence_score": 0.5
+      "target": "dwta_optimizer_clean_slate_optimizer_threat"
     },
     {
       "relation": "uses",
@@ -33485,9 +33512,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L94",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_wta_backend_py_str",
-      "target": "dwta_optimizer_clean_slate_optimizer_threat",
-      "confidence_score": 0.5
+      "target": "dwta_optimizer_clean_slate_optimizer_threat"
     },
     {
       "relation": "uses",
@@ -33495,9 +33522,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L94",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "threatscore",
-      "target": "dwta_optimizer_clean_slate_optimizer_threat",
-      "confidence_score": 0.5
+      "target": "dwta_optimizer_clean_slate_optimizer_threat"
     },
     {
       "relation": "uses",
@@ -33505,9 +33532,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L94",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_wta_backend_py_float",
-      "target": "dwta_optimizer_clean_slate_optimizer_threat",
-      "confidence_score": 0.5
+      "target": "dwta_optimizer_clean_slate_optimizer_threat"
     },
     {
       "relation": "references",
@@ -34101,9 +34128,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L67",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ros2_dwta_dwta_nodes_wta_backend_py",
-      "target": "dwta_optimizer_clean_slate_optimizer_cleanslateoptimizer",
-      "confidence_score": 1.0
+      "target": "dwta_optimizer_clean_slate_optimizer_cleanslateoptimizer"
     },
     {
       "relation": "uses",
@@ -34311,9 +34338,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L67",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "dwta_nodes_wta_backend_wtainput",
-      "target": "dwta_optimizer_clean_slate_optimizer_cleanslateoptimizer",
-      "confidence_score": 0.5
+      "target": "dwta_optimizer_clean_slate_optimizer_cleanslateoptimizer"
     },
     {
       "relation": "uses",
@@ -34321,9 +34348,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L67",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "dwta_nodes_wta_backend_wtabackend",
-      "target": "dwta_optimizer_clean_slate_optimizer_cleanslateoptimizer",
-      "confidence_score": 0.5
+      "target": "dwta_optimizer_clean_slate_optimizer_cleanslateoptimizer"
     },
     {
       "relation": "uses",
@@ -34331,9 +34358,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L67",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "assignment",
-      "target": "dwta_optimizer_clean_slate_optimizer_cleanslateoptimizer",
-      "confidence_score": 0.5
+      "target": "dwta_optimizer_clean_slate_optimizer_cleanslateoptimizer"
     },
     {
       "relation": "uses",
@@ -34341,9 +34368,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L67",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "dwta_nodes_wta_backend_cleanslateadapter",
-      "target": "dwta_optimizer_clean_slate_optimizer_cleanslateoptimizer",
-      "confidence_score": 0.5
+      "target": "dwta_optimizer_clean_slate_optimizer_cleanslateoptimizer"
     },
     {
       "relation": "uses",
@@ -34351,9 +34378,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L67",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "any",
-      "target": "dwta_optimizer_clean_slate_optimizer_cleanslateoptimizer",
-      "confidence_score": 0.5
+      "target": "dwta_optimizer_clean_slate_optimizer_cleanslateoptimizer"
     },
     {
       "relation": "uses",
@@ -34361,9 +34388,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L67",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_wta_backend_py_battery",
-      "target": "dwta_optimizer_clean_slate_optimizer_cleanslateoptimizer",
-      "confidence_score": 0.5
+      "target": "dwta_optimizer_clean_slate_optimizer_cleanslateoptimizer"
     },
     {
       "relation": "uses",
@@ -34371,9 +34398,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L67",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_wta_backend_py_str",
-      "target": "dwta_optimizer_clean_slate_optimizer_cleanslateoptimizer",
-      "confidence_score": 0.5
+      "target": "dwta_optimizer_clean_slate_optimizer_cleanslateoptimizer"
     },
     {
       "relation": "uses",
@@ -34381,9 +34408,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L67",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "threatscore",
-      "target": "dwta_optimizer_clean_slate_optimizer_cleanslateoptimizer",
-      "confidence_score": 0.5
+      "target": "dwta_optimizer_clean_slate_optimizer_cleanslateoptimizer"
     },
     {
       "relation": "uses",
@@ -34391,9 +34418,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L67",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_wta_backend_py_float",
-      "target": "dwta_optimizer_clean_slate_optimizer_cleanslateoptimizer",
-      "confidence_score": 0.5
+      "target": "dwta_optimizer_clean_slate_optimizer_cleanslateoptimizer"
     },
     {
       "relation": "rationale_for",
@@ -71754,9 +71781,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L12",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ros2_dwta_dwta_nodes_planning_node_py",
-      "target": "dwta_nodes_messages_ballistictrack",
-      "confidence_score": 1.0
+      "target": "dwta_nodes_messages_ballistictrack"
     },
     {
       "relation": "imports",
@@ -71776,9 +71803,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L23",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ros2_dwta_dwta_nodes_wta_backend_py",
-      "target": "dwta_nodes_messages_ballistictrack",
-      "confidence_score": 1.0
+      "target": "dwta_nodes_messages_ballistictrack"
     },
     {
       "relation": "uses",
@@ -71786,9 +71813,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L12",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "dwta_nodes_planning_node_planningnode",
-      "target": "dwta_nodes_messages_ballistictrack",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_messages_ballistictrack"
     },
     {
       "relation": "uses",
@@ -71796,9 +71823,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L12",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_planning_node_py_battery",
-      "target": "dwta_nodes_messages_ballistictrack",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_messages_ballistictrack"
     },
     {
       "relation": "uses",
@@ -71806,9 +71833,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L12",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_planning_node_py_asset",
-      "target": "dwta_nodes_messages_ballistictrack",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_messages_ballistictrack"
     },
     {
       "relation": "uses",
@@ -71816,9 +71843,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L12",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "wtabackend",
-      "target": "dwta_nodes_messages_ballistictrack",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_messages_ballistictrack"
     },
     {
       "relation": "uses",
@@ -71826,9 +71853,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L12",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_planning_node_py_event",
-      "target": "dwta_nodes_messages_ballistictrack",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_messages_ballistictrack"
     },
     {
       "relation": "uses",
@@ -71836,9 +71863,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L12",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_planning_node_py_threatscores",
-      "target": "dwta_nodes_messages_ballistictrack",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_messages_ballistictrack"
     },
     {
       "relation": "uses",
@@ -71846,9 +71873,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L12",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_planning_node_py_engagementmatrix",
-      "target": "dwta_nodes_messages_ballistictrack",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_messages_ballistictrack"
     },
     {
       "relation": "uses",
@@ -71856,9 +71883,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L12",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "defensepolicy",
-      "target": "dwta_nodes_messages_ballistictrack",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_messages_ballistictrack"
     },
     {
       "relation": "uses",
@@ -71866,9 +71893,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L12",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_planning_node_py_trackarray",
-      "target": "dwta_nodes_messages_ballistictrack",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_messages_ballistictrack"
     },
     {
       "relation": "uses",
@@ -71876,9 +71903,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L12",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_planning_node_py_interceptorstatus",
-      "target": "dwta_nodes_messages_ballistictrack",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_messages_ballistictrack"
     },
     {
       "relation": "uses",
@@ -71946,9 +71973,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L23",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "dwta_nodes_wta_backend_wtainput",
-      "target": "dwta_nodes_messages_ballistictrack",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_messages_ballistictrack"
     },
     {
       "relation": "uses",
@@ -71956,9 +71983,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L23",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "dwta_nodes_wta_backend_wtabackend",
-      "target": "dwta_nodes_messages_ballistictrack",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_messages_ballistictrack"
     },
     {
       "relation": "uses",
@@ -71966,9 +71993,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L23",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "assignment",
-      "target": "dwta_nodes_messages_ballistictrack",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_messages_ballistictrack"
     },
     {
       "relation": "uses",
@@ -71976,9 +72003,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L23",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "dwta_nodes_wta_backend_cleanslateadapter",
-      "target": "dwta_nodes_messages_ballistictrack",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_messages_ballistictrack"
     },
     {
       "relation": "uses",
@@ -71986,9 +72013,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L23",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "any",
-      "target": "dwta_nodes_messages_ballistictrack",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_messages_ballistictrack"
     },
     {
       "relation": "uses",
@@ -71996,9 +72023,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L23",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_wta_backend_py_battery",
-      "target": "dwta_nodes_messages_ballistictrack",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_messages_ballistictrack"
     },
     {
       "relation": "uses",
@@ -72006,9 +72033,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L23",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_wta_backend_py_str",
-      "target": "dwta_nodes_messages_ballistictrack",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_messages_ballistictrack"
     },
     {
       "relation": "uses",
@@ -72016,9 +72043,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L23",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "threatscore",
-      "target": "dwta_nodes_messages_ballistictrack",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_messages_ballistictrack"
     },
     {
       "relation": "uses",
@@ -72026,9 +72053,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L23",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_wta_backend_py_float",
-      "target": "dwta_nodes_messages_ballistictrack",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_messages_ballistictrack"
     },
     {
       "relation": "calls",
@@ -72048,9 +72075,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L12",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ros2_dwta_dwta_nodes_planning_node_py",
-      "target": "dwta_nodes_messages_trackarray",
-      "confidence_score": 1.0
+      "target": "dwta_nodes_messages_trackarray"
     },
     {
       "relation": "imports",
@@ -72091,9 +72118,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L12",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "dwta_nodes_planning_node_planningnode",
-      "target": "dwta_nodes_messages_trackarray",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_messages_trackarray"
     },
     {
       "relation": "uses",
@@ -72101,9 +72128,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L12",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_planning_node_py_battery",
-      "target": "dwta_nodes_messages_trackarray",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_messages_trackarray"
     },
     {
       "relation": "uses",
@@ -72111,9 +72138,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L12",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_planning_node_py_asset",
-      "target": "dwta_nodes_messages_trackarray",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_messages_trackarray"
     },
     {
       "relation": "uses",
@@ -72121,9 +72148,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L12",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "wtabackend",
-      "target": "dwta_nodes_messages_trackarray",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_messages_trackarray"
     },
     {
       "relation": "uses",
@@ -72131,9 +72158,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L12",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_planning_node_py_event",
-      "target": "dwta_nodes_messages_trackarray",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_messages_trackarray"
     },
     {
       "relation": "uses",
@@ -72141,9 +72168,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L12",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_planning_node_py_threatscores",
-      "target": "dwta_nodes_messages_trackarray",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_messages_trackarray"
     },
     {
       "relation": "uses",
@@ -72151,9 +72178,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L12",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_planning_node_py_engagementmatrix",
-      "target": "dwta_nodes_messages_trackarray",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_messages_trackarray"
     },
     {
       "relation": "uses",
@@ -72161,9 +72188,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L12",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "defensepolicy",
-      "target": "dwta_nodes_messages_trackarray",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_messages_trackarray"
     },
     {
       "relation": "uses",
@@ -72171,9 +72198,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L12",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_planning_node_py_trackarray",
-      "target": "dwta_nodes_messages_trackarray",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_messages_trackarray"
     },
     {
       "relation": "uses",
@@ -72181,9 +72208,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L12",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_planning_node_py_interceptorstatus",
-      "target": "dwta_nodes_messages_trackarray",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_messages_trackarray"
     },
     {
       "relation": "uses",
@@ -72301,9 +72328,9 @@
       "source_file": "ros2_dwta/dwta_nodes/world_state_node.py",
       "source_location": "L13",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_world_state_node_py_threatscores",
-      "target": "dwta_nodes_messages_trackarray",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_messages_trackarray"
     },
     {
       "relation": "uses",
@@ -72311,9 +72338,9 @@
       "source_file": "ros2_dwta/dwta_nodes/world_state_node.py",
       "source_location": "L13",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_world_state_node_py_engagementmatrix",
-      "target": "dwta_nodes_messages_trackarray",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_messages_trackarray"
     },
     {
       "relation": "uses",
@@ -72524,9 +72551,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L23",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "dwta_nodes_wta_backend_wtainput",
-      "target": "dwta_nodes_messages_threatscore",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_messages_threatscore"
     },
     {
       "relation": "uses",
@@ -72554,9 +72581,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L23",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "dwta_nodes_wta_backend_cleanslateadapter",
-      "target": "dwta_nodes_messages_threatscore",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_messages_threatscore"
     },
     {
       "relation": "uses",
@@ -72564,9 +72591,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L23",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "any",
-      "target": "dwta_nodes_messages_threatscore",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_messages_threatscore"
     },
     {
       "relation": "uses",
@@ -72574,9 +72601,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L23",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_wta_backend_py_battery",
-      "target": "dwta_nodes_messages_threatscore",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_messages_threatscore"
     },
     {
       "relation": "uses",
@@ -72707,9 +72734,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L12",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_planning_node_py_asset",
-      "target": "dwta_nodes_messages_threatscores",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_messages_threatscores"
     },
     {
       "relation": "uses",
@@ -72737,9 +72764,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L12",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_planning_node_py_threatscores",
-      "target": "dwta_nodes_messages_threatscores",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_messages_threatscores"
     },
     {
       "relation": "uses",
@@ -72747,9 +72774,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L12",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_planning_node_py_engagementmatrix",
-      "target": "dwta_nodes_messages_threatscores",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_messages_threatscores"
     },
     {
       "relation": "uses",
@@ -72757,9 +72784,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L12",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "defensepolicy",
-      "target": "dwta_nodes_messages_threatscores",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_messages_threatscores"
     },
     {
       "relation": "uses",
@@ -72767,9 +72794,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L12",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_planning_node_py_trackarray",
-      "target": "dwta_nodes_messages_threatscores",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_messages_threatscores"
     },
     {
       "relation": "uses",
@@ -72837,9 +72864,9 @@
       "source_file": "ros2_dwta/dwta_nodes/world_state_node.py",
       "source_location": "L13",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_world_state_node_py_threatscores",
-      "target": "dwta_nodes_messages_threatscores",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_messages_threatscores"
     },
     {
       "relation": "uses",
@@ -72847,9 +72874,9 @@
       "source_file": "ros2_dwta/dwta_nodes/world_state_node.py",
       "source_location": "L13",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_world_state_node_py_engagementmatrix",
-      "target": "dwta_nodes_messages_threatscores",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_messages_threatscores"
     },
     {
       "relation": "uses",
@@ -72959,9 +72986,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L23",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "dwta_nodes_wta_backend_wtainput",
-      "target": "dwta_nodes_messages_engagementcell",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_messages_engagementcell"
     },
     {
       "relation": "uses",
@@ -72989,9 +73016,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L23",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "dwta_nodes_wta_backend_cleanslateadapter",
-      "target": "dwta_nodes_messages_engagementcell",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_messages_engagementcell"
     },
     {
       "relation": "uses",
@@ -72999,9 +73026,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L23",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "any",
-      "target": "dwta_nodes_messages_engagementcell",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_messages_engagementcell"
     },
     {
       "relation": "uses",
@@ -73009,9 +73036,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L23",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_wta_backend_py_battery",
-      "target": "dwta_nodes_messages_engagementcell",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_messages_engagementcell"
     },
     {
       "relation": "uses",
@@ -73131,9 +73158,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L12",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_planning_node_py_asset",
-      "target": "dwta_nodes_messages_engagementmatrix",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_messages_engagementmatrix"
     },
     {
       "relation": "uses",
@@ -73161,9 +73188,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L12",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_planning_node_py_threatscores",
-      "target": "dwta_nodes_messages_engagementmatrix",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_messages_engagementmatrix"
     },
     {
       "relation": "uses",
@@ -73171,9 +73198,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L12",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_planning_node_py_engagementmatrix",
-      "target": "dwta_nodes_messages_engagementmatrix",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_messages_engagementmatrix"
     },
     {
       "relation": "uses",
@@ -73181,9 +73208,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L12",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "defensepolicy",
-      "target": "dwta_nodes_messages_engagementmatrix",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_messages_engagementmatrix"
     },
     {
       "relation": "uses",
@@ -73191,9 +73218,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L12",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_planning_node_py_trackarray",
-      "target": "dwta_nodes_messages_engagementmatrix",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_messages_engagementmatrix"
     },
     {
       "relation": "uses",
@@ -73231,9 +73258,9 @@
       "source_file": "ros2_dwta/dwta_nodes/world_state_node.py",
       "source_location": "L13",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_world_state_node_py_threatscores",
-      "target": "dwta_nodes_messages_engagementmatrix",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_messages_engagementmatrix"
     },
     {
       "relation": "uses",
@@ -73241,9 +73268,9 @@
       "source_file": "ros2_dwta/dwta_nodes/world_state_node.py",
       "source_location": "L13",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_world_state_node_py_engagementmatrix",
-      "target": "dwta_nodes_messages_engagementmatrix",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_messages_engagementmatrix"
     },
     {
       "relation": "uses",
@@ -73322,9 +73349,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L12",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ros2_dwta_dwta_nodes_planning_node_py",
-      "target": "dwta_nodes_messages_assignment",
-      "confidence_score": 1.0
+      "target": "dwta_nodes_messages_assignment"
     },
     {
       "relation": "imports",
@@ -73343,9 +73370,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L12",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "dwta_nodes_planning_node_planningnode",
-      "target": "dwta_nodes_messages_assignment",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_messages_assignment"
     },
     {
       "relation": "uses",
@@ -73353,9 +73380,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L12",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_planning_node_py_battery",
-      "target": "dwta_nodes_messages_assignment",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_messages_assignment"
     },
     {
       "relation": "uses",
@@ -73363,9 +73390,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L12",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_planning_node_py_asset",
-      "target": "dwta_nodes_messages_assignment",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_messages_assignment"
     },
     {
       "relation": "uses",
@@ -73373,9 +73400,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L12",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "wtabackend",
-      "target": "dwta_nodes_messages_assignment",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_messages_assignment"
     },
     {
       "relation": "uses",
@@ -73383,9 +73410,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L12",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_planning_node_py_event",
-      "target": "dwta_nodes_messages_assignment",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_messages_assignment"
     },
     {
       "relation": "uses",
@@ -73393,9 +73420,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L12",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_planning_node_py_threatscores",
-      "target": "dwta_nodes_messages_assignment",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_messages_assignment"
     },
     {
       "relation": "uses",
@@ -73403,9 +73430,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L12",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_planning_node_py_engagementmatrix",
-      "target": "dwta_nodes_messages_assignment",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_messages_assignment"
     },
     {
       "relation": "uses",
@@ -73413,9 +73440,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L12",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "defensepolicy",
-      "target": "dwta_nodes_messages_assignment",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_messages_assignment"
     },
     {
       "relation": "uses",
@@ -73423,9 +73450,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L12",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_planning_node_py_trackarray",
-      "target": "dwta_nodes_messages_assignment",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_messages_assignment"
     },
     {
       "relation": "uses",
@@ -73433,9 +73460,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L12",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_planning_node_py_interceptorstatus",
-      "target": "dwta_nodes_messages_assignment",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_messages_assignment"
     },
     {
       "relation": "uses",
@@ -73443,9 +73470,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L23",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "dwta_nodes_wta_backend_wtainput",
-      "target": "dwta_nodes_messages_assignment",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_messages_assignment"
     },
     {
       "relation": "uses",
@@ -73473,9 +73500,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L23",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "dwta_nodes_wta_backend_cleanslateadapter",
-      "target": "dwta_nodes_messages_assignment",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_messages_assignment"
     },
     {
       "relation": "uses",
@@ -73483,9 +73510,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L23",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "any",
-      "target": "dwta_nodes_messages_assignment",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_messages_assignment"
     },
     {
       "relation": "uses",
@@ -73493,9 +73520,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L23",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_wta_backend_py_battery",
-      "target": "dwta_nodes_messages_assignment",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_messages_assignment"
     },
     {
       "relation": "uses",
@@ -73604,9 +73631,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L12",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_planning_node_py_asset",
-      "target": "dwta_nodes_messages_engagementplan",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_messages_engagementplan"
     },
     {
       "relation": "uses",
@@ -73634,9 +73661,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L12",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_planning_node_py_threatscores",
-      "target": "dwta_nodes_messages_engagementplan",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_messages_engagementplan"
     },
     {
       "relation": "uses",
@@ -73644,9 +73671,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L12",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_planning_node_py_engagementmatrix",
-      "target": "dwta_nodes_messages_engagementplan",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_messages_engagementplan"
     },
     {
       "relation": "uses",
@@ -73654,9 +73681,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L12",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "defensepolicy",
-      "target": "dwta_nodes_messages_engagementplan",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_messages_engagementplan"
     },
     {
       "relation": "uses",
@@ -73664,9 +73691,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L12",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_planning_node_py_trackarray",
-      "target": "dwta_nodes_messages_engagementplan",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_messages_engagementplan"
     },
     {
       "relation": "uses",
@@ -73777,9 +73804,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L12",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_planning_node_py_asset",
-      "target": "dwta_nodes_messages_interceptorstatus",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_messages_interceptorstatus"
     },
     {
       "relation": "uses",
@@ -73807,9 +73834,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L12",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_planning_node_py_threatscores",
-      "target": "dwta_nodes_messages_interceptorstatus",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_messages_interceptorstatus"
     },
     {
       "relation": "uses",
@@ -73817,9 +73844,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L12",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_planning_node_py_engagementmatrix",
-      "target": "dwta_nodes_messages_interceptorstatus",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_messages_interceptorstatus"
     },
     {
       "relation": "uses",
@@ -73827,9 +73854,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L12",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "defensepolicy",
-      "target": "dwta_nodes_messages_interceptorstatus",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_messages_interceptorstatus"
     },
     {
       "relation": "uses",
@@ -73837,9 +73864,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L12",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_planning_node_py_trackarray",
-      "target": "dwta_nodes_messages_interceptorstatus",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_messages_interceptorstatus"
     },
     {
       "relation": "uses",
@@ -73947,9 +73974,9 @@
       "source_file": "ros2_dwta/dwta_nodes/world_state_node.py",
       "source_location": "L13",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_world_state_node_py_threatscores",
-      "target": "dwta_nodes_messages_interceptorstatus",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_messages_interceptorstatus"
     },
     {
       "relation": "uses",
@@ -73957,9 +73984,9 @@
       "source_file": "ros2_dwta/dwta_nodes/world_state_node.py",
       "source_location": "L13",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_world_state_node_py_engagementmatrix",
-      "target": "dwta_nodes_messages_interceptorstatus",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_messages_interceptorstatus"
     },
     {
       "relation": "uses",
@@ -74108,9 +74135,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L12",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_planning_node_py_asset",
-      "target": "dwta_nodes_messages_defensepolicy",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_messages_defensepolicy"
     },
     {
       "relation": "uses",
@@ -74138,9 +74165,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L12",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_planning_node_py_threatscores",
-      "target": "dwta_nodes_messages_defensepolicy",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_messages_defensepolicy"
     },
     {
       "relation": "uses",
@@ -74148,9 +74175,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L12",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_planning_node_py_engagementmatrix",
-      "target": "dwta_nodes_messages_defensepolicy",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_messages_defensepolicy"
     },
     {
       "relation": "uses",
@@ -74158,9 +74185,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L12",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "defensepolicy",
-      "target": "dwta_nodes_messages_defensepolicy",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_messages_defensepolicy"
     },
     {
       "relation": "uses",
@@ -74168,9 +74195,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L12",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_planning_node_py_trackarray",
-      "target": "dwta_nodes_messages_defensepolicy",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_messages_defensepolicy"
     },
     {
       "relation": "uses",
@@ -74252,9 +74279,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L12",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_planning_node_py_asset",
-      "target": "dwta_nodes_messages_event",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_messages_event"
     },
     {
       "relation": "uses",
@@ -74282,9 +74309,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L12",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_planning_node_py_threatscores",
-      "target": "dwta_nodes_messages_event",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_messages_event"
     },
     {
       "relation": "uses",
@@ -74292,9 +74319,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L12",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_planning_node_py_engagementmatrix",
-      "target": "dwta_nodes_messages_event",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_messages_event"
     },
     {
       "relation": "uses",
@@ -74302,9 +74329,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L12",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "defensepolicy",
-      "target": "dwta_nodes_messages_event",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_messages_event"
     },
     {
       "relation": "uses",
@@ -74312,9 +74339,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L12",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_planning_node_py_trackarray",
-      "target": "dwta_nodes_messages_event",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_messages_event"
     },
     {
       "relation": "uses",
@@ -74412,9 +74439,9 @@
       "source_file": "ros2_dwta/dwta_nodes/world_state_node.py",
       "source_location": "L13",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_world_state_node_py_threatscores",
-      "target": "dwta_nodes_messages_event",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_messages_event"
     },
     {
       "relation": "uses",
@@ -74422,9 +74449,9 @@
       "source_file": "ros2_dwta/dwta_nodes/world_state_node.py",
       "source_location": "L13",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_world_state_node_py_engagementmatrix",
-      "target": "dwta_nodes_messages_event",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_messages_event"
     },
     {
       "relation": "uses",
@@ -74634,9 +74661,9 @@
       "source_file": "ros2_dwta/dwta_nodes/world_state_node.py",
       "source_location": "L13",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_world_state_node_py_threatscores",
-      "target": "dwta_nodes_messages_threatstate",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_messages_threatstate"
     },
     {
       "relation": "uses",
@@ -74644,9 +74671,9 @@
       "source_file": "ros2_dwta/dwta_nodes/world_state_node.py",
       "source_location": "L13",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_world_state_node_py_engagementmatrix",
-      "target": "dwta_nodes_messages_threatstate",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_messages_threatstate"
     },
     {
       "relation": "uses",
@@ -74777,9 +74804,9 @@
       "source_file": "ros2_dwta/dwta_nodes/world_state_node.py",
       "source_location": "L13",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_world_state_node_py_threatscores",
-      "target": "dwta_nodes_messages_batterystate",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_messages_batterystate"
     },
     {
       "relation": "uses",
@@ -74787,9 +74814,9 @@
       "source_file": "ros2_dwta/dwta_nodes/world_state_node.py",
       "source_location": "L13",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_world_state_node_py_engagementmatrix",
-      "target": "dwta_nodes_messages_batterystate",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_messages_batterystate"
     },
     {
       "relation": "uses",
@@ -75062,9 +75089,9 @@
       "source_file": "ros2_dwta/dwta_nodes/world_state_node.py",
       "source_location": "L13",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_world_state_node_py_threatscores",
-      "target": "dwta_nodes_messages_worldstate",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_messages_worldstate"
     },
     {
       "relation": "uses",
@@ -75072,9 +75099,9 @@
       "source_file": "ros2_dwta/dwta_nodes/world_state_node.py",
       "source_location": "L13",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_world_state_node_py_engagementmatrix",
-      "target": "dwta_nodes_messages_worldstate",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_messages_worldstate"
     },
     {
       "relation": "uses",
@@ -75227,9 +75254,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L17",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ros2_dwta_dwta_nodes_planning_node_py",
-      "target": "dwta_nodes_scenario_asset",
-      "confidence_score": 1.0
+      "target": "dwta_nodes_scenario_asset"
     },
     {
       "relation": "imports",
@@ -75249,9 +75276,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L18",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ros2_dwta_dwta_nodes_planning_node_py",
-      "target": "dwta_nodes_wta_backend_cleanslateadapter",
-      "confidence_score": 1.0
+      "target": "dwta_nodes_wta_backend_cleanslateadapter"
     },
     {
       "relation": "imports",
@@ -75271,9 +75298,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L18",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ros2_dwta_dwta_nodes_planning_node_py",
-      "target": "dwta_nodes_wta_backend_wtainput",
-      "confidence_score": 1.0
+      "target": "dwta_nodes_wta_backend_wtainput"
     },
     {
       "relation": "imports",
@@ -75352,9 +75379,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L61",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "dwta_nodes_planning_node_planningnode",
-      "target": "dwta_nodes_planning_node_planningnode_on_tracks",
-      "confidence_score": 1.0
+      "target": "dwta_nodes_planning_node_planningnode_on_tracks"
     },
     {
       "relation": "method",
@@ -75415,9 +75442,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L17",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "dwta_nodes_planning_node_planningnode",
-      "target": "dwta_nodes_scenario_asset",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_scenario_asset"
     },
     {
       "relation": "uses",
@@ -75435,9 +75462,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L18",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "dwta_nodes_planning_node_planningnode",
-      "target": "dwta_nodes_wta_backend_cleanslateadapter",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_wta_backend_cleanslateadapter"
     },
     {
       "relation": "uses",
@@ -75455,9 +75482,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L18",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "dwta_nodes_planning_node_planningnode",
-      "target": "dwta_nodes_wta_backend_wtainput",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_wta_backend_wtainput"
     },
     {
       "relation": "uses",
@@ -75487,9 +75514,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L24",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "dwta_nodes_planning_node_planningnode_init",
-      "target": "ros2_dwta_dwta_nodes_planning_node_py_asset",
-      "confidence_score": 1.0
+      "target": "ros2_dwta_dwta_nodes_planning_node_py_asset"
     },
     {
       "relation": "references",
@@ -75509,9 +75536,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L38",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "dwta_nodes_planning_node_planningnode_init",
-      "target": "defensepolicy",
-      "confidence_score": 1.0
+      "target": "defensepolicy"
     },
     {
       "relation": "calls",
@@ -75541,9 +75568,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L17",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_planning_node_py_battery",
-      "target": "dwta_nodes_scenario_asset",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_scenario_asset"
     },
     {
       "relation": "uses",
@@ -75561,9 +75588,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L18",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_planning_node_py_battery",
-      "target": "dwta_nodes_wta_backend_cleanslateadapter",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_wta_backend_cleanslateadapter"
     },
     {
       "relation": "uses",
@@ -75581,9 +75608,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L18",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_planning_node_py_battery",
-      "target": "dwta_nodes_wta_backend_wtainput",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_wta_backend_wtainput"
     },
     {
       "relation": "uses",
@@ -75601,9 +75628,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L17",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_planning_node_py_asset",
-      "target": "dwta_nodes_scenario_asset",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_scenario_asset"
     },
     {
       "relation": "uses",
@@ -75611,9 +75638,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L17",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_planning_node_py_asset",
-      "target": "dwta_nodes_scenario_battery",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_scenario_battery"
     },
     {
       "relation": "uses",
@@ -75621,9 +75648,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L18",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_planning_node_py_asset",
-      "target": "dwta_nodes_wta_backend_cleanslateadapter",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_wta_backend_cleanslateadapter"
     },
     {
       "relation": "uses",
@@ -75631,9 +75658,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L18",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_planning_node_py_asset",
-      "target": "dwta_nodes_wta_backend_wtabackend",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_wta_backend_wtabackend"
     },
     {
       "relation": "uses",
@@ -75641,9 +75668,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L18",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_planning_node_py_asset",
-      "target": "dwta_nodes_wta_backend_wtainput",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_wta_backend_wtainput"
     },
     {
       "relation": "uses",
@@ -75651,9 +75678,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L17",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "wtabackend",
-      "target": "dwta_nodes_scenario_asset",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_scenario_asset"
     },
     {
       "relation": "uses",
@@ -75671,9 +75698,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L18",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "wtabackend",
-      "target": "dwta_nodes_wta_backend_cleanslateadapter",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_wta_backend_cleanslateadapter"
     },
     {
       "relation": "uses",
@@ -75691,9 +75718,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L18",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "wtabackend",
-      "target": "dwta_nodes_wta_backend_wtainput",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_wta_backend_wtainput"
     },
     {
       "relation": "uses",
@@ -75722,9 +75749,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L17",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_planning_node_py_event",
-      "target": "dwta_nodes_scenario_asset",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_scenario_asset"
     },
     {
       "relation": "uses",
@@ -75742,9 +75769,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L18",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_planning_node_py_event",
-      "target": "dwta_nodes_wta_backend_cleanslateadapter",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_wta_backend_cleanslateadapter"
     },
     {
       "relation": "uses",
@@ -75762,9 +75789,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L18",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_planning_node_py_event",
-      "target": "dwta_nodes_wta_backend_wtainput",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_wta_backend_wtainput"
     },
     {
       "relation": "uses",
@@ -75783,9 +75810,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L57",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "dwta_nodes_planning_node_planningnode_on_scores",
-      "target": "ros2_dwta_dwta_nodes_planning_node_py_threatscores",
-      "confidence_score": 1.0
+      "target": "ros2_dwta_dwta_nodes_planning_node_py_threatscores"
     },
     {
       "relation": "uses",
@@ -75793,9 +75820,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L17",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_planning_node_py_threatscores",
-      "target": "dwta_nodes_scenario_asset",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_scenario_asset"
     },
     {
       "relation": "uses",
@@ -75803,9 +75830,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L17",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_planning_node_py_threatscores",
-      "target": "dwta_nodes_scenario_battery",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_scenario_battery"
     },
     {
       "relation": "uses",
@@ -75813,9 +75840,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L18",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_planning_node_py_threatscores",
-      "target": "dwta_nodes_wta_backend_cleanslateadapter",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_wta_backend_cleanslateadapter"
     },
     {
       "relation": "uses",
@@ -75823,9 +75850,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L18",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_planning_node_py_threatscores",
-      "target": "dwta_nodes_wta_backend_wtabackend",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_wta_backend_wtabackend"
     },
     {
       "relation": "uses",
@@ -75833,9 +75860,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L18",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_planning_node_py_threatscores",
-      "target": "dwta_nodes_wta_backend_wtainput",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_wta_backend_wtainput"
     },
     {
       "relation": "references",
@@ -75844,9 +75871,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L58",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "dwta_nodes_planning_node_planningnode_on_matrix",
-      "target": "ros2_dwta_dwta_nodes_planning_node_py_engagementmatrix",
-      "confidence_score": 1.0
+      "target": "ros2_dwta_dwta_nodes_planning_node_py_engagementmatrix"
     },
     {
       "relation": "uses",
@@ -75854,9 +75881,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L17",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_planning_node_py_engagementmatrix",
-      "target": "dwta_nodes_scenario_asset",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_scenario_asset"
     },
     {
       "relation": "uses",
@@ -75864,9 +75891,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L17",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_planning_node_py_engagementmatrix",
-      "target": "dwta_nodes_scenario_battery",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_scenario_battery"
     },
     {
       "relation": "uses",
@@ -75874,9 +75901,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L18",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_planning_node_py_engagementmatrix",
-      "target": "dwta_nodes_wta_backend_cleanslateadapter",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_wta_backend_cleanslateadapter"
     },
     {
       "relation": "uses",
@@ -75884,9 +75911,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L18",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_planning_node_py_engagementmatrix",
-      "target": "dwta_nodes_wta_backend_wtabackend",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_wta_backend_wtabackend"
     },
     {
       "relation": "uses",
@@ -75894,9 +75921,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L18",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_planning_node_py_engagementmatrix",
-      "target": "dwta_nodes_wta_backend_wtainput",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_wta_backend_wtainput"
     },
     {
       "relation": "references",
@@ -75905,9 +75932,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L59",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "dwta_nodes_planning_node_planningnode_on_policy",
-      "target": "defensepolicy",
-      "confidence_score": 1.0
+      "target": "defensepolicy"
     },
     {
       "relation": "uses",
@@ -75915,9 +75942,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L17",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "defensepolicy",
-      "target": "dwta_nodes_scenario_asset",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_scenario_asset"
     },
     {
       "relation": "uses",
@@ -75925,9 +75952,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L17",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "defensepolicy",
-      "target": "dwta_nodes_scenario_battery",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_scenario_battery"
     },
     {
       "relation": "uses",
@@ -75935,9 +75962,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L18",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "defensepolicy",
-      "target": "dwta_nodes_wta_backend_cleanslateadapter",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_wta_backend_cleanslateadapter"
     },
     {
       "relation": "uses",
@@ -75945,9 +75972,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L18",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "defensepolicy",
-      "target": "dwta_nodes_wta_backend_wtabackend",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_wta_backend_wtabackend"
     },
     {
       "relation": "uses",
@@ -75955,9 +75982,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L18",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "defensepolicy",
-      "target": "dwta_nodes_wta_backend_wtainput",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_wta_backend_wtainput"
     },
     {
       "relation": "references",
@@ -75966,9 +75993,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L61",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "dwta_nodes_planning_node_planningnode_on_tracks",
-      "target": "ros2_dwta_dwta_nodes_planning_node_py_trackarray",
-      "confidence_score": 1.0
+      "target": "ros2_dwta_dwta_nodes_planning_node_py_trackarray"
     },
     {
       "relation": "uses",
@@ -75976,9 +76003,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L17",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_planning_node_py_trackarray",
-      "target": "dwta_nodes_scenario_asset",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_scenario_asset"
     },
     {
       "relation": "uses",
@@ -75986,9 +76013,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L17",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_planning_node_py_trackarray",
-      "target": "dwta_nodes_scenario_battery",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_scenario_battery"
     },
     {
       "relation": "uses",
@@ -75996,9 +76023,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L18",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_planning_node_py_trackarray",
-      "target": "dwta_nodes_wta_backend_cleanslateadapter",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_wta_backend_cleanslateadapter"
     },
     {
       "relation": "uses",
@@ -76006,9 +76033,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L18",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_planning_node_py_trackarray",
-      "target": "dwta_nodes_wta_backend_wtabackend",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_wta_backend_wtabackend"
     },
     {
       "relation": "uses",
@@ -76016,9 +76043,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L18",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_planning_node_py_trackarray",
-      "target": "dwta_nodes_wta_backend_wtainput",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_wta_backend_wtainput"
     },
     {
       "relation": "references",
@@ -76037,9 +76064,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L17",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_planning_node_py_interceptorstatus",
-      "target": "dwta_nodes_scenario_asset",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_scenario_asset"
     },
     {
       "relation": "uses",
@@ -76057,9 +76084,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L18",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_planning_node_py_interceptorstatus",
-      "target": "dwta_nodes_wta_backend_cleanslateadapter",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_wta_backend_cleanslateadapter"
     },
     {
       "relation": "uses",
@@ -76077,9 +76104,9 @@
       "source_file": "ros2_dwta/dwta_nodes/planning_node.py",
       "source_location": "L18",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_planning_node_py_interceptorstatus",
-      "target": "dwta_nodes_wta_backend_wtainput",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_wta_backend_wtainput"
     },
     {
       "relation": "uses",
@@ -76670,6 +76697,16 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "ros2_dwta/dwta_nodes/scenario.py",
+      "source_location": "L108",
+      "weight": 1.0,
+      "source": "ros2_dwta_dwta_nodes_scenario_py",
+      "target": "dwta_nodes_scenario_random_saturation_scenario",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ros2_dwta/dwta_nodes/scenario.py",
       "source_location": "L43",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -76757,9 +76794,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L24",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ros2_dwta_dwta_nodes_wta_backend_py",
-      "target": "ros2_dwta_dwta_nodes_scenario_py",
-      "confidence_score": 1.0
+      "target": "ros2_dwta_dwta_nodes_scenario_py"
     },
     {
       "relation": "references",
@@ -76782,6 +76819,17 @@
       "confidence_score": 1.0,
       "source": "dwta_nodes_scenario_saturation_scenario",
       "target": "dwta_nodes_scenario_asset"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "ros2_dwta/dwta_nodes/scenario.py",
+      "source_location": "L133",
+      "weight": 1.0,
+      "source": "dwta_nodes_scenario_random_saturation_scenario",
+      "target": "dwta_nodes_scenario_asset",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -76834,9 +76882,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L24",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ros2_dwta_dwta_nodes_wta_backend_py",
-      "target": "dwta_nodes_scenario_asset",
-      "confidence_score": 1.0
+      "target": "dwta_nodes_scenario_asset"
     },
     {
       "relation": "uses",
@@ -77044,9 +77092,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L24",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "dwta_nodes_wta_backend_wtainput",
-      "target": "dwta_nodes_scenario_asset",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_scenario_asset"
     },
     {
       "relation": "uses",
@@ -77054,9 +77102,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L24",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "dwta_nodes_wta_backend_wtabackend",
-      "target": "dwta_nodes_scenario_asset",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_scenario_asset"
     },
     {
       "relation": "uses",
@@ -77064,9 +77112,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L24",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "assignment",
-      "target": "dwta_nodes_scenario_asset",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_scenario_asset"
     },
     {
       "relation": "uses",
@@ -77074,9 +77122,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L24",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "dwta_nodes_wta_backend_cleanslateadapter",
-      "target": "dwta_nodes_scenario_asset",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_scenario_asset"
     },
     {
       "relation": "uses",
@@ -77084,9 +77132,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L24",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "any",
-      "target": "dwta_nodes_scenario_asset",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_scenario_asset"
     },
     {
       "relation": "uses",
@@ -77094,9 +77142,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L24",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_wta_backend_py_battery",
-      "target": "dwta_nodes_scenario_asset",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_scenario_asset"
     },
     {
       "relation": "uses",
@@ -77104,9 +77152,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L24",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_wta_backend_py_str",
-      "target": "dwta_nodes_scenario_asset",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_scenario_asset"
     },
     {
       "relation": "uses",
@@ -77114,9 +77162,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L24",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "threatscore",
-      "target": "dwta_nodes_scenario_asset",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_scenario_asset"
     },
     {
       "relation": "uses",
@@ -77124,9 +77172,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L24",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_wta_backend_py_float",
-      "target": "dwta_nodes_scenario_asset",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_scenario_asset"
     },
     {
       "relation": "references",
@@ -77184,14 +77232,25 @@
       "target": "dwta_nodes_scenario_battery"
     },
     {
+      "relation": "references",
+      "context": "generic_arg",
+      "confidence": "EXTRACTED",
+      "source_file": "ros2_dwta/dwta_nodes/scenario.py",
+      "source_location": "L108",
+      "weight": 1.0,
+      "source": "dwta_nodes_scenario_random_saturation_scenario",
+      "target": "dwta_nodes_scenario_battery",
+      "confidence_score": 1.0
+    },
+    {
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "ros2_dwta/dwta_nodes/scenario.py",
       "source_location": "L26",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "dwta_nodes_scenario_rationale_26",
-      "target": "dwta_nodes_scenario_battery",
-      "confidence_score": 1.0
+      "target": "dwta_nodes_scenario_battery"
     },
     {
       "relation": "imports",
@@ -77233,9 +77292,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L24",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ros2_dwta_dwta_nodes_wta_backend_py",
-      "target": "dwta_nodes_scenario_battery",
-      "confidence_score": 1.0
+      "target": "dwta_nodes_scenario_battery"
     },
     {
       "relation": "uses",
@@ -77413,9 +77472,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L24",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "dwta_nodes_wta_backend_wtainput",
-      "target": "dwta_nodes_scenario_battery",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_scenario_battery"
     },
     {
       "relation": "uses",
@@ -77423,9 +77482,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L24",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "dwta_nodes_wta_backend_wtabackend",
-      "target": "dwta_nodes_scenario_battery",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_scenario_battery"
     },
     {
       "relation": "uses",
@@ -77433,9 +77492,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L24",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "assignment",
-      "target": "dwta_nodes_scenario_battery",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_scenario_battery"
     },
     {
       "relation": "uses",
@@ -77443,9 +77502,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L24",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "dwta_nodes_wta_backend_cleanslateadapter",
-      "target": "dwta_nodes_scenario_battery",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_scenario_battery"
     },
     {
       "relation": "uses",
@@ -77453,9 +77512,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L24",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "any",
-      "target": "dwta_nodes_scenario_battery",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_scenario_battery"
     },
     {
       "relation": "uses",
@@ -77463,9 +77522,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L24",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_wta_backend_py_battery",
-      "target": "dwta_nodes_scenario_battery",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_scenario_battery"
     },
     {
       "relation": "uses",
@@ -77473,9 +77532,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L24",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_wta_backend_py_str",
-      "target": "dwta_nodes_scenario_battery",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_scenario_battery"
     },
     {
       "relation": "uses",
@@ -77483,9 +77542,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L24",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "threatscore",
-      "target": "dwta_nodes_scenario_battery",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_scenario_battery"
     },
     {
       "relation": "uses",
@@ -77493,9 +77552,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L24",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "ros2_dwta_dwta_nodes_wta_backend_py_float",
-      "target": "dwta_nodes_scenario_battery",
-      "confidence_score": 0.5
+      "target": "dwta_nodes_scenario_battery"
     },
     {
       "relation": "rationale_for",
@@ -77559,6 +77618,17 @@
       "confidence_score": 1.0,
       "source": "dwta_nodes_scenario_saturation_scenario",
       "target": "dwta_nodes_scenario_threatspawn"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "ros2_dwta/dwta_nodes/scenario.py",
+      "source_location": "L153",
+      "weight": 1.0,
+      "source": "dwta_nodes_scenario_random_saturation_scenario",
+      "target": "dwta_nodes_scenario_threatspawn",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -77687,14 +77757,25 @@
       "target": "dwta_nodes_scenario_lsam"
     },
     {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "ros2_dwta/dwta_nodes/scenario.py",
+      "source_location": "L136",
+      "weight": 1.0,
+      "source": "dwta_nodes_scenario_random_saturation_scenario",
+      "target": "dwta_nodes_scenario_lsam",
+      "confidence_score": 1.0
+    },
+    {
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "ros2_dwta/dwta_nodes/scenario.py",
       "source_location": "L48",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "dwta_nodes_scenario_rationale_48",
-      "target": "dwta_nodes_scenario_lsam",
-      "confidence_score": 1.0
+      "target": "dwta_nodes_scenario_lsam"
     },
     {
       "relation": "rationale_for",
@@ -77727,6 +77808,17 @@
       "confidence_score": 1.0,
       "source": "dwta_nodes_scenario_msam",
       "target": "ros2_dwta_dwta_nodes_scenario_py_float"
+    },
+    {
+      "relation": "references",
+      "context": "generic_arg",
+      "confidence": "EXTRACTED",
+      "source_file": "ros2_dwta/dwta_nodes/scenario.py",
+      "source_location": "L108",
+      "weight": 1.0,
+      "source": "dwta_nodes_scenario_random_saturation_scenario",
+      "target": "ros2_dwta_dwta_nodes_scenario_py_float",
+      "confidence_score": 1.0
     },
     {
       "relation": "references",
@@ -77784,14 +77876,25 @@
       "target": "dwta_nodes_scenario_msam"
     },
     {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "ros2_dwta/dwta_nodes/scenario.py",
+      "source_location": "L138",
+      "weight": 1.0,
+      "source": "dwta_nodes_scenario_random_saturation_scenario",
+      "target": "dwta_nodes_scenario_msam",
+      "confidence_score": 1.0
+    },
+    {
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "ros2_dwta/dwta_nodes/scenario.py",
       "source_location": "L54",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "dwta_nodes_scenario_rationale_54",
-      "target": "dwta_nodes_scenario_msam",
-      "confidence_score": 1.0
+      "target": "dwta_nodes_scenario_msam"
     },
     {
       "relation": "rationale_for",
@@ -77820,9 +77923,9 @@
       "source_file": "ros2_dwta/dwta_nodes/scenario.py",
       "source_location": "L76",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "dwta_nodes_scenario_rationale_76",
-      "target": "dwta_nodes_scenario_saturation_scenario",
-      "confidence_score": 1.0
+      "target": "dwta_nodes_scenario_saturation_scenario"
     },
     {
       "relation": "rationale_for",
@@ -77833,6 +77936,27 @@
       "confidence_score": 1.0,
       "source": "dwta_nodes_scenario_rationale_75",
       "target": "dwta_nodes_scenario_saturation_scenario"
+    },
+    {
+      "relation": "references",
+      "context": "parameter_type",
+      "confidence": "EXTRACTED",
+      "source_file": "ros2_dwta/dwta_nodes/scenario.py",
+      "source_location": "L108",
+      "weight": 1.0,
+      "source": "dwta_nodes_scenario_random_saturation_scenario",
+      "target": "ros2_dwta_dwta_nodes_scenario_py_int",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "ros2_dwta/dwta_nodes/scenario.py",
+      "source_location": "L115",
+      "weight": 1.0,
+      "source": "dwta_nodes_scenario_rationale_115",
+      "target": "dwta_nodes_scenario_random_saturation_scenario",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -79365,9 +79489,9 @@
       "source_file": "ros2_dwta/dwta_nodes/world_state_node.py",
       "source_location": "L60",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "dwta_nodes_world_state_node_worldstatenode_on_scores",
-      "target": "ros2_dwta_dwta_nodes_world_state_node_py_threatscores",
-      "confidence_score": 1.0
+      "target": "ros2_dwta_dwta_nodes_world_state_node_py_threatscores"
     },
     {
       "relation": "references",
@@ -79387,9 +79511,9 @@
       "source_file": "ros2_dwta/dwta_nodes/world_state_node.py",
       "source_location": "L64",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "dwta_nodes_world_state_node_worldstatenode_on_matrix",
-      "target": "ros2_dwta_dwta_nodes_world_state_node_py_engagementmatrix",
-      "confidence_score": 1.0
+      "target": "ros2_dwta_dwta_nodes_world_state_node_py_engagementmatrix"
     },
     {
       "relation": "references",
@@ -79549,9 +79673,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L31",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ros2_dwta_dwta_nodes_wta_backend_py",
-      "target": "dwta_nodes_wta_backend_wtainput",
-      "confidence_score": 1.0
+      "target": "dwta_nodes_wta_backend_wtainput"
     },
     {
       "relation": "contains",
@@ -79569,9 +79693,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L57",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ros2_dwta_dwta_nodes_wta_backend_py",
-      "target": "dwta_nodes_wta_backend_cleanslateadapter",
-      "confidence_score": 1.0
+      "target": "dwta_nodes_wta_backend_cleanslateadapter"
     },
     {
       "relation": "contains",
@@ -79579,9 +79703,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L71",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ros2_dwta_dwta_nodes_wta_backend_py",
-      "target": "dwta_nodes_wta_backend_battery_to_dict",
-      "confidence_score": 1.0
+      "target": "dwta_nodes_wta_backend_battery_to_dict"
     },
     {
       "relation": "contains",
@@ -79630,9 +79754,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L50",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "dwta_nodes_wta_backend_wtabackend_solve",
-      "target": "dwta_nodes_wta_backend_wtainput",
-      "confidence_score": 1.0
+      "target": "dwta_nodes_wta_backend_wtainput"
     },
     {
       "relation": "references",
@@ -79641,9 +79765,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L91",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "dwta_nodes_wta_backend_cleanslateadapter_solve",
-      "target": "dwta_nodes_wta_backend_wtainput",
-      "confidence_score": 1.0
+      "target": "dwta_nodes_wta_backend_wtainput"
     },
     {
       "relation": "rationale_for",
@@ -79651,9 +79775,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L32",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "dwta_nodes_wta_backend_rationale_32",
-      "target": "dwta_nodes_wta_backend_wtainput",
-      "confidence_score": 1.0
+      "target": "dwta_nodes_wta_backend_wtainput"
     },
     {
       "relation": "method",
@@ -79671,9 +79795,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L57",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "dwta_nodes_wta_backend_cleanslateadapter",
-      "target": "dwta_nodes_wta_backend_wtabackend",
-      "confidence_score": 1.0
+      "target": "dwta_nodes_wta_backend_wtabackend"
     },
     {
       "relation": "rationale_for",
@@ -79681,9 +79805,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L46",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "dwta_nodes_wta_backend_rationale_46",
-      "target": "dwta_nodes_wta_backend_wtabackend",
-      "confidence_score": 1.0
+      "target": "dwta_nodes_wta_backend_wtabackend"
     },
     {
       "relation": "inherits",
@@ -79777,9 +79901,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L91",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "dwta_nodes_wta_backend_cleanslateadapter_solve",
-      "target": "assignment",
-      "confidence_score": 1.0
+      "target": "assignment"
     },
     {
       "relation": "references",
@@ -79820,9 +79944,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L66",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "dwta_nodes_wta_backend_cleanslateadapter",
-      "target": "dwta_nodes_wta_backend_cleanslateadapter_init",
-      "confidence_score": 1.0
+      "target": "dwta_nodes_wta_backend_cleanslateadapter_init"
     },
     {
       "relation": "method",
@@ -79830,9 +79954,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L91",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "dwta_nodes_wta_backend_cleanslateadapter",
-      "target": "dwta_nodes_wta_backend_cleanslateadapter_solve",
-      "confidence_score": 1.0
+      "target": "dwta_nodes_wta_backend_cleanslateadapter_solve"
     },
     {
       "relation": "rationale_for",
@@ -79840,9 +79964,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L58",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "dwta_nodes_wta_backend_rationale_58",
-      "target": "dwta_nodes_wta_backend_cleanslateadapter",
-      "confidence_score": 1.0
+      "target": "dwta_nodes_wta_backend_cleanslateadapter"
     },
     {
       "relation": "references",
@@ -79851,9 +79975,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L66",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "dwta_nodes_wta_backend_cleanslateadapter_init",
-      "target": "any",
-      "confidence_score": 1.0
+      "target": "any"
     },
     {
       "relation": "references",
@@ -79862,9 +79986,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L71",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "dwta_nodes_wta_backend_battery_to_dict",
-      "target": "any",
-      "confidence_score": 1.0
+      "target": "any"
     },
     {
       "relation": "references",
@@ -79873,9 +79997,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L71",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "dwta_nodes_wta_backend_battery_to_dict",
-      "target": "ros2_dwta_dwta_nodes_wta_backend_py_battery",
-      "confidence_score": 1.0
+      "target": "ros2_dwta_dwta_nodes_wta_backend_py_battery"
     },
     {
       "relation": "references",
@@ -79884,9 +80008,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L71",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "dwta_nodes_wta_backend_battery_to_dict",
-      "target": "ros2_dwta_dwta_nodes_wta_backend_py_str",
-      "confidence_score": 1.0
+      "target": "ros2_dwta_dwta_nodes_wta_backend_py_str"
     },
     {
       "relation": "calls",
@@ -79895,9 +80019,9 @@
       "source_file": "ros2_dwta/dwta_nodes/wta_backend.py",
       "source_location": "L129",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "dwta_nodes_wta_backend_cleanslateadapter_solve",
-      "target": "dwta_nodes_wta_backend_battery_to_dict",
-      "confidence_score": 1.0
+      "target": "dwta_nodes_wta_backend_battery_to_dict"
     },
     {
       "relation": "references",
@@ -80231,9 +80355,9 @@
       "source_file": "ros2_dwta/spec/timed_automata.md",
       "source_location": "L133",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "spec_timed_automata_dwta_\uc2e4\uc2dc\uac04_\ud30c\uc774\ud504\ub77c\uc778_\ud0c0\uc784\ub4dc_\uc624\ud1a0\ub9c8\ud0c0_timed_automata_\uba85\uc138",
-      "target": "spec_timed_automata_4_2_\ub450_\ubaa8\ub378_spec_vs_impl_v2_radar_driven",
-      "confidence_score": 1.0
+      "target": "spec_timed_automata_4_2_\ub450_\ubaa8\ub378_spec_vs_impl_v2_radar_driven"
     },
     {
       "relation": "contains",
@@ -85613,5 +85737,5 @@
       "source_file": "clean_slate_optimizer.py"
     }
   ],
-  "built_at_commit": "e22c33e619e0fccb4f9ce03da83a8545e37d03c4"
+  "built_at_commit": "53da66642076cad3963a0aca469383c8a5bc6978"
 }
