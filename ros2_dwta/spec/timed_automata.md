@@ -39,7 +39,7 @@ broadcast chan tracks, scores, matrix, plan, status, policy;  // 노드 주기 �
 
 각 노드는 "주기 클럭 + 발행" 패턴의 타임드 오토마타입니다. 핵심만 표기.
 
-### 3.1 radar_node (10 Hz, 시간/월드 권위)
+### 3.1 surveillance_radar_node (중앙 감시레이다, 10 Hz, 시간/월드 권위)
 ```
 clock c;  loc Run (invariant c <= PERIOD_R)
 Run --[c >= PERIOD_R]--> Run : tracks! ; c := 0          // 추적 발행
@@ -47,6 +47,14 @@ Run --(threat enters)--> : detected!                      // 이벤트
 Run --hit[t]?--> : (위협 t 제거)                           // 요격 반영(폐루프)
 ```
 불변식: `c <= PERIOD_R` (주기 보장). 이벤트 `detected/impact` 발행.
+
+### 3.1b fire_control_radar_node[b] (포대 사격통제레이다, 포대당 1개)
+요격탄 유도 = `Interceptor` 슬롯이 곧 유도 채널. 포대 b의 채널 수 `CH[b]`가 동시
+교전 한계. LAUNCH 수신 시 채널 점유, FLYOUT 경과 시 hit/miss 판정.
+```
+loc Idle ──launch[b,t]?──> Guiding(f <= FLYOUT[b]) ──[f>=FLYOUT[b]] hit[t]!|miss[t]!──> Idle
+```
+인스턴스 수 = `CH[b]` 이므로 포대별 `inflight[b] <= CH[b]` 가 구조적으로 보장.
 
 ### 3.2 threat_assessment_node (5 Hz)
 ```

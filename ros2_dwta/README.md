@@ -21,13 +21,36 @@ control_station_node ──/policy(전시·평시, SLS/SSL, 위협당 최대탄)
 
 | 다이어그램 블록 | 노드 | 주기 | 입력 → 출력 |
 |---|---|---|---|
-| 레이다/경보 | `radar_node` | 10 Hz | (시나리오) → `/tracks`, `/radar_status` |
+| 중앙 감시레이다 | `surveillance_radar_node` (1개) | 10 Hz | 탐지·추적 → `/tracks`, `/radar_status`, `/events` |
+| 포대 사격통제레이다 | `fire_control_radar_node` (**포대당 1개**) | 10 Hz | 요격탄 유도+판정 → `/events`(INTERCEPT/MISS), `/fire_control_status` |
 | OO평가 | `threat_assessment_node` | 5 Hz | `/tracks` + 자산가치 → `/threat_scores`(점수화) |
 | OO가능성평가 | `engageability_node` | 5 Hz | `/tracks` + `/interceptor_status` + 방어영역 → `/engagement_matrix`(교전창·Pk) |
 | OO계획수립(WTA) | `planning_node` | 2 Hz | scores + matrix + `/policy` → `/engagement_plan` |
 | 발사대 | `launcher_node` | 이벤트+5 Hz | `/engagement_plan` → `/launch_events`, `/interceptor_status` |
 | 통제소 | `control_station_node` | 1 Hz | → `/policy` |
 | 상황도(COP) | `world_state_node` | 2 Hz | 전 토픽 구독 → `/world_state`(latched) |
+
+## 레이다 다중 객체 처리 (중앙 vs 포대)
+
+레이다는 역할이 다른 복수 객체이므로 노드를 분리:
+- **중앙 감시레이다** `surveillance_radar_node` (전구 1개): 적 탄도탄 탐지·추적, 표적
+  할당용 트랙(`/tracks`) 제공.
+- **포대 사격통제레이다** `fire_control_radar_node` (포대당 1개): 자기 포대의 요격탄을
+  유도. **유도 채널 수(`fire_control_channels`)가 그 포대의 동시 교전 한계**이며,
+  비행시간 경과 후 요격 성공/실패를 판정해 `/events`로 공유.
+
+→ 그 결과 포대의 동시 교전 한계는 **min(잔여탄, 유도 채널)**: `launcher_node`(탄약)와
+`fire_control_radar_node`(유도 채널)가 별개 자원으로 협력. 새 포대/레이다를 추가하려면
+`fire_control_radar_node` 인스턴스를 하나 더 띄우면 됩니다(노드 인스턴스 = 물리 객체).
+
+## 시나리오 (포화 / 상하층 동시)
+
+`SCENARIOS = {balanced, saturation}` (`scenario.py`). 기본은 `saturation`:
+- 임의 스펙: L-SAM(사거리160·Pk0.86·채널4), M-SAM(중첩사거리130·Pk0.90·채널5) ×2,
+  고속 위협 20발 집중 버스트.
+- 결과: 상층(L) 교전 진행 중 하층(M) 중첩 사거리 진입 → **상·하층 동시 교전**
+  (예: L1 4발 + M1/M2 각 1~2발 동시 비행). `python3 run_poc.py 60 saturation`.
+- 소규모 기능 확인: `python3 run_poc.py 45 balanced`.
 
 ## 정보 공유 / 이벤트 / COP
 
@@ -102,7 +125,7 @@ ros2 launch dwta_ros2 dwta_poc.launch.py     # 또는: ros2 run dwta_ros2 dwta_p
 
 ## 현재 PoC의 단순화 (다음 단계)
 
-- 요격은 결정적 단발(사격=제거)로 모델. → Pk 확률·비행시간 모델로 누설/재교전 추가.
-- 기하 특성상 상층(L-SAM)이 먼저 요격 → 하층(M-SAM)·동시 다발 포화 시나리오 튜닝.
+- 요격 판정은 결정적(Pk≥θ). → 확률·기동/이심률 등 연속 동역학으로 고도화.
 - 노드별 독립 실행파일 + 파라미터(YAML) 분리, 콜백그룹/결정적 executor 적용.
 - `viz_node`로 PyQtGraph 표시 분리(현재 GUI는 별도).
+- 다포대(여러 L-SAM) 확장 시 표적할당 충돌 회피(중복 교전 최소화) 정책 추가.

@@ -23,12 +23,13 @@ class PlanningNode(Node):
     def __init__(self, batteries: List[Battery], backend: Optional[WTABackend] = None):
         super().__init__("planning_node")
         self._backend = backend or GreedyWTA(
-            {b.id: b.simultaneous_engagements for b in batteries})
+            {b.id: b.fire_control_channels for b in batteries})
         self._available = {b.id: b.available_missiles for b in batteries}
+        self._layer = {b.id: b.layer for b in batteries}
         self._scores: Optional[ThreatScores] = None
         self._matrix: Optional[EngagementMatrix] = None
         self._policy = DefensePolicy(stamp=0.0)
-        self._covered: set = set()    # 현재 비행중/교전중 위협 (공유 상태에서 도출)
+        self._covered: set = set()    # (threat, layer) 비행중/교전중 (레이어별 — 상하층 동시 허용)
         self._terminal: set = set()   # 요격성공/탄착으로 종결된 위협 (재할당 금지)
 
         self._pub = self.create_publisher(EngagementPlan, "/engagement_plan", 10)
@@ -48,23 +49,27 @@ class PlanningNode(Node):
     def _on_policy(self, msg): self._policy = msg
 
     def _on_status(self, msg: InterceptorStatus) -> None:
-        # 공유 요격체계 상태가 단일 진실원: 잔여탄 + 현재 커버중(비행중/교전중) 위협
+        # 공유 요격체계 상태가 단일 진실원: 잔여탄 + (위협,레이어)별 커버 현황
         if msg.available:
             self._available.update(msg.available)
         covered = set()
-        for threats in msg.engaging.values():
-            covered.update(threats)
-        covered.update(i.target_threat_id for i in msg.in_flight)
+        for sid, threats in msg.engaging.items():
+            layer = self._layer.get(sid, "?")
+            for t in threats:
+                covered.add((t, layer))
+        for i in msg.in_flight:
+            covered.add((i.target_threat_id, i.layer))
         self._covered = covered
 
     def _tick(self) -> None:
         if self._scores is None or self._matrix is None:
             return
-        # 비행/교전 중(covered)이거나 종결(terminal)된 위협은 제외.
-        # MISS 시에는 covered/terminal 모두 아니므로 자동 재교전 대상으로 복귀.
-        skip = self._covered | self._terminal
-        scores = [s for s in self._scores.scores if s.threat_id not in skip]
-        cells = [c for c in self._matrix.cells if c.threat_id not in skip]
+        # 종결(terminal) 위협은 완전 제외. (위협,레이어)가 이미 커버된 칸만 제외하므로
+        # 상층 교전 중이어도 하층은 동시 가담 가능(다층요격). MISS 시 자동 재교전.
+        scores = [s for s in self._scores.scores if s.threat_id not in self._terminal]
+        cells = [c for c in self._matrix.cells
+                 if c.threat_id not in self._terminal
+                 and (c.threat_id, c.layer) not in self._covered]
         if not scores or not cells:
             return
 

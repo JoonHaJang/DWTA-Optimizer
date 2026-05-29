@@ -17,5 +17,6 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from dwta_nodes.poc_app import main  # noqa: E402
 
 if __name__ == "__main__":
-    dur = float(sys.argv[1]) if len(sys.argv) > 1 else 45.0
-    main(dur)
+    dur = float(sys.argv[1]) if len(sys.argv) > 1 else 70.0
+    scenario = sys.argv[2] if len(sys.argv) > 2 else "saturation"
+    main(dur, scenario)

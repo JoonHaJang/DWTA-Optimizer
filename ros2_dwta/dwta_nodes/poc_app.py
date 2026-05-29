@@ -9,14 +9,16 @@ from __future__ import annotations
 import sys
 
 from .ros_compat import rclpy, USING_ROS2
-from . import (ControlStationNode, EngageabilityNode, LauncherNode,
-               PlanningNode, RadarNode, ThreatAssessmentNode, WorldStateNode)
-from .scenario import default_scenario
+from . import (ControlStationNode, EngageabilityNode, FireControlRadarNode,
+               LauncherNode, PlanningNode, SurveillanceRadarNode,
+               ThreatAssessmentNode, WorldStateNode)
+from .scenario import SCENARIOS
 
 
-def build_nodes():
-    assets, batteries, spawns = default_scenario()
-    radar = RadarNode(assets, batteries, spawns)
+def build_nodes(scenario: str = "saturation"):
+    assets, batteries, spawns = SCENARIOS[scenario]()
+    radar = SurveillanceRadarNode(assets, batteries, spawns)   # 중앙 감시레이다 (1개)
+    fcrs = [FireControlRadarNode(b) for b in batteries]        # 포대 사격통제레이다 (포대당 1개)
     assessment = ThreatAssessmentNode(assets)
     engage = EngageabilityNode(batteries)
     planning = PlanningNode(batteries)
@@ -24,14 +26,14 @@ def build_nodes():
     control = ControlStationNode()
     world = WorldStateNode()
     world.set_battery_layers({b.id: b.layer for b in batteries})
-    # control & radar first so policy/tracks are available early; world last (COP)
-    nodes = [control, radar, assessment, engage, planning, launcher, world]
+    # control & radar first; FCR before launcher so guidance reacts promptly; world last
+    nodes = [control, radar, *fcrs, assessment, engage, planning, launcher, world]
     return nodes, batteries, launcher
 
 
-def main(duration: float = 45.0, args=None) -> None:
+def main(duration: float = 70.0, scenario: str = "saturation", args=None) -> None:
     rclpy.init(args=args)
-    nodes, batteries, launcher = build_nodes()
+    nodes, batteries, launcher = build_nodes(scenario)
 
     mode = "REAL ROS2 (rclpy)" if USING_ROS2 else "in-process shim (deterministic)"
     print("=" * 78)
@@ -74,8 +76,9 @@ def _summary(launcher, batteries) -> None:
 
 
 def cli() -> None:
-    dur = float(sys.argv[1]) if len(sys.argv) > 1 else 45.0
-    main(dur)
+    dur = float(sys.argv[1]) if len(sys.argv) > 1 else 70.0
+    scenario = sys.argv[2] if len(sys.argv) > 2 else "saturation"
+    main(dur, scenario)
 
 
 if __name__ == "__main__":

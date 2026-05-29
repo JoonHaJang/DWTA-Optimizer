@@ -98,6 +98,7 @@ class Interceptor:
     pk: float
     launch_time: float
     intercept_time: float          # 예상 요격 시각 (launch + flyout)
+    layer: str = "?"               # UPPER | LOWER
     state: str = "IN_FLIGHT"       # IN_FLIGHT | HIT | MISS
 
 
@@ -143,7 +144,18 @@ class Event:
     threat_id: str = ""
     system_id: str = ""
     interceptor_id: str = ""
+    pk: float = 0.0
     detail: str = ""
+
+
+@dataclass
+class FireControlStatus:
+    """포대 사격통제레이다(FCR) 상태: 유도 채널 점유 현황 — 전 노드 공유."""
+    stamp: float
+    system_id: str = ""
+    total_channels: int = 0
+    busy_channels: int = 0
+    locked_threats: List[str] = field(default_factory=list)
 
 
 # ---- Common Operational Picture (전 노드 공유 월드 상태) ------------------------

@@ -4,4 +4,5 @@ string target_threat_id
 float64 pk
 float64 launch_time
 float64 intercept_time
+string layer
 string state         # IN_FLIGHT|HIT|MISS
