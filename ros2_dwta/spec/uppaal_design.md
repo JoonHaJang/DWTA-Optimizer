@@ -307,3 +307,232 @@ WTA 정책을 따르는 어떤 옵티마이저든 만족하는 모델**"입니�
 > 정책 골격이 동일하다면 옵티마이저가 무엇이든 같은 정형 보증이 따라옵니다.
 > 옵티마이저의 진짜 해는 ROS2 시뮬레이터가 매 tick에서 실측하고, UPPAAL이 미리
 > 정형 보증한 invariant를 그 trace가 어기지 않는지 검증합니다.
+
+---
+
+## 11. 궤적·고도 기반 교전대 (사거리 + 고도 동시 게이트)
+
+v2 모델은 위협별 timing을 `ENTER_U` / `ENTER_L` 한 점으로 압축해서 "언제부터 상층/
+하층 교전대"인지만 표현했습니다. 실제 탄도탄은 **포물선 궤적 + 고도 윈도우**가
+있어서 "사거리 안" ∧ "고도 안"을 둘 다 만족해야 사격 가능합니다.
+
+UPPAAL은 sqrt/sin/cos 같은 연속 동역학을 못 다룹니다 (clock = 시간 정수만). 그렇지만
+**사거리 + 고도 둘 다의 교집합을 시간 윈도우로 사전 계산**하면 모델 안에서는 정수
+배열만 다루므로 정합 그대로 표현됩니다.
+
+### 1단계 — ROS2 시나리오에서 윈도우 사전 계산
+
+매 위협마다 발사 위치 / 속도 / 정점 고도가 정해지면 궤적이 결정되고, 포대마다
+사거리·고도 윈도우의 교집합은 한 구간 `[enter, exit]`로 떨어집니다.
+
+```python
+# ros2_dwta/dwta_nodes/scenario.py  (의사 코드)
+import math
+
+def compute_engagement_window(threat, battery):
+    """위협 궤적 × 포대 (사거리 + 고도) 게이트의 교집합 -> [enter_s, exit_s]."""
+    flight_time = math.hypot(*[i - l for i, l in
+                                zip(threat.impact_xy, threat.launch_xy)]) / threat.speed
+    enter, exit_ = None, None
+    # 100Hz 등 충분히 잘게 샘플링해서 두 게이트의 AND를 만족하는 첫/마지막 시각
+    n = int(flight_time / 0.01) + 1
+    for i in range(n):
+        t = i * 0.01
+        x = lerp(threat.launch_xy[0], threat.impact_xy[0], t / flight_time)
+        y = lerp(threat.launch_xy[1], threat.impact_xy[1], t / flight_time)
+        # 포물선: h(t) = 4 * MAX_ALT * (t/T) * (1 - t/T)
+        h = 4 * threat.max_alt_km * (t / flight_time) * (1 - t / flight_time)
+        d = math.hypot(x - battery.position[0], y - battery.position[1])
+        in_range = d <= battery.engagement_range
+        in_alt   = battery.alt_min_km <= h <= battery.alt_max_km
+        if in_range and in_alt:
+            enter = t if enter is None else enter
+            exit_ = t
+    return (round(enter, 1), round(exit_, 1)) if enter is not None else None
+```
+
+L-SAM은 외기권/대기권 위쪽 (고도 40~150 km), M-SAM은 대기권 (고도 5~40 km) 같이
+**고도가 서로 다른 윈도우**라 자연스럽게 분리됩니다.
+
+### 2단계 — UPPAAL declaration에 const 배열로 주입
+
+UPPAAL은 다차원 정수 배열 지원합니다.
+
+```c
+const int MAXT  = 3;
+const int NB_U  = 2;             // 상층 포대 수 (L1_LSAM, L2_LSAM)
+const int NB_L  = 2;             // 하층 포대 수 (M1_MSAM, M2_MSAM)
+
+// (위협, 포대)쌍의 effective window 시작/끝 시각.
+// -1 = "이 포대로는 절대 교전 불가" sentinel.
+const int U_ENTER[MAXT][NB_U] = { { 8, -1}, {12, 10}, {-1, 14} };
+const int U_EXIT [MAXT][NB_U] = { {22, -1}, {24, 26}, {-1, 28} };
+const int L_ENTER[MAXT][NB_L] = { {15, 17}, {19, 21}, {22, 24} };
+const int L_EXIT [MAXT][NB_L] = { {30, 30}, {30, 32}, {32, 34} };
+```
+
+### 3단계 — Radar 템플릿에서 윈도우 신호로 broadcast
+
+```
+Radar(id) — 위치 시퀀스 (시간이 흐르며 한 위치씩 전이)
+
+Pre   ─[t≥APPEAR[id]]    detect[id]!────►  Scan_t0
+Scan_tk ─[t≥W_k(b)]      enterU[id][b]!──► Scan_tk+1   // 포대 b 윈도우 진입
+Scan_tk ─[t≥W_k(b)]      exitU[id][b]!───► Scan_tk+1   // 포대 b 윈도우 이탈
+... (포대 × 4종 신호의 시간순)
+Scan_last ─[t≥IMPACT_AT] impact[id]!──►   Done
+```
+
+윈도우 enter/exit 신호 4종(`enterU[id][b]`, `exitU[id][b]`, `enterL[id][b]`,
+`exitL[id][b]`)을 한 Radar가 시간 순서대로 발사합니다. 위치 한 개로 다 표현하려면
+`select b : int[0,NB_U-1]`로 가드 분기하는 트릭도 가능.
+
+### 4단계 — Threat의 engU/engL을 포대 단위로 토글
+
+```c
+bool engU_b[MAXT][NB_U];    // (위협, 상층 포대) 교전 가능?
+bool engL_b[MAXT][NB_L];    // (위협, 하층 포대) 교전 가능?
+```
+
+Threat 템플릿 (signal-driven, 위치 분리 없이 self-loop로 토글):
+```
+Inbound  ─ detect[id]?            ─► Tracked
+Tracked  ─ enterU[id][b]? / engU_b[id][b]=true   ─► Tracked (self)
+Tracked  ─ exitU[id][b]?  / engU_b[id][b]=false  ─► Tracked (self)
+Tracked  ─ enterL[id][b]? / engL_b[id][b]=true   ─► Tracked (self)
+Tracked  ─ exitL[id][b]?  / engL_b[id][b]=false  ─► Tracked (self)
+Tracked  ─ hitU[id]? ─► Killed (모든 engU_b/engL_b 초기화, killed++)
+Tracked  ─ hitL[id]? ─► Killed
+Tracked  ─ missU[id]? / missL[id]? ─► Tracked (재교전)
+Tracked  ─ impact[id]? ─► Leaked
+```
+
+### 5단계 — Interceptor 가드를 (위협, 포대) 단위로
+
+기존 `engU[t]`를 `engU_b[t][batt_id]`로 바꾸면 됩니다. 포대 b의 슬롯이 발사하려면
+**그 포대 자신의 사거리·고도 게이트**가 살아 있어야 합니다.
+```c
+// InterceptorU.Ready -> Flying 가드 (포대별 인스턴스)
+ammoU_b[batt_id] > 0
+  && inflU_b[batt_id] < CH_PER_U[batt_id]
+  && exists (t : int[0,MAXT-1]) (engU_b[t][batt_id] && upCnt_bt[batt_id][t] == 0)
+```
+
+이렇게 하면 자동으로 다음 검증 속성이 따라옵니다.
+- **고도 게이트 일관성**: `A[] (upCnt_bt[b][t] > 0 imply engU_b[t][b])` — 사거리·고도
+  벗어난 위협에 발사 trace 없음
+- **윈도우 이탈 회복**: `exitU[id][b]?`가 와도 위협이 종결 안 되고 다른 포대 윈도우로
+  넘어갈 수 있음 (다포대 효과)
+
+### v2 와의 비교
+
+| 항목 | v2 (현재 모델) | v3 (이 패턴) |
+|---|---|---|
+| 위협당 교전대 | 시간 임계 한 점 (`ENTER_U`) | 포대별 시간 윈도우 (`U_ENTER[id][b]`/`U_EXIT[id][b]`) |
+| 고도 영향 | 모델 밖 | 사거리×고도 교집합으로 사전 계산되어 윈도우에 반영 |
+| 포대 차이 | 인스턴스 수만 (`CH_U`) | 포대별 윈도우 + 사정거리 + 고도대 |
+| const 배열 | 1D `[MAXT]` | 2D `[MAXT][NB_U]` |
+| 검증 시간 | 빠름 | 약간 늦음 (state space 약간 큼) |
+
+---
+
+## 12. 포대별 동시 교전 수 (6대 등)
+
+v2 모델은 `InterceptorU` 인스턴스 수 = `CH_U` 한 숫자로, "상층 채널 전체 합"만
+표현했습니다. 사용자가 원한 "L1_LSAM 6대 + L2_LSAM 4대" 같은 **포대별 독립 채널
+풀**은 인스턴스를 포대 단위로 분리해 표현합니다.
+
+### 핵심 패턴 — Slot 인스턴스에 batt_id 부여
+
+```c
+const int NB_U          = 2;
+const int CH_PER_U[NB_U] = {6, 4};      // L1=6, L2=4
+const int ammoU_init[NB_U] = {12, 8};
+
+int inflU_b[NB_U];                       // 포대별 비행 중 카운터
+int ammoU_b[NB_U] = {12, 8};             // 포대별 잔여탄
+int upCnt_bt[NB_U][MAXT];                // (포대, 위협) -- 충돌 회피용
+
+template Slot_U {
+    parameter const int batt_id;
+    clock f;
+    int tgt;
+
+    loc Idle
+    loc Ready (committed)
+    loc Flying (invariant f <= FLYOUT_U)
+    init Idle
+
+    Idle  ─ plan?  ─► Ready
+
+    Ready ─ select t : int[0,MAXT-1]
+            [ ammoU_b[batt_id] > 0
+              && inflU_b[batt_id] < CH_PER_U[batt_id]
+              && engU_b[t][batt_id]
+              && upCnt_bt[batt_id][t] == 0
+              && t == best_u_b(batt_id)        // 우선순위 추상 (포대 단위)
+            ] / ammoU_b[batt_id]--, inflU_b[batt_id]++, upCnt_bt[batt_id][t]++,
+                tgt=t, f=0
+          ─► Flying
+
+    Ready ─ [no feasible target] ─► Idle
+
+    Flying ─ [f>=FLYOUT_U] hitU[tgt]! / inflU_b[batt_id]--, upCnt_bt[batt_id][tgt]-- ─► Idle
+    Flying ─ [f>=FLYOUT_U] missU[tgt]! / 같음 ─► Idle
+}
+```
+
+### System declarations에서 채널 수만큼 인스턴스화
+
+```c
+// L1_LSAM: 6 channels (batt_id=0)
+SU0_0 = Slot_U(0); SU0_1 = Slot_U(0); SU0_2 = Slot_U(0);
+SU0_3 = Slot_U(0); SU0_4 = Slot_U(0); SU0_5 = Slot_U(0);
+// L2_LSAM: 4 channels (batt_id=1)
+SU1_0 = Slot_U(1); SU1_1 = Slot_U(1); SU1_2 = Slot_U(1); SU1_3 = Slot_U(1);
+// ... (Slot_L 동일)
+system SU0_0, ..., SU0_5, SU1_0, ..., SU1_3, ...;
+```
+
+총 슬롯 수 = `sum(CH_PER_U) + sum(CH_PER_L)` = 6 + 4 + 4 + 2 = 16 인스턴스 (예시).
+MAXT=3과 합쳐 약 25개 lifeline → MSC 가독성은 떨어지지만 **검증 가능 범위**.
+
+### 따라오는 보장
+
+```c
+// (Safety) 포대별 동시 비행 ≤ 그 포대 채널
+A[] forall (b : int[0,NB_U-1]) (inflU_b[b] <= CH_PER_U[b])
+
+// (Safety) 포대별 잔여탄 음수 불가
+A[] forall (b : int[0,NB_U-1]) (ammoU_b[b] >= 0)
+
+// (Safety) 한 위협에 같은 포대가 두 발 안 들어감
+A[] forall (b : int[0,NB_U-1]) forall (t : int[0,MAXT-1]) (upCnt_bt[b][t] <= 1)
+
+// (Reachability) 두 포대가 동시에 가동되는 trace 존재 (부하 분산)
+E<> (inflU_b[0] > 0 && inflU_b[1] > 0)
+
+// (Reachability) 포대 b가 채널 한계까지 꽉 차는 trace 존재
+E<> (inflU_b[0] == CH_PER_U[0])
+```
+
+### 상한 추정 — 어디까지 키울 수 있나
+
+UPPAAL state space는 인스턴스 수와 변수 도메인의 곱이라 다음 한계를 권합니다.
+
+| MAXT | NB_U+NB_L | sum(CH) | 총 lifeline | 검증 시간 (목 표 기준) |
+|---|---|---|---|---|
+| 2 | 2 | 4 | ~10 | 초 단위 |
+| 3 | 2 | 8 | ~15 | 수십 초 |
+| 3 | 4 | 16 | ~25 | 분 단위 |
+| 5 | 4 | 20 | ~35 | 십수 분 또는 timeout |
+
+대규모 시나리오(MAXT=30 같은 ROS2 PoC)는 UPPAAL 한 모델로 다 검증 불가. 대신
+**규모를 줄인 대표 시나리오**로 invariant를 정형 보증하고, 그 보증을 ROS2가 만든
+대규모 trace에 일반화해서 적용하는 게 표준 방법입니다.
+
+---
+
+이 §11 / §12 패턴을 그대로 적용한 **`dwta_model_v3_geometry.xml`** (2D 윈도우 +
+포대별 슬롯 + 검증 쿼리)을 별도 파일로 만들고 싶으시면 알려주세요. 모델 컴파일과
+verifyta 가능 여부까지 함께 확인하겠습니다.
