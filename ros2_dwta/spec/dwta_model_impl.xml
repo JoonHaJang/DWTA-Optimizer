@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE nta PUBLIC '-//Uppaal Team//DTD Flat System 1.6//EN' 'http://www.it.uu.se/research/group/darts/uppaal/flat-1_6.dtd'>
+<nta>
+  <declaration>
+// ============================================================================
+// DWTA realtime C2 pipeline -- IMPLEMENTATION model.
+// ----------------------------------------------------------------------------
+// This model mirrors the deterministic GreedyWTA policy implemented in
+//   ros2_dwta/dwta_nodes/wta_backend.py :: GreedyWTA.solve(...)
+// and the per-battery resource model implemented in
+//   ros2_dwta/dwta_nodes/launcher_node.py :: LauncherNode._on_plan(...)
+//
+//   For every planner tick:
+//     for each battery b (per layer):
+//       if (ammo_b POS) AND (used_b LT channels_b):
+//          pick the highest-danger threat t with
+//             - eng[t] == true                (in the band)
+//             - layerCnt[t] == 0              (no same-layer battery on t yet)
+//          assign t, consume one missile, busy one channel.
+//     LIMIT: at most one upper PLUS one lower interceptor per threat (S5..S8).
+//
+// Differences vs SPEC model (dwta_model.xml):
+//   - Per-battery ammo / channel state (NB_U upper + NB_L lower).
+//   - Deterministic target selection: a function select_target_u/_l picks
+//     the best threat; the transition is gated by the equation
+//     [t EQUALS select_target_u()], turning the nondeterministic select into
+//     a single admissible move.
+//   - Hit / miss after FLYOUT remains nondeterministic so that both branches
+//     (intercept and re-engage) are still explored by the model checker.
+//
+// Why two models?
+//   - SPEC verifies properties under EVERY admissible policy (strongest).
+//   - IMPL verifies the same properties for the actual GreedyWTA policy and
+//     additionally checks policy-specific assertions (e.g. ammo never wasted
+//     on an already-engaged target, monotone danger-priority load).
+// ============================================================================
+
+const int MAXT     = 3;     // number of threats
+const int NB_U     = 2;     // upper batteries (L-SAM x2)
+const int NB_L     = 2;     // lower batteries (M-SAM x2)
+const int CH_PER_U = 1;     // guidance channels per upper battery
+const int CH_PER_L = 1;     // guidance channels per lower battery
+const int ENTER_U  = 6;     // upper engagement band entry time
+const int ENTER_L  = 12;    // lower engagement band entry time
+const int IMPACT   = 30;    // impact / leak time
+const int FLYOUT_U = 5;     // upper interceptor flyout time
+const int FLYOUT_L = 2;     // lower interceptor flyout time
+const int PERIOD_P = 2;     // planner period
+
+// Per-threat "danger" proxy (asset value); higher is more important.
+// Threat 0 protects the highest-value asset, threat 2 the lowest.
+const int value_t[MAXT] = {10, 7, 5};
+
+// Per-battery resources (mutable).
+int ammoU_b[NB_U] = {2, 2};
+int ammoL_b[NB_L] = {2, 2};
+int usedU_b[NB_U] = {0, 0};
+int usedL_b[NB_L] = {0, 0};
+
+// Per-threat shared state (mirrors the COP).
+int  upCnt[MAXT];
+int  loCnt[MAXT];
+bool engU[MAXT];
+bool engL[MAXT];
+int  inflU = 0, inflL = 0;
+int  killed = 0, leaked = 0;
+
+// Channels.
+broadcast chan plan;
+broadcast chan hitU[MAXT], missU[MAXT];
+broadcast chan hitL[MAXT], missL[MAXT];
+
+// ----- GreedyWTA target selection ------------------------------------------
+// Returns the threat id with the highest value_t among those that have
+// entered the layer and are not yet covered by that layer.  Returns -1 if
+// no feasible target exists.  Mirrors GreedyWTA.solve()'s
+// danger-descending pick with the per-(threat, layer) coverage rule.
+
+int select_target_u() {
+    int best = -1;
+    int best_d = -1;
+    int i = 0;
+    for (i = 0; i &lt; MAXT; i++) {
+        if (engU[i] &amp;&amp; upCnt[i] == 0) {
+            if (value_t[i] &gt; best_d) {
+                best_d = value_t[i];
+                best = i;
+            }
+        }
+    }
+    return best;
+}
+
+int select_target_l() {
+    int best = -1;
+    int best_d = -1;
+    int i = 0;
+    for (i = 0; i &lt; MAXT; i++) {
+        if (engL[i] &amp;&amp; loCnt[i] == 0) {
+            if (value_t[i] &gt; best_d) {
+                best_d = value_t[i];
+                best = i;
+            }
+        }
+    }
+    return best;
+}
+
+// Per-battery firing feasibility (kept as functions so guards stay readable).
+bool can_fire_u(int b) { return ammoU_b[b] &gt; 0 &amp;&amp; usedU_b[b] &lt; CH_PER_U &amp;&amp; select_target_u() &gt;= 0; }
+bool can_fire_l(int b) { return ammoL_b[b] &gt; 0 &amp;&amp; usedL_b[b] &lt; CH_PER_L &amp;&amp; select_target_l() &gt;= 0; }
+  </declaration>
+
+  <!-- =================== Threat (same lifecycle as SPEC) =================== -->
+  <template>
+    <name>Threat</name>
+    <parameter>const int id</parameter>
+    <declaration>clock x;</declaration>
+
+    <location id="t0" x="-680" y="0"><name x="-720" y="-32">Inbound</name>
+      <label kind="invariant" x="-720" y="16">x &lt;= IMPACT</label></location>
+    <location id="t1" x="-320" y="0"><name x="-336" y="-40">Live</name>
+      <label kind="invariant" x="-336" y="16">x &lt;= IMPACT</label></location>
+    <location id="t2" x="80" y="-200"><name x="64" y="-232">Killed</name></location>
+    <location id="t3" x="80" y="200"><name x="64" y="216">Leaked</name></location>
+    <init ref="t0"/>
+
+    <transition><source ref="t0"/><target ref="t1"/>
+      <label kind="guard" x="-560" y="-32">x &gt;= ENTER_U</label>
+      <label kind="assignment" x="-560" y="-12">engU[id] = true</label></transition>
+
+    <transition><source ref="t1"/><target ref="t1"/>
+      <label kind="guard" x="-380" y="-220">x &gt;= ENTER_L &amp;&amp; !engL[id]</label>
+      <label kind="assignment" x="-380" y="-200">engL[id] = true</label>
+      <nail x="-420" y="-160"/><nail x="-220" y="-160"/></transition>
+
+    <transition><source ref="t1"/><target ref="t2"/>
+      <label kind="synchronisation" x="-160" y="-160">hitU[id]?</label>
+      <label kind="assignment" x="-160" y="-140">engU[id]=false, engL[id]=false, killed++</label></transition>
+    <transition><source ref="t1"/><target ref="t2"/>
+      <label kind="synchronisation" x="-120" y="-100">hitL[id]?</label>
+      <label kind="assignment" x="-120" y="-80">killed++</label>
+      <nail x="-160" y="-80"/></transition>
+
+    <transition><source ref="t1"/><target ref="t1"/>
+      <label kind="synchronisation" x="-380" y="100">missU[id]?</label>
+      <nail x="-420" y="120"/><nail x="-220" y="120"/></transition>
+    <transition><source ref="t1"/><target ref="t1"/>
+      <label kind="synchronisation" x="-380" y="180">missL[id]?</label>
+      <nail x="-420" y="200"/><nail x="-220" y="200"/></transition>
+
+    <transition><source ref="t1"/><target ref="t3"/>
+      <label kind="guard" x="-160" y="100">x &gt;= IMPACT</label>
+      <label kind="assignment" x="-160" y="120">engU[id]=false, engL[id]=false, leaked++</label></transition>
+    <transition><source ref="t0"/><target ref="t3"/>
+      <label kind="guard" x="-360" y="240">x &gt;= IMPACT</label>
+      <label kind="assignment" x="-360" y="260">leaked++</label>
+      <nail x="-680" y="320"/><nail x="80" y="320"/></transition>
+  </template>
+
+  <!-- =================== BatteryU (upper battery; deterministic Greedy pick) =================== -->
+  <template>
+    <name>BatteryU</name>
+    <parameter>const int bid</parameter>
+    <declaration>clock f; int tgt;</declaration>
+
+    <location id="b0" x="-560" y="0"><name x="-576" y="-32">Idle</name></location>
+    <location id="b1" x="-280" y="0"><name x="-296" y="-32">Ready</name><committed/></location>
+    <location id="b2" x="0"    y="0"><name x="-16" y="-32">Flying</name>
+      <label kind="invariant" x="-16" y="16">f &lt;= FLYOUT_U</label></location>
+    <init ref="b0"/>
+
+    <!-- Idle -> Ready on planner tick -->
+    <transition><source ref="b0"/><target ref="b1"/>
+      <label kind="synchronisation" x="-460" y="-20">plan?</label></transition>
+
+    <!-- Ready -> Flying: GreedyWTA-deterministic pick.
+         select binds t in [0..MAXT-1]; the guard `t == select_target_u()`
+         admits exactly the danger-best feasible threat. -->
+    <transition><source ref="b1"/><target ref="b2"/>
+      <label kind="select" x="-240" y="-100">t : int[0,MAXT-1]</label>
+      <label kind="guard" x="-240" y="-80">can_fire_u(bid) &amp;&amp; t == select_target_u()</label>
+      <label kind="assignment" x="-240" y="-40">ammoU_b[bid]--, usedU_b[bid]++, inflU++, upCnt[t]++, tgt=t, f=0</label></transition>
+
+    <!-- Ready -> Idle: no feasible target / no resource on this battery -->
+    <transition><source ref="b1"/><target ref="b0"/>
+      <label kind="guard" x="-440" y="60">!can_fire_u(bid)</label>
+      <nail x="-280" y="80"/><nail x="-560" y="80"/></transition>
+
+    <!-- Flying -> Idle: hit (nondeterministic outcome on resolution) -->
+    <transition><source ref="b2"/><target ref="b0"/>
+      <label kind="guard" x="-360" y="-180">f &gt;= FLYOUT_U</label>
+      <label kind="synchronisation" x="-360" y="-160">hitU[tgt]!</label>
+      <label kind="assignment" x="-360" y="-140">inflU--, usedU_b[bid]--, upCnt[tgt]--</label>
+      <nail x="0" y="-160"/><nail x="-560" y="-160"/></transition>
+    <!-- Flying -> Idle: miss -->
+    <transition><source ref="b2"/><target ref="b0"/>
+      <label kind="guard" x="-360" y="200">f &gt;= FLYOUT_U</label>
+      <label kind="synchronisation" x="-360" y="220">missU[tgt]!</label>
+      <label kind="assignment" x="-360" y="240">inflU--, usedU_b[bid]--, upCnt[tgt]--</label>
+      <nail x="0" y="200"/><nail x="-560" y="200"/></transition>
+  </template>
+
+  <!-- =================== BatteryL (lower battery) =================== -->
+  <template>
+    <name>BatteryL</name>
+    <parameter>const int bid</parameter>
+    <declaration>clock f; int tgt;</declaration>
+
+    <location id="b0" x="-560" y="0"><name x="-576" y="-32">Idle</name></location>
+    <location id="b1" x="-280" y="0"><name x="-296" y="-32">Ready</name><committed/></location>
+    <location id="b2" x="0"    y="0"><name x="-16" y="-32">Flying</name>
+      <label kind="invariant" x="-16" y="16">f &lt;= FLYOUT_L</label></location>
+    <init ref="b0"/>
+
+    <transition><source ref="b0"/><target ref="b1"/>
+      <label kind="synchronisation" x="-460" y="-20">plan?</label></transition>
+
+    <transition><source ref="b1"/><target ref="b2"/>
+      <label kind="select" x="-240" y="-100">t : int[0,MAXT-1]</label>
+      <label kind="guard" x="-240" y="-80">can_fire_l(bid) &amp;&amp; t == select_target_l()</label>
+      <label kind="assignment" x="-240" y="-40">ammoL_b[bid]--, usedL_b[bid]++, inflL++, loCnt[t]++, tgt=t, f=0</label></transition>
+
+    <transition><source ref="b1"/><target ref="b0"/>
+      <label kind="guard" x="-440" y="60">!can_fire_l(bid)</label>
+      <nail x="-280" y="80"/><nail x="-560" y="80"/></transition>
+
+    <transition><source ref="b2"/><target ref="b0"/>
+      <label kind="guard" x="-360" y="-180">f &gt;= FLYOUT_L</label>
+      <label kind="synchronisation" x="-360" y="-160">hitL[tgt]!</label>
+      <label kind="assignment" x="-360" y="-140">inflL--, usedL_b[bid]--, loCnt[tgt]--</label>
+      <nail x="0" y="-160"/><nail x="-560" y="-160"/></transition>
+    <transition><source ref="b2"/><target ref="b0"/>
+      <label kind="guard" x="-360" y="200">f &gt;= FLYOUT_L</label>
+      <label kind="synchronisation" x="-360" y="220">missL[tgt]!</label>
+      <label kind="assignment" x="-360" y="240">inflL--, usedL_b[bid]--, loCnt[tgt]--</label>
+      <nail x="0" y="200"/><nail x="-560" y="200"/></transition>
+  </template>
+
+  <!-- =================== Planner =================== -->
+  <template>
+    <name>Planner</name>
+    <declaration>clock cp;</declaration>
+    <location id="p0" x="0" y="0"><name x="-16" y="-32">Tick</name>
+      <label kind="invariant" x="-16" y="16">cp &lt;= PERIOD_P</label></location>
+    <init ref="p0"/>
+    <transition><source ref="p0"/><target ref="p0"/>
+      <label kind="guard" x="-100" y="-160">cp &gt;= PERIOD_P</label>
+      <label kind="synchronisation" x="-100" y="-140">plan!</label>
+      <label kind="assignment" x="-100" y="-120">cp = 0</label>
+      <nail x="-120" y="-100"/><nail x="120" y="-100"/></transition>
+  </template>
+
+  <system>
+T0 = Threat(0); T1 = Threat(1); T2 = Threat(2);
+BU0 = BatteryU(0); BU1 = BatteryU(1);   // NB_U = 2 upper batteries
+BL0 = BatteryL(0); BL1 = BatteryL(1);   // NB_L = 2 lower batteries
+P   = Planner();
+system T0, T1, T2, BU0, BU1, BL0, BL1, P;
+  </system>
+
+  <queries>
+    <!-- ===== Safety (A[]): must hold for the deterministic GreedyWTA ===== -->
+    <query><formula>A[] not deadlock</formula>
+      <comment>S1  Deadlock-free</comment></query>
+    <query><formula>A[] (ammoU_b[0] &gt;= 0 &amp;&amp; ammoU_b[1] &gt;= 0 &amp;&amp; ammoL_b[0] &gt;= 0 &amp;&amp; ammoL_b[1] &gt;= 0)</formula>
+      <comment>S2  Per-battery ammo non-negative</comment></query>
+    <query><formula>A[] (usedU_b[0] &lt;= CH_PER_U &amp;&amp; usedU_b[1] &lt;= CH_PER_U &amp;&amp; usedL_b[0] &lt;= CH_PER_L &amp;&amp; usedL_b[1] &lt;= CH_PER_L)</formula>
+      <comment>S3  Per-battery channel usage within capacity</comment></query>
+    <query><formula>A[] (inflU &lt;= NB_U * CH_PER_U &amp;&amp; inflL &lt;= NB_L * CH_PER_L)</formula>
+      <comment>S4  Total in-flight per layer bounded by total channel capacity</comment></query>
+    <query><formula>A[] forall (t : int[0,MAXT-1]) upCnt[t] &lt;= 1</formula>
+      <comment>S5  Multi-battery conflict-free (upper): at most one upper battery per threat</comment></query>
+    <query><formula>A[] forall (t : int[0,MAXT-1]) loCnt[t] &lt;= 1</formula>
+      <comment>S6  Multi-battery conflict-free (lower): at most one lower battery per threat</comment></query>
+    <query><formula>A[] (killed + leaked &lt;= MAXT)</formula>
+      <comment>S7  No double-counting of terminal threats</comment></query>
+    <query><formula>A[] forall (t : int[0,MAXT-1]) (upCnt[t] + loCnt[t] &lt;= 2)</formula>
+      <comment>S8  Layered cap: at most one upper + one lower per threat</comment></query>
+
+    <!-- ===== Timing ===== -->
+    <query><formula>A[] P.cp &lt;= PERIOD_P</formula>
+      <comment>T1  Planner period deadline</comment></query>
+    <query><formula>A[] (T0.Live imply T0.x &lt;= IMPACT)</formula>
+      <comment>T2  Engagement-window invariant</comment></query>
+
+    <!-- ===== Liveness ===== -->
+    <query><formula>A&lt;&gt; (killed + leaked == MAXT)</formula>
+      <comment>L1  Every threat eventually terminates</comment></query>
+    <query><formula>T0.Live --&gt; (T0.Killed || T0.Leaked)</formula>
+      <comment>L2  Every Live threat eventually reaches a terminal state</comment></query>
+
+    <!-- ===== Reachability ===== -->
+    <query><formula>E&lt;&gt; killed == MAXT</formula>
+      <comment>R1  Full-intercept run is reachable under the GreedyWTA policy</comment></query>
+    <query><formula>E&lt;&gt; (inflU &gt; 0 &amp;&amp; inflL &gt; 0)</formula>
+      <comment>R2  Simultaneous upper + lower engagement reachable</comment></query>
+    <query><formula>E&lt;&gt; (upCnt[0] &gt; 0 &amp;&amp; loCnt[0] &gt; 0)</formula>
+      <comment>R3  Same threat hit by upper AND lower (layered defence)</comment></query>
+    <query><formula>E&lt;&gt; leaked &gt; 0</formula>
+      <comment>R4  Leakage reachable (saturation under the GreedyWTA policy)</comment></query>
+
+    <!-- ===== Policy specific (only meaningful for the IMPL model) ===== -->
+    <query><formula>A[] forall (t : int[0,MAXT-1]) (upCnt[t] &gt; 0 imply engU[t])</formula>
+      <comment>P1  No upper interceptor is ever wasted on a threat that has not entered the upper band</comment></query>
+    <query><formula>A[] forall (t : int[0,MAXT-1]) (loCnt[t] &gt; 0 imply engL[t])</formula>
+      <comment>P2  No lower interceptor is ever wasted on a threat that has not entered the lower band</comment></query>
+    <query><formula>A[] (usedU_b[0] + usedU_b[1] == inflU)</formula>
+      <comment>P3  Per-battery used counters are consistent with the global inflU counter</comment></query>
+    <query><formula>A[] (usedL_b[0] + usedL_b[1] == inflL)</formula>
+      <comment>P4  Per-battery used counters are consistent with the global inflL counter</comment></query>
+    <query><formula>E&lt;&gt; (usedU_b[0] &gt; 0 &amp;&amp; usedU_b[1] &gt; 0)</formula>
+      <comment>P5  Both upper batteries can be busy simultaneously (load is distributed across L-SAMs)</comment></query>
+  </queries>
+</nta>

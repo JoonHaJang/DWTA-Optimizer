@@ -1,197 +1,362 @@
 {
-  "/home/user/DWTA-Optimizer/multi_missile_tracker_gui.py": {
-    "mtime": 1780036821.3965547,
-    "ast_hash": "381af7ebcc5735f4ea4cf6e2c392a776",
-    "semantic_hash": "381af7ebcc5735f4ea4cf6e2c392a776"
-  },
-  "/home/user/DWTA-Optimizer/config.py": {
-    "mtime": 1780036821.3925548,
-    "ast_hash": "db94ba53a95f919b482a7383ab325f98",
-    "semantic_hash": "db94ba53a95f919b482a7383ab325f98"
-  },
-  "/home/user/DWTA-Optimizer/ga_optimizer.py": {
-    "mtime": 1780036821.3925548,
-    "ast_hash": "f80e9a8111f79a0eeecb42c8be4ae816",
-    "semantic_hash": "f80e9a8111f79a0eeecb42c8be4ae816"
-  },
-  "/home/user/DWTA-Optimizer/stress_test_metrics.py": {
-    "mtime": 1780036821.3965547,
-    "ast_hash": "69b9aed1baa73538bcdca7c2edf941ae",
-    "semantic_hash": "69b9aed1baa73538bcdca7c2edf941ae"
-  },
-  "/home/user/DWTA-Optimizer/config_mip.py": {
-    "mtime": 1780036821.3925548,
-    "ast_hash": "45ce994f42bf34ff6d0df63392fb707d",
-    "semantic_hash": "45ce994f42bf34ff6d0df63392fb707d"
-  },
-  "/home/user/DWTA-Optimizer/pyqtgraph_display.py": {
-    "mtime": 1780036821.3965547,
-    "ast_hash": "65975340b93d68bff1132724ac333f66",
-    "semantic_hash": "65975340b93d68bff1132724ac333f66"
-  },
-  "/home/user/DWTA-Optimizer/greedy_optimizer.py": {
-    "mtime": 1780036821.3925548,
-    "ast_hash": "602272d9bc8fe5cccf4ce495fc5e7103",
-    "semantic_hash": "602272d9bc8fe5cccf4ce495fc5e7103"
-  },
-  "/home/user/DWTA-Optimizer/uncertainty_modeling.py": {
-    "mtime": 1780036821.3965547,
-    "ast_hash": "58497e297260210fb6dbae053547d4c1",
-    "semantic_hash": "58497e297260210fb6dbae053547d4c1"
-  },
-  "/home/user/DWTA-Optimizer/scenario_dwta_balanced.py": {
-    "mtime": 1780036821.3965547,
-    "ast_hash": "5643ab28123dda2675701991b33de279",
-    "semantic_hash": "5643ab28123dda2675701991b33de279"
-  },
-  "/home/user/DWTA-Optimizer/clean_slate_optimizer.py": {
-    "mtime": 1780036821.3925548,
-    "ast_hash": "925a84eabd74cc52c97ffe9f1aa589e1",
-    "semantic_hash": "925a84eabd74cc52c97ffe9f1aa589e1"
-  },
-  "/home/user/DWTA-Optimizer/requirements.txt": {
-    "mtime": 1780036821.3965547,
-    "ast_hash": "d35769ca44749287104cf7ad50abcb47",
-    "semantic_hash": "d35769ca44749287104cf7ad50abcb47"
-  },
-  "/home/user/DWTA-Optimizer/\ubb38\uc11c/DWTA_MIP_7Techniques_EN.md": {
-    "mtime": 1780036821.400555,
-    "ast_hash": "1fad61550e01631bd0b676542e300597",
-    "semantic_hash": "1fad61550e01631bd0b676542e300597"
-  },
-  "/home/user/DWTA-Optimizer/\ubb38\uc11c/The plan for great DWTA.md": {
-    "mtime": 1780036821.4047608,
-    "ast_hash": "7094bcc23df795781e545b82938c9690",
-    "semantic_hash": "7094bcc23df795781e545b82938c9690"
-  },
-  "/home/user/DWTA-Optimizer/\ubb38\uc11c/plan.md": {
-    "mtime": 1780036821.4047608,
-    "ast_hash": "a42f6191da342025c0255c921a0417f5",
-    "semantic_hash": "a42f6191da342025c0255c921a0417f5"
-  },
-  "/home/user/DWTA-Optimizer/\ubb38\uc11c/DWTA_MIP_Pipeline_Design_EN.md": {
-    "mtime": 1780036821.4047608,
-    "ast_hash": "311133ea746491216df9c241089aeeb8",
-    "semantic_hash": "311133ea746491216df9c241089aeeb8"
-  },
-  "/home/user/DWTA-Optimizer/.claude/settings.json": {
-    "mtime": 1780037253.4162083,
-    "ast_hash": "87f0d903477984d0587a02f8fe185263",
+  "C:\\Users\\USER\\Desktop\\DWTA-Optimizer\\clean_slate_optimizer.py": {
+    "mtime": 1774456690.42053,
+    "ast_hash": "f8aff2d2821ca99529098c0c16241d00",
     "semantic_hash": ""
   },
-  "/home/user/DWTA-Optimizer/CLAUDE.md": {
-    "mtime": 1780037253.4159327,
-    "ast_hash": "82efb97a359f5c7290bf2513d14686be",
+  "C:\\Users\\USER\\Desktop\\DWTA-Optimizer\\config.py": {
+    "mtime": 1774272336.5865312,
+    "ast_hash": "baed9343b372d130962315f8501db15e",
     "semantic_hash": ""
   },
-  "/home/user/DWTA-Optimizer/ros2_dwta/setup.py": {
-    "mtime": 1780038698.628508,
-    "ast_hash": "9b0b8187929baf37096b02e4eb436414",
+  "C:\\Users\\USER\\Desktop\\DWTA-Optimizer\\config_mip.py": {
+    "mtime": 1774272336.5865312,
+    "ast_hash": "cdb9642204861d09eec55bb000358a62",
     "semantic_hash": ""
   },
-  "/home/user/DWTA-Optimizer/ros2_dwta/run_poc.py": {
-    "mtime": 1780042958.5784934,
-    "ast_hash": "1aecb70d112d83332dddd603cf3cd44b",
+  "C:\\Users\\USER\\Desktop\\DWTA-Optimizer\\ga_optimizer.py": {
+    "mtime": 1774272336.5875907,
+    "ast_hash": "fc11e5a1fa3a2e43107bccdeff35cc2b",
     "semantic_hash": ""
   },
-  "/home/user/DWTA-Optimizer/ros2_dwta/dwta_nodes/messages.py": {
-    "mtime": 1780044902.0892246,
-    "ast_hash": "aef09c37348043073c6b77d3c2a91d22",
+  "C:\\Users\\USER\\Desktop\\DWTA-Optimizer\\greedy_optimizer.py": {
+    "mtime": 1774272336.5885923,
+    "ast_hash": "76333b8cc139884dd99bc31f92089c72",
     "semantic_hash": ""
   },
-  "/home/user/DWTA-Optimizer/ros2_dwta/dwta_nodes/control_station_node.py": {
-    "mtime": 1780038592.0605106,
-    "ast_hash": "e78a33d36c9f418538687475f1728cba",
+  "C:\\Users\\USER\\Desktop\\DWTA-Optimizer\\multi_missile_tracker_gui.py": {
+    "mtime": 1774455765.3960311,
+    "ast_hash": "89e9e02eb9681c24b2fc96bdc95d3b03",
     "semantic_hash": ""
   },
-  "/home/user/DWTA-Optimizer/ros2_dwta/dwta_nodes/threat_assessment_node.py": {
-    "mtime": 1780038545.6525118,
-    "ast_hash": "87b84bb1cd31be1aad93ff303bf6d8ff",
+  "C:\\Users\\USER\\Desktop\\DWTA-Optimizer\\pyqtgraph_display.py": {
+    "mtime": 1774453224.0195825,
+    "ast_hash": "4fb169a271d9de51b52081d0edfdedd4",
     "semantic_hash": ""
   },
-  "/home/user/DWTA-Optimizer/ros2_dwta/dwta_nodes/__init__.py": {
-    "mtime": 1780042938.250494,
-    "ast_hash": "c30e51c255cbeaaff7cde1731948feac",
+  "C:\\Users\\USER\\Desktop\\DWTA-Optimizer\\scenario_dwta_balanced.py": {
+    "mtime": 1774415594.7562354,
+    "ast_hash": "0cb1e84ee89a58598828c4ea468c6caf",
     "semantic_hash": ""
   },
-  "/home/user/DWTA-Optimizer/ros2_dwta/dwta_nodes/engageability_node.py": {
-    "mtime": 1780039926.0679047,
-    "ast_hash": "711a5e73509189a470ddb78a7eb97c8d",
+  "C:\\Users\\USER\\Desktop\\DWTA-Optimizer\\stress_test_MEDIUM_10_MIP_20260326_011004.json": {
+    "mtime": 1774455004.777927,
+    "ast_hash": "36efae0ea4782aed8e889b5307c62cdf",
     "semantic_hash": ""
   },
-  "/home/user/DWTA-Optimizer/ros2_dwta/dwta_nodes/planning_node.py": {
-    "mtime": 1780041978.696181,
-    "ast_hash": "5a3db98b7ef6ad48c77f564806ddc8e1",
+  "C:\\Users\\USER\\Desktop\\DWTA-Optimizer\\stress_test_MEDIUM_20_MIP_20260325_133343.json": {
+    "mtime": 1774413223.0617805,
+    "ast_hash": "26604ccbf58697ccc6e08886529b4cb8",
     "semantic_hash": ""
   },
-  "/home/user/DWTA-Optimizer/ros2_dwta/dwta_nodes/wta_backend.py": {
-    "mtime": 1780042814.0024967,
-    "ast_hash": "7ec682401edf0f0b55861a3e933a7c90",
+  "C:\\Users\\USER\\Desktop\\DWTA-Optimizer\\stress_test_metrics.py": {
+    "mtime": 1774272336.5921614,
+    "ast_hash": "c854b84ed81a085d695d7570916dbf35",
     "semantic_hash": ""
   },
-  "/home/user/DWTA-Optimizer/ros2_dwta/dwta_nodes/scenario.py": {
-    "mtime": 1780043603.0234241,
-    "ast_hash": "6c045c2812111f7b235ecb58d54c431d",
+  "C:\\Users\\USER\\Desktop\\DWTA-Optimizer\\stress_test_SMALL_5_MIP_20260326_012406.json": {
+    "mtime": 1774455846.829559,
+    "ast_hash": "c3aef6d8c823d4e4ddbbd923c7320727",
     "semantic_hash": ""
   },
-  "/home/user/DWTA-Optimizer/ros2_dwta/dwta_nodes/sim_bus.py": {
-    "mtime": 1780038455.168514,
-    "ast_hash": "0cabfd6f942e3dca69e665ffcd3c9202",
+  "C:\\Users\\USER\\Desktop\\DWTA-Optimizer\\stress_test_STRESS_100_MIP_20260323_231802.json": {
+    "mtime": 1774275482.8822198,
+    "ast_hash": "e3aa4096884421a8bfc4228d600ca700",
     "semantic_hash": ""
   },
-  "/home/user/DWTA-Optimizer/ros2_dwta/dwta_nodes/poc_app.py": {
-    "mtime": 1780042954.3584936,
-    "ast_hash": "dd326a5ce68a26ee585aa7d25b78d1e8",
+  "C:\\Users\\USER\\Desktop\\DWTA-Optimizer\\stress_test_STRESS_100_MIP_20260323_232156.json": {
+    "mtime": 1774275716.8240664,
+    "ast_hash": "4c653594925b0cd964e84a9bde248a6e",
     "semantic_hash": ""
   },
-  "/home/user/DWTA-Optimizer/ros2_dwta/dwta_nodes/ros_compat.py": {
-    "mtime": 1780039754.4839022,
-    "ast_hash": "be62abc18aebb9476866cf3e83069f78",
+  "C:\\Users\\USER\\Desktop\\DWTA-Optimizer\\stress_test_STRESS_100_MIP_20260323_232354.json": {
+    "mtime": 1774275834.9517992,
+    "ast_hash": "87e9d40587603dd86699850c48ce2c2d",
     "semantic_hash": ""
   },
-  "/home/user/DWTA-Optimizer/ros2_dwta/dwta_nodes/launcher_node.py": {
-    "mtime": 1780041956.5081816,
-    "ast_hash": "1a4e9bf6ae7939725d13b29a0eff605f",
+  "C:\\Users\\USER\\Desktop\\DWTA-Optimizer\\stress_test_STRESS_100_MIP_20260323_232559.json": {
+    "mtime": 1774275959.6956842,
+    "ast_hash": "1574abc8be58c43bb8b6154cdef09538",
     "semantic_hash": ""
   },
-  "/home/user/DWTA-Optimizer/ros2_dwta/launch/dwta_poc.launch.py": {
-    "mtime": 1780038710.0565076,
-    "ast_hash": "250f9e8345bc21156298e50aa6c55839",
+  "C:\\Users\\USER\\Desktop\\DWTA-Optimizer\\stress_test_STRESS_100_MIP_20260324_002630.json": {
+    "mtime": 1774279590.7927344,
+    "ast_hash": "98dfd170777e9331b148321f9b83a178",
     "semantic_hash": ""
   },
-  "/home/user/DWTA-Optimizer/ros2_dwta/README.md": {
-    "mtime": 1780043684.6994288,
-    "ast_hash": "d55b3d7cd8f6ede37f08b09951cc7fba",
+  "C:\\Users\\USER\\Desktop\\DWTA-Optimizer\\stress_test_STRESS_100_MIP_20260324_005553.json": {
+    "mtime": 1774281353.4744267,
+    "ast_hash": "4f9d66fcc1516eb6633d63dd1ffa0423",
     "semantic_hash": ""
   },
-  "/home/user/DWTA-Optimizer/ros2_dwta/dwta_nodes/world_state_node.py": {
-    "mtime": 1780044935.0852242,
-    "ast_hash": "2ba342829f25d8568e16b550f395062e",
+  "C:\\Users\\USER\\Desktop\\DWTA-Optimizer\\stress_test_STRESS_100_MIP_20260324_011348.json": {
+    "mtime": 1774282428.0124145,
+    "ast_hash": "12949d123fc63eed1a99789b3f6bc94b",
     "semantic_hash": ""
   },
-  "/home/user/DWTA-Optimizer/ros2_dwta/spec/timed_automata.md": {
-    "mtime": 1780045317.785217,
-    "ast_hash": "3ca1be6c6b35f25d07bf3d7c28ebcec7",
+  "C:\\Users\\USER\\Desktop\\DWTA-Optimizer\\stress_test_STRESS_100_MIP_20260324_013557.json": {
+    "mtime": 1774283757.3531296,
+    "ast_hash": "888022fd38596500f66502a367e0f2d7",
     "semantic_hash": ""
   },
-  "/home/user/DWTA-Optimizer/ros2_dwta/dwta_nodes/fire_control_radar_node.py": {
-    "mtime": 1780041712.488187,
-    "ast_hash": "01c6e9eb1cdaa03e4d68a19f3cb21df5",
+  "C:\\Users\\USER\\Desktop\\DWTA-Optimizer\\stress_test_STRESS_100_MIP_20260324_015101.json": {
+    "mtime": 1774284661.3855178,
+    "ast_hash": "e176ece08a959886d1f8479ad747bde9",
     "semantic_hash": ""
   },
-  "/home/user/DWTA-Optimizer/ros2_dwta/dwta_nodes/surveillance_radar_node.py": {
-    "mtime": 1780041692.7521875,
-    "ast_hash": "a6164323085a757bfcf94e9eca5ad872",
+  "C:\\Users\\USER\\Desktop\\DWTA-Optimizer\\stress_test_STRESS_100_MIP_20260324_015620.json": {
+    "mtime": 1774284980.673468,
+    "ast_hash": "9f7a113d5e063c69d1b93f6f95434bd9",
     "semantic_hash": ""
   },
-  "/home/user/DWTA-Optimizer/ros2_dwta/dwta_nodes/viz_node.py": {
-    "mtime": 1780044945.253224,
-    "ast_hash": "c9c22e82047a55d023500bcc57892bd6",
+  "C:\\Users\\USER\\Desktop\\DWTA-Optimizer\\stress_test_STRESS_100_MIP_20260324_021147.json": {
+    "mtime": 1774285907.8237875,
+    "ast_hash": "83bde5a387be2c509b20fb7d3be3623c",
     "semantic_hash": ""
   },
-  "/home/user/DWTA-Optimizer/ros2_dwta/dwta_nodes/viz_pyqtgraph.py": {
-    "mtime": 1780042933.070494,
-    "ast_hash": "f62392838447ab554e068fe8fe42b4b8",
+  "C:\\Users\\USER\\Desktop\\DWTA-Optimizer\\stress_test_STRESS_100_MIP_20260324_021522.json": {
+    "mtime": 1774286122.0004582,
+    "ast_hash": "5d4e03cd1fee76d98007a54d3248075a",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\USER\\Desktop\\DWTA-Optimizer\\stress_test_STRESS_100_MIP_20260324_022041.json": {
+    "mtime": 1774286441.7624476,
+    "ast_hash": "a105dc5476f3e77ba87c128e2321a034",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\USER\\Desktop\\DWTA-Optimizer\\stress_test_STRESS_100_MIP_20260324_023002.json": {
+    "mtime": 1774287002.108574,
+    "ast_hash": "29f2cad0a0ed6d8991c3c0146aa2f427",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\USER\\Desktop\\DWTA-Optimizer\\stress_test_STRESS_100_MIP_20260324_023142.json": {
+    "mtime": 1774287102.5419326,
+    "ast_hash": "c4771d2fe5fbecb6e1a7e1f3be89829d",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\USER\\Desktop\\DWTA-Optimizer\\stress_test_STRESS_100_MIP_20260325_133154.json": {
+    "mtime": 1774413114.5223799,
+    "ast_hash": "02660a1b08d0e21f57dfdfa5f73c9194",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\USER\\Desktop\\DWTA-Optimizer\\stress_test_STRESS_100_MIP_20260325_144026.json": {
+    "mtime": 1774417226.9315069,
+    "ast_hash": "bfedf17f12ec979e52b6c0bea861040b",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\USER\\Desktop\\DWTA-Optimizer\\stress_test_STRESS_100_MIP_20260325_145144.json": {
+    "mtime": 1774417904.1093912,
+    "ast_hash": "ed73c303598e0481fa77cfa2e26f9a0d",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\USER\\Desktop\\DWTA-Optimizer\\stress_test_STRESS_100_MIP_20260325_145336.json": {
+    "mtime": 1774418016.9038577,
+    "ast_hash": "8ce09fcc973090b0d951eab4d1f6d1e9",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\USER\\Desktop\\DWTA-Optimizer\\stress_test_STRESS_100_MIP_20260326_000738.json": {
+    "mtime": 1774451258.0364516,
+    "ast_hash": "55979ecf4c5371052e2dea958e627c0f",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\USER\\Desktop\\DWTA-Optimizer\\stress_test_STRESS_100_MIP_20260326_001701.json": {
+    "mtime": 1774451821.1813095,
+    "ast_hash": "b0a52544191bfd1b3d10dbd1139e8153",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\USER\\Desktop\\DWTA-Optimizer\\stress_test_STRESS_100_MIP_20260326_003658.json": {
+    "mtime": 1774453018.3714263,
+    "ast_hash": "e075c518341a00f4605aa30c03cf1326",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\USER\\Desktop\\DWTA-Optimizer\\stress_test_STRESS_100_MIP_20260326_005456.json": {
+    "mtime": 1774454096.7385821,
+    "ast_hash": "4ecdeefcddd5b827f85019751aedc805",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\USER\\Desktop\\DWTA-Optimizer\\stress_test_STRESS_100_MIP_20260326_013339.json": {
+    "mtime": 1774456419.6986613,
+    "ast_hash": "c06d87ac10fdd0e6ce5b56d56ee1ed83",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\USER\\Desktop\\DWTA-Optimizer\\stress_test_STRESS_100_MIP_20260326_014517.json": {
+    "mtime": 1774457117.8590927,
+    "ast_hash": "188314b1c055bdc75025bfae41bfa6c4",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\USER\\Desktop\\DWTA-Optimizer\\stress_test_STRESS_100_MIP_20260326_014709.json": {
+    "mtime": 1774457229.4173124,
+    "ast_hash": "a08db9ca43969d5c24c28553962a5f12",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\USER\\Desktop\\DWTA-Optimizer\\stress_test_STRESS_200_MIP_20260324_015443.json": {
+    "mtime": 1774284883.4649787,
+    "ast_hash": "06e05aa2599b3e694589244473acb15f",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\USER\\Desktop\\DWTA-Optimizer\\stress_test_STRESS_200_MIP_20260325_141642.json": {
+    "mtime": 1774415802.9815655,
+    "ast_hash": "0bd3544c9848c27c09ad482a3d66fef7",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\USER\\Desktop\\DWTA-Optimizer\\stress_test_STRESS_300_MIP_20260325_142901.json": {
+    "mtime": 1774416541.4066217,
+    "ast_hash": "aa2330b8547616902ca96c5bd6a68656",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\USER\\Desktop\\DWTA-Optimizer\\uncertainty_modeling.py": {
+    "mtime": 1774454849.137162,
+    "ast_hash": "f4e6a01c738da02da2877f6987067192",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\USER\\Desktop\\DWTA-Optimizer\\.claude\\settings.json": {
+    "mtime": 1780051033.4605522,
+    "ast_hash": "5d6ecd96cf065b16e8bb9fbf5d7d8f0d",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\USER\\Desktop\\DWTA-Optimizer\\ros2_dwta\\run_poc.py": {
+    "mtime": 1780051033.5012043,
+    "ast_hash": "0d5bca535c0baa01c0124ed98876aa85",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\USER\\Desktop\\DWTA-Optimizer\\ros2_dwta\\setup.py": {
+    "mtime": 1780051033.5027564,
+    "ast_hash": "61f4eb8a138d94c98c6898764fb79975",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\USER\\Desktop\\DWTA-Optimizer\\ros2_dwta\\dwta_nodes\\control_station_node.py": {
+    "mtime": 1780051033.4747725,
+    "ast_hash": "a60573e88d1b3a20ccf7671245cba5cd",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\USER\\Desktop\\DWTA-Optimizer\\ros2_dwta\\dwta_nodes\\engageability_node.py": {
+    "mtime": 1780051033.4752784,
+    "ast_hash": "267b5090aa566fe8767da4dcb250ee1d",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\USER\\Desktop\\DWTA-Optimizer\\ros2_dwta\\dwta_nodes\\fire_control_radar_node.py": {
+    "mtime": 1780051033.476305,
+    "ast_hash": "1ed8525e805c0fb5d7b0f37a6818cd1d",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\USER\\Desktop\\DWTA-Optimizer\\ros2_dwta\\dwta_nodes\\launcher_node.py": {
+    "mtime": 1780051033.4768188,
+    "ast_hash": "14f8db6c393347125a88e3c15e273e86",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\USER\\Desktop\\DWTA-Optimizer\\ros2_dwta\\dwta_nodes\\messages.py": {
+    "mtime": 1780051033.4778488,
+    "ast_hash": "7a49339e4bfe15ca56552674a1a8eaa8",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\USER\\Desktop\\DWTA-Optimizer\\ros2_dwta\\dwta_nodes\\planning_node.py": {
+    "mtime": 1780051033.4783638,
+    "ast_hash": "a5cbf89d2eb97014bb9208580f9f641d",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\USER\\Desktop\\DWTA-Optimizer\\ros2_dwta\\dwta_nodes\\poc_app.py": {
+    "mtime": 1780051033.4792738,
+    "ast_hash": "e9896d489640c973c9da720c6d0ad040",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\USER\\Desktop\\DWTA-Optimizer\\ros2_dwta\\dwta_nodes\\ros_compat.py": {
+    "mtime": 1780051033.4803374,
+    "ast_hash": "49e2e17e25c654cc09af132c31607464",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\USER\\Desktop\\DWTA-Optimizer\\ros2_dwta\\dwta_nodes\\scenario.py": {
+    "mtime": 1780051033.4808903,
+    "ast_hash": "bd850fe5b04f3a6ec0185acc42300eb0",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\USER\\Desktop\\DWTA-Optimizer\\ros2_dwta\\dwta_nodes\\sim_bus.py": {
+    "mtime": 1780051033.4808903,
+    "ast_hash": "dbfaba373954cf0dbcff194791139b66",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\USER\\Desktop\\DWTA-Optimizer\\ros2_dwta\\dwta_nodes\\surveillance_radar_node.py": {
+    "mtime": 1780051033.4824414,
+    "ast_hash": "7c298b23446f8f16d7c1ec172e478bf3",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\USER\\Desktop\\DWTA-Optimizer\\ros2_dwta\\dwta_nodes\\threat_assessment_node.py": {
+    "mtime": 1780051033.4829557,
+    "ast_hash": "0b66341c564f8bf25cabb707addcc81b",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\USER\\Desktop\\DWTA-Optimizer\\ros2_dwta\\dwta_nodes\\viz_node.py": {
+    "mtime": 1780051033.4834704,
+    "ast_hash": "cf1688a29595af8bb3c4c9dcec32e89a",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\USER\\Desktop\\DWTA-Optimizer\\ros2_dwta\\dwta_nodes\\viz_pyqtgraph.py": {
+    "mtime": 1780051033.4844766,
+    "ast_hash": "a97d59d8c39c9da3fa7e1ab9d645cf89",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\USER\\Desktop\\DWTA-Optimizer\\ros2_dwta\\dwta_nodes\\world_state_node.py": {
+    "mtime": 1780051033.4855032,
+    "ast_hash": "b26d99e131cbf7cd1afa32ba863d127d",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\USER\\Desktop\\DWTA-Optimizer\\ros2_dwta\\dwta_nodes\\wta_backend.py": {
+    "mtime": 1780051033.4860477,
+    "ast_hash": "a9ba44ee4a0545d275ef4d1d9b58cd1c",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\USER\\Desktop\\DWTA-Optimizer\\ros2_dwta\\dwta_nodes\\__init__.py": {
+    "mtime": 1780051033.4737654,
+    "ast_hash": "98272cdee1f6332e16d36675424d120b",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\USER\\Desktop\\DWTA-Optimizer\\ros2_dwta\\launch\\dwta_poc.launch.py": {
+    "mtime": 1780051033.4865644,
+    "ast_hash": "bc6155f2a98cebd6d2d794e76237bcdf",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\USER\\Desktop\\DWTA-Optimizer\\CLAUDE.md": {
+    "mtime": 1780051033.4626238,
+    "ast_hash": "8a6643a420fdad6bfb583523bc6cef16",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\USER\\Desktop\\DWTA-Optimizer\\requirements.txt": {
+    "mtime": 1774272336.590652,
+    "ast_hash": "5a6709675f10d331a1e53ccbbab2730b",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\USER\\Desktop\\DWTA-Optimizer\\ros2_dwta\\README.md": {
+    "mtime": 1780051033.4722018,
+    "ast_hash": "9cb5994083d7c92b8fcea1fa6af9cecd",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\USER\\Desktop\\DWTA-Optimizer\\ros2_dwta\\spec\\timed_automata.md": {
+    "mtime": 1780059451.2230232,
+    "ast_hash": "3e7ca1768d952f30e7037de6eaf038f7",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\USER\\Desktop\\DWTA-Optimizer\\\ubb38\uc11c\\DWTA_MIP_7Techniques_EN.md": {
+    "mtime": 1774272336.5931673,
+    "ast_hash": "d47b3d194a46eb0a1abbeb884ee1536b",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\USER\\Desktop\\DWTA-Optimizer\\\ubb38\uc11c\\DWTA_MIP_Pipeline_Design_EN.md": {
+    "mtime": 1774272336.5947542,
+    "ast_hash": "94e4d0a9ad06213d0a54efa4d9c480bb",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\USER\\Desktop\\DWTA-Optimizer\\\ubb38\uc11c\\plan.md": {
+    "mtime": 1774272336.5962672,
+    "ast_hash": "6fb0793f1680bdc0a0e3ddf4d93c3d3c",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\USER\\Desktop\\DWTA-Optimizer\\\ubb38\uc11c\\program_analysis.md": {
+    "mtime": 1774414336.2254324,
+    "ast_hash": "75869a77f0c2a462775512802f26b14e",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\USER\\Desktop\\DWTA-Optimizer\\\ubb38\uc11c\\The plan for great DWTA.md": {
+    "mtime": 1774272336.5957613,
+    "ast_hash": "864cb2efe583d4e62379b74423fbda26",
     "semantic_hash": ""
   }
 }

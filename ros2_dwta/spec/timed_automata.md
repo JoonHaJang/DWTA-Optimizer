@@ -167,17 +167,58 @@ Tick(cp<=PERIOD_P) --[cp>=PERIOD_P] plan! ; cp:=0--> Tick
 > 자원 설정 `ammoU=ammoL=2, MAXT=3` 은 R1(전량격추)과 R4(누설) 둘 다 도달 가능하게
 > 하여, 모델이 완전방어와 포화실패를 모두 표현하는지 점검한다.
 
-## 6. UPPAAL로 검증하는 법
-```
-verifyta -q ros2_dwta/spec/dwta_model.xml     # CLI 일괄 검증
-# 또는 UPPAAL GUI에서 파일 열기 -> Verifier 탭 -> 각 쿼리 Check
-```
-구현(`dwta_nodes/`) 변경 시 이 모델/쿼리를 함께 갱신·재검증한다(graphify 그래프도 동기).
+## 6. 두 모델 — SPEC vs IMPL
 
-추가로 명세할 수 있는 속성(설계 확장 시):
-- 데드라인: `A[] (T.Engageable imply T.x <= IMPACT)` — 교전창 내 처리.
-- 무낭비: `A[] not (두 요격탄이 동일 위협에 동시 비행)` (terminal/covered 제외 규칙의 정형화).
-- 포화 한계: `E<> leaked >= 1` (자원 부족 시 누설 발생 가능 — 시나리오 설계 검증).
+ROS2 시뮬레이터(`dwta_nodes/`)와 정확히 1:1 정합을 맞추기 위해 모델을 **두 개**로 분리한다.
+
+| 파일 | 목적 | 발사 대상 선택 | 검증력 |
+|---|---|---|---|
+| `dwta_model.xml` (SPEC)      | 어떤 정책이든 만족해야 할 속성을 검증 | **비결정** `select t` + 가드 | 가장 강함 (모든 정책 커버) |
+| `dwta_model_impl.xml` (IMPL) | 실제 GreedyWTA 정책을 모델링·검증     | **결정적** `t == select_target_u()` | 정책 한정, 정책 전용 속성 추가 가능 |
+
+IMPL 모델이 시뮬레이터(`wta_backend.py::GreedyWTA.solve`, `launcher_node.py`)와 어떻게 대응되는지:
+
+| ROS2 구현 | IMPL 모델 |
+|---|---|
+| 위협 `danger` (asset value/TTA) | 정적 배열 `const int value_t[MAXT]` (단순화) |
+| 포대별 `available_missiles`     | `int ammoU_b[NB_U]`, `int ammoL_b[NB_L]` |
+| 포대별 `fire_control_channels`  | `const int CH_PER_U`, `CH_PER_L` (인스턴스 단위) |
+| `LauncherNode._on_plan`의 발사 가드 | `can_fire_u(b) = ammoU_b[b] > 0 && usedU_b[b] < CH_PER_U && select_target_u() >= 0` |
+| `GreedyWTA.solve`의 위협 우선 선택 | 함수 `select_target_u/_l` (`value_t` 내림차순) |
+| 위협당 레이어별 1포대(`upCnt/loCnt`) | 가드 `upCnt[t] == 0` (다포대 충돌-자유) |
+| 명중률 `Pk >= HIT_THRESHOLD` 판정 | `hitX!` / `missX!` 비결정 분기 (양쪽 trace 모두 검증) |
+
+### IMPL 모델 추가 속성 (정책 전용)
+| ID | 쿼리 | 의미 |
+|---|---|---|
+| P1 | `A[] forall(t) upCnt[t]>0 imply engU[t]` | 상층 진입 안 한 위협에 상층 요격 낭비 없음 |
+| P2 | `A[] forall(t) loCnt[t]>0 imply engL[t]` | 하층 진입 안 한 위협에 하층 요격 낭비 없음 |
+| P3 | `A[] usedU_b[0]+usedU_b[1] == inflU`     | 포대별 used 카운터와 전역 inflU의 일관성 |
+| P4 | `A[] usedL_b[0]+usedL_b[1] == inflL`     | 하층 동일 |
+| P5 | `E<> (usedU_b[0]>0 && usedU_b[1]>0)`     | 두 L-SAM 포대가 **동시에 가동** (부하 분산) |
+
+> S1~S8 / T1~T2 / L1~L2 / R1~R4 는 SPEC·IMPL 양쪽 모두 동일하게 검증한다.
+> 동일 속성이 두 모델 모두에서 성립하면 **명세는 강하고 구현은 정합한 것**.
+
+## 7. UPPAAL로 검증하는 법
+
+설치(Windows): UPPAAL 5 GUI는 Java 17+ 필요(verifyta CLI는 불필요).
+라이선스는 학술용 무료(<https://uppaal.veriaal.dk/academic.html>) 또는
+키 없이 동작하는 **UPPAAL 4.1.26-2** 사용(<https://uppaal.org/downloads/other/>).
+
+```powershell
+# CLI 일괄 검증
+verifyta.exe -q ros2_dwta\spec\dwta_model.xml       # SPEC 모델
+verifyta.exe -q ros2_dwta\spec\dwta_model_impl.xml  # IMPL 모델 (GreedyWTA)
+
+# 반례 trace 생성 (실패한 쿼리 분석용)
+verifyta.exe -t 1 -q ros2_dwta\spec\dwta_model_impl.xml
+```
+
+GUI 사용: 파일 열기 -> Verifier 탭 -> 각 쿼리 Check. 한글 주석은 UPPAAL 5 Windows
+빌드에서 깨지므로 **본 XML들은 모두 ASCII**로 작성되어 있다.
+
+구현(`dwta_nodes/`) 변경 시 두 모델/쿼리를 함께 갱신·재검증한다(graphify 그래프도 동기).
 
 ## 7. 워크플로 (spec-first)
 

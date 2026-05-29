@@ -3,204 +3,262 @@
 <nta>
   <declaration>
 // ============================================================================
-// DWTA 실시간 C2 파이프라인 -- 강화 타임드 오토마타 모델 (UPPAAL)
+// DWTA realtime C2 pipeline -- SPEC model (nondeterministic policy)
 // ----------------------------------------------------------------------------
-//  Threat(id)    : 적 탄도탄 생명주기. 상층(ENTER_U)부터 교전대, 하층(ENTER_L)은
-//                  더 가까워야 진입 -> 중첩대에서 상하층 동시 교전 가능.
-//  InterceptorU  : 상층(L-SAM) 유도채널 슬롯 (인스턴스 수 = CH_U). 발사는 계획주기
-//  InterceptorL  : 하층(M-SAM) 유도채널 슬롯 (인스턴스 수 = CH_L). (plan!)에 동기.
-//  Planner       : 계획수립 주기 클럭 (cp ≤ PERIOD_P) -> 발사 cadence 게이트.
+//  Threat(id)    : ballistic threat lifecycle. Upper band opens at ENTER_U
+//                  (long range), lower band at ENTER_L (overlap zone) -->
+//                  enables simultaneous multi-layer engagement.
+//  InterceptorU  : upper (L-SAM) guidance channel slot.  Instances = CH_U.
+//  InterceptorL  : lower (M-SAM) guidance channel slot.  Instances = CH_L.
+//                  Both launch only on planner tick (plan!).
+//  Planner       : period clock (cp &lt;= PERIOD_P) gates launch cadence.
 //
-//  공유 상태(COP 대응):
-//    ammoU/ammoL   잔여탄(계층),  inflU/inflL  비행중 요격탄 수(계층)
-//    upCnt[t]/loCnt[t]  위협 t에 대한 상/하층 동시 교전 수 (충돌-자유 검증용)
-//    engU[t]/engL[t]    위협 t의 상/하층 교전대 진입 여부
-//    killed/leaked      격추/탄착 누계
+//  This SPEC picks targets NONDETERMINISTICALLY (select t : ...).  It thus
+//  verifies safety / timing / liveness under EVERY admissible policy, giving
+//  the strongest properties any concrete WTA implementation must preserve.
+//  The deterministic GreedyWTA policy of the ROS2 simulator is modelled
+//  separately in dwta_model_impl.xml.
+//
+//  Shared state (mirrors the COP):
+//    ammoU/ammoL          per-layer remaining missiles
+//    inflU/inflL          per-layer interceptors currently in flight
+//    upCnt[t]/loCnt[t]    per-(threat, layer) concurrent engagement counter
+//                         (used to verify multi-battery conflict freedom)
+//    engU[t]/engL[t]      whether threat t has entered upper / lower band
+//    killed / leaked      terminal counters
 // ============================================================================
-const int MAXT    = 3;    // 위협 수 (모델체킹용)
-const int CH_U    = 2;    // 상층 유도 채널 (= InterceptorU 인스턴스 수)
-const int CH_L    = 2;    // 하층 유도 채널 (= InterceptorL 인스턴스 수)
-const int ENTER_U = 6;    // 상층 교전대 진입 시각 (장거리, 이름)
-const int ENTER_L = 12;   // 하층 교전대 진입 시각 (근거리)
-const int IMPACT  = 30;   // 탄착(누설) 시각
-const int FLYOUT_U = 5;   // 상층 요격탄 비행시간 (장거리 -> 김)
-const int FLYOUT_L = 2;   // 하층 요격탄 비행시간
-const int PERIOD_P = 2;   // 계획수립 주기
+const int MAXT     = 3;
+const int CH_U     = 2;     // upper guidance channels
+const int CH_L     = 2;     // lower guidance channels
+const int ENTER_U  = 6;     // upper band entry time (long range)
+const int ENTER_L  = 12;    // lower band entry time (overlap)
+const int IMPACT   = 30;    // impact / leak time
+const int FLYOUT_U = 5;     // upper interceptor flyout
+const int FLYOUT_L = 2;     // lower interceptor flyout
+const int PERIOD_P = 2;     // planner period
 
-int ammoU = 2, ammoL = 2;
-int inflU = 0, inflL = 0;
-int upCnt[MAXT];
-int loCnt[MAXT];
+int  ammoU = 2, ammoL = 2;
+int  inflU = 0, inflL = 0;
+int  upCnt[MAXT];
+int  loCnt[MAXT];
 bool engU[MAXT];
 bool engL[MAXT];
-int killed = 0, leaked = 0;
+int  killed = 0, leaked = 0;
 
-broadcast chan plan;                 // 계획수립 주기 틱
+broadcast chan plan;
 broadcast chan hitU[MAXT], missU[MAXT];
 broadcast chan hitL[MAXT], missL[MAXT];
   </declaration>
 
-  <!-- ===================== Threat ===================== -->
+  <!-- ============================================================== -->
+  <!--                          Threat                                -->
+  <!--   Inbound -> UpperEng -> BothEng -> Killed | Leaked            -->
+  <!--   Splitting Live into UpperEng / BothEng spreads the           -->
+  <!--   self-loops (miss, late-arming) across distinct locations.    -->
+  <!-- ============================================================== -->
   <template>
     <name>Threat</name>
     <parameter>const int id</parameter>
     <declaration>clock x;</declaration>
 
-    <location id="t0" x="-600" y="0"><name>Inbound</name>
-      <label kind="invariant">x &lt;= IMPACT</label></location>
-    <location id="t1" x="-340" y="0"><name>Live</name>
-      <label kind="invariant">x &lt;= IMPACT</label></location>
-    <location id="t2" x="-120" y="-140"><name>Killed</name></location>
-    <location id="t3" x="-120" y="140"><name>Leaked</name></location>
-    <init ref="t0"/>
+    <location id="t_in"    x="-800" y="0"><name x="-840" y="-32">Inbound</name>
+      <label kind="invariant" x="-840" y="16">x &lt;= IMPACT</label></location>
+    <location id="t_up"    x="-400" y="0"><name x="-432" y="-32">UpperEng</name>
+      <label kind="invariant" x="-432" y="16">x &lt;= IMPACT</label></location>
+    <location id="t_both"  x="0"    y="0"><name x="-32" y="-32">BothEng</name>
+      <label kind="invariant" x="-32" y="16">x &lt;= IMPACT</label></location>
+    <location id="t_kill"  x="400"  y="-240"><name x="384" y="-272">Killed</name></location>
+    <location id="t_leak"  x="400"  y="240"><name x="384" y="264">Leaked</name></location>
+    <init ref="t_in"/>
 
-    <!-- 상층 교전대 진입 -->
-    <transition><source ref="t0"/><target ref="t1"/>
-      <label kind="guard">x &gt;= ENTER_U</label>
-      <label kind="assignment">engU[id] = true</label></transition>
-    <!-- 하층 교전대 진입 (중첩대) -->
-    <transition><source ref="t1"/><target ref="t1"/>
-      <label kind="guard">x &gt;= ENTER_L &amp;&amp; !engL[id]</label>
-      <label kind="assignment">engL[id] = true</label></transition>
-    <!-- 격추 (상/하층 어느 쪽이든) -->
-    <transition><source ref="t1"/><target ref="t2"/>
-      <label kind="synchronisation">hitU[id]?</label>
-      <label kind="assignment">engU[id] = false, engL[id] = false, killed++</label></transition>
-    <transition><source ref="t1"/><target ref="t2"/>
-      <label kind="synchronisation">hitL[id]?</label>
-      <label kind="assignment">engU[id] = false, engL[id] = false, killed++</label></transition>
-    <!-- 요격 실패 -> 계속 비행 (재교전 가능) -->
-    <transition><source ref="t1"/><target ref="t1"/>
-      <label kind="synchronisation">missU[id]?</label></transition>
-    <transition><source ref="t1"/><target ref="t1"/>
-      <label kind="synchronisation">missL[id]?</label></transition>
-    <!-- 탄착(누설) -->
-    <transition><source ref="t1"/><target ref="t3"/>
-      <label kind="guard">x &gt;= IMPACT</label>
-      <label kind="assignment">engU[id] = false, engL[id] = false, leaked++</label></transition>
-    <transition><source ref="t0"/><target ref="t3"/>
-      <label kind="guard">x &gt;= IMPACT</label>
-      <label kind="assignment">leaked++</label></transition>
+    <!-- Inbound -> UpperEng (long-range band opens) -->
+    <transition><source ref="t_in"/><target ref="t_up"/>
+      <label kind="guard"      x="-720" y="-32">x &gt;= ENTER_U</label>
+      <label kind="assignment" x="-720" y="-12">engU[id] = true</label></transition>
+
+    <!-- UpperEng -> BothEng (overlap zone reached) -->
+    <transition><source ref="t_up"/><target ref="t_both"/>
+      <label kind="guard"      x="-320" y="-32">x &gt;= ENTER_L</label>
+      <label kind="assignment" x="-320" y="-12">engL[id] = true</label></transition>
+
+    <!-- miss loops -->
+    <transition><source ref="t_up"/><target ref="t_up"/>
+      <label kind="synchronisation" x="-420" y="-160">missU[id]?</label>
+      <nail x="-480" y="-120"/><nail x="-320" y="-120"/></transition>
+    <transition><source ref="t_both"/><target ref="t_both"/>
+      <label kind="synchronisation" x="-20" y="-160">missU[id]?</label>
+      <nail x="-80" y="-120"/><nail x="80" y="-120"/></transition>
+    <transition><source ref="t_both"/><target ref="t_both"/>
+      <label kind="synchronisation" x="-20" y="120">missL[id]?</label>
+      <nail x="-80" y="120"/><nail x="80" y="120"/></transition>
+
+    <!-- kills -->
+    <transition><source ref="t_up"/><target ref="t_kill"/>
+      <label kind="synchronisation" x="-160" y="-260">hitU[id]?</label>
+      <label kind="assignment"      x="-160" y="-240">engU[id]=false, killed++</label>
+      <nail x="-400" y="-220"/></transition>
+    <transition><source ref="t_both"/><target ref="t_kill"/>
+      <label kind="synchronisation" x="120" y="-180">hitU[id]?</label>
+      <label kind="assignment"      x="120" y="-160">engU[id]=false, engL[id]=false, killed++</label></transition>
+    <transition><source ref="t_both"/><target ref="t_kill"/>
+      <label kind="synchronisation" x="220" y="-100">hitL[id]?</label>
+      <label kind="assignment"      x="220" y="-80">engU[id]=false, engL[id]=false, killed++</label>
+      <nail x="180" y="-120"/></transition>
+
+    <!-- leaks -->
+    <transition><source ref="t_in"/><target ref="t_leak"/>
+      <label kind="guard"      x="-440" y="320">x &gt;= IMPACT</label>
+      <label kind="assignment" x="-440" y="340">leaked++</label>
+      <nail x="-800" y="400"/><nail x="400" y="400"/></transition>
+    <transition><source ref="t_up"/><target ref="t_leak"/>
+      <label kind="guard"      x="-200" y="200">x &gt;= IMPACT</label>
+      <label kind="assignment" x="-200" y="220">engU[id]=false, leaked++</label>
+      <nail x="-400" y="240"/></transition>
+    <transition><source ref="t_both"/><target ref="t_leak"/>
+      <label kind="guard"      x="120" y="180">x &gt;= IMPACT</label>
+      <label kind="assignment" x="120" y="200">engU[id]=false, engL[id]=false, leaked++</label></transition>
   </template>
 
-  <!-- ===================== InterceptorU (상층 채널) ===================== -->
+  <!-- ============================================================== -->
+  <!--                       InterceptorU                             -->
+  <!--   Idle -> Ready -> Flying -> (hit | miss) -> Idle              -->
+  <!-- ============================================================== -->
   <template>
     <name>InterceptorU</name>
     <declaration>clock f; int tgt;</declaration>
-    <location id="u0" x="-560" y="0"><name>Idle</name></location>
-    <location id="u1" x="-320" y="0"><name>Ready</name><committed/></location>
-    <location id="u2" x="-80" y="0"><name>Flying</name>
-      <label kind="invariant">f &lt;= FLYOUT_U</label></location>
-    <init ref="u0"/>
 
-    <!-- 계획 주기에만 발사 결심 -->
-    <transition><source ref="u0"/><target ref="u1"/>
-      <label kind="synchronisation">plan?</label></transition>
-    <!-- 발사: 교전대 진입 && 상층 미교전(충돌회피) && 탄약 -->
-    <transition><source ref="u1"/><target ref="u2"/>
-      <label kind="select">t : int[0,MAXT-1]</label>
-      <label kind="guard">ammoU &gt; 0 &amp;&amp; engU[t] &amp;&amp; upCnt[t] == 0</label>
-      <label kind="assignment">ammoU--, inflU++, upCnt[t]++, tgt = t, f = 0</label></transition>
-    <!-- 발사 대상 없음 -->
-    <transition><source ref="u1"/><target ref="u0"/></transition>
-    <!-- 비행시간 경과 후 판정 (성공/실패 비결정) -->
-    <transition><source ref="u2"/><target ref="u0"/>
-      <label kind="guard">f &gt;= FLYOUT_U</label>
-      <label kind="synchronisation">hitU[tgt]!</label>
-      <label kind="assignment">inflU--, upCnt[tgt]--</label></transition>
-    <transition><source ref="u2"/><target ref="u0"/>
-      <label kind="guard">f &gt;= FLYOUT_U</label>
-      <label kind="synchronisation">missU[tgt]!</label>
-      <label kind="assignment">inflU--, upCnt[tgt]--</label></transition>
+    <location id="u_idle"  x="-600" y="0"><name x="-616" y="-32">Idle</name></location>
+    <location id="u_ready" x="-300" y="0"><name x="-316" y="-32">Ready</name><committed/></location>
+    <location id="u_fly"   x="0"    y="0"><name x="-16" y="-32">Flying</name>
+      <label kind="invariant" x="-16" y="16">f &lt;= FLYOUT_U</label></location>
+    <init ref="u_idle"/>
+
+    <transition><source ref="u_idle"/><target ref="u_ready"/>
+      <label kind="synchronisation" x="-480" y="-20">plan?</label></transition>
+
+    <transition><source ref="u_ready"/><target ref="u_fly"/>
+      <label kind="select"     x="-260" y="-100">t : int[0,MAXT-1]</label>
+      <label kind="guard"      x="-260" y="-80">ammoU&gt;0 &amp;&amp; engU[t] &amp;&amp; upCnt[t]==0</label>
+      <label kind="assignment" x="-260" y="-60">ammoU--, inflU++, upCnt[t]++, tgt=t, f=0</label></transition>
+
+    <transition><source ref="u_ready"/><target ref="u_idle"/>
+      <label kind="comments" x="-480" y="60">no feasible target</label>
+      <nail x="-300" y="100"/><nail x="-600" y="100"/></transition>
+
+    <transition><source ref="u_fly"/><target ref="u_idle"/>
+      <label kind="guard"           x="-360" y="-200">f &gt;= FLYOUT_U</label>
+      <label kind="synchronisation" x="-360" y="-180">hitU[tgt]!</label>
+      <label kind="assignment"      x="-360" y="-160">inflU--, upCnt[tgt]--</label>
+      <nail x="0" y="-200"/><nail x="-600" y="-200"/></transition>
+
+    <transition><source ref="u_fly"/><target ref="u_idle"/>
+      <label kind="guard"           x="-360" y="200">f &gt;= FLYOUT_U</label>
+      <label kind="synchronisation" x="-360" y="220">missU[tgt]!</label>
+      <label kind="assignment"      x="-360" y="240">inflU--, upCnt[tgt]--</label>
+      <nail x="0" y="200"/><nail x="-600" y="200"/></transition>
   </template>
 
-  <!-- ===================== InterceptorL (하층 채널) ===================== -->
+  <!-- ============================================================== -->
+  <!--                       InterceptorL                             -->
+  <!-- ============================================================== -->
   <template>
     <name>InterceptorL</name>
     <declaration>clock f; int tgt;</declaration>
-    <location id="l0" x="-560" y="0"><name>Idle</name></location>
-    <location id="l1" x="-320" y="0"><name>Ready</name><committed/></location>
-    <location id="l2" x="-80" y="0"><name>Flying</name>
-      <label kind="invariant">f &lt;= FLYOUT_L</label></location>
-    <init ref="l0"/>
 
-    <transition><source ref="l0"/><target ref="l1"/>
-      <label kind="synchronisation">plan?</label></transition>
-    <transition><source ref="l1"/><target ref="l2"/>
-      <label kind="select">t : int[0,MAXT-1]</label>
-      <label kind="guard">ammoL &gt; 0 &amp;&amp; engL[t] &amp;&amp; loCnt[t] == 0</label>
-      <label kind="assignment">ammoL--, inflL++, loCnt[t]++, tgt = t, f = 0</label></transition>
-    <transition><source ref="l1"/><target ref="l0"/></transition>
-    <transition><source ref="l2"/><target ref="l0"/>
-      <label kind="guard">f &gt;= FLYOUT_L</label>
-      <label kind="synchronisation">hitL[tgt]!</label>
-      <label kind="assignment">inflL--, loCnt[tgt]--</label></transition>
-    <transition><source ref="l2"/><target ref="l0"/>
-      <label kind="guard">f &gt;= FLYOUT_L</label>
-      <label kind="synchronisation">missL[tgt]!</label>
-      <label kind="assignment">inflL--, loCnt[tgt]--</label></transition>
+    <location id="l_idle"  x="-600" y="0"><name x="-616" y="-32">Idle</name></location>
+    <location id="l_ready" x="-300" y="0"><name x="-316" y="-32">Ready</name><committed/></location>
+    <location id="l_fly"   x="0"    y="0"><name x="-16" y="-32">Flying</name>
+      <label kind="invariant" x="-16" y="16">f &lt;= FLYOUT_L</label></location>
+    <init ref="l_idle"/>
+
+    <transition><source ref="l_idle"/><target ref="l_ready"/>
+      <label kind="synchronisation" x="-480" y="-20">plan?</label></transition>
+
+    <transition><source ref="l_ready"/><target ref="l_fly"/>
+      <label kind="select"     x="-260" y="-100">t : int[0,MAXT-1]</label>
+      <label kind="guard"      x="-260" y="-80">ammoL&gt;0 &amp;&amp; engL[t] &amp;&amp; loCnt[t]==0</label>
+      <label kind="assignment" x="-260" y="-60">ammoL--, inflL++, loCnt[t]++, tgt=t, f=0</label></transition>
+
+    <transition><source ref="l_ready"/><target ref="l_idle"/>
+      <label kind="comments" x="-480" y="60">no feasible target</label>
+      <nail x="-300" y="100"/><nail x="-600" y="100"/></transition>
+
+    <transition><source ref="l_fly"/><target ref="l_idle"/>
+      <label kind="guard"           x="-360" y="-200">f &gt;= FLYOUT_L</label>
+      <label kind="synchronisation" x="-360" y="-180">hitL[tgt]!</label>
+      <label kind="assignment"      x="-360" y="-160">inflL--, loCnt[tgt]--</label>
+      <nail x="0" y="-200"/><nail x="-600" y="-200"/></transition>
+
+    <transition><source ref="l_fly"/><target ref="l_idle"/>
+      <label kind="guard"           x="-360" y="200">f &gt;= FLYOUT_L</label>
+      <label kind="synchronisation" x="-360" y="220">missL[tgt]!</label>
+      <label kind="assignment"      x="-360" y="240">inflL--, loCnt[tgt]--</label>
+      <nail x="0" y="200"/><nail x="-600" y="200"/></transition>
   </template>
 
-  <!-- ===================== Planner (주기 클럭) ===================== -->
+  <!-- ============================================================== -->
+  <!--                          Planner                               -->
+  <!-- ============================================================== -->
   <template>
     <name>Planner</name>
     <declaration>clock cp;</declaration>
-    <location id="p0" x="0" y="0"><name>Tick</name>
-      <label kind="invariant">cp &lt;= PERIOD_P</label></location>
-    <init ref="p0"/>
-    <transition><source ref="p0"/><target ref="p0"/>
-      <label kind="guard">cp &gt;= PERIOD_P</label>
-      <label kind="synchronisation">plan!</label>
-      <label kind="assignment">cp = 0</label></transition>
+    <location id="p_tick" x="0" y="0"><name x="-16" y="-32">Tick</name>
+      <label kind="invariant" x="-16" y="16">cp &lt;= PERIOD_P</label></location>
+    <init ref="p_tick"/>
+    <transition><source ref="p_tick"/><target ref="p_tick"/>
+      <label kind="guard"           x="-120" y="-180">cp &gt;= PERIOD_P</label>
+      <label kind="synchronisation" x="-120" y="-160">plan!</label>
+      <label kind="assignment"      x="-120" y="-140">cp = 0</label>
+      <nail x="-160" y="-120"/><nail x="160" y="-120"/></transition>
   </template>
 
   <system>
 T0 = Threat(0); T1 = Threat(1); T2 = Threat(2);
-U0 = InterceptorU(); U1 = InterceptorU();   // CH_U = 2 상층 채널
-L0 = InterceptorL(); L1 = InterceptorL();   // CH_L = 2 하층 채널
+U0 = InterceptorU(); U1 = InterceptorU();   // CH_U = 2
+L0 = InterceptorL(); L1 = InterceptorL();   // CH_L = 2
 P  = Planner();
 system T0, T1, T2, U0, U1, L0, L1, P;
   </system>
 
   <queries>
-    <!-- ===== 안전성 (Safety, A[]) ===== -->
+    <!-- ===== Safety (A[]) ===== -->
     <query><formula>A[] not deadlock</formula>
-      <comment>S1 교착 없음</comment></query>
+      <comment>S1  Deadlock-free</comment></query>
     <query><formula>A[] (ammoU &gt;= 0 &amp;&amp; ammoL &gt;= 0)</formula>
-      <comment>S2 계층별 잔여탄 음수 불가 (자원 안전)</comment></query>
+      <comment>S2  Per-layer ammo never negative</comment></query>
     <query><formula>A[] (inflU &gt;= 0 &amp;&amp; inflU &lt;= CH_U)</formula>
-      <comment>S3 상층 비행 요격탄 ≤ 상층 유도채널</comment></query>
+      <comment>S3  Upper in-flight &lt;= upper guidance channels</comment></query>
     <query><formula>A[] (inflL &gt;= 0 &amp;&amp; inflL &lt;= CH_L)</formula>
-      <comment>S4 하층 비행 요격탄 ≤ 하층 유도채널</comment></query>
+      <comment>S4  Lower in-flight &lt;= lower guidance channels</comment></query>
     <query><formula>A[] forall (t : int[0,MAXT-1]) upCnt[t] &lt;= 1</formula>
-      <comment>S5 충돌회피: 한 위협에 상층 포대는 최대 1개 (다포대 L-SAM 중복 금지)</comment></query>
+      <comment>S5  At most one upper battery per threat (conflict-free)</comment></query>
     <query><formula>A[] forall (t : int[0,MAXT-1]) loCnt[t] &lt;= 1</formula>
-      <comment>S6 충돌회피: 한 위협에 하층 포대는 최대 1개</comment></query>
+      <comment>S6  At most one lower battery per threat (conflict-free)</comment></query>
     <query><formula>A[] (killed + leaked &lt;= MAXT)</formula>
-      <comment>S7 종결 위협 수 ≤ 전체 위협 수 (이중 계수 없음)</comment></query>
+      <comment>S7  Terminal counters cannot exceed MAXT</comment></query>
     <query><formula>A[] forall (t : int[0,MAXT-1]) (upCnt[t] + loCnt[t] &lt;= 2)</formula>
-      <comment>S8 위협당 동시 교전 요격탄 ≤ 2 (상1+하1, 다층요격 상한)</comment></query>
+      <comment>S8  At most one upper + one lower in flight per threat</comment></query>
 
-    <!-- ===== 타이밍/데드라인 (Timing, A[]) ===== -->
+    <!-- ===== Timing (A[]) ===== -->
     <query><formula>A[] P.cp &lt;= PERIOD_P</formula>
-      <comment>T1 계획수립 주기 데드라인: 주기 클럭이 PERIOD_P 초과 불가</comment></query>
-    <query><formula>A[] (T0.Live imply T0.x &lt;= IMPACT)</formula>
-      <comment>T2 교전창 불변: 활성(Live) 위협은 항상 탄착시각 이내 (교전 데드라인)</comment></query>
+      <comment>T1  Planner period deadline</comment></query>
+    <query><formula>A[] ((T0.UpperEng || T0.BothEng) imply T0.x &lt;= IMPACT)</formula>
+      <comment>T2  Engagement-window invariant for an active threat</comment></query>
 
-    <!-- ===== 라이브니스 (Liveness) ===== -->
+    <!-- ===== Liveness ===== -->
     <query><formula>A&lt;&gt; (killed + leaked == MAXT)</formula>
-      <comment>L1 모든 위협은 결국 격추 또는 누설로 종결</comment></query>
-    <query><formula>T0.Live --&gt; (T0.Killed || T0.Leaked)</formula>
-      <comment>L2 교전대 진입 위협은 결국 종결된다 (응답성, leads-to)</comment></query>
+      <comment>L1  Every threat eventually terminates</comment></query>
+    <query><formula>T0.UpperEng --&gt; (T0.Killed || T0.Leaked)</formula>
+      <comment>L2  An engageable threat eventually terminates</comment></query>
 
-    <!-- ===== 도달성 (Reachability, E&lt;&gt;) ===== -->
+    <!-- ===== Reachability (E&lt;&gt;) ===== -->
     <query><formula>E&lt;&gt; killed == MAXT</formula>
-      <comment>R1 전량 격추(완전 방어) 가능한 실행 존재</comment></query>
+      <comment>R1  Full-intercept run is reachable</comment></query>
     <query><formula>E&lt;&gt; (inflU &gt; 0 &amp;&amp; inflL &gt; 0)</formula>
-      <comment>R2 상·하층 동시 교전(둘 다 비행중) 도달 가능</comment></query>
+      <comment>R2  Simultaneous upper + lower engagement reachable</comment></query>
     <query><formula>E&lt;&gt; (upCnt[0] &gt; 0 &amp;&amp; loCnt[0] &gt; 0)</formula>
-      <comment>R3 동일 위협 상·하층 동시 교전(다층요격) 도달 가능</comment></query>
+      <comment>R3  Same threat hit by upper AND lower (layered defence)</comment></query>
     <query><formula>E&lt;&gt; leaked &gt; 0</formula>
-      <comment>R4 자원 부족/요격 실패로 누설 발생 가능 (포화 한계)</comment></query>
+      <comment>R4  Leakage reachable (saturation limit)</comment></query>
   </queries>
 </nta>
