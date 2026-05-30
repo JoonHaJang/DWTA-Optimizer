@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import math
 import random
+import re
 from dataclasses import dataclass
 from typing import List, Optional, Tuple
 
@@ -382,3 +383,86 @@ def dump_uppaal_system(
     )
     lines.append("system " + ", ".join(system_parts) + ";")
     return "\n".join(lines)
+
+
+# ---------------------------------------------------------------------------
+# v6 single-shot: render only the scenario consts (windows + Pk) that sit
+# inside the v6 model's AUTO-GENERATED marker block, plus an in-place
+# injector that overwrites that block in the XML.
+# ---------------------------------------------------------------------------
+
+def dump_uppaal_scenario(
+    seed: Optional[int] = 42,
+    n_threats: int = 3,
+    *,
+    max_alt_km: float = 80.0,
+) -> str:
+    """Return the const-block text the v6 model's AUTO-GENERATED markers expect.
+
+    Includes per-(threat) APPEAR / IMPACT_AT and per-(threat, battery)
+    U_ENTER / U_EXIT / L_ENTER / L_EXIT / PK_U / PK_L.  Does NOT include the
+    structural consts (MAXT, NB_U, NB_L, CH_PER_*) -- those stay outside the
+    markers in the v6 XML so that simply changing the scenario does not force
+    a structural rebuild.
+    """
+    windows_text = dump_uppaal_windows(seed=seed, n_threats=n_threats,
+                                       max_alt_km=max_alt_km)
+    keep_prefixes = (
+        "const int APPEAR[", "const int IMPACT_AT[",
+        "const int U_ENTER[", "const int U_EXIT ",
+        "const int L_ENTER[", "const int L_EXIT ",
+    )
+    keep_lines = [
+        ln for ln in windows_text.splitlines()
+        if any(ln.lstrip().startswith(p) for p in keep_prefixes)
+    ]
+    pk_text = dump_uppaal_pk(seed=seed, n_threats=n_threats)
+    return "\n".join(keep_lines + [pk_text])
+
+
+_MARKER_BEGIN = "// ===== BEGIN AUTO-GENERATED SCENARIO CONSTS ====="
+_MARKER_END   = "// ===== END AUTO-GENERATED SCENARIO CONSTS ====="
+
+
+def inject_uppaal_constants(
+    model_path: str,
+    seed: Optional[int] = 42,
+    n_threats: int = 3,
+    *,
+    max_alt_km: float = 80.0,
+    out_path: Optional[str] = None,
+) -> str:
+    """Overwrite the AUTO-GENERATED block of ``model_path`` with fresh consts.
+
+    The model must contain a literal ``BEGIN AUTO-GENERATED SCENARIO CONSTS``
+    and the matching ``END`` marker on their own lines (any preceding helper
+    comments inside the block are preserved -- only the const lines after
+    them get replaced).
+
+    Returns the path actually written (``out_path`` if given, else ``model_path``).
+    """
+    with open(model_path, "r", encoding="utf-8") as f:
+        content = f.read()
+    if _MARKER_BEGIN not in content or _MARKER_END not in content:
+        raise ValueError(
+            f"Markers not found in {model_path}. "
+            f"Add '{_MARKER_BEGIN}' and '{_MARKER_END}' "
+            f"around the scenario const block."
+        )
+    new_block = dump_uppaal_scenario(seed=seed, n_threats=n_threats,
+                                     max_alt_km=max_alt_km)
+    pattern = re.compile(
+        re.escape(_MARKER_BEGIN) + r".*?" + re.escape(_MARKER_END),
+        re.DOTALL,
+    )
+    # Preserve the helper comment block that sits between BEGIN and the
+    # first "const " line -- the dump_uppaal_scenario output starts at the
+    # const lines, so we keep the original helper comments as a hint.
+    new_content = pattern.sub(
+        f"{_MARKER_BEGIN}\n// (auto-generated from random_saturation_scenario seed={seed}, n_threats={n_threats})\n{new_block}\n{_MARKER_END}",
+        content,
+    )
+    target = out_path or model_path
+    with open(target, "w", encoding="utf-8") as f:
+        f.write(new_content)
+    return target

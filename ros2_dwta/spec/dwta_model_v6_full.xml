@@ -1,0 +1,476 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE nta PUBLIC '-//Uppaal Team//DTD Flat System 1.6//EN' 'http://www.it.uu.se/research/group/darts/uppaal/flat-1_6.dtd'>
+<nta>
+  <declaration>
+// ============================================================================
+// DWTA realtime C2 pipeline -- v6 (FULL: Planner-as-decider + Salvo + Pk + jitter)
+// ----------------------------------------------------------------------------
+//  Single canonical model uniting every axis from the mission-procedure diagram:
+//
+//    [process]       Planner owns the WTA decision (mirrors ROS2's
+//                    planning_node._tick -> GreedyWTA.solve() -> Assignment list).
+//                    Handshake assign_u[b][t] / assign_l[b][t] channels make
+//                    the (battery, threat) decision explicit per ROS2's
+//                    LauncherNode._on_plan dispatch.
+//
+//    [multi-layer]   Upper (L-SAM) + Lower (M-SAM) layers with independent
+//                    Slot_U / Slot_L pools.  Same threat may be covered by
+//                    both layers (R4 reachability query).
+//
+//    [per-battery]   CH_PER_U[b] / CH_PER_L[b] -- each battery owns a
+//                    distinct channel pool.  Slot instances are per channel.
+//
+//    [Pk]            PK_U[t][b] / PK_L[t][b] (Pk * 100) attached to hit/miss
+//                    edges as probability weights -- becomes a Bernoulli
+//                    branch under SMC, stays as a free nondeterministic
+//                    choice under classical TCTL (both safe).
+//
+//    [salvo]         MAX_SALVO_U / MAX_SALVO_L concurrent shots per
+//                    (battery, threat).  Encoded via best_u_b_salvo's
+//                    "upCnt_bt[b][i] less than MAX_SALVO_U" gate and the
+//                    Planner's salvo_step counter inside Decide.
+//
+//    [range+altitude] (range AND altitude) intersection precomputed per
+//                    (threat, battery) into U_ENTER/U_EXIT/L_ENTER/L_EXIT
+//                    time windows.  Radar broadcasts enter/exit at the right
+//                    instants; Threat toggles engU_b[t][b] / engL_b[t][b].
+//
+//    [flyout jitter] FLYOUT_U_MIN..MAX (and L variant): missile spends a
+//                    nondeterministic time inside the window before its
+//                    hit/miss verdict fires.
+//
+//  Scenario constants between the BEGIN / END AUTO-GENERATED markers are
+//  produced by ros2_dwta.dwta_nodes.scenario.dump_uppaal_windows() and
+//  injected with inject_uppaal_constants().  Everything else is the model
+//  structure and stays stable across scenarios.
+// ============================================================================
+
+// ---- model structure (stable) ---------------------------------------------
+const int MAXT             = 3;
+const int NB_U             = 2;
+const int NB_L             = 2;
+const int CH_PER_U[NB_U]   = {3, 2};
+const int CH_PER_L[NB_L]   = {3, 2};
+const int FLYOUT_U_MIN     = 4;
+const int FLYOUT_U_MAX     = 6;
+const int FLYOUT_L_MIN     = 1;
+const int FLYOUT_L_MAX     = 3;
+const int PERIOD_P         = 2;
+const int MAX_SALVO_U      = 2;
+const int MAX_SALVO_L      = 1;
+
+// ===== BEGIN AUTO-GENERATED SCENARIO CONSTS =====
+// Replace this block with the output of:
+//   python -c "import sys; sys.path.insert(0,'ros2_dwta'); \
+//     from dwta_nodes.scenario import dump_uppaal_scenario; \
+//     print(dump_uppaal_scenario(seed=42, n_threats=3))"
+// or call inject_uppaal_constants() to overwrite in place.
+const int APPEAR[MAXT]        = { 0,  3,  6};
+const int IMPACT_AT[MAXT]     = {30, 32, 35};
+const int U_ENTER[MAXT][NB_U] = { { 8, 9}, {11,12}, {14,15} };
+const int U_EXIT [MAXT][NB_U] = { {22,21}, {24,23}, {26,25} };
+const int L_ENTER[MAXT][NB_L] = { {16,17}, {19,18}, {20,21} };
+const int L_EXIT [MAXT][NB_L] = { {28,27}, {30,29}, {33,31} };
+const int PK_U[MAXT][NB_U]    = { {85,80}, {78,82}, {88,75} };
+const int PK_L[MAXT][NB_L]    = { {72,70}, {75,73}, {68,71} };
+// ===== END AUTO-GENERATED SCENARIO CONSTS =====
+
+// ---- shared state ----------------------------------------------------------
+int  ammoU_b[NB_U]    = {4, 3};
+int  ammoL_b[NB_L]    = {4, 3};
+int  inflU_b[NB_U];
+int  inflL_b[NB_L];
+int  upCnt_bt[NB_U][MAXT];
+int  loCnt_bt[NB_L][MAXT];
+bool engU_b[MAXT][NB_U];
+bool engL_b[MAXT][NB_L];
+int  killed = 0, leaked = 0;
+int  shots_u_fired = 0;
+int  shots_l_fired = 0;
+
+// ---- channels --------------------------------------------------------------
+// Handshake: exactly one Idle Slot of (batt_id) matches each assign! fire.
+chan assign_u[NB_U][MAXT];
+chan assign_l[NB_L][MAXT];
+// Broadcast: 0+ receivers OK (terminal threats ignore late hit/miss).
+broadcast chan detect[MAXT];
+broadcast chan impact[MAXT];
+broadcast chan enterU0[MAXT], exitU0[MAXT];
+broadcast chan enterU1[MAXT], exitU1[MAXT];
+broadcast chan enterL0[MAXT], exitL0[MAXT];
+broadcast chan enterL1[MAXT], exitL1[MAXT];
+broadcast chan hitU[MAXT], missU[MAXT];
+broadcast chan hitL[MAXT], missL[MAXT];
+
+// ---- salvo-aware GreedyWTA priority ----------------------------------------
+int best_u_b_salvo(int b) {
+    int i = 0;
+    while (i &lt; MAXT) {
+        if (engU_b[i][b] &amp;&amp; upCnt_bt[b][i] &lt; MAX_SALVO_U) return i;
+        i++;
+    }
+    return -1;
+}
+int best_l_b_salvo(int b) {
+    int i = 0;
+    while (i &lt; MAXT) {
+        if (engL_b[i][b] &amp;&amp; loCnt_bt[b][i] &lt; MAX_SALVO_L) return i;
+        i++;
+    }
+    return -1;
+}
+bool any_uCover(int t) { return upCnt_bt[0][t] + upCnt_bt[1][t] &gt; 0; }
+bool any_lCover(int t) { return loCnt_bt[0][t] + loCnt_bt[1][t] &gt; 0; }
+  </declaration>
+
+  <!-- ============================================================== -->
+  <!--                    Radar (one per threat)                      -->
+  <!-- ============================================================== -->
+  <template>
+    <name>Radar</name>
+    <parameter>const int id</parameter>
+    <declaration>clock t;</declaration>
+
+    <location id="r_pre"  x="-720" y="0"><name x="-756" y="-32">Pre</name>
+      <label kind="invariant" x="-756" y="16">t &lt;= APPEAR[id]</label></location>
+    <location id="r_scan" x="-240" y="0"><name x="-272" y="-32">Scan</name>
+      <label kind="invariant" x="-272" y="16">t &lt;= IMPACT_AT[id]</label></location>
+    <location id="r_done" x="360"  y="0"><name x="328" y="-32">Done</name></location>
+    <init ref="r_pre"/>
+
+    <transition><source ref="r_pre"/><target ref="r_scan"/>
+      <label kind="guard"           x="-640" y="-32">t == APPEAR[id]</label>
+      <label kind="synchronisation" x="-640" y="-12">detect[id]!</label></transition>
+
+    <transition><source ref="r_scan"/><target ref="r_scan"/>
+      <label kind="guard"           x="-440" y="-200">t == U_ENTER[id][0]</label>
+      <label kind="synchronisation" x="-440" y="-180">enterU0[id]!</label>
+      <nail x="-360" y="-160"/><nail x="-120" y="-160"/></transition>
+    <transition><source ref="r_scan"/><target ref="r_scan"/>
+      <label kind="guard"           x="-440" y="-260">t == U_EXIT[id][0]</label>
+      <label kind="synchronisation" x="-440" y="-240">exitU0[id]!</label>
+      <nail x="-360" y="-220"/><nail x="-120" y="-220"/></transition>
+    <transition><source ref="r_scan"/><target ref="r_scan"/>
+      <label kind="guard"           x="-440" y="-320">t == U_ENTER[id][1]</label>
+      <label kind="synchronisation" x="-440" y="-300">enterU1[id]!</label>
+      <nail x="-360" y="-280"/><nail x="-120" y="-280"/></transition>
+    <transition><source ref="r_scan"/><target ref="r_scan"/>
+      <label kind="guard"           x="-440" y="-380">t == U_EXIT[id][1]</label>
+      <label kind="synchronisation" x="-440" y="-360">exitU1[id]!</label>
+      <nail x="-360" y="-340"/><nail x="-120" y="-340"/></transition>
+    <transition><source ref="r_scan"/><target ref="r_scan"/>
+      <label kind="guard"           x="-440" y="80">t == L_ENTER[id][0]</label>
+      <label kind="synchronisation" x="-440" y="100">enterL0[id]!</label>
+      <nail x="-360" y="140"/><nail x="-120" y="140"/></transition>
+    <transition><source ref="r_scan"/><target ref="r_scan"/>
+      <label kind="guard"           x="-440" y="160">t == L_EXIT[id][0]</label>
+      <label kind="synchronisation" x="-440" y="180">exitL0[id]!</label>
+      <nail x="-360" y="200"/><nail x="-120" y="200"/></transition>
+    <transition><source ref="r_scan"/><target ref="r_scan"/>
+      <label kind="guard"           x="-440" y="240">t == L_ENTER[id][1]</label>
+      <label kind="synchronisation" x="-440" y="260">enterL1[id]!</label>
+      <nail x="-360" y="280"/><nail x="-120" y="280"/></transition>
+    <transition><source ref="r_scan"/><target ref="r_scan"/>
+      <label kind="guard"           x="-440" y="320">t == L_EXIT[id][1]</label>
+      <label kind="synchronisation" x="-440" y="340">exitL1[id]!</label>
+      <nail x="-360" y="360"/><nail x="-120" y="360"/></transition>
+
+    <transition><source ref="r_scan"/><target ref="r_done"/>
+      <label kind="guard"           x="60" y="-32">t == IMPACT_AT[id]</label>
+      <label kind="synchronisation" x="60" y="-12">impact[id]!</label></transition>
+  </template>
+
+  <!-- ============================================================== -->
+  <!--                          Threat                                -->
+  <!-- ============================================================== -->
+  <template>
+    <name>Threat</name>
+    <parameter>const int id</parameter>
+
+    <location id="t_in"   x="-720" y="0"><name x="-756" y="-32">Inbound</name></location>
+    <location id="t_tr"   x="-300" y="0"><name x="-336" y="-32">Tracked</name></location>
+    <location id="t_kill" x="180"  y="-240"><name x="164" y="-272">Killed</name></location>
+    <location id="t_leak" x="180"  y="240"><name x="164" y="264">Leaked</name></location>
+    <init ref="t_in"/>
+
+    <transition><source ref="t_in"/><target ref="t_tr"/>
+      <label kind="synchronisation" x="-560" y="-20">detect[id]?</label></transition>
+
+    <transition><source ref="t_tr"/><target ref="t_tr"/>
+      <label kind="synchronisation" x="-380" y="-160">enterU0[id]?</label>
+      <label kind="assignment"      x="-380" y="-140">engU_b[id][0]=true</label>
+      <nail x="-380" y="-120"/><nail x="-220" y="-120"/></transition>
+    <transition><source ref="t_tr"/><target ref="t_tr"/>
+      <label kind="synchronisation" x="-380" y="-220">exitU0[id]?</label>
+      <label kind="assignment"      x="-380" y="-200">engU_b[id][0]=false</label>
+      <nail x="-380" y="-180"/><nail x="-220" y="-180"/></transition>
+    <transition><source ref="t_tr"/><target ref="t_tr"/>
+      <label kind="synchronisation" x="-380" y="-280">enterU1[id]?</label>
+      <label kind="assignment"      x="-380" y="-260">engU_b[id][1]=true</label>
+      <nail x="-380" y="-240"/><nail x="-220" y="-240"/></transition>
+    <transition><source ref="t_tr"/><target ref="t_tr"/>
+      <label kind="synchronisation" x="-380" y="-340">exitU1[id]?</label>
+      <label kind="assignment"      x="-380" y="-320">engU_b[id][1]=false</label>
+      <nail x="-380" y="-300"/><nail x="-220" y="-300"/></transition>
+    <transition><source ref="t_tr"/><target ref="t_tr"/>
+      <label kind="synchronisation" x="-380" y="80">enterL0[id]?</label>
+      <label kind="assignment"      x="-380" y="100">engL_b[id][0]=true</label>
+      <nail x="-380" y="120"/><nail x="-220" y="120"/></transition>
+    <transition><source ref="t_tr"/><target ref="t_tr"/>
+      <label kind="synchronisation" x="-380" y="140">exitL0[id]?</label>
+      <label kind="assignment"      x="-380" y="160">engL_b[id][0]=false</label>
+      <nail x="-380" y="180"/><nail x="-220" y="180"/></transition>
+    <transition><source ref="t_tr"/><target ref="t_tr"/>
+      <label kind="synchronisation" x="-380" y="200">enterL1[id]?</label>
+      <label kind="assignment"      x="-380" y="220">engL_b[id][1]=true</label>
+      <nail x="-380" y="240"/><nail x="-220" y="240"/></transition>
+    <transition><source ref="t_tr"/><target ref="t_tr"/>
+      <label kind="synchronisation" x="-380" y="260">exitL1[id]?</label>
+      <label kind="assignment"      x="-380" y="280">engL_b[id][1]=false</label>
+      <nail x="-380" y="300"/><nail x="-220" y="300"/></transition>
+
+    <transition><source ref="t_tr"/><target ref="t_tr"/>
+      <label kind="synchronisation" x="-180" y="20">missU[id]?</label>
+      <nail x="-220" y="40"/><nail x="-100" y="40"/></transition>
+    <transition><source ref="t_tr"/><target ref="t_tr"/>
+      <label kind="synchronisation" x="-180" y="60">missL[id]?</label>
+      <nail x="-220" y="80"/><nail x="-100" y="80"/></transition>
+
+    <transition><source ref="t_tr"/><target ref="t_kill"/>
+      <label kind="synchronisation" x="-100" y="-160">hitU[id]?</label>
+      <label kind="assignment"      x="-100" y="-140">engU_b[id][0]=false, engU_b[id][1]=false, engL_b[id][0]=false, engL_b[id][1]=false, killed++</label></transition>
+    <transition><source ref="t_tr"/><target ref="t_kill"/>
+      <label kind="synchronisation" x="-100" y="-100">hitL[id]?</label>
+      <label kind="assignment"      x="-100" y="-80">engU_b[id][0]=false, engU_b[id][1]=false, engL_b[id][0]=false, engL_b[id][1]=false, killed++</label>
+      <nail x="100" y="-100"/></transition>
+
+    <transition><source ref="t_in"/><target ref="t_leak"/>
+      <label kind="synchronisation" x="-420" y="320">impact[id]?</label>
+      <label kind="assignment"      x="-420" y="340">leaked++</label>
+      <nail x="-720" y="400"/><nail x="180" y="400"/></transition>
+    <transition><source ref="t_tr"/><target ref="t_leak"/>
+      <label kind="synchronisation" x="-100" y="200">impact[id]?</label>
+      <label kind="assignment"      x="-100" y="220">engU_b[id][0]=false, engU_b[id][1]=false, engL_b[id][0]=false, engL_b[id][1]=false, leaked++</label></transition>
+  </template>
+
+  <!-- ============================================================== -->
+  <!--           Slot_U (reactive executor with Pk + jitter)          -->
+  <!-- ============================================================== -->
+  <template>
+    <name>Slot_U</name>
+    <parameter>const int batt_id</parameter>
+    <declaration>clock f; int tgt;</declaration>
+
+    <location id="su_idle" x="-400" y="0"><name x="-416" y="-32">Idle</name></location>
+    <location id="su_fly"  x="0"    y="0"><name x="-16" y="-32">Flying</name>
+      <label kind="invariant" x="-16" y="16">f &lt;= FLYOUT_U_MAX</label></location>
+    <init ref="su_idle"/>
+
+    <transition><source ref="su_idle"/><target ref="su_fly"/>
+      <label kind="select"          x="-280" y="-80">t : int[0,MAXT-1]</label>
+      <label kind="synchronisation" x="-280" y="-60">assign_u[batt_id][t]?</label>
+      <label kind="assignment"      x="-280" y="-40">tgt = t, f = 0</label></transition>
+
+    <transition><source ref="su_fly"/><target ref="su_idle"/>
+      <label kind="guard"           x="-280" y="-200">f &gt;= FLYOUT_U_MIN</label>
+      <label kind="synchronisation" x="-280" y="-180">hitU[tgt]!</label>
+      <label kind="probability"     x="-280" y="-160">PK_U[tgt][batt_id]</label>
+      <label kind="assignment"      x="-280" y="-140">inflU_b[batt_id]--, upCnt_bt[batt_id][tgt]--</label>
+      <nail x="0" y="-180"/><nail x="-400" y="-180"/></transition>
+
+    <transition><source ref="su_fly"/><target ref="su_idle"/>
+      <label kind="guard"           x="-280" y="180">f &gt;= FLYOUT_U_MIN</label>
+      <label kind="synchronisation" x="-280" y="200">missU[tgt]!</label>
+      <label kind="probability"     x="-280" y="220">100 - PK_U[tgt][batt_id]</label>
+      <label kind="assignment"      x="-280" y="240">inflU_b[batt_id]--, upCnt_bt[batt_id][tgt]--</label>
+      <nail x="0" y="180"/><nail x="-400" y="180"/></transition>
+  </template>
+
+  <!-- ============================================================== -->
+  <!--                          Slot_L                                -->
+  <!-- ============================================================== -->
+  <template>
+    <name>Slot_L</name>
+    <parameter>const int batt_id</parameter>
+    <declaration>clock f; int tgt;</declaration>
+
+    <location id="sl_idle" x="-400" y="0"><name x="-416" y="-32">Idle</name></location>
+    <location id="sl_fly"  x="0"    y="0"><name x="-16" y="-32">Flying</name>
+      <label kind="invariant" x="-16" y="16">f &lt;= FLYOUT_L_MAX</label></location>
+    <init ref="sl_idle"/>
+
+    <transition><source ref="sl_idle"/><target ref="sl_fly"/>
+      <label kind="select"          x="-280" y="-80">t : int[0,MAXT-1]</label>
+      <label kind="synchronisation" x="-280" y="-60">assign_l[batt_id][t]?</label>
+      <label kind="assignment"      x="-280" y="-40">tgt = t, f = 0</label></transition>
+
+    <transition><source ref="sl_fly"/><target ref="sl_idle"/>
+      <label kind="guard"           x="-280" y="-200">f &gt;= FLYOUT_L_MIN</label>
+      <label kind="synchronisation" x="-280" y="-180">hitL[tgt]!</label>
+      <label kind="probability"     x="-280" y="-160">PK_L[tgt][batt_id]</label>
+      <label kind="assignment"      x="-280" y="-140">inflL_b[batt_id]--, loCnt_bt[batt_id][tgt]--</label>
+      <nail x="0" y="-180"/><nail x="-400" y="-180"/></transition>
+
+    <transition><source ref="sl_fly"/><target ref="sl_idle"/>
+      <label kind="guard"           x="-280" y="180">f &gt;= FLYOUT_L_MIN</label>
+      <label kind="synchronisation" x="-280" y="200">missL[tgt]!</label>
+      <label kind="probability"     x="-280" y="220">100 - PK_L[tgt][batt_id]</label>
+      <label kind="assignment"      x="-280" y="240">inflL_b[batt_id]--, loCnt_bt[batt_id][tgt]--</label>
+      <nail x="0" y="180"/><nail x="-400" y="180"/></transition>
+  </template>
+
+  <!-- ============================================================== -->
+  <!--               Planner (decider + Salvo loop)                   -->
+  <!--   ds: battery index 0..NB_U+NB_L-1                              -->
+  <!--   ss: salvo step inside current battery (0..MAX_SALVO_*-1)      -->
+  <!-- ============================================================== -->
+  <template>
+    <name>Planner</name>
+    <declaration>clock cp; int ds = 0; int ss = 0;</declaration>
+
+    <location id="p_tick"   x="-200" y="0"><name x="-216" y="-32">Tick</name>
+      <label kind="invariant" x="-216" y="16">cp &lt;= PERIOD_P</label></location>
+    <location id="p_decide" x="240"  y="0"><name x="224" y="-32">Decide</name><committed/></location>
+    <init ref="p_tick"/>
+
+    <!-- Tick -> Decide on period -->
+    <transition><source ref="p_tick"/><target ref="p_decide"/>
+      <label kind="guard"      x="-100" y="-20">cp &gt;= PERIOD_P</label>
+      <label kind="assignment" x="-100" y="0">ds = 0, ss = 0</label></transition>
+
+    <!-- Upper assign (one salvo step for battery ds) -->
+    <transition><source ref="p_decide"/><target ref="p_decide"/>
+      <label kind="select"          x="300" y="-220">t : int[0,MAXT-1]</label>
+      <label kind="guard"           x="300" y="-200">ds &lt; NB_U
+        &amp;&amp; ss &lt; MAX_SALVO_U
+        &amp;&amp; ammoU_b[ds] &gt; 0
+        &amp;&amp; inflU_b[ds] &lt; CH_PER_U[ds]
+        &amp;&amp; best_u_b_salvo(ds) &gt;= 0
+        &amp;&amp; t == best_u_b_salvo(ds)</label>
+      <label kind="synchronisation" x="300" y="-140">assign_u[ds][t]!</label>
+      <label kind="assignment"      x="300" y="-120">ammoU_b[ds]--, inflU_b[ds]++, upCnt_bt[ds][t]++, shots_u_fired++, ss++</label>
+      <nail x="340" y="-100"/><nail x="140" y="-100"/></transition>
+
+    <!-- Upper move-to-next battery -->
+    <transition><source ref="p_decide"/><target ref="p_decide"/>
+      <label kind="guard"      x="300" y="0">ds &lt; NB_U
+        &amp;&amp; (ss &gt;= MAX_SALVO_U
+            || ammoU_b[ds] == 0
+            || inflU_b[ds] &gt;= CH_PER_U[ds]
+            || best_u_b_salvo(ds) &lt; 0)</label>
+      <label kind="assignment" x="300" y="60">ds++, ss = 0</label>
+      <nail x="340" y="40"/><nail x="140" y="40"/></transition>
+
+    <!-- Lower assign (one salvo step for battery ds-NB_U) -->
+    <transition><source ref="p_decide"/><target ref="p_decide"/>
+      <label kind="select"          x="300" y="120">t : int[0,MAXT-1]</label>
+      <label kind="guard"           x="300" y="140">ds &gt;= NB_U
+        &amp;&amp; ds &lt; NB_U + NB_L
+        &amp;&amp; ss &lt; MAX_SALVO_L
+        &amp;&amp; ammoL_b[ds - NB_U] &gt; 0
+        &amp;&amp; inflL_b[ds - NB_U] &lt; CH_PER_L[ds - NB_U]
+        &amp;&amp; best_l_b_salvo(ds - NB_U) &gt;= 0
+        &amp;&amp; t == best_l_b_salvo(ds - NB_U)</label>
+      <label kind="synchronisation" x="300" y="220">assign_l[ds - NB_U][t]!</label>
+      <label kind="assignment"      x="300" y="240">ammoL_b[ds-NB_U]--, inflL_b[ds-NB_U]++, loCnt_bt[ds-NB_U][t]++, shots_l_fired++, ss++</label>
+      <nail x="340" y="180"/><nail x="140" y="180"/></transition>
+
+    <!-- Lower move-to-next battery -->
+    <transition><source ref="p_decide"/><target ref="p_decide"/>
+      <label kind="guard"      x="300" y="300">ds &gt;= NB_U
+        &amp;&amp; ds &lt; NB_U + NB_L
+        &amp;&amp; (ss &gt;= MAX_SALVO_L
+            || ammoL_b[ds - NB_U] == 0
+            || inflL_b[ds - NB_U] &gt;= CH_PER_L[ds - NB_U]
+            || best_l_b_salvo(ds - NB_U) &lt; 0)</label>
+      <label kind="assignment" x="300" y="360">ds++, ss = 0</label>
+      <nail x="340" y="340"/><nail x="140" y="340"/></transition>
+
+    <!-- Decide -> Tick when all batteries visited -->
+    <transition><source ref="p_decide"/><target ref="p_tick"/>
+      <label kind="guard"      x="-100" y="40">ds == NB_U + NB_L</label>
+      <label kind="assignment" x="-100" y="60">cp = 0</label></transition>
+  </template>
+
+  <system>
+R0 = Radar(0); R1 = Radar(1); R2 = Radar(2);
+T0 = Threat(0); T1 = Threat(1); T2 = Threat(2);
+// Upper: CH_PER_U = {3, 2}
+SU0_0 = Slot_U(0); SU0_1 = Slot_U(0); SU0_2 = Slot_U(0);
+SU1_0 = Slot_U(1); SU1_1 = Slot_U(1);
+// Lower: CH_PER_L = {3, 2}
+SL0_0 = Slot_L(0); SL0_1 = Slot_L(0); SL0_2 = Slot_L(0);
+SL1_0 = Slot_L(1); SL1_1 = Slot_L(1);
+P = Planner();
+system R0, R1, R2, T0, T1, T2,
+       SU0_0, SU0_1, SU0_2, SU1_0, SU1_1,
+       SL0_0, SL0_1, SL0_2, SL1_0, SL1_1,
+       P;
+  </system>
+
+  <queries>
+    <!-- Safety -->
+    <query><formula>A[] not deadlock</formula>
+      <comment>S1  Deadlock-free</comment></query>
+    <query><formula>A[] forall (b : int[0,NB_U-1]) (ammoU_b[b] &gt;= 0)</formula>
+      <comment>S2u  Upper ammo per battery never negative</comment></query>
+    <query><formula>A[] forall (b : int[0,NB_L-1]) (ammoL_b[b] &gt;= 0)</formula>
+      <comment>S2l  Lower ammo per battery never negative</comment></query>
+    <query><formula>A[] forall (b : int[0,NB_U-1]) (inflU_b[b] &lt;= CH_PER_U[b])</formula>
+      <comment>S3  Upper in-flight per battery &lt;= channels</comment></query>
+    <query><formula>A[] forall (b : int[0,NB_L-1]) (inflL_b[b] &lt;= CH_PER_L[b])</formula>
+      <comment>S4  Lower in-flight per battery &lt;= channels</comment></query>
+    <query><formula>A[] forall (b : int[0,NB_U-1]) forall (t : int[0,MAXT-1]) (upCnt_bt[b][t] &lt;= MAX_SALVO_U)</formula>
+      <comment>S5  Upper salvo bound</comment></query>
+    <query><formula>A[] forall (b : int[0,NB_L-1]) forall (t : int[0,MAXT-1]) (loCnt_bt[b][t] &lt;= MAX_SALVO_L)</formula>
+      <comment>S6  Lower salvo bound</comment></query>
+    <query><formula>A[] (killed + leaked &lt;= MAXT)</formula>
+      <comment>S7  Terminal counters bounded</comment></query>
+
+    <!-- Geometry -->
+    <query><formula>A[] forall (b : int[0,NB_U-1]) forall (t : int[0,MAXT-1]) (upCnt_bt[b][t] &gt; 0 imply engU_b[t][b])</formula>
+      <comment>RD1  No upper fire outside (range AND altitude) window</comment></query>
+    <query><formula>A[] forall (b : int[0,NB_L-1]) forall (t : int[0,MAXT-1]) (loCnt_bt[b][t] &gt; 0 imply engL_b[t][b])</formula>
+      <comment>RD2  Same for lower</comment></query>
+
+    <!-- Timing -->
+    <query><formula>A[] P.cp &lt;= PERIOD_P</formula>
+      <comment>T1  Planner period deadline</comment></query>
+
+    <!-- Liveness -->
+    <query><formula>A&lt;&gt; (killed + leaked == MAXT)</formula>
+      <comment>L1  Every threat eventually terminates</comment></query>
+
+    <!-- Reachability -->
+    <query><formula>E&lt;&gt; killed == MAXT</formula>
+      <comment>R1  Full-intercept reachable</comment></query>
+    <query><formula>E&lt;&gt; (inflU_b[0] &gt; 0 &amp;&amp; inflU_b[1] &gt; 0)</formula>
+      <comment>R2  Both upper batteries simultaneously firing</comment></query>
+    <query><formula>E&lt;&gt; (inflL_b[0] &gt; 0 &amp;&amp; inflL_b[1] &gt; 0)</formula>
+      <comment>R3  Both lower batteries simultaneously firing</comment></query>
+    <query><formula>E&lt;&gt; (any_uCover(0) &amp;&amp; any_lCover(0))</formula>
+      <comment>R4  Layered intercept on threat 0</comment></query>
+    <query><formula>E&lt;&gt; leaked &gt; 0</formula>
+      <comment>R5  Leakage reachable (saturation)</comment></query>
+    <query><formula>E&lt;&gt; exists (b : int[0,NB_U-1]) exists (t : int[0,MAXT-1]) (upCnt_bt[b][t] == MAX_SALVO_U)</formula>
+      <comment>SV1  A battery actually fires a full salvo at some threat</comment></query>
+
+    <!-- v6 explicit-assign sanity -->
+    <query><formula>A[] (P.Tick or P.Decide)</formula>
+      <comment>E1  Planner always at one of its two locations</comment></query>
+    <query><formula>A[] (P.Decide imply (P.ds &gt;= 0 &amp;&amp; P.ds &lt;= NB_U + NB_L))</formula>
+      <comment>E2  decision-step counter in valid range</comment></query>
+    <query><formula>E&lt;&gt; (shots_u_fired &gt; 0 &amp;&amp; shots_l_fired &gt; 0)</formula>
+      <comment>E3  Both layers receive Planner assignments</comment></query>
+
+    <!-- SMC (statistical) -->
+    <query><formula>Pr[&lt;=40] (&lt;&gt; killed == MAXT)</formula>
+      <comment>SMC1  Probability of full intercept within 40 time units</comment></query>
+    <query><formula>E[&lt;=40; 200] (max: killed)</formula>
+      <comment>SMC2  Expected max killed over 200 runs</comment></query>
+    <query><formula>E[&lt;=40; 200] (max: shots_u_fired + shots_l_fired)</formula>
+      <comment>SMC3  Expected total shots (consumption)</comment></query>
+    <query><formula>simulate 50 [&lt;=40] {killed, leaked, inflU_b[0], inflL_b[0]}</formula>
+      <comment>SMC4  50-trace plot</comment></query>
+  </queries>
+</nta>
