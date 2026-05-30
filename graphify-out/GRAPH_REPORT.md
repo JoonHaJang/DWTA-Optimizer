@@ -1,16 +1,16 @@
 # Graph Report - DWTA-Optimizer  (2026-05-30)
 
 ## Corpus Check
-- 72 files · ~82,448 words
+- 72 files · ~83,304 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 3745 nodes · 5528 edges · 446 communities (436 shown, 10 thin omitted)
-- Extraction: 83% EXTRACTED · 17% INFERRED · 0% AMBIGUOUS · INFERRED: 913 edges (avg confidence: 0.51)
+- 3755 nodes · 5539 edges · 443 communities (431 shown, 12 thin omitted)
+- Extraction: 84% EXTRACTED · 16% INFERRED · 0% AMBIGUOUS · INFERRED: 913 edges (avg confidence: 0.51)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `fcb05338`
+- Built from commit: `98c3e0ac`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -96,8 +96,6 @@
 - [[_COMMUNITY_Community 78|Community 78]]
 - [[_COMMUNITY_Community 79|Community 79]]
 - [[_COMMUNITY_Community 80|Community 80]]
-- [[_COMMUNITY_Community 81|Community 81]]
-- [[_COMMUNITY_Community 82|Community 82]]
 - [[_COMMUNITY_Community 83|Community 83]]
 - [[_COMMUNITY_Community 86|Community 86]]
 - [[_COMMUNITY_Community 87|Community 87]]
@@ -453,7 +451,6 @@
 - [[_COMMUNITY_Community 440|Community 440]]
 - [[_COMMUNITY_Community 442|Community 442]]
 - [[_COMMUNITY_Community 443|Community 443]]
-- [[_COMMUNITY_Community 444|Community 444]]
 - [[_COMMUNITY_Community 445|Community 445]]
 - [[_COMMUNITY_Community 446|Community 446]]
 - [[_COMMUNITY_Community 447|Community 447]]
@@ -494,27 +491,27 @@
 - **DWTA optimizer strategies implementing shared solve/create_model interface** — ga_optimizer_geneticalgorithmoptimizer, greedy_optimizer_greedyoptimizer, clean_slate_optimizer_cleanslateoptimizer [INFERRED 0.85]
 - **Optimizers sharing Asset/InterceptorSystem/Threat dataclasses and engagement-matrix data** — ga_optimizer_geneticalgorithmoptimizer, greedy_optimizer_greedyoptimizer, clean_slate_optimizer_build_problem [INFERRED 0.85]
 
-## Communities (446 total, 10 thin omitted)
+## Communities (443 total, 12 thin omitted)
 
 ### Community 0 - "Community 0"
 Cohesion: 0.08
-Nodes (43): Asset, CleanSlateOptimizer, InterceptorSystem, Backward compatibility., Drop-in replacement for NonLinearMIPOptimizer.      Interface contract:, Provide k-factor cache for distance/time-based k computation., Threat, EnhancedEngagementMatrix (+35 more)
+Nodes (49): Asset, CleanSlateOptimizer, _compute_distance(), _compute_k(), InterceptorSystem, 현재 위치 기반 2D 거리 계산 (km)., 현재 위치 기반 k-factor 계산.      거리를 current_position에서 직접 계산하여     engagement_matr, Drop-in replacement for NonLinearMIPOptimizer.      Interface contract: (+41 more)
 
 ### Community 1 - "Community 1"
 Cohesion: 0.15
 Nodes (22): AssetConfig, InterceptorSystemConfig, 방어 자산 설정 (10개 선택 - 우선순위 기반), _create_assets(), create_balanced_assets(), create_balanced_threats(), _create_batteries(), create_constrained_batteries() (+14 more)
 
 ### Community 2 - "Community 2"
-Cohesion: 0.09
-Nodes (20): int, str, all_pairs(), create_north_korean_bases(), FeasibilityCache, get_valid_states_for_threat(), lower_pairs(), 새로운 위협에 대해서만 증분 계산                  Args:             batteries: 포대 리스트 (+12 more)
+Cohesion: 0.11
+Nodes (14): int, density(), FeasibilityCache, get_valid_states_for_threat(), 새로운 위협에 대해서만 증분 계산                  Args:             batteries: 포대 리스트, 특정 위협에 대해 유효한 state 조합만 생성                  Args:             threat_id: 위협 I, 비트마스크 기반 교전 가능성 캐시      각 포대(battery)마다 uint64 비트마스크로 feasible한 위협을 관리.     -, battery_idx에 대해 feasible한 위협 인덱스 리스트 (bit extraction) (+6 more)
 
 ### Community 3 - "Community 3"
 Cohesion: 0.07
 Nodes (25): _compute_tta(), _draw_star(), _get_engagement_pens(), _LegendWidget, _pentagon_points(), TacticalMapWidget - PyQtGraph Tactical Display for DWTA Operator ==============, Return time-to-arrival in seconds for an active missile., Return (r, g, b, a) tuple based on TTA urgency. (+17 more)
 
 ### Community 4 - "Community 4"
-Cohesion: 0.09
-Nodes (19): float, _get_flight_phase(), KFactorCache, McCormickCoefficients, 기본 요격 확률 (O(1) lookup), 이동 중인 위협의 현재 위치 기반으로 교전 매트릭스 동적 업데이트.          기존 정적 precompute는 발사 위치 기반이었으나,, K-factor 사전 계산 캐시 + 경량 실시간 계산 (최적화 #3), 모든 (threat, system) 조합의 k-factor 계산                  Args:             threat (+11 more)
+Cohesion: 0.08
+Nodes (16): float, _get_flight_phase(), McCormickCoefficients, 기본 요격 확률 (O(1) lookup), 이동 중인 위협의 현재 위치 기반으로 교전 매트릭스 동적 업데이트.          기존 정적 precompute는 발사 위치 기반이었으나,, K-factor 조회 (캐시에서, O(1)), 실시간 K값 계산 (LUT 기반, 초경량)                  Args:             threat_pos: 위협 현재, 거리 기반 K값 계산 (LUT 사용, O(1))          Args:             distance: 위협-시스템 거리 (km (+8 more)
 
 ### Community 5 - "Community 5"
 Cohesion: 0.06
@@ -525,15 +522,15 @@ Cohesion: 0.06
 Nodes (34): 10. 모델 복잡도 비교, 11. 트리거 조건 요약 (최적화 실행 시점), 1. 시스템 전체 루프 — 수학적 표현, 2.1 목적함수 (Primal), 2.2 Log-Linear 등치 변환 (Clean Slate MIP), 2.3 유효 교전확률 계산, 2.4 시뮬레이션 교전 판정 (`_process_impact`), 2. 핵심 수학 공식 (+26 more)
 
 ### Community 7 - "Community 7"
-Cohesion: 0.22
-Nodes (14): float, int, apply_warmstart(), build_model(), DWTAProblem, extract_result(), Variable index mapping for HiGHS model., Pure function: DWTAProblem → (HiGHS model, VarMap). (+6 more)
+Cohesion: 0.11
+Nodes (25): bool, float, int, str, apply_warmstart(), build_model(), build_problem(), _check_feasibility() (+17 more)
 
 ### Community 8 - "Community 8"
-Cohesion: 0.13
-Nodes (11): GeneticAlgorithmOptimizer, 몬테카를로 시뮬레이션에서 샘플링된 요격확률 설정, 진짜 유전 알고리즘 실행 (Population-based Evolution), 교전 가능하고 용량이 남은 시스템 목록 반환 (동시 교전 제약 포함), Fitness 평가 (목적함수 = 기댓값 손실) + 제약 위반 페널티, Uniform Crossover (각 할당을 독립적으로 교환), Mutation (일부 할당을 랜덤하게 재할당), 지역 탐색 (Local Search) - 목적함수 기반 개선         현재 할당에서 작은 변경을 시도하여 목적함수를 개선 (+3 more)
+Cohesion: 0.10
+Nodes (16): Asset, GeneticAlgorithmOptimizer, InterceptorSystem, Genetic Algorithm DWTA Optimizer ================================= 유전 알고리즘 기반, GA 모델 생성 - 데이터 구조 초기화, 몬테카를로 시뮬레이션에서 샘플링된 요격확률 설정, 진짜 유전 알고리즘 실행 (Population-based Evolution), 교전 가능하고 용량이 남은 시스템 목록 반환 (동시 교전 제약 포함) (+8 more)
 
 ### Community 9 - "Community 9"
-Cohesion: 0.07
+Cohesion: 0.06
 Nodes (19): _append_log(), _compute_tta(), DWTAMainWindow, on_pause(), on_reset(), on_start(), on_stop(), Called on main thread when simulation thread exits. (+11 more)
 
 ### Community 10 - "Community 10"
@@ -542,7 +539,7 @@ Nodes (51): 1. 대응 관계 (ROS2 ↔ TA), 2. 전역 선언 (shared), 3.1 radar
 
 ### Community 11 - "Community 11"
 Cohesion: 0.14
-Nodes (17): 0. 한 장 인덱스, 10. ROS2 시뮬레이터 ↔ UPPAAL 정합, 11. ROS2 시뮬레이터 ↔ UPPAAL 정합, 1. 모델 진화 (v1 → v2 → v3), 2. 모델 진화 (v1 → v2 → v3), 4.2 Template-local declarations, 4.3 System declarations, 4. Declaration 상세 — "어디에 무엇이 있고 누가 쓰나" (+9 more)
+Nodes (17): 0. 한 장 인덱스, 10. ROS2 시뮬레이터 ↔ UPPAAL 정합, 11. ROS2 시뮬레이터 ↔ UPPAAL 정합, 1. 모델 진화 (v1 → v2 → v3), 2. 모델 진화 (v1 → v2 → v3), 3.2 Template-local declarations, 3.3 System declarations, 3. Declaration 상세 — "어디에 무엇이 있고 누가 쓰나" (+9 more)
 
 ### Community 12 - "Community 12"
 Cohesion: 0.10
@@ -585,16 +582,20 @@ Cohesion: 0.83
 Nodes (4): CleanSlateOptimizer, GeneticAlgorithmOptimizer, GreedyOptimizer, UncertaintyModeling
 
 ### Community 27 - "Community 27"
-Cohesion: 0.08
-Nodes (27): BaseModel, bool, bool, str, BatteryPosition, Config, EnemyMissile, EnemyMissileSpec (+19 more)
+Cohesion: 0.10
+Nodes (22): BaseModel, bool, str, BatteryPosition, Config, EnemyMissile, EnemyMissileSpec, InterceptorConfig (+14 more)
 
 ### Community 28 - "Community 28"
-Cohesion: 0.09
-Nodes (22): calculate_engagement_time_window(), calculate_trajectory_intercept_point(), calculate_window_adjusted_probability(), can_engage(), can_engage_trajectory(), create_ballistic_missile_threats(), create_battery_deployment(), create_engagement_matrix() (+14 more)
+Cohesion: 0.11
+Nodes (16): calculate_engagement_time_window(), calculate_trajectory_intercept_point(), calculate_window_adjusted_probability(), can_engage(), can_engage_trajectory(), create_priority_defense_assets(), _create_stress_test(), create_stress_test_100() (+8 more)
 
 ### Community 29 - "Community 29"
-Cohesion: 0.07
-Nodes (16): get_scenario_list(), 방어 자산 목록 반환 - scenario_dwta_balanced.py의 ScenarioManager 사용, 포대 배치 목록 반환 - scenario_dwta_balanced.py의 ScenarioManager 사용, 위협 미사일 목록 반환 - scenario_dwta_balanced.py의 ScenarioManager 사용, 현실적인 시나리오 생성 - 시나리오 타입에 따라 다른 위협 구성, 전구 방어 구역 기반 포대 배치 - 각 자산당 전담 상층/하층 시스템 배정, 우선순위 기반 주요 방어 자산 10개 선택, L-SAM (장거리 지대공 미사일) 실제 스펙 (+8 more)
+Cohesion: 0.11
+Nodes (13): bool, EngagementZoneConfig, 방어 자산 목록 반환 - scenario_dwta_balanced.py의 ScenarioManager 사용, 교전 가능 여부 (정적 precompute + 실시간 거리 체크)                  Args:             batte, 우선순위 기반 주요 방어 자산 10개 선택, 세밀한 시간 기반 북한 탄도탄 15발 시나리오 (노동 + Scud-B), 교전 영역 계산 설정 - 궁적 기반 교전 영역 모델링, 미사일 궤적에서 교전 시점의 위치와 고도 계산 (+5 more)
+
+### Community 30 - "Community 30"
+Cohesion: 0.14
+Nodes (13): str, all_pairs(), create_ballistic_missile_threats(), create_engagement_matrix(), create_north_korean_bases(), get_scenario_list(), lower_pairs(), 위협 미사일 목록 반환 - scenario_dwta_balanced.py의 ScenarioManager 사용 (+5 more)
 
 ### Community 31 - "Community 31"
 Cohesion: 0.15
@@ -613,16 +614,16 @@ Cohesion: 0.20
 Nodes (19): LauncherNode, 발사대 노드 (Launcher) — 교전계획 실행(물리 발사 + 탄약).  교전계획(/engagement_plan)을 받아 요격탄을 발사한다, EngagementPlan, Interceptor, InterceptorStatus, LaunchEvent, RadarStatus, Message types for the DWTA ROS2 pipeline.  For the PoC these are plain datacla (+11 more)
 
 ### Community 35 - "Community 35"
-Cohesion: 0.15
-Nodes (15): 13개 인스턴스 (System declarations), 1.3 UPPAAL XML 명세 형식, 1. 모델 한 장 요약, 2. v3 모델 전체 구성 (한 장 view), 3.2 Template-local declarations, 3.3 System declarations, 3. Declaration 상세 — "어디에 무엇이 있고 누가 쓰나", 3. v3 모델 전체 구성 (한 장 view) (+7 more)
+Cohesion: 0.11
+Nodes (21): 13개 인스턴스 (System declarations), 1.3 UPPAAL XML 명세 형식, 1. 모델 한 장 요약, 2. Broadcast 채널 — "누가 누구에게 무엇을", 2. v3 모델 전체 구성 (한 장 view), 3. v3 모델 전체 구성 (한 장 view), 3. 한 위협의 전체 lifecycle (시간순), 4. 사용자가 본 스크린샷 해석 (+13 more)
 
 ### Community 36 - "Community 36"
-Cohesion: 0.19
-Nodes (4): _Logger, now(), Publisher, str
+Cohesion: 0.09
+Nodes (12): _Bus, _Clock, _Logger, now(), ok(), Publisher, In-process pub/sub bus that mirrors the rclpy API surface.  This lets the *exa, Subscription (+4 more)
 
 ### Community 38 - "Community 38"
-Cohesion: 0.22
-Nodes (5): _Bus, ok(), In-process pub/sub bus that mirrors the rclpy API surface.  This lets the *exa, Subscription, bool
+Cohesion: 0.15
+Nodes (13): 16.1 UPPAAL declaration 함수가 할 수 있는 것, 16.2 우리 use case에 적용하면, 16.3 trade-off 표, 16.4 권고, 16.5 부분적 동적 계산 — 절충안, 16. 모델 안 동적 계산 vs 사전 계산 — trade-off, code:block20 ([ROS2]                                    [UPPAAL]), code:c (int square(int x) { return x * x; }) (+5 more)
 
 ### Community 41 - "Community 41"
 Cohesion: 0.15
@@ -653,8 +654,8 @@ Cohesion: 0.13
 Nodes (15): code:python (def measure_rho(scenario):), code:python (# Run two conditions:), code:python (# For each (i,j) after FBBT, record:), code:python (solver.setOptionValue("output_flag", True)), code:block32 (Option A — Discrete tiers:), code:python (import networkx as nx), code:python (metrics = {), M1 — Measure ρ (Feasible Engagement Ratio) (+7 more)
 
 ### Community 48 - "Community 48"
-Cohesion: 0.22
-Nodes (7): 불확실성 모델링 및 몬테카를로 시뮬레이션 모듈 ====================================================, 불확실성 모델링 및 몬테카를로 시뮬레이션, 기본 요격 확률에서 불확실성을 고려한 베타 분포 샘플링, test_uncertainty_modeling(), UncertaintyModeling, float, str
+Cohesion: 0.20
+Nodes (5): 불확실성 모델링 및 몬테카를로 시뮬레이션 모듈 ====================================================, 기본 요격 확률에서 불확실성을 고려한 베타 분포 샘플링, test_uncertainty_modeling(), float, str
 
 ### Community 49 - "Community 49"
 Cohesion: 0.14
@@ -673,8 +674,8 @@ Cohesion: 0.17
 Nodes (10): A.1 전체 파이프라인을 수학 함수로 표현, A.2 데이터 흐름 매핑 (누가 → 무엇을 → 누구에게), A.3 객체 간 데이터 의존성 그래프, A.4 Clean Slate에서 보존해야 할 인터페이스 계약, code:block41 (Advance: SimState × ℝ → SimState'), code:block42 (┌───────────────────────────────────────────────────────────), code:block43 (ScenarioConfig ──────→ assets[], batteries[], threats[]), code:python ({) (+2 more)
 
 ### Community 53 - "Community 53"
-Cohesion: 0.07
-Nodes (29): _calculate_stress_metrics(), _handle_kill_event(), MultiMissileTracker, OptimizedAssignmentManager, 하이브리드 자료구조: 빠른 쓰기 O(1) + 빠른 탐색 O(1)~O(k)     - battery_to_threats: List[List[in, Trigger flash + immediately clean up engagement lines and threat dot., Called by MultiMissileTracker internals. Thread-safe via signal., 실시간 DWTA 분석 시뮬레이터 - GUI 지원 버전 (+21 more)
+Cohesion: 0.06
+Nodes (31): _calculate_stress_metrics(), _handle_kill_event(), MultiMissileTracker, OptimizedAssignmentManager, 하이브리드 자료구조: 빠른 쓰기 O(1) + 빠른 탐색 O(1)~O(k)     - battery_to_threats: List[List[in, Trigger flash + immediately clean up engagement lines and threat dot., Called by MultiMissileTracker internals. Thread-safe via signal., 실시간 DWTA 분석 시뮬레이터 - GUI 지원 버전 (+23 more)
 
 ### Community 54 - "Community 54"
 Cohesion: 0.20
@@ -721,8 +722,8 @@ Cohesion: 0.25
 Nodes (8): B.1 핵심 파일 (보존 + 수정), B.2 교체 대상 (Clean Slate가 대체), B.3 비교용 보존 (선택적), B.4 제거 가능 (불필요 또는 중복), B.5 문서 정리, B.6 제안 프로젝트 구조, code:block47 (v8/), 부록 B. 프로젝트 파일 정리 — 보존/제거 분류
 
 ### Community 66 - "Community 66"
-Cohesion: 0.20
-Nodes (7): str, build_problem(), _compute_k_from_dist(), Pure function: domain objects → immutable NumPy problem data., 사전 계산된 거리에서 k-factor 반환. 거리 재계산 없음., Set per-threat sampled intercept probabilities., Build the optimization model.
+Cohesion: 0.21
+Nodes (7): create_battery_deployment(), get_lsam_specs(), get_msam_specs(), 포대 배치 목록 반환 - scenario_dwta_balanced.py의 ScenarioManager 사용, 전구 방어 구역 기반 포대 배치 - 각 자산당 전담 상층/하층 시스템 배정, L-SAM (장거리 지대공 미사일) 실제 스펙, M-SAM (중거리 지대공 미사일) 실제 스펙 - 한국형 천궁-II
 
 ### Community 67 - "Community 67"
 Cohesion: 0.33
@@ -731,10 +732,6 @@ Nodes (5): 2.1 Lagrangian Dual, 2.2 Duality Gap, 2.3 왜 Lagrangian이 필요 �
 ### Community 68 - "Community 68"
 Cohesion: 0.40
 Nodes (5): code:python (k_bounds : dict[tuple[int,int], tuple[float, float]]), code:python (with ThreadPoolExecutor(max_workers=4) as ex:), code:python (active_pairs    : list[tuple[int, int]]), code:block9 (For each (i, j) in active_pairs (independently):), Phase 2B — OBBT: K-factor Bound Tightening  ④
-
-### Community 69 - "Community 69"
-Cohesion: 0.20
-Nodes (9): 2. Broadcast 채널 — "누가 누구에게 무엇을", (2) "왜 모든 Interceptor가 동시에 Ready로 가나", (3) "hitU[0]! 직전에 위협 T0가 Killed로 안 가는데?", 4. 사용자가 본 스크린샷 해석, 5. MSC 읽는 법, 6. 흔히 헷갈리는 동작 3가지, 7. 시나리오 → UPPAAL 정합, 9. 참고: 이 모델이 다루지 않는 것 (+1 more)
 
 ### Community 70 - "Community 70"
 Cohesion: 0.20
@@ -768,25 +765,9 @@ Nodes (3): code:block40 (┌─────────────────�
 Cohesion: 0.50
 Nodes (4): code:python (feasible_pairs  : list[tuple[int, int]]), code:block6 (For each (i, j) in feasible_pairs:), code:python (fixed_zero   : set[tuple[int, int]]          # pairs fixed t), Phase 2A — FBBT: Variable Pre-fixing  ①
 
-### Community 78 - "Community 78"
-Cohesion: 0.28
-Nodes (8): bool, _check_feasibility(), _compute_distance(), _compute_k(), Clean Slate DWTA Optimizer — Log-Linear Formulation with HiGHS Direct API  수학적, 현재 위치 기반 2D 거리 계산 (km)., 현재 위치 기반 교전 가능 여부 판단.      핵심 원칙: 위협이 현재 사거리 안에 있으면 교전 가능.     engagement_mat, 현재 위치 기반 k-factor 계산.      거리를 current_position에서 직접 계산하여     engagement_matr
-
-### Community 79 - "Community 79"
-Cohesion: 0.22
-Nodes (9): 5.1 Radar(const int id) — 위협 타이밍의 권위자, 5.2 Threat(const int id) — 신호 소비자, 5.3 Slot_U(const int batt_id) — 상층 채널 슬롯, 5.4 Slot_L(const int batt_id) — 하층 채널 슬롯, 5.5.3 `plan!` 발사 직후 무슨 일이 일어나나, 5.5.5 ROS2 시뮬레이터와의 매핑, 5.5.6 디버깅 팁, 5.5 Planner — `plan!` 의 모든 것 (+1 more)
-
 ### Community 80 - "Community 80"
 Cohesion: 0.20
 Nodes (9): algorithm, detailed_records, elapsed_time_sec, memory_usage, avg_mb, peak_mb, performance_grade, scenario (+1 more)
-
-### Community 81 - "Community 81"
-Cohesion: 0.29
-Nodes (3): _Clock, Timer, float
-
-### Community 82 - "Community 82"
-Cohesion: 0.32
-Nodes (5): Asset, InterceptorSystem, Genetic Algorithm DWTA Optimizer ================================= 유전 알고리즘 기반, GA 모델 생성 - 데이터 구조 초기화, Threat
 
 ### Community 83 - "Community 83"
 Cohesion: 0.32
@@ -1173,8 +1154,8 @@ Cohesion: 0.22
 Nodes (9): solver_performance, avg_time_sec, max_time_sec, min_time_sec, timeout_count, timeout_rate_pct, total_optimizations, warmstart_count (+1 more)
 
 ### Community 184 - "Community 184"
-Cohesion: 0.12
-Nodes (19): 11. PoC 활용 — 3가지 길, 11. 궤적·고도 기반 교전대 (사거리 + 고도 동시 게이트), 1단계 — ROS2 시나리오에서 윈도우 사전 계산, 2단계 — UPPAAL declaration에 const 배열로 주입, 4단계 — Threat의 engU/engL을 포대 단위로 토글, 5.5.1 `plan!`이 정확히 무엇을 하나, 5.5.4 다른 인스턴스와의 시간적 관계, 5단계 — Interceptor 가드를 (위협, 포대) 단위로 (+11 more)
+Cohesion: 0.08
+Nodes (26): 11. 궤적·고도 기반 교전대 (사거리 + 고도 동시 게이트), 1단계 — ROS2 시나리오에서 윈도우 사전 계산, 2단계 — UPPAAL declaration에 const 배열로 주입, 3단계 — Radar 템플릿에서 윈도우 신호로 broadcast, 4단계 — Threat의 engU/engL을 포대 단위로 토글, 5.1 Radar(const int id) — 위협 타이밍의 권위자, 5.2 Threat(const int id) — 신호 소비자, 5.3 Slot_U(const int batt_id) — 상층 채널 슬롯 (+18 more)
 
 ### Community 185 - "Community 185"
 Cohesion: 0.40
@@ -2201,16 +2182,12 @@ Cohesion: 0.50
 Nodes (4): scalability, threats_per_second, time_per_optimization, time_per_threat
 
 ### Community 442 - "Community 442"
-Cohesion: 0.20
-Nodes (17): 10. `clean_slate_optimizer.py`는 UPPAAL과 어떻게 연결되나?, 3.1 글로벌 declaration의 모든 항목 (v3), 4.1 글로벌 declaration의 모든 항목 (v3), (a) 시스템 상수 — 컴파일 타임 고정값, (b) 시나리오 윈도우 — 위협별 / (위협, 포대)별 timing, (c) 공유 상태 — 인스턴스 간 동기화 매개체, code:c (const int MAXT     = 3;     // 위협 수 (모든 배열의 첫 차원)), code:c (const int APPEAR[MAXT]        = { 0,  3,  6};       // 위협 탐지) (+9 more)
+Cohesion: 0.15
+Nodes (21): 10. `clean_slate_optimizer.py`는 UPPAAL과 어떻게 연결되나?, 3.1 글로벌 declaration의 모든 항목 (v3), 4.1 글로벌 declaration의 모든 항목 (v3), 4.2 Template-local declarations, 4.3 System declarations, 4. Declaration 상세 — "어디에 무엇이 있고 누가 쓰나", (a) 시스템 상수 — 컴파일 타임 고정값, (b) 시나리오 윈도우 — 위협별 / (위협, 포대)별 timing (+13 more)
 
 ### Community 443 - "Community 443"
-Cohesion: 0.16
-Nodes (18): 12. `clean_slate_optimizer.py`와 UPPAAL의 관계, 12. 포대별 동시 교전 수 (6대 등), 13. `clean_slate_optimizer.py`와 UPPAAL의 관계, code:powershell (cd c:\Users\USER\Desktop\DWTA-Optimizer), code:powershell (verifyta.exe -q ros2_dwta\spec\dwta_model_v3_geometry.xml), code:python (# 의사 코드), code:c (int best_u_b(int b) {       // ① 작은 id (= danger DESC 추상) 우선), code:block20 ([ROS2]                                    [UPPAAL]) (+10 more)
-
-### Community 444 - "Community 444"
-Cohesion: 0.13
-Nodes (15): 12. PoC 활용 — 3가지 길, 13.1 의도적으로 추상화한 것, 13.2 검증 가능 규모 (state space 추정), 13.3 확장하려면, 13. 모델 한계 + state space 상한, 3단계 — Radar 템플릿에서 윈도우 신호로 broadcast, 5.5.2 invariant + guard 결합의 의미, 8. PoC 활용 레시피 (+7 more)
+Cohesion: 0.10
+Nodes (28): 11. PoC 활용 — 3가지 길, 12. `clean_slate_optimizer.py`와 UPPAAL의 관계, 12. PoC 활용 — 3가지 길, 12. 포대별 동시 교전 수 (6대 등), 13.1 의도적으로 추상화한 것, 13.2 검증 가능 규모 (state space 추정), 13.3 확장하려면, 13. `clean_slate_optimizer.py`와 UPPAAL의 관계 (+20 more)
 
 ### Community 445 - "Community 445"
 Cohesion: 0.29
@@ -2221,8 +2198,8 @@ Cohesion: 0.50
 Nodes (3): generate_launch_description(), ROS2 launch file for the DWTA PoC (composition: all nodes in one process)., LaunchDescription
 
 ### Community 447 - "Community 447"
-Cohesion: 0.28
-Nodes (9): 10.1 MSC 기본 기호, 10.2 흔히 헷갈리는 3가지, 10. MSC 읽는 법 + 흔히 헷갈리는 동작, (1) "plan을 받았는데 왜 발사 안 하나", (2) "왜 모든 Slot이 동시에 Ready로 가나", (3) "Threat 자체 클럭이 없는데 어떻게 진행하나", 9.1 MSC 기본 기호, 9.2 흔히 헷갈리는 3가지 (+1 more)
+Cohesion: 0.20
+Nodes (12): 10.1 MSC 기본 기호, 10.2 흔히 헷갈리는 3가지, 10. MSC 읽는 법 + 흔히 헷갈리는 동작, (1) "plan을 받았는데 왜 발사 안 하나", (2) "왜 모든 Interceptor가 동시에 Ready로 가나", (2) "왜 모든 Slot이 동시에 Ready로 가나", (3) "hitU[0]! 직전에 위협 T0가 Killed로 안 가는데?", (3) "Threat 자체 클럭이 없는데 어떻게 진행하나" (+4 more)
 
 ### Community 448 - "Community 448"
 Cohesion: 0.06
@@ -2233,18 +2210,18 @@ Cohesion: 0.20
 Nodes (11): 14.1 헬퍼 함수 (`scenario.py`), 14.2 v3 XML에 주입, 14.3 일관성 점검, 14. 시나리오 → 모델 자동 dump 워크플로, 15.1 헬퍼 함수 (`scenario.py`), 15.2 v3 XML에 주입, 15.3 일관성 점검, 15. 시나리오 → 모델 자동 dump 워크플로 (+3 more)
 
 ## Knowledge Gaps
-- **2045 isolated node(s):** `bool`, `str`, `bool`, `str`, `scenario` (+2040 more)
+- **2050 isolated node(s):** `bool`, `str`, `bool`, `str`, `scenario` (+2045 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **10 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **12 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `CleanSlateOptimizer` connect `Community 0` to `Community 66`, `Community 7`, `Community 9`, `Community 46`, `Community 78`, `Community 53`?**
+- **Why does `CleanSlateOptimizer` connect `Community 0` to `Community 69`, `Community 7`, `Community 9`, `Community 46`, `Community 53`?**
   _High betweenness centrality (0.011) - this node is a cross-community bridge._
-- **Why does `DWTAMainWindow` connect `Community 9` to `Community 0`, `Community 4`, `Community 8`, `Community 14`, `Community 48`, `Community 16`, `Community 53`?**
+- **Why does `DWTAMainWindow` connect `Community 9` to `Community 0`, `Community 8`, `Community 14`, `Community 16`, `Community 53`?**
   _High betweenness centrality (0.010) - this node is a cross-community bridge._
-- **Why does `MIPConfig` connect `Community 0` to `Community 1`, `Community 2`, `Community 9`, `Community 53`, `Community 27`, `Community 28`, `Community 29`?**
+- **Why does `MIPConfig` connect `Community 0` to `Community 1`, `Community 66`, `Community 9`, `Community 53`, `Community 27`, `Community 28`, `Community 29`, `Community 30`?**
   _High betweenness centrality (0.009) - this node is a cross-community bridge._
 - **Are the 53 inferred relationships involving `Battery` (e.g. with `EngageabilityNode` and `Battery`) actually correct?**
   _`Battery` has 53 INFERRED edges - model-reasoned connections that need verification._

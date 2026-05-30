@@ -1051,6 +1051,131 @@ ROS2와 UPPAAL이 같은 시나리오 const를 쓰면 trace를 직접 비교 가
 
 ---
 
+## 16. 모델 안 동적 계산 vs 사전 계산 — trade-off
+
+> "ROS2에서 사전 계산해 const로 박는 대신, UPPAAL declaration 안에서 함수로
+> 직접 계산하면 안 되나?" 자주 나오는 질문. 답: **부분적으로 가능하지만 권하지
+> 않습니다.** UPPAAL 함수 능력의 정확한 경계와 trade-off를 정리합니다.
+
+### 16.1 UPPAAL declaration 함수가 할 수 있는 것
+
+C 스타일 함수 정의가 declaration 블록(글로벌·템플릿 로컬 어디든)에서 가능:
+
+```c
+int square(int x) { return x * x; }
+
+int linear_pos(int launch, int impact, int step, int flight) {
+    // 위치 = launch + (impact - launch) * step / flight
+    return launch + (impact - launch) * step / flight;
+}
+
+int parabolic_altitude(int max_alt, int step, int flight) {
+    // h = 4 * max_alt * step * (flight - step) / (flight * flight)
+    return (4 * max_alt * step * (flight - step)) / (flight * flight);
+}
+
+bool in_range_sq(int x1, int y1, int x2, int y2, int range_sq) {
+    // sqrt 회피: 거리^2 ≤ 사거리^2 로 비교
+    int dx = x1 - x2;
+    int dy = y1 - y2;
+    return dx * dx + dy * dy <= range_sq;
+}
+
+bool engageable(int id, int b, int step) {
+    int x = linear_pos(LAUNCH_X[id], IMPACT_X[id], step, FLIGHT[id]);
+    int y = linear_pos(LAUNCH_Y[id], IMPACT_Y[id], step, FLIGHT[id]);
+    int h = parabolic_altitude(MAX_ALT[id], step, FLIGHT[id]);
+    return in_range_sq(x, y, BAT_X[b], BAT_Y[b], RANGE_SQ[b])
+        && (ALT_MIN[b] <= h && h <= ALT_MAX[b]);
+}
+```
+
+**지원되는 것**:
+- `int`, `bool`, 다차원 배열의 산술/논리 연산
+- `for`, `while`, `if/else`, `return`
+- 글로벌 변수 읽기/쓰기 (전이의 assignment처럼)
+- 함수에서 다른 함수 호출
+- `const` 배열 색인 (`U_ENTER[id][b]`)
+- 정수 곱·나누기·모듈로 (sqrt 없이 `dx*dx + dy*dy <= R*R`로 대체)
+
+**지원 안 되는 것** (UPPAAL Stratego/SMC 빼고 기본 UPPAAL):
+- **sqrt, sin, cos, exp, log** — 비선형 함수
+- **부동소수 실수** — `double` 없음
+- **clock을 함수 인자로** — 클럭은 함수 안에서 비교/할당 못 함 (전이 가드에서만)
+- **함수 안에서 시간 진행** — 모든 함수는 0-시간 atomic 실행
+- **재귀** — 일부 버전 제한적 (스택 작음)
+
+### 16.2 우리 use case에 적용하면
+
+위협 궤적이 선형이고 고도가 포물선이면 **모든 산술은 정수로 표현 가능**. sqrt는
+squared distance로 우회. 즉 §11의 사전 계산을 UPPAAL 안으로 옮길 수 있습니다.
+
+**하지만 한 가지 장벽**: 클럭 `t`(실수)를 함수 입력으로 못 씀. 우회는:
+
+#### 방법 A — Discrete step 변수
+```c
+// Radar(id) declaration
+clock t;
+int step;          // 정수 시간 진행 카운터
+
+// Radar location Tick (invariant t <= step + 1)
+// Tick -> Tick: guard t == step + 1; assign step++
+```
+매 정수 초마다 `step++` → 함수가 `step`을 받아 위치/고도/거리 계산.
+**대가**: continuous time semantics 일부 손실, state space 증가
+(`step ∈ [0, IMPACT_AT]` 만큼 추가 차원).
+
+#### 방법 B — 매 정수 시각마다 미리 계산해 const로 (현재 v3 방식)
+ROS2가 100Hz로 샘플링하고 `[enter, exit]` 압축. UPPAAL은 그 const만 봄.
+
+### 16.3 trade-off 표
+
+| 항목 | 사전 계산 + const (현재 v3) | 모델 안 동적 계산 (대안 A) |
+|---|---|---|
+| **모델 복잡도** | 낮음 (4종 const 배열) | 높음 (8+ 함수, step 변수, 추가 location) |
+| **State space** | 작음 (윈도우는 const) | **큼** (step 차원 + 함수 호출마다 평가) |
+| **검증 시간 (MAXT=3, NB=2)** | 수십 초 ~ 분 | **분~십수 분 또는 timeout** |
+| **시나리오 변경 시** | ROS2 헬퍼 재실행 후 const 교체 | UPPAAL 모델 declaration의 const(LAUNCH_X 등)만 교체 |
+| **궤적 모델 변경 시** | ROS2 헬퍼만 수정 | UPPAAL 함수 수정 (재검증) |
+| **continuous time 보존** | 완전 (`t` 실수 그대로) | 부분 손실 (정수 step) |
+| **검증 가능 규모** | MAXT 5~10까지 | MAXT 3 이상 어려움 |
+| **모델 가독성 (MSC)** | 깔끔 | step 변화가 모든 MSC step에 표시 |
+| **ROS2 시뮬레이터와의 정합** | 헬퍼가 보장 | 함수 식과 시뮬레이터 식을 따로 관리 |
+| **Pk·고도 분포 모델링** | 사전 계산이 양쪽 모두 흡수 | 함수에 직접 표현 가능하나 비선형이면 다시 막힘 |
+
+### 16.4 권고
+
+**v3는 사전 계산 + const 채택**. 이유:
+1. **검증 효율이 핵심** — UPPAAL의 본업이 정형 검증인데 동적 계산을 모델에 넣으면
+   state space가 폭발해 invariant 증명이 timeout.
+2. **연속 동역학은 ROS2가 더 잘함** — Python에서 100Hz 샘플링, numpy로 정확히
+   계산. UPPAAL에 그걸 정수로 다시 표현하는 건 손해.
+3. **모델은 invariant 기계**, 시뮬레이터는 동력학 기계로 역할 분리 → 두 도구의
+   장점을 각자 살림.
+
+**모델 안 동적 계산이 유리한 경우**:
+- 위협 수가 매우 적고(MAXT ≤ 2) state space 여유가 큼
+- 궤적/고도 식을 자주 바꿔가며 invariant 영향을 비교하고 싶음 (parametric study)
+- ROS2 헬퍼 없이 UPPAAL 단독으로 self-contained 모델을 원함
+
+이 경우 §16.1 예시 코드를 출발점으로 `dwta_model_v3b_inmodel_geometry.xml` 같은
+별도 파일을 만들면 됩니다. 본 프로젝트는 v3 사전 계산 방식을 메인으로 유지.
+
+### 16.5 부분적 동적 계산 — 절충안
+
+전부 다 안 하더라도 일부 정책 함수는 declaration에 넣어도 cost가 적습니다.
+v3 모델의 `best_u_b(b)`, `best_l_b(b)`, `any_uCover(t)` 같은 것이 그 예 — 이건
+정수 배열 한 번 스캔으로 끝나서 state space 영향 거의 없음.
+
+거리·고도처럼 step마다 계산하는 함수는 step 차원 때문에 state space가 커지지만,
+"매 plan! 때만 한 번 호출"되는 정책 함수는 부담 없음.
+
+> 즉, UPPAAL declaration 함수는 **"정책 / 우선순위 / 자원 점검"** 같은 한 step에
+> 한 번 호출되는 결정 로직에 최적이고, **"매 step 진화하는 동력학"** 표현에는
+> 부적합. v3가 이미 그 분할을 따르고 있습니다.
+
+---
+
 ## 부록 A. v3 모델 파일 구조 한눈에
 
 ```
