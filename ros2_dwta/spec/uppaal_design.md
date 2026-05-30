@@ -1901,6 +1901,155 @@ v4 SMC와 ROS2 통계가 ±오차 안에서 일치하면 모델·시뮬레이터
 
 ---
 
+## 21. Planner의 역할 — `plan!` broadcast vs 명시적 `assign[b][t]!`
+
+자연어로 다시 살펴보면 현재 모델에 **구조적 의문** 하나가 있습니다.
+
+### 21.1 현재(v2/v3/v4)의 plan! 메커니즘
+```
+Planner ──plan!──► 모든 Slot (broadcast)
+                  ▲
+                  └── 각 Slot이 자기 best_u_b(batt_id) 호출해 발사 결심
+```
+- Planner는 "지금 결심하라!"라는 시각만 알림
+- WTA 의사결정은 슬롯 인스턴스가 분산 자율로 수행
+- 누가 어느 위협을 노릴지는 슬롯의 가드 + best 함수가 정함
+- "어느 포대로 어느 위협을 보낼지"는 모델에 명시되지 않고 가드 만족 순서로 결정
+
+### 21.2 ROS2 시뮬레이터 실제 구조
+```
+PlanningNode._tick (2 Hz)
+  └─► WTABackend.solve(scores, cells, ...)
+        │
+        └─► Assignment 리스트 [(L1_LSAM, T0), (M1_MSAM, T1), ...]
+              │
+              └─► /engagement_plan publish
+                    │
+                    └─► LauncherNode._on_plan
+                          for a in plan.assignments:
+                              if a.system_id == my_battery:
+                                  발사
+```
+- **PlanningNode가 WTA 의사결정 주체** — `GreedyWTA.solve()`가 (포대, 위협) 페어 리스트를 만듦
+- LauncherNode는 그 결정을 **실행만** — 자기 포대가 받은 게 있으면 발사
+
+### 21.3 역할이 반대인 셈
+
+| 측면 | ROS2 실제 | UPPAAL v2/v3/v4 |
+|---|---|---|
+| WTA 의사결정 주체 | **PlanningNode** | **Slot 인스턴스** (분산 자율) |
+| 명령 전달 형태 | Assignment 리스트 (포대, 위협 명시) | broadcast `plan!` (위협 무관) |
+| Launcher/Slot 역할 | 받은 명령 실행만 | 자기 결심 + 자기 실행 |
+| 충돌 회피 | Planner의 솔버가 한 번에 풀음 | Slot마다 best 호출 + 카운터로 분산 회피 |
+
+현재 모델은 "어떤 합리적 WTA 정책이든 만족해야 할 invariant"를 검증하는 데는
+충분하지만, **ROS2 코드와 1:1 정합되지 않습니다**. ROS2 trace를 UPPAAL trace에
+직접 mapping하기 어려운 이유.
+
+### 21.4 v5 후보 — Planner를 의사결정 주체로
+
+**핵심 변화**: `plan!` broadcast 대신 (포대, 위협)을 명시하는 **`assign_u[b][t]`,
+`assign_l[b][t]`** 채널로 명령.
+
+#### 21.4.1 채널 형태
+```c
+// handshake chan (broadcast 아님) — 한 sender + 한 receiver 매칭
+chan assign_u[NB_U][MAXT];
+chan assign_l[NB_L][MAXT];
+```
+broadcast 아닌 이유: 같은 포대 내 여러 채널(Slot 인스턴스) 중 **한 명만 발사**하게
+하려면 handshake가 자연스러움. UPPAAL이 receiver 후보 중 하나를 비결정 선택.
+
+#### 21.4.2 Planner 새 구조 (의사결정 + 자원 갱신 주체)
+```
+Tick (inv cp <= PERIOD_P)
+  ─[cp >= PERIOD_P]─► Decide (committed, decision_step = 0)
+
+Decide ─ [decision_step < NB_U &&
+          best_u_b(decision_step) >= 0 &&
+          ammoU_b[decision_step] > 0 &&
+          inflU_b[decision_step] < CH_PER_U[decision_step]]
+  select t : int[0,MAXT-1]
+  guard  t == best_u_b(decision_step)
+  sync   assign_u[decision_step][t]!         // 특정 포대의 한 슬롯에게 명령
+  assign ammoU_b[decision_step]--,
+         inflU_b[decision_step]++,
+         upCnt_bt[decision_step][t]++,
+         decision_step++
+  ─► Decide  (self-loop)
+
+Decide ─ [상층 결정 끝, 하층 시작] ─► ... (동일 패턴 NB_L번)
+
+Decide ─ [decision_step >= NB_U + NB_L] ─► Tick (cp = 0, decision_step = 0)
+```
+committed라 시간 진행 없이 매 주기마다 모든 포대의 결심을 즉시 fire.
+
+#### 21.4.3 Slot_U 새 구조 (reactive만)
+```
+Idle ── assign_u[batt_id][t]? ──► Flying  (select t : int[0,MAXT-1])
+                                  // 자원 갱신은 Planner가 이미 했음
+                                  assign tgt=t, f=0
+Flying ── [f >= FLYOUT_U_MIN] hitU[tgt]! 또는 missU[tgt]! ──► Idle
+                                  assign inflU_b[batt_id]--, upCnt_bt[batt_id][tgt]--
+```
+- **Ready committed 위치 제거** — 결심은 Planner가 함
+- Slot은 자기 포대 + 위협 매칭하는 assign만 listening
+- 같은 포대 여러 슬롯 중 한 명이 비결정으로 매칭
+
+#### 21.4.4 best_u_b 의미 변화
+v4까지의 `best_u_b(b)`는 "포대 b의 슬롯이 자기 차례에 부를" 함수였지만, v5에선
+**Planner가 호출해 (포대, 위협)을 정하는** 의사결정 함수. CleanSlateOptimizer
+`solve()` → assignments 와 1:1.
+
+### 21.5 v4 → v5 비교
+
+| 항목 | v4 | v5 (제안) |
+|---|---|---|
+| WTA 의사결정 주체 | Slot (분산) | **Planner (중앙)** |
+| `plan!` broadcast | ✅ 존재, 결심 트리거 | ❌ 제거됨 (assign으로 대체) |
+| `assign_u[b][t]` 채널 | ❌ 없음 | ✅ handshake로 명시 |
+| Slot의 Ready 위치 | committed 결심 | ❌ 제거 |
+| ammoU_b/inflU_b 갱신 | Slot에서 | **Planner에서** (결심 시점) |
+| upCnt_bt 갱신 | Slot에서 | **Planner에서** |
+| ROS2와 정합성 | 약함 | 강함 |
+| 모델 복잡도 | 중간 | 약간 ↑ (Planner의 Decide loop) |
+| state space | 작음 | 약간 ↑ (decision_step 차원 + committed loop) |
+| MSC 가독성 | broadcast plan + skip 박스 다수 | assign 화살표가 의사결정을 명시 |
+
+### 21.6 v5의 검증적 이득
+
+- **trace 정합**: ROS2의 Assignment 리스트와 UPPAAL trace의 assign! 시각이 직접
+  대조 가능. 누가 누구를 노리는지 모델이 명시.
+- **WTA invariant 직접 검증**: "Planner가 결심한 (포대, 위협) 쌍은 항상 윈도우 안"
+  같은 invariant가 Planner의 Decide 위치 가드만 보면 됨.
+- **Skip 패턴 사라짐**: 현재 MSC에서 plan! → Ready → Idle 같은 빈 결심이 보이지
+  않음. Planner가 가능한 것만 assign 발사.
+
+### 21.7 v5의 위험
+
+- **state space ↑**: Decide의 committed self-loop이 NB_U + NB_L번 반복 → 모든
+  유효 결정 조합 탐색. 검증 시간 약간 늘어남.
+- **모델 작성 복잡**: Planner 자동기 위치가 2개로 늘고 self-loop 가드 분기 다수.
+- **Salvo 확장 까다로움**: Decide에서 한 포대당 한 발 결정이라 Salvo 표현하려면
+  Planner의 Decide loop을 MAX_SALVO_U번 반복해야 함.
+
+### 21.8 만들어드릴까
+
+`dwta_model_v5_explicit_assign.xml`로 v4 위에 §21.4 패턴을 적용해드릴 수 있습니다.
+결정 사항:
+
+- **시작점**: v4를 베이스로 (Salvo + Pk + jitter 유지) 또는 v3 베이스로 (단순화)
+- **Salvo 처리**: Planner의 Decide self-loop을 `MAX_SALVO_U`번 허용해서 같은 포대
+  여러 발 결정 OK (복잡), 또는 v5는 단발만으로 가고 Salvo는 v4 또는 v5b로 분리
+- **검증 가능 규모**: MAXT=3, NB_U=NB_L=2, CH_PER 작게 (검증 시간 안전)
+
+권장: **v3 베이스 + 단발 + 명시적 assign** 로 v5를 만들고, v4는 Salvo/Pk 분석 전용,
+v5는 ROS2 정합 검증 전용으로 분리. 두 모델의 안전성 결과가 일치하면 정합 더 강함.
+
+알려주시면 v5 작업 시작합니다.
+
+---
+
 ## 부록 A. v3 모델 파일 구조 한눈에
 
 ```
