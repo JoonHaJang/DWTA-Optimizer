@@ -27511,7 +27511,7 @@
       "label": "2. \ubaa8\ub378 \uc9c4\ud654 (v1 \u2192 v2 \u2192 v3)",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L248",
+      "source_location": "L250",
       "id": "spec_uppaal_design_2_\ubaa8\ub378_\uc9c4\ud654_v1_v2_v3",
       "community": 11,
       "norm_label": "2. \u1106\u1169\u1103\u1166\u11af \u110c\u1175\u11ab\u1112\u116a (v1 \u2192 v2 \u2192 v3)"
@@ -27520,7 +27520,7 @@
       "label": "v1 (\ucd08\uae30, \ud3d0\uae30)",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L250",
+      "source_location": "L252",
       "id": "spec_uppaal_design_v1_\ucd08\uae30_\ud3d0\uae30",
       "community": 11,
       "norm_label": "v1 (\u110e\u1169\u1100\u1175, \u1111\u1168\u1100\u1175)"
@@ -27529,7 +27529,7 @@
       "label": "v2 (`dwta_model.xml`, `dwta_model_impl.xml`)",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L254",
+      "source_location": "L256",
       "id": "spec_uppaal_design_v2_dwta_model_xml_dwta_model_impl_xml",
       "community": 11,
       "norm_label": "v2 (`dwta_model.xml`, `dwta_model_impl.xml`)"
@@ -27538,7 +27538,7 @@
       "label": "v3 (`dwta_model_v3_geometry.xml`)",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L264",
+      "source_location": "L266",
       "id": "spec_uppaal_design_v3_dwta_model_v3_geometry_xml",
       "community": 11,
       "norm_label": "v3 (`dwta_model_v3_geometry.xml`)"
@@ -27547,7 +27547,7 @@
       "label": "3. v3 \ubaa8\ub378 \uc804\uccb4 \uad6c\uc131 (\ud55c \uc7a5 view)",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L283",
+      "source_location": "L285",
       "id": "spec_uppaal_design_3_v3_\ubaa8\ub378_\uc804\uccb4_\uad6c\uc131_\ud55c_\uc7a5_view",
       "community": 35,
       "norm_label": "3. v3 \u1106\u1169\u1103\u1166\u11af \u110c\u1165\u11ab\u110e\u1166 \u1100\u116e\u1109\u1165\u11bc (\u1112\u1161\u11ab \u110c\u1161\u11bc view)"
@@ -27556,7 +27556,7 @@
       "label": "code:block3 (\u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 \uc2dc\uac04 \uad8c\uc704 \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510    \u250c\u2500\u2500\u2500\u2500\u2500\u2500 \uacb0\uc2ec \u2500\u2500\u2500\u2500)",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L285",
+      "source_location": "L287",
       "id": "spec_uppaal_design_codeblock_3",
       "community": 35,
       "norm_label": "code:block3 (\u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 \u1109\u1175\u1100\u1161\u11ab \u1100\u116f\u11ab\u110b\u1171 \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510    \u250c\u2500\u2500\u2500\u2500\u2500\u2500 \u1100\u1167\u11af\u1109\u1175\u11b7 \u2500\u2500\u2500\u2500)"
@@ -27565,7 +27565,7 @@
       "label": "13\uac1c \uc778\uc2a4\ud134\uc2a4 (System declarations)",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L303",
+      "source_location": "L305",
       "id": "spec_uppaal_design_13\uac1c_\uc778\uc2a4\ud134\uc2a4_system_declarations",
       "community": 35,
       "norm_label": "13\u1100\u1162 \u110b\u1175\u11ab\u1109\u1173\u1110\u1165\u11ab\u1109\u1173 (system declarations)"
@@ -27574,16 +27574,16 @@
       "label": "code:c (// \uc704\ud611\ubcc4 Radar + Threat (MAXT=3))",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L305",
+      "source_location": "L307",
       "id": "spec_uppaal_design_codeblock_4",
-      "community": 442,
+      "community": 35,
       "norm_label": "code:c (// \u110b\u1171\u1112\u1167\u11b8\u1107\u1167\u11af radar + threat (maxt=3))"
     },
     {
       "label": "5\uac1c \ud15c\ud50c\ub9bf \uc694\uc57d",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L329",
+      "source_location": "L331",
       "id": "spec_uppaal_design_5\uac1c_\ud15c\ud50c\ub9bf_\uc694\uc57d",
       "community": 35,
       "norm_label": "5\u1100\u1162 \u1110\u1166\u11b7\u1111\u1173\u11af\u1105\u1175\u11ba \u110b\u116d\u110b\u1163\u11a8"
@@ -27592,16 +27592,16 @@
       "label": "4. Declaration \uc0c1\uc138 \u2014 \"\uc5b4\ub514\uc5d0 \ubb34\uc5c7\uc774 \uc788\uace0 \ub204\uac00 \uc4f0\ub098\"",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L341",
+      "source_location": "L343",
       "id": "spec_uppaal_design_4_declaration_\uc0c1\uc138_\uc5b4\ub514\uc5d0_\ubb34\uc5c7\uc774_\uc788\uace0_\ub204\uac00_\uc4f0\ub098",
-      "community": 442,
+      "community": 11,
       "norm_label": "4. declaration \u1109\u1161\u11bc\u1109\u1166 \u2014 \"\u110b\u1165\u1103\u1175\u110b\u1166 \u1106\u116e\u110b\u1165\u11ba\u110b\u1175 \u110b\u1175\u11bb\u1100\u1169 \u1102\u116e\u1100\u1161 \u110a\u1173\u1102\u1161\""
     },
     {
       "label": "4.1 \uae00\ub85c\ubc8c declaration\uc758 \ubaa8\ub4e0 \ud56d\ubaa9 (v3)",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L349",
+      "source_location": "L351",
       "id": "spec_uppaal_design_4_1_\uae00\ub85c\ubc8c_declaration\uc758_\ubaa8\ub4e0_\ud56d\ubaa9_v3",
       "community": 442,
       "norm_label": "4.1 \u1100\u1173\u11af\u1105\u1169\u1107\u1165\u11af declaration\u110b\u1174 \u1106\u1169\u1103\u1173\u11ab \u1112\u1161\u11bc\u1106\u1169\u11a8 (v3)"
@@ -27610,7 +27610,7 @@
       "label": "(a) \uc2dc\uc2a4\ud15c \uc0c1\uc218 \u2014 \ucef4\ud30c\uc77c \ud0c0\uc784 \uace0\uc815\uac12",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L351",
+      "source_location": "L353",
       "id": "spec_uppaal_design_a_\uc2dc\uc2a4\ud15c_\uc0c1\uc218_\ucef4\ud30c\uc77c_\ud0c0\uc784_\uace0\uc815\uac12",
       "community": 442,
       "norm_label": "(a) \u1109\u1175\u1109\u1173\u1110\u1166\u11b7 \u1109\u1161\u11bc\u1109\u116e \u2014 \u110f\u1165\u11b7\u1111\u1161\u110b\u1175\u11af \u1110\u1161\u110b\u1175\u11b7 \u1100\u1169\u110c\u1165\u11bc\u1100\u1161\u11b9"
@@ -27619,7 +27619,7 @@
       "label": "code:c (const int MAXT     = 3;     // \uc704\ud611 \uc218 (\ubaa8\ub4e0 \ubc30\uc5f4\uc758 \uccab \ucc28\uc6d0))",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L352",
+      "source_location": "L354",
       "id": "spec_uppaal_design_codeblock_5",
       "community": 442,
       "norm_label": "code:c (const int maxt     = 3;     // \u110b\u1171\u1112\u1167\u11b8 \u1109\u116e (\u1106\u1169\u1103\u1173\u11ab \u1107\u1162\u110b\u1167\u11af\u110b\u1174 \u110e\u1165\u11ba \u110e\u1161\u110b\u116f\u11ab))"
@@ -27628,7 +27628,7 @@
       "label": "(b) \uc2dc\ub098\ub9ac\uc624 \uc708\ub3c4\uc6b0 \u2014 \uc704\ud611\ubcc4 / (\uc704\ud611, \ud3ec\ub300)\ubcc4 timing",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L369",
+      "source_location": "L371",
       "id": "spec_uppaal_design_b_\uc2dc\ub098\ub9ac\uc624_\uc708\ub3c4\uc6b0_\uc704\ud611\ubcc4_\uc704\ud611_\ud3ec\ub300_\ubcc4_timing",
       "community": 442,
       "norm_label": "(b) \u1109\u1175\u1102\u1161\u1105\u1175\u110b\u1169 \u110b\u1171\u11ab\u1103\u1169\u110b\u116e \u2014 \u110b\u1171\u1112\u1167\u11b8\u1107\u1167\u11af / (\u110b\u1171\u1112\u1167\u11b8, \u1111\u1169\u1103\u1162)\u1107\u1167\u11af timing"
@@ -27637,7 +27637,7 @@
       "label": "code:c (const int APPEAR[MAXT]        = { 0,  3,  6};       // \uc704\ud611 \ud0d0\uc9c0)",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L370",
+      "source_location": "L372",
       "id": "spec_uppaal_design_codeblock_6",
       "community": 442,
       "norm_label": "code:c (const int appear[maxt]        = { 0,  3,  6};       // \u110b\u1171\u1112\u1167\u11b8 \u1110\u1161\u11b7\u110c\u1175)"
@@ -27646,7 +27646,7 @@
       "label": "(c) \uacf5\uc720 \uc0c1\ud0dc \u2014 \uc778\uc2a4\ud134\uc2a4 \uac04 \ub3d9\uae30\ud654 \ub9e4\uac1c\uccb4",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L385",
+      "source_location": "L387",
       "id": "spec_uppaal_design_c_\uacf5\uc720_\uc0c1\ud0dc_\uc778\uc2a4\ud134\uc2a4_\uac04_\ub3d9\uae30\ud654_\ub9e4\uac1c\uccb4",
       "community": 442,
       "norm_label": "(c) \u1100\u1169\u11bc\u110b\u1172 \u1109\u1161\u11bc\u1110\u1162 \u2014 \u110b\u1175\u11ab\u1109\u1173\u1110\u1165\u11ab\u1109\u1173 \u1100\u1161\u11ab \u1103\u1169\u11bc\u1100\u1175\u1112\u116a \u1106\u1162\u1100\u1162\u110e\u1166"
@@ -27655,7 +27655,7 @@
       "label": "code:c (int  ammoU_b[NB_U]    = {3, 2};    // \ud3ec\ub300 b \uc794\uc5ec\ud0c4 (\uc0c1\uce35))",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L386",
+      "source_location": "L388",
       "id": "spec_uppaal_design_codeblock_7",
       "community": 442,
       "norm_label": "code:c (int  ammou_b[nb_u]    = {3, 2};    // \u1111\u1169\u1103\u1162 b \u110c\u1161\u11ab\u110b\u1167\u1110\u1161\u11ab (\u1109\u1161\u11bc\u110e\u1173\u11bc))"
@@ -27664,7 +27664,7 @@
       "label": "(d) Broadcast \ucc44\ub110 \u2014 \uc778\uc2a4\ud134\uc2a4 \uac04 \ud1b5\uc2e0",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L407",
+      "source_location": "L409",
       "id": "spec_uppaal_design_d_broadcast_\ucc44\ub110_\uc778\uc2a4\ud134\uc2a4_\uac04_\ud1b5\uc2e0",
       "community": 442,
       "norm_label": "(d) broadcast \u110e\u1162\u1102\u1165\u11af \u2014 \u110b\u1175\u11ab\u1109\u1173\u1110\u1165\u11ab\u1109\u1173 \u1100\u1161\u11ab \u1110\u1169\u11bc\u1109\u1175\u11ab"
@@ -27673,7 +27673,7 @@
       "label": "code:c (broadcast chan plan;                       // Planner -> \ubaa8\ub4e0 )",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L408",
+      "source_location": "L410",
       "id": "spec_uppaal_design_codeblock_8",
       "community": 442,
       "norm_label": "code:c (broadcast chan plan;                       // planner -> \u1106\u1169\u1103\u1173\u11ab )"
@@ -27682,7 +27682,7 @@
       "label": "(e) \ud568\uc218 \u2014 \uc815\ucc45 \ucd94\uc0c1\ud654",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L423",
+      "source_location": "L425",
       "id": "spec_uppaal_design_e_\ud568\uc218_\uc815\ucc45_\ucd94\uc0c1\ud654",
       "community": 442,
       "norm_label": "(e) \u1112\u1161\u11b7\u1109\u116e \u2014 \u110c\u1165\u11bc\u110e\u1162\u11a8 \u110e\u116e\u1109\u1161\u11bc\u1112\u116a"
@@ -27691,34 +27691,34 @@
       "label": "code:c (int best_u_b(int b) {       // \ud3ec\ub300 b\uc758 GreedyWTA \uc6b0\uc120\uc21c\uc704 (\uc791\uc740 id\uac00 )",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L424",
+      "source_location": "L426",
       "id": "spec_uppaal_design_codeblock_9",
-      "community": 184,
+      "community": 81,
       "norm_label": "code:c (int best_u_b(int b) {       // \u1111\u1169\u1103\u1162 b\u110b\u1174 greedywta \u110b\u116e\u1109\u1165\u11ab\u1109\u116e\u11ab\u110b\u1171 (\u110c\u1161\u11a8\u110b\u1173\u11ab id\u1100\u1161 )"
     },
     {
       "label": "4.2 Template-local declarations",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L446",
+      "source_location": "L448",
       "id": "spec_uppaal_design_4_2_template_local_declarations",
-      "community": 442,
+      "community": 11,
       "norm_label": "4.2 template-local declarations"
     },
     {
       "label": "4.3 System declarations",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L458",
+      "source_location": "L460",
       "id": "spec_uppaal_design_4_3_system_declarations",
-      "community": 442,
+      "community": 11,
       "norm_label": "4.3 system declarations"
     },
     {
       "label": "5. \ud15c\ud50c\ub9bf\ubcc4 \uad6c\ud604 \uc0c1\uc138",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L465",
+      "source_location": "L467",
       "id": "spec_uppaal_design_5_\ud15c\ud50c\ub9bf\ubcc4_\uad6c\ud604_\uc0c1\uc138",
       "community": 184,
       "norm_label": "5. \u1110\u1166\u11b7\u1111\u1173\u11af\u1105\u1175\u11ba\u1107\u1167\u11af \u1100\u116e\u1112\u1167\u11ab \u1109\u1161\u11bc\u1109\u1166"
@@ -27727,7 +27727,7 @@
       "label": "5.1 Radar(const int id) \u2014 \uc704\ud611 \ud0c0\uc774\ubc0d\uc758 \uad8c\uc704\uc790",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L469",
+      "source_location": "L471",
       "id": "spec_uppaal_design_5_1_radar_const_int_id_\uc704\ud611_\ud0c0\uc774\ubc0d\uc758_\uad8c\uc704\uc790",
       "community": 184,
       "norm_label": "5.1 radar(const int id) \u2014 \u110b\u1171\u1112\u1167\u11b8 \u1110\u1161\u110b\u1175\u1106\u1175\u11bc\u110b\u1174 \u1100\u116f\u11ab\u110b\u1171\u110c\u1161"
@@ -27736,7 +27736,7 @@
       "label": "5.2 Threat(const int id) \u2014 \uc2e0\ud638 \uc18c\ube44\uc790",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L502",
+      "source_location": "L504",
       "id": "spec_uppaal_design_5_2_threat_const_int_id_\uc2e0\ud638_\uc18c\ube44\uc790",
       "community": 184,
       "norm_label": "5.2 threat(const int id) \u2014 \u1109\u1175\u11ab\u1112\u1169 \u1109\u1169\u1107\u1175\u110c\u1161"
@@ -27745,7 +27745,7 @@
       "label": "5.3 Slot_U(const int batt_id) \u2014 \uc0c1\uce35 \ucc44\ub110 \uc2ac\ub86f",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L532",
+      "source_location": "L534",
       "id": "spec_uppaal_design_5_3_slot_u_const_int_batt_id_\uc0c1\uce35_\ucc44\ub110_\uc2ac\ub86f",
       "community": 184,
       "norm_label": "5.3 slot_u(const int batt_id) \u2014 \u1109\u1161\u11bc\u110e\u1173\u11bc \u110e\u1162\u1102\u1165\u11af \u1109\u1173\u11af\u1105\u1169\u11ba"
@@ -27754,7 +27754,7 @@
       "label": "5.4 Slot_L(const int batt_id) \u2014 \ud558\uce35 \ucc44\ub110 \uc2ac\ub86f",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L557",
+      "source_location": "L559",
       "id": "spec_uppaal_design_5_4_slot_l_const_int_batt_id_\ud558\uce35_\ucc44\ub110_\uc2ac\ub86f",
       "community": 184,
       "norm_label": "5.4 slot_l(const int batt_id) \u2014 \u1112\u1161\u110e\u1173\u11bc \u110e\u1162\u1102\u1165\u11af \u1109\u1173\u11af\u1105\u1169\u11ba"
@@ -27763,7 +27763,7 @@
       "label": "5.5 Planner \u2014 `plan!` \uc758 \ubaa8\ub4e0 \uac83",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L562",
+      "source_location": "L564",
       "id": "spec_uppaal_design_5_5_planner_plan_\uc758_\ubaa8\ub4e0_\uac83",
       "community": 184,
       "norm_label": "5.5 planner \u2014 `plan!` \u110b\u1174 \u1106\u1169\u1103\u1173\u11ab \u1100\u1165\u11ba"
@@ -27772,7 +27772,7 @@
       "label": "5.5.1 `plan!`\uc774 \uc815\ud655\ud788 \ubb34\uc5c7\uc744 \ud558\ub098",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L576",
+      "source_location": "L578",
       "id": "spec_uppaal_design_5_5_1_plan_\uc774_\uc815\ud655\ud788_\ubb34\uc5c7\uc744_\ud558\ub098",
       "community": 184,
       "norm_label": "5.5.1 `plan!`\u110b\u1175 \u110c\u1165\u11bc\u1112\u116a\u11a8\u1112\u1175 \u1106\u116e\u110b\u1165\u11ba\u110b\u1173\u11af \u1112\u1161\u1102\u1161"
@@ -27781,7 +27781,7 @@
       "label": "code:c (//                            \u250c\u2500\u2500\u2500 invariant: cp <= PERIOD_P)",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L578",
+      "source_location": "L580",
       "id": "spec_uppaal_design_codeblock_10",
       "community": 184,
       "norm_label": "code:c (//                            \u250c\u2500\u2500\u2500 invariant: cp <= period_p)"
@@ -27790,25 +27790,25 @@
       "label": "5.5.2 invariant + guard \uacb0\ud569\uc758 \uc758\ubbf8",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L601",
+      "source_location": "L603",
       "id": "spec_uppaal_design_5_5_2_invariant_guard_\uacb0\ud569\uc758_\uc758\ubbf8",
-      "community": 184,
+      "community": 81,
       "norm_label": "5.5.2 invariant + guard \u1100\u1167\u11af\u1112\u1161\u11b8\u110b\u1174 \u110b\u1174\u1106\u1175"
     },
     {
       "label": "code:c (invariant: cp <= PERIOD_P    // (a) cp\ub294 PERIOD_P \ucd08\uacfc \ubabb \ud568)",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L604",
+      "source_location": "L606",
       "id": "spec_uppaal_design_codeblock_11",
-      "community": 184,
+      "community": 81,
       "norm_label": "code:c (invariant: cp <= period_p    // (a) cp\u1102\u1173\u11ab period_p \u110e\u1169\u1100\u116a \u1106\u1169\u11ba \u1112\u1161\u11b7)"
     },
     {
       "label": "5.5.3 `plan!` \ubc1c\uc0ac \uc9c1\ud6c4 \ubb34\uc2a8 \uc77c\uc774 \uc77c\uc5b4\ub098\ub098",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L616",
+      "source_location": "L618",
       "id": "spec_uppaal_design_5_5_3_plan_\ubc1c\uc0ac_\uc9c1\ud6c4_\ubb34\uc2a8_\uc77c\uc774_\uc77c\uc5b4\ub098\ub098",
       "community": 184,
       "norm_label": "5.5.3 `plan!` \u1107\u1161\u11af\u1109\u1161 \u110c\u1175\u11a8\u1112\u116e \u1106\u116e\u1109\u1173\u11ab \u110b\u1175\u11af\u110b\u1175 \u110b\u1175\u11af\u110b\u1165\u1102\u1161\u1102\u1161"
@@ -27817,7 +27817,7 @@
       "label": "5.5.4 \ub2e4\ub978 \uc778\uc2a4\ud134\uc2a4\uc640\uc758 \uc2dc\uac04\uc801 \uad00\uacc4",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L643",
+      "source_location": "L645",
       "id": "spec_uppaal_design_5_5_4_\ub2e4\ub978_\uc778\uc2a4\ud134\uc2a4\uc640\uc758_\uc2dc\uac04\uc801_\uad00\uacc4",
       "community": 184,
       "norm_label": "5.5.4 \u1103\u1161\u1105\u1173\u11ab \u110b\u1175\u11ab\u1109\u1173\u1110\u1165\u11ab\u1109\u1173\u110b\u116a\u110b\u1174 \u1109\u1175\u1100\u1161\u11ab\u110c\u1165\u11a8 \u1100\u116a\u11ab\u1100\u1168"
@@ -27826,7 +27826,7 @@
       "label": "code:block12 (t=0   P:Tick(cp=0)        R0:Pre(t=0)         ...)",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L645",
+      "source_location": "L647",
       "id": "spec_uppaal_design_codeblock_12",
       "community": 184,
       "norm_label": "code:block12 (t=0   p:tick(cp=0)        r0:pre(t=0)         ...)"
@@ -27835,7 +27835,7 @@
       "label": "5.5.5 ROS2 \uc2dc\ubbac\ub808\uc774\ud130\uc640\uc758 \ub9e4\ud551",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L670",
+      "source_location": "L672",
       "id": "spec_uppaal_design_5_5_5_ros2_\uc2dc\ubbac\ub808\uc774\ud130\uc640\uc758_\ub9e4\ud551",
       "community": 184,
       "norm_label": "5.5.5 ros2 \u1109\u1175\u1106\u1172\u11af\u1105\u1166\u110b\u1175\u1110\u1165\u110b\u116a\u110b\u1174 \u1106\u1162\u1111\u1175\u11bc"
@@ -27844,7 +27844,7 @@
       "label": "5.5.6 \ub514\ubc84\uae45 \ud301",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L682",
+      "source_location": "L684",
       "id": "spec_uppaal_design_5_5_6_\ub514\ubc84\uae45_\ud301",
       "community": 184,
       "norm_label": "5.5.6 \u1103\u1175\u1107\u1165\u1100\u1175\u11bc \u1110\u1175\u11b8"
@@ -27853,7 +27853,7 @@
       "label": "6. Broadcast \ucc44\ub110 \uc804\uccb4 \uc0ac\uc591",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L696",
+      "source_location": "L698",
       "id": "spec_uppaal_design_6_broadcast_\ucc44\ub110_\uc804\uccb4_\uc0ac\uc591",
       "community": 11,
       "norm_label": "6. broadcast \u110e\u1162\u1102\u1165\u11af \u110c\u1165\u11ab\u110e\u1166 \u1109\u1161\u110b\u1163\u11bc"
@@ -27862,7 +27862,7 @@
       "label": "7. \ud55c \uc704\ud611\uc758 lifecycle (v3 \uae30\uc900 \ub2e8\uacc4\ubcc4)",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L721",
+      "source_location": "L723",
       "id": "spec_uppaal_design_7_\ud55c_\uc704\ud611\uc758_lifecycle_v3_\uae30\uc900_\ub2e8\uacc4\ubcc4",
       "community": 184,
       "norm_label": "7. \u1112\u1161\u11ab \u110b\u1171\u1112\u1167\u11b8\u110b\u1174 lifecycle (v3 \u1100\u1175\u110c\u116e\u11ab \u1103\u1161\u11ab\u1100\u1168\u1107\u1167\u11af)"
@@ -27871,7 +27871,7 @@
       "label": "code:block13 (t=0  R0:Pre[t=0]      T0:Inbound       Slots:Idle      P:Tic)",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L725",
+      "source_location": "L727",
       "id": "spec_uppaal_design_codeblock_13",
       "community": 184,
       "norm_label": "code:block13 (t=0  r0:pre[t=0]      t0:inbound       slots:idle      p:tic)"
@@ -27880,7 +27880,7 @@
       "label": "8. v2 vs v3 \ucc28\uc774\uc810 \u2014 \ud55c \ud45c\ub85c",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L782",
+      "source_location": "L784",
       "id": "spec_uppaal_design_8_v2_vs_v3_\ucc28\uc774\uc810_\ud55c_\ud45c\ub85c",
       "community": 11,
       "norm_label": "8. v2 vs v3 \u110e\u1161\u110b\u1175\u110c\u1165\u11b7 \u2014 \u1112\u1161\u11ab \u1111\u116d\u1105\u1169"
@@ -27889,7 +27889,7 @@
       "label": "9. \uac80\uc99d \ucffc\ub9ac 19\uac1c \uc0c1\uc138",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L799",
+      "source_location": "L801",
       "id": "spec_uppaal_design_9_\uac80\uc99d_\ucffc\ub9ac_19\uac1c_\uc0c1\uc138",
       "community": 448,
       "norm_label": "9. \u1100\u1165\u11b7\u110c\u1173\u11bc \u110f\u116f\u1105\u1175 19\u1100\u1162 \u1109\u1161\u11bc\u1109\u1166"
@@ -27898,7 +27898,7 @@
       "label": "9.1 Safety (A[], 9\uac1c)",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L801",
+      "source_location": "L803",
       "id": "spec_uppaal_design_9_1_safety_a_9\uac1c",
       "community": 448,
       "norm_label": "9.1 safety (a[], 9\u1100\u1162)"
@@ -27907,7 +27907,7 @@
       "label": "S1: `A[] not deadlock`",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L803",
+      "source_location": "L805",
       "id": "spec_uppaal_design_s1_a_not_deadlock",
       "community": 448,
       "norm_label": "s1: `a[] not deadlock`"
@@ -27916,7 +27916,7 @@
       "label": "S2u/S2l: `A[] forall (b) ammoU_b[b] >= 0` / `ammoL_b[b] >= 0`",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L808",
+      "source_location": "L810",
       "id": "spec_uppaal_design_s2u_s2l_a_forall_b_ammou_b_b_0_ammol_b_b_0",
       "community": 448,
       "norm_label": "s2u/s2l: `a[] forall (b) ammou_b[b] >= 0` / `ammol_b[b] >= 0`"
@@ -27925,7 +27925,7 @@
       "label": "S3: `A[] forall (b) inflU_b[b] <= CH_PER_U[b]`",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L812",
+      "source_location": "L814",
       "id": "spec_uppaal_design_s3_a_forall_b_influ_b_b_ch_per_u_b",
       "community": 448,
       "norm_label": "s3: `a[] forall (b) influ_b[b] <= ch_per_u[b]`"
@@ -27934,7 +27934,7 @@
       "label": "S4: \ud558\uce35 \ub3d9\uc77c",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L815",
+      "source_location": "L817",
       "id": "spec_uppaal_design_s4_\ud558\uce35_\ub3d9\uc77c",
       "community": 448,
       "norm_label": "s4: \u1112\u1161\u110e\u1173\u11bc \u1103\u1169\u11bc\u110b\u1175\u11af"
@@ -27943,7 +27943,7 @@
       "label": "S5: `A[] forall (b)(t) upCnt_bt[b][t] <= 1`",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L817",
+      "source_location": "L819",
       "id": "spec_uppaal_design_s5_a_forall_b_t_upcnt_bt_b_t_1",
       "community": 448,
       "norm_label": "s5: `a[] forall (b)(t) upcnt_bt[b][t] <= 1`"
@@ -27952,7 +27952,7 @@
       "label": "S6: \ud558\uce35 \ub3d9\uc77c",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L821",
+      "source_location": "L823",
       "id": "spec_uppaal_design_s6_\ud558\uce35_\ub3d9\uc77c",
       "community": 448,
       "norm_label": "s6: \u1112\u1161\u110e\u1173\u11bc \u1103\u1169\u11bc\u110b\u1175\u11af"
@@ -27961,7 +27961,7 @@
       "label": "S7: `A[] forall (t) upCnt_bt[0][t] + upCnt_bt[1][t] <= NB_U`",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L823",
+      "source_location": "L825",
       "id": "spec_uppaal_design_s7_a_forall_t_upcnt_bt_0_t_upcnt_bt_1_t_nb_u",
       "community": 448,
       "norm_label": "s7: `a[] forall (t) upcnt_bt[0][t] + upcnt_bt[1][t] <= nb_u`"
@@ -27970,7 +27970,7 @@
       "label": "S8: `A[] killed + leaked <= MAXT`",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L826",
+      "source_location": "L828",
       "id": "spec_uppaal_design_s8_a_killed_leaked_maxt",
       "community": 448,
       "norm_label": "s8: `a[] killed + leaked <= maxt`"
@@ -27979,7 +27979,7 @@
       "label": "9.2 Geometry invariants (A[], 2\uac1c)",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L829",
+      "source_location": "L831",
       "id": "spec_uppaal_design_9_2_geometry_invariants_a_2\uac1c",
       "community": 448,
       "norm_label": "9.2 geometry invariants (a[], 2\u1100\u1162)"
@@ -27988,7 +27988,7 @@
       "label": "RD1: `A[] forall (b)(t) upCnt_bt[b][t] > 0 imply engU_b[t][b]`",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L831",
+      "source_location": "L833",
       "id": "spec_uppaal_design_rd1_a_forall_b_t_upcnt_bt_b_t_0_imply_engu_b_t_b",
       "community": 448,
       "norm_label": "rd1: `a[] forall (b)(t) upcnt_bt[b][t] > 0 imply engu_b[t][b]`"
@@ -27997,7 +27997,7 @@
       "label": "RD2: \ud558\uce35 \ub3d9\uc77c",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L835",
+      "source_location": "L837",
       "id": "spec_uppaal_design_rd2_\ud558\uce35_\ub3d9\uc77c",
       "community": 448,
       "norm_label": "rd2: \u1112\u1161\u110e\u1173\u11bc \u1103\u1169\u11bc\u110b\u1175\u11af"
@@ -28006,7 +28006,7 @@
       "label": "9.3 Policy invariants (A[], 2\uac1c)",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L837",
+      "source_location": "L839",
       "id": "spec_uppaal_design_9_3_policy_invariants_a_2\uac1c",
       "community": 448,
       "norm_label": "9.3 policy invariants (a[], 2\u1100\u1162)"
@@ -28015,7 +28015,7 @@
       "label": "D1: `A[] forall (b) best_u_b(b) >= -1 && best_u_b(b) < MAXT`",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L839",
+      "source_location": "L841",
       "id": "spec_uppaal_design_d1_a_forall_b_best_u_b_b_1_best_u_b_b_maxt",
       "community": 448,
       "norm_label": "d1: `a[] forall (b) best_u_b(b) >= -1 && best_u_b(b) < maxt`"
@@ -28024,7 +28024,7 @@
       "label": "D2: \ud558\uce35 \ub3d9\uc77c",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L842",
+      "source_location": "L844",
       "id": "spec_uppaal_design_d2_\ud558\uce35_\ub3d9\uc77c",
       "community": 448,
       "norm_label": "d2: \u1112\u1161\u110e\u1173\u11bc \u1103\u1169\u11bc\u110b\u1175\u11af"
@@ -28033,7 +28033,7 @@
       "label": "9.4 Timing (A[], 1\uac1c)",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L844",
+      "source_location": "L846",
       "id": "spec_uppaal_design_9_4_timing_a_1\uac1c",
       "community": 448,
       "norm_label": "9.4 timing (a[], 1\u1100\u1162)"
@@ -28042,7 +28042,7 @@
       "label": "T1: `A[] P.cp <= PERIOD_P`",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L846",
+      "source_location": "L848",
       "id": "spec_uppaal_design_t1_a_p_cp_period_p",
       "community": 448,
       "norm_label": "t1: `a[] p.cp <= period_p`"
@@ -28051,7 +28051,7 @@
       "label": "9.5 Liveness (1\uac1c)",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L852",
+      "source_location": "L854",
       "id": "spec_uppaal_design_9_5_liveness_1\uac1c",
       "community": 448,
       "norm_label": "9.5 liveness (1\u1100\u1162)"
@@ -28060,7 +28060,7 @@
       "label": "L1: `A<> killed + leaked == MAXT`",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L854",
+      "source_location": "L856",
       "id": "spec_uppaal_design_l1_a_killed_leaked_maxt",
       "community": 448,
       "norm_label": "l1: `a<> killed + leaked == maxt`"
@@ -28069,7 +28069,7 @@
       "label": "9.6 Reachability (E<>, 6\uac1c)",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L857",
+      "source_location": "L859",
       "id": "spec_uppaal_design_9_6_reachability_e_6\uac1c",
       "community": 448,
       "norm_label": "9.6 reachability (e<>, 6\u1100\u1162)"
@@ -28078,7 +28078,7 @@
       "label": "R1: `E<> killed == MAXT` \u2014 \uc804\ub7c9 \uaca9\ucd94 \uac00\ub2a5",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L859",
+      "source_location": "L861",
       "id": "spec_uppaal_design_r1_e_killed_maxt_\uc804\ub7c9_\uaca9\ucd94_\uac00\ub2a5",
       "community": 448,
       "norm_label": "r1: `e<> killed == maxt` \u2014 \u110c\u1165\u11ab\u1105\u1163\u11bc \u1100\u1167\u11a8\u110e\u116e \u1100\u1161\u1102\u1173\u11bc"
@@ -28087,7 +28087,7 @@
       "label": "R2: `E<> inflU_b[0] > 0 && inflU_b[1] > 0` \u2014 \ub450 \uc0c1\uce35 \ud3ec\ub300 \ub3d9\uc2dc \uac00\ub3d9",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L860",
+      "source_location": "L862",
       "id": "spec_uppaal_design_r2_e_influ_b_0_0_influ_b_1_0_\ub450_\uc0c1\uce35_\ud3ec\ub300_\ub3d9\uc2dc_\uac00\ub3d9",
       "community": 448,
       "norm_label": "r2: `e<> influ_b[0] > 0 && influ_b[1] > 0` \u2014 \u1103\u116e \u1109\u1161\u11bc\u110e\u1173\u11bc \u1111\u1169\u1103\u1162 \u1103\u1169\u11bc\u1109\u1175 \u1100\u1161\u1103\u1169\u11bc"
@@ -28096,7 +28096,7 @@
       "label": "R3: \ud558\uce35 \ub3d9\uc77c",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L861",
+      "source_location": "L863",
       "id": "spec_uppaal_design_r3_\ud558\uce35_\ub3d9\uc77c",
       "community": 448,
       "norm_label": "r3: \u1112\u1161\u110e\u1173\u11bc \u1103\u1169\u11bc\u110b\u1175\u11af"
@@ -28105,7 +28105,7 @@
       "label": "R4: `E<> any_uCover(0) && any_lCover(0)` \u2014 \uc704\ud611 0 \ub2e4\uce35\uc694\uaca9 \ub3c4\ub2ec",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L862",
+      "source_location": "L864",
       "id": "spec_uppaal_design_r4_e_any_ucover_0_any_lcover_0_\uc704\ud611_0_\ub2e4\uce35\uc694\uaca9_\ub3c4\ub2ec",
       "community": 448,
       "norm_label": "r4: `e<> any_ucover(0) && any_lcover(0)` \u2014 \u110b\u1171\u1112\u1167\u11b8 0 \u1103\u1161\u110e\u1173\u11bc\u110b\u116d\u1100\u1167\u11a8 \u1103\u1169\u1103\u1161\u11af"
@@ -28114,7 +28114,7 @@
       "label": "R5: `E<> inflU_b[0] == CH_PER_U[0]` \u2014 \uc0c1\uce35 \ud3ec\ub300 0 \ucc44\ub110 \ub9cc\ud0f1\ud06c",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L863",
+      "source_location": "L865",
       "id": "spec_uppaal_design_r5_e_influ_b_0_ch_per_u_0_\uc0c1\uce35_\ud3ec\ub300_0_\ucc44\ub110_\ub9cc\ud0f1\ud06c",
       "community": 448,
       "norm_label": "r5: `e<> influ_b[0] == ch_per_u[0]` \u2014 \u1109\u1161\u11bc\u110e\u1173\u11bc \u1111\u1169\u1103\u1162 0 \u110e\u1162\u1102\u1165\u11af \u1106\u1161\u11ab\u1110\u1162\u11bc\u110f\u1173"
@@ -28123,7 +28123,7 @@
       "label": "R6: `E<> leaked > 0` \u2014 \ub204\uc124 \ub3c4\ub2ec",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L864",
+      "source_location": "L866",
       "id": "spec_uppaal_design_r6_e_leaked_0_\ub204\uc124_\ub3c4\ub2ec",
       "community": 448,
       "norm_label": "r6: `e<> leaked > 0` \u2014 \u1102\u116e\u1109\u1165\u11af \u1103\u1169\u1103\u1161\u11af"
@@ -28132,7 +28132,7 @@
       "label": "10. MSC \uc77d\ub294 \ubc95 + \ud754\ud788 \ud5f7\uac08\ub9ac\ub294 \ub3d9\uc791",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L868",
+      "source_location": "L870",
       "id": "spec_uppaal_design_10_msc_\uc77d\ub294_\ubc95_\ud754\ud788_\ud5f7\uac08\ub9ac\ub294_\ub3d9\uc791",
       "community": 447,
       "norm_label": "10. msc \u110b\u1175\u11b0\u1102\u1173\u11ab \u1107\u1165\u11b8 + \u1112\u1173\u11ab\u1112\u1175 \u1112\u1166\u11ba\u1100\u1161\u11af\u1105\u1175\u1102\u1173\u11ab \u1103\u1169\u11bc\u110c\u1161\u11a8"
@@ -28141,7 +28141,7 @@
       "label": "10.1 MSC \uae30\ubcf8 \uae30\ud638",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L870",
+      "source_location": "L872",
       "id": "spec_uppaal_design_10_1_msc_\uae30\ubcf8_\uae30\ud638",
       "community": 447,
       "norm_label": "10.1 msc \u1100\u1175\u1107\u1169\u11ab \u1100\u1175\u1112\u1169"
@@ -28150,7 +28150,7 @@
       "label": "10.2 \ud754\ud788 \ud5f7\uac08\ub9ac\ub294 3\uac00\uc9c0",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L881",
+      "source_location": "L883",
       "id": "spec_uppaal_design_10_2_\ud754\ud788_\ud5f7\uac08\ub9ac\ub294_3\uac00\uc9c0",
       "community": 447,
       "norm_label": "10.2 \u1112\u1173\u11ab\u1112\u1175 \u1112\u1166\u11ba\u1100\u1161\u11af\u1105\u1175\u1102\u1173\u11ab 3\u1100\u1161\u110c\u1175"
@@ -28159,7 +28159,7 @@
       "label": "(1) \"plan\uc744 \ubc1b\uc558\ub294\ub370 \uc65c \ubc1c\uc0ac \uc548 \ud558\ub098\"",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L883",
+      "source_location": "L885",
       "id": "spec_uppaal_design_1_plan\uc744_\ubc1b\uc558\ub294\ub370_\uc65c_\ubc1c\uc0ac_\uc548_\ud558\ub098",
       "community": 447,
       "norm_label": "(1) \"plan\u110b\u1173\u11af \u1107\u1161\u11ae\u110b\u1161\u11bb\u1102\u1173\u11ab\u1103\u1166 \u110b\u116b \u1107\u1161\u11af\u1109\u1161 \u110b\u1161\u11ab \u1112\u1161\u1102\u1161\""
@@ -28168,7 +28168,7 @@
       "label": "(2) \"\uc65c \ubaa8\ub4e0 Slot\uc774 \ub3d9\uc2dc\uc5d0 Ready\ub85c \uac00\ub098\"",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L887",
+      "source_location": "L889",
       "id": "spec_uppaal_design_2_\uc65c_\ubaa8\ub4e0_slot\uc774_\ub3d9\uc2dc\uc5d0_ready\ub85c_\uac00\ub098",
       "community": 447,
       "norm_label": "(2) \"\u110b\u116b \u1106\u1169\u1103\u1173\u11ab slot\u110b\u1175 \u1103\u1169\u11bc\u1109\u1175\u110b\u1166 ready\u1105\u1169 \u1100\u1161\u1102\u1161\""
@@ -28177,7 +28177,7 @@
       "label": "(3) \"Threat \uc790\uccb4 \ud074\ub7ed\uc774 \uc5c6\ub294\ub370 \uc5b4\ub5bb\uac8c \uc9c4\ud589\ud558\ub098\"",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L890",
+      "source_location": "L892",
       "id": "spec_uppaal_design_3_threat_\uc790\uccb4_\ud074\ub7ed\uc774_\uc5c6\ub294\ub370_\uc5b4\ub5bb\uac8c_\uc9c4\ud589\ud558\ub098",
       "community": 447,
       "norm_label": "(3) \"threat \u110c\u1161\u110e\u1166 \u110f\u1173\u11af\u1105\u1165\u11a8\u110b\u1175 \u110b\u1165\u11b9\u1102\u1173\u11ab\u1103\u1166 \u110b\u1165\u1104\u1165\u11c2\u1100\u1166 \u110c\u1175\u11ab\u1112\u1162\u11bc\u1112\u1161\u1102\u1161\""
@@ -28186,7 +28186,7 @@
       "label": "11. ROS2 \uc2dc\ubbac\ub808\uc774\ud130 \u2194 UPPAAL \uc815\ud569",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L895",
+      "source_location": "L897",
       "id": "spec_uppaal_design_11_ros2_\uc2dc\ubbac\ub808\uc774\ud130_uppaal_\uc815\ud569",
       "community": 11,
       "norm_label": "11. ros2 \u1109\u1175\u1106\u1172\u11af\u1105\u1166\u110b\u1175\u1110\u1165 \u2194 uppaal \u110c\u1165\u11bc\u1112\u1161\u11b8"
@@ -28195,25 +28195,25 @@
       "label": "12. PoC \ud65c\uc6a9 \u2014 3\uac00\uc9c0 \uae38",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L912",
+      "source_location": "L914",
       "id": "spec_uppaal_design_12_poc_\ud65c\uc6a9_3\uac00\uc9c0_\uae38",
-      "community": 443,
+      "community": 184,
       "norm_label": "12. poc \u1112\u116a\u11af\u110b\u116d\u11bc \u2014 3\u1100\u1161\u110c\u1175 \u1100\u1175\u11af"
     },
     {
       "label": "(A) GUI \uc2dc\ubbac\ub808\uc774\ud130\ub85c \ud55c step\uc529 \ub530\ub77c\uac00\uae30",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L914",
+      "source_location": "L916",
       "id": "spec_uppaal_design_a_gui_\uc2dc\ubbac\ub808\uc774\ud130\ub85c_\ud55c_step\uc529_\ub530\ub77c\uac00\uae30",
-      "community": 443,
+      "community": 184,
       "norm_label": "(a) gui \u1109\u1175\u1106\u1172\u11af\u1105\u1166\u110b\u1175\u1110\u1165\u1105\u1169 \u1112\u1161\u11ab step\u110a\u1175\u11a8 \u1104\u1161\u1105\u1161\u1100\u1161\u1100\u1175"
     },
     {
       "label": "code:block14 (1. UPPAAL 5 \uc2e4\ud589 \u2192 File \u2192 Open \u2192 dwta_model_v3_geometry.xml)",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L915",
+      "source_location": "L917",
       "id": "spec_uppaal_design_codeblock_14",
       "community": 443,
       "norm_label": "code:block14 (1. uppaal 5 \u1109\u1175\u11af\u1112\u1162\u11bc \u2192 file \u2192 open \u2192 dwta_model_v3_geometry.xml)"
@@ -28222,52 +28222,52 @@
       "label": "(B) verifyta\ub85c trace \uc790\ub3d9 \uc0dd\uc131",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L923",
+      "source_location": "L925",
       "id": "spec_uppaal_design_b_verifyta\ub85c_trace_\uc790\ub3d9_\uc0dd\uc131",
-      "community": 443,
+      "community": 35,
       "norm_label": "(b) verifyta\u1105\u1169 trace \u110c\u1161\u1103\u1169\u11bc \u1109\u1162\u11bc\u1109\u1165\u11bc"
     },
     {
       "label": "code:powershell (cd c:\\Users\\USER\\Desktop\\DWTA-Optimizer)",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L924",
+      "source_location": "L926",
       "id": "spec_uppaal_design_codeblock_15",
-      "community": 443,
+      "community": 35,
       "norm_label": "code:powershell (cd c:\\users\\user\\desktop\\dwta-optimizer)"
     },
     {
       "label": "(C) 19\uac1c \ucffc\ub9ac \uc77c\uad04 \uac80\uc99d",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L930",
+      "source_location": "L932",
       "id": "spec_uppaal_design_c_19\uac1c_\ucffc\ub9ac_\uc77c\uad04_\uac80\uc99d",
-      "community": 443,
+      "community": 184,
       "norm_label": "(c) 19\u1100\u1162 \u110f\u116f\u1105\u1175 \u110b\u1175\u11af\u1100\u116a\u11af \u1100\u1165\u11b7\u110c\u1173\u11bc"
     },
     {
       "label": "code:powershell (verifyta.exe -q ros2_dwta\\spec\\dwta_model_v3_geometry.xml)",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L931",
+      "source_location": "L933",
       "id": "spec_uppaal_design_codeblock_16",
-      "community": 443,
+      "community": 184,
       "norm_label": "code:powershell (verifyta.exe -q ros2_dwta\\spec\\dwta_model_v3_geometry.xml)"
     },
     {
       "label": "\ub2e8\ucd95 \uba85\ub839",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L935",
+      "source_location": "L937",
       "id": "spec_uppaal_design_\ub2e8\ucd95_\uba85\ub839",
-      "community": 443,
+      "community": 184,
       "norm_label": "\u1103\u1161\u11ab\u110e\u116e\u11a8 \u1106\u1167\u11bc\u1105\u1167\u11bc"
     },
     {
       "label": "code:powershell (# \uc2dc\ub098\ub9ac\uc624 dump)",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L936",
+      "source_location": "L938",
       "id": "spec_uppaal_design_codeblock_17",
       "community": 443,
       "norm_label": "code:powershell (# \u1109\u1175\u1102\u1161\u1105\u1175\u110b\u1169 dump)"
@@ -28276,7 +28276,7 @@
       "label": "13. `clean_slate_optimizer.py`\uc640 UPPAAL\uc758 \uad00\uacc4",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L946",
+      "source_location": "L948",
       "id": "spec_uppaal_design_13_clean_slate_optimizer_py_\uc640_uppaal\uc758_\uad00\uacc4",
       "community": 443,
       "norm_label": "13. `clean_slate_optimizer.py`\u110b\u116a uppaal\u110b\u1174 \u1100\u116a\u11ab\u1100\u1168"
@@ -28285,7 +28285,7 @@
       "label": "\uc815\ucc45\uc758 \ubcf8\uc9c8\ub9cc \ucd94\ucd9c",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L952",
+      "source_location": "L954",
       "id": "spec_uppaal_design_\uc815\ucc45\uc758_\ubcf8\uc9c8\ub9cc_\ucd94\ucd9c",
       "community": 443,
       "norm_label": "\u110c\u1165\u11bc\u110e\u1162\u11a8\u110b\u1174 \u1107\u1169\u11ab\u110c\u1175\u11af\u1106\u1161\u11ab \u110e\u116e\u110e\u116e\u11af"
@@ -28294,16 +28294,16 @@
       "label": "code:python (# \uc758\uc0ac \ucf54\ub4dc)",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L953",
+      "source_location": "L955",
       "id": "spec_uppaal_design_codeblock_18",
-      "community": 443,
+      "community": 449,
       "norm_label": "code:python (# \u110b\u1174\u1109\u1161 \u110f\u1169\u1103\u1173)"
     },
     {
       "label": "IMPL/v3 \ubaa8\ub378\uc5d0 \uadf8 \uaddc\uce59\ub9cc \ub0b4\uc7a5",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L962",
+      "source_location": "L964",
       "id": "spec_uppaal_design_impl_v3_\ubaa8\ub378\uc5d0_\uadf8_\uaddc\uce59\ub9cc_\ub0b4\uc7a5",
       "community": 443,
       "norm_label": "impl/v3 \u1106\u1169\u1103\u1166\u11af\u110b\u1166 \u1100\u1173 \u1100\u1172\u110e\u1175\u11a8\u1106\u1161\u11ab \u1102\u1162\u110c\u1161\u11bc"
@@ -28312,16 +28312,16 @@
       "label": "code:c (int best_u_b(int b) {       // \u2460 \uc791\uc740 id (= danger DESC \ucd94\uc0c1) \uc6b0\uc120)",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L963",
+      "source_location": "L965",
       "id": "spec_uppaal_design_codeblock_19",
-      "community": 443,
+      "community": 449,
       "norm_label": "code:c (int best_u_b(int b) {       // 1 \u110c\u1161\u11a8\u110b\u1173\u11ab id (= danger desc \u110e\u116e\u1109\u1161\u11bc) \u110b\u116e\u1109\u1165\u11ab)"
     },
     {
       "label": "\ub530\ub77c\uc624\ub294 \ubcf4\uc7a5",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L975",
+      "source_location": "L977",
       "id": "spec_uppaal_design_\ub530\ub77c\uc624\ub294_\ubcf4\uc7a5",
       "community": 443,
       "norm_label": "\u1104\u1161\u1105\u1161\u110b\u1169\u1102\u1173\u11ab \u1107\u1169\u110c\u1161\u11bc"
@@ -28330,7 +28330,7 @@
       "label": "\uad50\ucc28 \uac80\uc99d \ud750\ub984",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L980",
+      "source_location": "L982",
       "id": "spec_uppaal_design_\uad50\ucc28_\uac80\uc99d_\ud750\ub984",
       "community": 443,
       "norm_label": "\u1100\u116d\u110e\u1161 \u1100\u1165\u11b7\u110c\u1173\u11bc \u1112\u1173\u1105\u1173\u11b7"
@@ -28339,16 +28339,16 @@
       "label": "code:block20 ([ROS2]                                    [UPPAAL])",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L981",
+      "source_location": "L983",
       "id": "spec_uppaal_design_codeblock_20",
-      "community": 38,
+      "community": 443,
       "norm_label": "code:block20 ([ros2]                                    [uppaal])"
     },
     {
       "label": "14. \ubaa8\ub378 \ud55c\uacc4 + state space \uc0c1\ud55c",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L992",
+      "source_location": "L994",
       "id": "spec_uppaal_design_14_\ubaa8\ub378_\ud55c\uacc4_state_space_\uc0c1\ud55c",
       "community": 87,
       "norm_label": "14. \u1106\u1169\u1103\u1166\u11af \u1112\u1161\u11ab\u1100\u1168 + state space \u1109\u1161\u11bc\u1112\u1161\u11ab"
@@ -28357,7 +28357,7 @@
       "label": "14.1 \uc758\ub3c4\uc801\uc73c\ub85c \ucd94\uc0c1\ud654\ud55c \uac83",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L994",
+      "source_location": "L996",
       "id": "spec_uppaal_design_14_1_\uc758\ub3c4\uc801\uc73c\ub85c_\ucd94\uc0c1\ud654\ud55c_\uac83",
       "community": 87,
       "norm_label": "14.1 \u110b\u1174\u1103\u1169\u110c\u1165\u11a8\u110b\u1173\u1105\u1169 \u110e\u116e\u1109\u1161\u11bc\u1112\u116a\u1112\u1161\u11ab \u1100\u1165\u11ba"
@@ -28366,7 +28366,7 @@
       "label": "14.2 \uac80\uc99d \uac00\ub2a5 \uaddc\ubaa8 (state space \ucd94\uc815)",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L1000",
+      "source_location": "L1002",
       "id": "spec_uppaal_design_14_2_\uac80\uc99d_\uac00\ub2a5_\uaddc\ubaa8_state_space_\ucd94\uc815",
       "community": 87,
       "norm_label": "14.2 \u1100\u1165\u11b7\u110c\u1173\u11bc \u1100\u1161\u1102\u1173\u11bc \u1100\u1172\u1106\u1169 (state space \u110e\u116e\u110c\u1165\u11bc)"
@@ -28375,7 +28375,7 @@
       "label": "14.3 \ud655\uc7a5\ud558\ub824\uba74",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L1010",
+      "source_location": "L1012",
       "id": "spec_uppaal_design_14_3_\ud655\uc7a5\ud558\ub824\uba74",
       "community": 87,
       "norm_label": "14.3 \u1112\u116a\u11a8\u110c\u1161\u11bc\u1112\u1161\u1105\u1167\u1106\u1167\u11ab"
@@ -28384,7 +28384,7 @@
       "label": "code:c (const int CH_PER_U[NB_U] = {6, 4};)",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L1012",
+      "source_location": "L1014",
       "id": "spec_uppaal_design_codeblock_21",
       "community": 87,
       "norm_label": "code:c (const int ch_per_u[nb_u] = {6, 4};)"
@@ -28393,7 +28393,7 @@
       "label": "15. \uc2dc\ub098\ub9ac\uc624 \u2192 \ubaa8\ub378 \uc790\ub3d9 dump \uc6cc\ud06c\ud50c\ub85c",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L1021",
+      "source_location": "L1023",
       "id": "spec_uppaal_design_15_\uc2dc\ub098\ub9ac\uc624_\ubaa8\ub378_\uc790\ub3d9_dump_\uc6cc\ud06c\ud50c\ub85c",
       "community": 449,
       "norm_label": "15. \u1109\u1175\u1102\u1161\u1105\u1175\u110b\u1169 \u2192 \u1106\u1169\u1103\u1166\u11af \u110c\u1161\u1103\u1169\u11bc dump \u110b\u116f\u110f\u1173\u1111\u1173\u11af\u1105\u1169"
@@ -28402,7 +28402,7 @@
       "label": "15.1 \ud5ec\ud37c \ud568\uc218 (`scenario.py`)",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L1025",
+      "source_location": "L1027",
       "id": "spec_uppaal_design_15_1_\ud5ec\ud37c_\ud568\uc218_scenario_py",
       "community": 449,
       "norm_label": "15.1 \u1112\u1166\u11af\u1111\u1165 \u1112\u1161\u11b7\u1109\u116e (`scenario.py`)"
@@ -28411,7 +28411,7 @@
       "label": "`compute_engagement_window(spawn, battery, assets, *, max_alt_km=80.0, dt=0.05, alt_window_km=None)`",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L1027",
+      "source_location": "L1029",
       "id": "spec_uppaal_design_compute_engagement_window_spawn_battery_assets_max_alt_km_80_0_dt_0_05_alt_window_km_none",
       "community": 449,
       "norm_label": "`compute_engagement_window(spawn, battery, assets, *, max_alt_km=80.0, dt=0.05, alt_window_km=none)`"
@@ -28420,7 +28420,7 @@
       "label": "code:python (from dwta_nodes.scenario import compute_engagement_window, r)",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L1031",
+      "source_location": "L1033",
       "id": "spec_uppaal_design_codeblock_22",
       "community": 449,
       "norm_label": "code:python (from dwta_nodes.scenario import compute_engagement_window, r)"
@@ -28429,7 +28429,7 @@
       "label": "`dump_uppaal_windows(seed=42, n_threats=3, *, max_alt_km=80.0) -> str`",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L1039",
+      "source_location": "L1041",
       "id": "spec_uppaal_design_dump_uppaal_windows_seed_42_n_threats_3_max_alt_km_80_0_str",
       "community": 449,
       "norm_label": "`dump_uppaal_windows(seed=42, n_threats=3, *, max_alt_km=80.0) -> str`"
@@ -28438,7 +28438,7 @@
       "label": "15.2 v3 XML\uc5d0 \uc8fc\uc785",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L1042",
+      "source_location": "L1044",
       "id": "spec_uppaal_design_15_2_v3_xml\uc5d0_\uc8fc\uc785",
       "community": 449,
       "norm_label": "15.2 v3 xml\u110b\u1166 \u110c\u116e\u110b\u1175\u11b8"
@@ -28447,7 +28447,7 @@
       "label": "15.3 \uc77c\uad00\uc131 \uc810\uac80",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L1049",
+      "source_location": "L1051",
       "id": "spec_uppaal_design_15_3_\uc77c\uad00\uc131_\uc810\uac80",
       "community": 449,
       "norm_label": "15.3 \u110b\u1175\u11af\u1100\u116a\u11ab\u1109\u1165\u11bc \u110c\u1165\u11b7\u1100\u1165\u11b7"
@@ -28456,7 +28456,7 @@
       "label": "16. \ubaa8\ub378 \uc548 \ub3d9\uc801 \uacc4\uc0b0 vs \uc0ac\uc804 \uacc4\uc0b0 \u2014 trade-off",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L1054",
+      "source_location": "L1056",
       "id": "spec_uppaal_design_16_\ubaa8\ub378_\uc548_\ub3d9\uc801_\uacc4\uc0b0_vs_\uc0ac\uc804_\uacc4\uc0b0_trade_off",
       "community": 38,
       "norm_label": "16. \u1106\u1169\u1103\u1166\u11af \u110b\u1161\u11ab \u1103\u1169\u11bc\u110c\u1165\u11a8 \u1100\u1168\u1109\u1161\u11ab vs \u1109\u1161\u110c\u1165\u11ab \u1100\u1168\u1109\u1161\u11ab \u2014 trade-off"
@@ -28465,7 +28465,7 @@
       "label": "16.1 UPPAAL declaration \ud568\uc218\uac00 \ud560 \uc218 \uc788\ub294 \uac83",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L1060",
+      "source_location": "L1062",
       "id": "spec_uppaal_design_16_1_uppaal_declaration_\ud568\uc218\uac00_\ud560_\uc218_\uc788\ub294_\uac83",
       "community": 38,
       "norm_label": "16.1 uppaal declaration \u1112\u1161\u11b7\u1109\u116e\u1100\u1161 \u1112\u1161\u11af \u1109\u116e \u110b\u1175\u11bb\u1102\u1173\u11ab \u1100\u1165\u11ba"
@@ -28474,7 +28474,7 @@
       "label": "code:c (int square(int x) { return x * x; })",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L1064",
+      "source_location": "L1066",
       "id": "spec_uppaal_design_codeblock_23",
       "community": 38,
       "norm_label": "code:c (int square(int x) { return x * x; })"
@@ -28483,7 +28483,7 @@
       "label": "16.2 \uc6b0\ub9ac use case\uc5d0 \uc801\uc6a9\ud558\uba74",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L1108",
+      "source_location": "L1110",
       "id": "spec_uppaal_design_16_2_\uc6b0\ub9ac_use_case\uc5d0_\uc801\uc6a9\ud558\uba74",
       "community": 38,
       "norm_label": "16.2 \u110b\u116e\u1105\u1175 use case\u110b\u1166 \u110c\u1165\u11a8\u110b\u116d\u11bc\u1112\u1161\u1106\u1167\u11ab"
@@ -28492,7 +28492,7 @@
       "label": "\ubc29\ubc95 A \u2014 Discrete step \ubcc0\uc218",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L1115",
+      "source_location": "L1117",
       "id": "spec_uppaal_design_\ubc29\ubc95_a_discrete_step_\ubcc0\uc218",
       "community": 38,
       "norm_label": "\u1107\u1161\u11bc\u1107\u1165\u11b8 a \u2014 discrete step \u1107\u1167\u11ab\u1109\u116e"
@@ -28501,7 +28501,7 @@
       "label": "code:c (// Radar(id) declaration)",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L1116",
+      "source_location": "L1118",
       "id": "spec_uppaal_design_codeblock_24",
       "community": 38,
       "norm_label": "code:c (// radar(id) declaration)"
@@ -28510,7 +28510,7 @@
       "label": "\ubc29\ubc95 B \u2014 \ub9e4 \uc815\uc218 \uc2dc\uac01\ub9c8\ub2e4 \ubbf8\ub9ac \uacc4\uc0b0\ud574 const\ub85c (\ud604\uc7ac v3 \ubc29\uc2dd)",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L1128",
+      "source_location": "L1130",
       "id": "spec_uppaal_design_\ubc29\ubc95_b_\ub9e4_\uc815\uc218_\uc2dc\uac01\ub9c8\ub2e4_\ubbf8\ub9ac_\uacc4\uc0b0\ud574_const\ub85c_\ud604\uc7ac_v3_\ubc29\uc2dd",
       "community": 38,
       "norm_label": "\u1107\u1161\u11bc\u1107\u1165\u11b8 b \u2014 \u1106\u1162 \u110c\u1165\u11bc\u1109\u116e \u1109\u1175\u1100\u1161\u11a8\u1106\u1161\u1103\u1161 \u1106\u1175\u1105\u1175 \u1100\u1168\u1109\u1161\u11ab\u1112\u1162 const\u1105\u1169 (\u1112\u1167\u11ab\u110c\u1162 v3 \u1107\u1161\u11bc\u1109\u1175\u11a8)"
@@ -28519,7 +28519,7 @@
       "label": "16.3 trade-off \ud45c",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L1131",
+      "source_location": "L1133",
       "id": "spec_uppaal_design_16_3_trade_off_\ud45c",
       "community": 38,
       "norm_label": "16.3 trade-off \u1111\u116d"
@@ -28528,7 +28528,7 @@
       "label": "16.4 \uad8c\uace0",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L1146",
+      "source_location": "L1148",
       "id": "spec_uppaal_design_16_4_\uad8c\uace0",
       "community": 38,
       "norm_label": "16.4 \u1100\u116f\u11ab\u1100\u1169"
@@ -28537,34 +28537,133 @@
       "label": "16.5 \ubd80\ubd84\uc801 \ub3d9\uc801 \uacc4\uc0b0 \u2014 \uc808\ucda9\uc548",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L1164",
+      "source_location": "L1166",
       "id": "spec_uppaal_design_16_5_\ubd80\ubd84\uc801_\ub3d9\uc801_\uacc4\uc0b0_\uc808\ucda9\uc548",
       "community": 38,
       "norm_label": "16.5 \u1107\u116e\u1107\u116e\u11ab\u110c\u1165\u11a8 \u1103\u1169\u11bc\u110c\u1165\u11a8 \u1100\u1168\u1109\u1161\u11ab \u2014 \u110c\u1165\u11af\u110e\u116e\u11bc\u110b\u1161\u11ab"
     },
     {
+      "label": "17. UPPAAL SMC \u2014 \ud1b5\uacc4\uc801 \uac80\uc99d\uacfc \ud655\ub960\u00b7ODE \ud45c\ud604",
+      "file_type": "document",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L1181",
+      "id": "spec_uppaal_design_17_uppaal_smc_\ud1b5\uacc4\uc801_\uac80\uc99d\uacfc_\ud655\ub960_ode_\ud45c\ud604",
+      "community": 82,
+      "norm_label": "17. uppaal smc \u2014 \u1110\u1169\u11bc\u1100\u1168\u110c\u1165\u11a8 \u1100\u1165\u11b7\u110c\u1173\u11bc\u1100\u116a \u1112\u116a\u11a8\u1105\u1172\u11af\u00b7ode \u1111\u116d\u1112\u1167\u11ab"
+    },
+    {
+      "label": "17.1 SMC\uac00 \ubb34\uc5c7\uc744 \ucd94\uac00\ud558\ub098",
+      "file_type": "document",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L1188",
+      "id": "spec_uppaal_design_17_1_smc\uac00_\ubb34\uc5c7\uc744_\ucd94\uac00\ud558\ub098",
+      "community": 82,
+      "norm_label": "17.1 smc\u1100\u1161 \u1106\u116e\u110b\u1165\u11ba\u110b\u1173\u11af \u110e\u116e\u1100\u1161\u1112\u1161\u1102\u1161"
+    },
+    {
+      "label": "17.2 \uc0ac\uc6a9\uc790\uac00 \ubcf8 \ud30c\ub77c\ubbf8\ud130 \ub2e4\uc774\uc5bc\ub85c\uadf8 \ud574\uc11d",
+      "file_type": "document",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L1203",
+      "id": "spec_uppaal_design_17_2_\uc0ac\uc6a9\uc790\uac00_\ubcf8_\ud30c\ub77c\ubbf8\ud130_\ub2e4\uc774\uc5bc\ub85c\uadf8_\ud574\uc11d",
+      "community": 82,
+      "norm_label": "17.2 \u1109\u1161\u110b\u116d\u11bc\u110c\u1161\u1100\u1161 \u1107\u1169\u11ab \u1111\u1161\u1105\u1161\u1106\u1175\u1110\u1165 \u1103\u1161\u110b\u1175\u110b\u1165\u11af\u1105\u1169\u1100\u1173 \u1112\u1162\u1109\u1165\u11a8"
+    },
+    {
+      "label": "17.3 \uc6b0\ub9ac v3 \ubaa8\ub378\uc5d0 \uc801\uc6a9 \u2014 \uc0c8 \ucffc\ub9ac 4\uac00\uc9c0",
+      "file_type": "document",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L1221",
+      "id": "spec_uppaal_design_17_3_\uc6b0\ub9ac_v3_\ubaa8\ub378\uc5d0_\uc801\uc6a9_\uc0c8_\ucffc\ub9ac_4\uac00\uc9c0",
+      "community": 38,
+      "norm_label": "17.3 \u110b\u116e\u1105\u1175 v3 \u1106\u1169\u1103\u1166\u11af\u110b\u1166 \u110c\u1165\u11a8\u110b\u116d\u11bc \u2014 \u1109\u1162 \u110f\u116f\u1105\u1175 4\u1100\u1161\u110c\u1175"
+    },
+    {
+      "label": "code:c (// (1) \uc2dc\uac04 T=40\ucd08 \uc548\uc5d0 \uc804\ub7c9 \uaca9\ucd94\ud560 \ud655\ub960)",
+      "file_type": "document",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L1225",
+      "id": "spec_uppaal_design_codeblock_25",
+      "community": 38,
+      "norm_label": "code:c (// (1) \u1109\u1175\u1100\u1161\u11ab t=40\u110e\u1169 \u110b\u1161\u11ab\u110b\u1166 \u110c\u1165\u11ab\u1105\u1163\u11bc \u1100\u1167\u11a8\u110e\u116e\u1112\u1161\u11af \u1112\u116a\u11a8\u1105\u1172\u11af)"
+    },
+    {
+      "label": "17.4 \uc6b0\ub9ac \ubaa8\ub378\uc5d0 \ud655\ub960 \uac00\uc911\uce58 \ucd94\uac00\ud558\uae30 \u2014 Pk \uc9c1\uc811 \ubaa8\ub378\ub9c1",
+      "file_type": "document",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L1242",
+      "id": "spec_uppaal_design_17_4_\uc6b0\ub9ac_\ubaa8\ub378\uc5d0_\ud655\ub960_\uac00\uc911\uce58_\ucd94\uac00\ud558\uae30_pk_\uc9c1\uc811_\ubaa8\ub378\ub9c1",
+      "community": 82,
+      "norm_label": "17.4 \u110b\u116e\u1105\u1175 \u1106\u1169\u1103\u1166\u11af\u110b\u1166 \u1112\u116a\u11a8\u1105\u1172\u11af \u1100\u1161\u110c\u116e\u11bc\u110e\u1175 \u110e\u116e\u1100\u1161\u1112\u1161\u1100\u1175 \u2014 pk \u110c\u1175\u11a8\u110c\u1165\u11b8 \u1106\u1169\u1103\u1166\u11af\u1105\u1175\u11bc"
+    },
+    {
+      "label": "code:c (// Slot_U.Flying -> Idle \uc804\uc774\uc5d0 weight \ubd80\uc5ec)",
+      "file_type": "document",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L1248",
+      "id": "spec_uppaal_design_codeblock_26",
+      "community": 82,
+      "norm_label": "code:c (// slot_u.flying -> idle \u110c\u1165\u11ab\u110b\u1175\u110b\u1166 weight \u1107\u116e\u110b\u1167)"
+    },
+    {
+      "label": "17.5 Hybrid (ODE) \ud45c\ud604 \u2014 sqrt/\uada4\uc801 \ub3d9\uc801 \uacc4\uc0b0?",
+      "file_type": "document",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L1271",
+      "id": "spec_uppaal_design_17_5_hybrid_ode_\ud45c\ud604_sqrt_\uada4\uc801_\ub3d9\uc801_\uacc4\uc0b0",
+      "community": 82,
+      "norm_label": "17.5 hybrid (ode) \u1111\u116d\u1112\u1167\u11ab \u2014 sqrt/\u1100\u1170\u110c\u1165\u11a8 \u1103\u1169\u11bc\u110c\u1165\u11a8 \u1100\u1168\u1109\u1161\u11ab?"
+    },
+    {
+      "label": "code:c (// declaration)",
+      "file_type": "document",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L1274",
+      "id": "spec_uppaal_design_codeblock_27",
+      "community": 82,
+      "norm_label": "code:c (// declaration)"
+    },
+    {
+      "label": "17.6 SMC vs \uae30\ubcf8 TCTL \u2014 \uc5b8\uc81c \ubb34\uc5c7\uc744 \uc4f0\ub098",
+      "file_type": "document",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L1289",
+      "id": "spec_uppaal_design_17_6_smc_vs_\uae30\ubcf8_tctl_\uc5b8\uc81c_\ubb34\uc5c7\uc744_\uc4f0\ub098",
+      "community": 82,
+      "norm_label": "17.6 smc vs \u1100\u1175\u1107\u1169\u11ab tctl \u2014 \u110b\u1165\u11ab\u110c\u1166 \u1106\u116e\u110b\u1165\u11ba\u110b\u1173\u11af \u110a\u1173\u1102\u1161"
+    },
+    {
+      "label": "17.7 \uad8c\uace0 \u2014 \ub450 \ub2e8\uacc4 \uc6cc\ud06c\ud50c\ub85c",
+      "file_type": "document",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L1300",
+      "id": "spec_uppaal_design_17_7_\uad8c\uace0_\ub450_\ub2e8\uacc4_\uc6cc\ud06c\ud50c\ub85c",
+      "community": 82,
+      "norm_label": "17.7 \u1100\u116f\u11ab\u1100\u1169 \u2014 \u1103\u116e \u1103\u1161\u11ab\u1100\u1168 \u110b\u116f\u110f\u1173\u1111\u1173\u11af\u1105\u1169"
+    },
+    {
       "label": "\ubd80\ub85d A. v3 \ubaa8\ub378 \ud30c\uc77c \uad6c\uc870 \ud55c\ub208\uc5d0",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L1179",
+      "source_location": "L1319",
       "id": "spec_uppaal_design_\ubd80\ub85d_a_v3_\ubaa8\ub378_\ud30c\uc77c_\uad6c\uc870_\ud55c\ub208\uc5d0",
       "community": 38,
       "norm_label": "\u1107\u116e\u1105\u1169\u11a8 a. v3 \u1106\u1169\u1103\u1166\u11af \u1111\u1161\u110b\u1175\u11af \u1100\u116e\u110c\u1169 \u1112\u1161\u11ab\u1102\u116e\u11ab\u110b\u1166"
     },
     {
-      "label": "code:block25 (<?xml ?>)",
+      "label": "code:block28 (<?xml ?>)",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L1181",
-      "id": "spec_uppaal_design_codeblock_25",
+      "source_location": "L1321",
+      "id": "spec_uppaal_design_codeblock_28",
       "community": 38,
-      "norm_label": "code:block25 (<?xml ?>)"
+      "norm_label": "code:block28 (<?xml ?>)"
     },
     {
       "label": "\ubd80\ub85d B. v3 \ub514\ubc84\uae45 \uccb4\ud06c\ub9ac\uc2a4\ud2b8",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L1211",
+      "source_location": "L1351",
       "id": "spec_uppaal_design_\ubd80\ub85d_b_v3_\ub514\ubc84\uae45_\uccb4\ud06c\ub9ac\uc2a4\ud2b8",
       "community": 11,
       "norm_label": "\u1107\u116e\u1105\u1169\u11a8 b. v3 \u1103\u1175\u1107\u1165\u1100\u1175\u11bc \u110e\u1166\u110f\u1173\u1105\u1175\u1109\u1173\u1110\u1173"
@@ -31490,7 +31589,7 @@
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
       "source_location": "L133",
-      "community": 11,
+      "community": 35,
       "norm_label": "3. declaration \u1109\u1161\u11bc\u1109\u1166 \u2014 \"\u110b\u1165\u1103\u1175\u110b\u1166 \u1106\u116e\u110b\u1165\u11ba\u110b\u1175 \u110b\u1175\u11bb\u1100\u1169 \u1102\u116e\u1100\u1161 \u110a\u1173\u1102\u1161\"",
       "id": "spec_uppaal_design_3_declaration_\uc0c1\uc138_\uc5b4\ub514\uc5d0_\ubb34\uc5c7\uc774_\uc788\uace0_\ub204\uac00_\uc4f0\ub098"
     },
@@ -31508,7 +31607,7 @@
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
       "source_location": "L261",
-      "community": 11,
+      "community": 35,
       "norm_label": "3.2 template-local declarations",
       "id": "spec_uppaal_design_3_2_template_local_declarations"
     },
@@ -31517,7 +31616,7 @@
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
       "source_location": "L273",
-      "community": 11,
+      "community": 35,
       "norm_label": "3.3 system declarations",
       "id": "spec_uppaal_design_3_3_system_declarations"
     },
@@ -31589,7 +31688,7 @@
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
       "source_location": "L442",
-      "community": 184,
+      "community": 81,
       "norm_label": "6. \u1112\u1161\u11ab \u110b\u1171\u1112\u1167\u11b8\u110b\u1174 lifecycle (v3 \u1100\u1175\u110c\u116e\u11ab \u1103\u1161\u11ab\u1100\u1168\u1107\u1167\u11af)",
       "id": "spec_uppaal_design_6_\ud55c_\uc704\ud611\uc758_lifecycle_v3_\uae30\uc900_\ub2e8\uacc4\ubcc4"
     },
@@ -31796,7 +31895,7 @@
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
       "source_location": "L708",
-      "community": 443,
+      "community": 184,
       "norm_label": "11. poc \u1112\u116a\u11af\u110b\u116d\u11bc \u2014 3\u1100\u1161\u110c\u1175 \u1100\u1175\u11af",
       "id": "spec_uppaal_design_11_poc_\ud65c\uc6a9_3\uac00\uc9c0_\uae38"
     },
@@ -32075,7 +32174,7 @@
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
       "source_location": "L313",
-      "community": 184,
+      "community": 81,
       "norm_label": "11. \u1100\u1170\u110c\u1165\u11a8\u00b7\u1100\u1169\u1103\u1169 \u1100\u1175\u1107\u1161\u11ab \u1100\u116d\u110c\u1165\u11ab\u1103\u1162 (\u1109\u1161\u1100\u1165\u1105\u1175 + \u1100\u1169\u1103\u1169 \u1103\u1169\u11bc\u1109\u1175 \u1100\u1166\u110b\u1175\u1110\u1173)",
       "id": "spec_uppaal_design_11_\uada4\uc801_\uace0\ub3c4_\uae30\ubc18_\uad50\uc804\ub300_\uc0ac\uac70\ub9ac_\uace0\ub3c4_\ub3d9\uc2dc_\uac8c\uc774\ud2b8"
     },
@@ -32084,7 +32183,7 @@
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
       "source_location": "L323",
-      "community": 184,
+      "community": 81,
       "norm_label": "1\u1103\u1161\u11ab\u1100\u1168 \u2014 ros2 \u1109\u1175\u1102\u1161\u1105\u1175\u110b\u1169\u110b\u1166\u1109\u1165 \u110b\u1171\u11ab\u1103\u1169\u110b\u116e \u1109\u1161\u110c\u1165\u11ab \u1100\u1168\u1109\u1161\u11ab",
       "id": "spec_uppaal_design_1\ub2e8\uacc4_ros2_\uc2dc\ub098\ub9ac\uc624\uc5d0\uc11c_\uc708\ub3c4\uc6b0_\uc0ac\uc804_\uacc4\uc0b0"
     },
@@ -32093,7 +32192,7 @@
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
       "source_location": "L357",
-      "community": 184,
+      "community": 81,
       "norm_label": "2\u1103\u1161\u11ab\u1100\u1168 \u2014 uppaal declaration\u110b\u1166 const \u1107\u1162\u110b\u1167\u11af\u1105\u1169 \u110c\u116e\u110b\u1175\u11b8",
       "id": "spec_uppaal_design_2\ub2e8\uacc4_uppaal_declaration\uc5d0_const_\ubc30\uc5f4\ub85c_\uc8fc\uc785"
     },
@@ -32102,7 +32201,7 @@
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
       "source_location": "L374",
-      "community": 184,
+      "community": 81,
       "norm_label": "3\u1103\u1161\u11ab\u1100\u1168 \u2014 radar \u1110\u1166\u11b7\u1111\u1173\u11af\u1105\u1175\u11ba\u110b\u1166\u1109\u1165 \u110b\u1171\u11ab\u1103\u1169\u110b\u116e \u1109\u1175\u11ab\u1112\u1169\u1105\u1169 broadcast",
       "id": "spec_uppaal_design_3\ub2e8\uacc4_radar_\ud15c\ud50c\ub9bf\uc5d0\uc11c_\uc708\ub3c4\uc6b0_\uc2e0\ud638\ub85c_broadcast"
     },
@@ -32129,7 +32228,7 @@
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
       "source_location": "L427",
-      "community": 184,
+      "community": 81,
       "norm_label": "v2 \u110b\u116a\u110b\u1174 \u1107\u1175\u1100\u116d",
       "id": "spec_uppaal_design_v2_\uc640\uc758_\ube44\uad50"
     },
@@ -32138,7 +32237,7 @@
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
       "source_location": "L439",
-      "community": 443,
+      "community": 35,
       "norm_label": "12. \u1111\u1169\u1103\u1162\u1107\u1167\u11af \u1103\u1169\u11bc\u1109\u1175 \u1100\u116d\u110c\u1165\u11ab \u1109\u116e (6\u1103\u1162 \u1103\u1173\u11bc)",
       "id": "spec_uppaal_design_12_\ud3ec\ub300\ubcc4_\ub3d9\uc2dc_\uad50\uc804_\uc218_6\ub300_\ub4f1"
     },
@@ -32147,7 +32246,7 @@
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
       "source_location": "L445",
-      "community": 443,
+      "community": 35,
       "norm_label": "\u1112\u1162\u11a8\u1109\u1175\u11b7 \u1111\u1162\u1110\u1165\u11ab \u2014 slot \u110b\u1175\u11ab\u1109\u1173\u1110\u1165\u11ab\u1109\u1173\u110b\u1166 batt_id \u1107\u116e\u110b\u1167",
       "id": "spec_uppaal_design_\ud575\uc2ec_\ud328\ud134_slot_\uc778\uc2a4\ud134\uc2a4\uc5d0_batt_id_\ubd80\uc5ec"
     },
@@ -32156,7 +32255,7 @@
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
       "source_location": "L485",
-      "community": 443,
+      "community": 184,
       "norm_label": "system declarations\u110b\u1166\u1109\u1165 \u110e\u1162\u1102\u1165\u11af \u1109\u116e\u1106\u1161\u11ab\u110f\u1173\u11b7 \u110b\u1175\u11ab\u1109\u1173\u1110\u1165\u11ab\u1109\u1173\u1112\u116a",
       "id": "spec_uppaal_design_system_declarations\uc5d0\uc11c_\ucc44\ub110_\uc218\ub9cc\ud07c_\uc778\uc2a4\ud134\uc2a4\ud654"
     },
@@ -32165,7 +32264,7 @@
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
       "source_location": "L519",
-      "community": 443,
+      "community": 35,
       "norm_label": "\u1109\u1161\u11bc\u1112\u1161\u11ab \u110e\u116e\u110c\u1165\u11bc \u2014 \u110b\u1165\u1103\u1175\u1101\u1161\u110c\u1175 \u110f\u1175\u110b\u116e\u11af \u1109\u116e \u110b\u1175\u11bb\u1102\u1161",
       "id": "spec_uppaal_design_\uc0c1\ud55c_\ucd94\uc815_\uc5b4\ub514\uae4c\uc9c0_\ud0a4\uc6b8_\uc218_\uc788\ub098"
     },
@@ -32174,7 +32273,7 @@
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
       "source_location": "L541",
-      "community": 443,
+      "community": 449,
       "norm_label": "v3 \u1109\u1161\u110b\u116d\u11bc \u1112\u1173\u1105\u1173\u11b7",
       "id": "spec_uppaal_design_v3_\uc0ac\uc6a9_\ud750\ub984"
     },
@@ -83235,8 +83334,18 @@
       "source_file": "ros2_dwta/spec/uppaal_design.md",
       "source_location": "L1054",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "spec_uppaal_design_uppaal_\ubaa8\ub378_\uc124\uacc4_\uad6c\ud604_\uc0ac\uc6a9_\uc644\uc804_\ubb38\uc11c",
-      "target": "spec_uppaal_design_16_\ubaa8\ub378_\uc548_\ub3d9\uc801_\uacc4\uc0b0_vs_\uc0ac\uc804_\uacc4\uc0b0_trade_off",
+      "target": "spec_uppaal_design_16_\ubaa8\ub378_\uc548_\ub3d9\uc801_\uacc4\uc0b0_vs_\uc0ac\uc804_\uacc4\uc0b0_trade_off"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L1181",
+      "weight": 1.0,
+      "source": "spec_uppaal_design_uppaal_\ubaa8\ub378_\uc124\uacc4_\uad6c\ud604_\uc0ac\uc6a9_\uc644\uc804_\ubb38\uc11c",
+      "target": "spec_uppaal_design_17_uppaal_smc_\ud1b5\uacc4\uc801_\uac80\uc99d\uacfc_\ud655\ub960_ode_\ud45c\ud604",
       "confidence_score": 1.0
     },
     {
@@ -85205,9 +85314,9 @@
       "source_file": "ros2_dwta/spec/uppaal_design.md",
       "source_location": "L1060",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "spec_uppaal_design_16_\ubaa8\ub378_\uc548_\ub3d9\uc801_\uacc4\uc0b0_vs_\uc0ac\uc804_\uacc4\uc0b0_trade_off",
-      "target": "spec_uppaal_design_16_1_uppaal_declaration_\ud568\uc218\uac00_\ud560_\uc218_\uc788\ub294_\uac83",
-      "confidence_score": 1.0
+      "target": "spec_uppaal_design_16_1_uppaal_declaration_\ud568\uc218\uac00_\ud560_\uc218_\uc788\ub294_\uac83"
     },
     {
       "relation": "contains",
@@ -85215,9 +85324,9 @@
       "source_file": "ros2_dwta/spec/uppaal_design.md",
       "source_location": "L1108",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "spec_uppaal_design_16_\ubaa8\ub378_\uc548_\ub3d9\uc801_\uacc4\uc0b0_vs_\uc0ac\uc804_\uacc4\uc0b0_trade_off",
-      "target": "spec_uppaal_design_16_2_\uc6b0\ub9ac_use_case\uc5d0_\uc801\uc6a9\ud558\uba74",
-      "confidence_score": 1.0
+      "target": "spec_uppaal_design_16_2_\uc6b0\ub9ac_use_case\uc5d0_\uc801\uc6a9\ud558\uba74"
     },
     {
       "relation": "contains",
@@ -85225,9 +85334,9 @@
       "source_file": "ros2_dwta/spec/uppaal_design.md",
       "source_location": "L1131",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "spec_uppaal_design_16_\ubaa8\ub378_\uc548_\ub3d9\uc801_\uacc4\uc0b0_vs_\uc0ac\uc804_\uacc4\uc0b0_trade_off",
-      "target": "spec_uppaal_design_16_3_trade_off_\ud45c",
-      "confidence_score": 1.0
+      "target": "spec_uppaal_design_16_3_trade_off_\ud45c"
     },
     {
       "relation": "contains",
@@ -85235,9 +85344,9 @@
       "source_file": "ros2_dwta/spec/uppaal_design.md",
       "source_location": "L1146",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "spec_uppaal_design_16_\ubaa8\ub378_\uc548_\ub3d9\uc801_\uacc4\uc0b0_vs_\uc0ac\uc804_\uacc4\uc0b0_trade_off",
-      "target": "spec_uppaal_design_16_4_\uad8c\uace0",
-      "confidence_score": 1.0
+      "target": "spec_uppaal_design_16_4_\uad8c\uace0"
     },
     {
       "relation": "contains",
@@ -85245,9 +85354,9 @@
       "source_file": "ros2_dwta/spec/uppaal_design.md",
       "source_location": "L1164",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "spec_uppaal_design_16_\ubaa8\ub378_\uc548_\ub3d9\uc801_\uacc4\uc0b0_vs_\uc0ac\uc804_\uacc4\uc0b0_trade_off",
-      "target": "spec_uppaal_design_16_5_\ubd80\ubd84\uc801_\ub3d9\uc801_\uacc4\uc0b0_\uc808\ucda9\uc548",
-      "confidence_score": 1.0
+      "target": "spec_uppaal_design_16_5_\ubd80\ubd84\uc801_\ub3d9\uc801_\uacc4\uc0b0_\uc808\ucda9\uc548"
     },
     {
       "relation": "contains",
@@ -85255,9 +85364,9 @@
       "source_file": "ros2_dwta/spec/uppaal_design.md",
       "source_location": "L1064",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "spec_uppaal_design_16_1_uppaal_declaration_\ud568\uc218\uac00_\ud560_\uc218_\uc788\ub294_\uac83",
-      "target": "spec_uppaal_design_codeblock_23",
-      "confidence_score": 1.0
+      "target": "spec_uppaal_design_codeblock_23"
     },
     {
       "relation": "contains",
@@ -85275,9 +85384,9 @@
       "source_file": "ros2_dwta/spec/uppaal_design.md",
       "source_location": "L1115",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "spec_uppaal_design_16_2_\uc6b0\ub9ac_use_case\uc5d0_\uc801\uc6a9\ud558\uba74",
-      "target": "spec_uppaal_design_\ubc29\ubc95_a_discrete_step_\ubcc0\uc218",
-      "confidence_score": 1.0
+      "target": "spec_uppaal_design_\ubc29\ubc95_a_discrete_step_\ubcc0\uc218"
     },
     {
       "relation": "contains",
@@ -85285,9 +85394,9 @@
       "source_file": "ros2_dwta/spec/uppaal_design.md",
       "source_location": "L1128",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "spec_uppaal_design_16_2_\uc6b0\ub9ac_use_case\uc5d0_\uc801\uc6a9\ud558\uba74",
-      "target": "spec_uppaal_design_\ubc29\ubc95_b_\ub9e4_\uc815\uc218_\uc2dc\uac01\ub9c8\ub2e4_\ubbf8\ub9ac_\uacc4\uc0b0\ud574_const\ub85c_\ud604\uc7ac_v3_\ubc29\uc2dd",
-      "confidence_score": 1.0
+      "target": "spec_uppaal_design_\ubc29\ubc95_b_\ub9e4_\uc815\uc218_\uc2dc\uac01\ub9c8\ub2e4_\ubbf8\ub9ac_\uacc4\uc0b0\ud574_const\ub85c_\ud604\uc7ac_v3_\ubc29\uc2dd"
     },
     {
       "relation": "contains",
@@ -85295,8 +85404,88 @@
       "source_file": "ros2_dwta/spec/uppaal_design.md",
       "source_location": "L1116",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "spec_uppaal_design_\ubc29\ubc95_a_discrete_step_\ubcc0\uc218",
-      "target": "spec_uppaal_design_codeblock_24",
+      "target": "spec_uppaal_design_codeblock_24"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L1188",
+      "weight": 1.0,
+      "source": "spec_uppaal_design_17_uppaal_smc_\ud1b5\uacc4\uc801_\uac80\uc99d\uacfc_\ud655\ub960_ode_\ud45c\ud604",
+      "target": "spec_uppaal_design_17_1_smc\uac00_\ubb34\uc5c7\uc744_\ucd94\uac00\ud558\ub098",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L1203",
+      "weight": 1.0,
+      "source": "spec_uppaal_design_17_uppaal_smc_\ud1b5\uacc4\uc801_\uac80\uc99d\uacfc_\ud655\ub960_ode_\ud45c\ud604",
+      "target": "spec_uppaal_design_17_2_\uc0ac\uc6a9\uc790\uac00_\ubcf8_\ud30c\ub77c\ubbf8\ud130_\ub2e4\uc774\uc5bc\ub85c\uadf8_\ud574\uc11d",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L1221",
+      "weight": 1.0,
+      "source": "spec_uppaal_design_17_uppaal_smc_\ud1b5\uacc4\uc801_\uac80\uc99d\uacfc_\ud655\ub960_ode_\ud45c\ud604",
+      "target": "spec_uppaal_design_17_3_\uc6b0\ub9ac_v3_\ubaa8\ub378\uc5d0_\uc801\uc6a9_\uc0c8_\ucffc\ub9ac_4\uac00\uc9c0",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L1242",
+      "weight": 1.0,
+      "source": "spec_uppaal_design_17_uppaal_smc_\ud1b5\uacc4\uc801_\uac80\uc99d\uacfc_\ud655\ub960_ode_\ud45c\ud604",
+      "target": "spec_uppaal_design_17_4_\uc6b0\ub9ac_\ubaa8\ub378\uc5d0_\ud655\ub960_\uac00\uc911\uce58_\ucd94\uac00\ud558\uae30_pk_\uc9c1\uc811_\ubaa8\ub378\ub9c1",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L1271",
+      "weight": 1.0,
+      "source": "spec_uppaal_design_17_uppaal_smc_\ud1b5\uacc4\uc801_\uac80\uc99d\uacfc_\ud655\ub960_ode_\ud45c\ud604",
+      "target": "spec_uppaal_design_17_5_hybrid_ode_\ud45c\ud604_sqrt_\uada4\uc801_\ub3d9\uc801_\uacc4\uc0b0",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L1289",
+      "weight": 1.0,
+      "source": "spec_uppaal_design_17_uppaal_smc_\ud1b5\uacc4\uc801_\uac80\uc99d\uacfc_\ud655\ub960_ode_\ud45c\ud604",
+      "target": "spec_uppaal_design_17_6_smc_vs_\uae30\ubcf8_tctl_\uc5b8\uc81c_\ubb34\uc5c7\uc744_\uc4f0\ub098",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L1300",
+      "weight": 1.0,
+      "source": "spec_uppaal_design_17_uppaal_smc_\ud1b5\uacc4\uc801_\uac80\uc99d\uacfc_\ud655\ub960_ode_\ud45c\ud604",
+      "target": "spec_uppaal_design_17_7_\uad8c\uace0_\ub450_\ub2e8\uacc4_\uc6cc\ud06c\ud50c\ub85c",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L1225",
+      "weight": 1.0,
+      "source": "spec_uppaal_design_17_3_\uc6b0\ub9ac_v3_\ubaa8\ub378\uc5d0_\uc801\uc6a9_\uc0c8_\ucffc\ub9ac_4\uac00\uc9c0",
+      "target": "spec_uppaal_design_codeblock_25",
       "confidence_score": 1.0
     },
     {
@@ -85305,8 +85494,38 @@
       "source_file": "ros2_dwta/spec/uppaal_design.md",
       "source_location": "L1181",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "spec_uppaal_design_\ubd80\ub85d_a_v3_\ubaa8\ub378_\ud30c\uc77c_\uad6c\uc870_\ud55c\ub208\uc5d0",
-      "target": "spec_uppaal_design_codeblock_25",
+      "target": "spec_uppaal_design_codeblock_25"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L1248",
+      "weight": 1.0,
+      "source": "spec_uppaal_design_17_4_\uc6b0\ub9ac_\ubaa8\ub378\uc5d0_\ud655\ub960_\uac00\uc911\uce58_\ucd94\uac00\ud558\uae30_pk_\uc9c1\uc811_\ubaa8\ub378\ub9c1",
+      "target": "spec_uppaal_design_codeblock_26",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L1274",
+      "weight": 1.0,
+      "source": "spec_uppaal_design_17_5_hybrid_ode_\ud45c\ud604_sqrt_\uada4\uc801_\ub3d9\uc801_\uacc4\uc0b0",
+      "target": "spec_uppaal_design_codeblock_27",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L1321",
+      "weight": 1.0,
+      "source": "spec_uppaal_design_\ubd80\ub85d_a_v3_\ubaa8\ub378_\ud30c\uc77c_\uad6c\uc870_\ud55c\ub208\uc5d0",
+      "target": "spec_uppaal_design_codeblock_28",
       "confidence_score": 1.0
     },
     {
@@ -90747,5 +90966,5 @@
       "source_file": "clean_slate_optimizer.py"
     }
   ],
-  "built_at_commit": "98c3e0ac4e0b475d0c21dde9d366a0e5acb24f0a"
+  "built_at_commit": "dd64827b6b25271813a98d9bfa1cae106cd7fa5d"
 }

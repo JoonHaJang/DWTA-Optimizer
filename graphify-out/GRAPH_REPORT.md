@@ -1,16 +1,16 @@
 # Graph Report - DWTA-Optimizer  (2026-05-30)
 
 ## Corpus Check
-- 72 files · ~83,304 words
+- 72 files · ~84,245 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 3755 nodes · 5539 edges · 443 communities (431 shown, 12 thin omitted)
+- 3766 nodes · 5551 edges · 445 communities (433 shown, 12 thin omitted)
 - Extraction: 84% EXTRACTED · 16% INFERRED · 0% AMBIGUOUS · INFERRED: 913 edges (avg confidence: 0.51)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `98c3e0ac`
+- Built from commit: `dd64827b`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -96,6 +96,8 @@
 - [[_COMMUNITY_Community 78|Community 78]]
 - [[_COMMUNITY_Community 79|Community 79]]
 - [[_COMMUNITY_Community 80|Community 80]]
+- [[_COMMUNITY_Community 81|Community 81]]
+- [[_COMMUNITY_Community 82|Community 82]]
 - [[_COMMUNITY_Community 83|Community 83]]
 - [[_COMMUNITY_Community 86|Community 86]]
 - [[_COMMUNITY_Community 87|Community 87]]
@@ -491,7 +493,7 @@
 - **DWTA optimizer strategies implementing shared solve/create_model interface** — ga_optimizer_geneticalgorithmoptimizer, greedy_optimizer_greedyoptimizer, clean_slate_optimizer_cleanslateoptimizer [INFERRED 0.85]
 - **Optimizers sharing Asset/InterceptorSystem/Threat dataclasses and engagement-matrix data** — ga_optimizer_geneticalgorithmoptimizer, greedy_optimizer_greedyoptimizer, clean_slate_optimizer_build_problem [INFERRED 0.85]
 
-## Communities (443 total, 12 thin omitted)
+## Communities (445 total, 12 thin omitted)
 
 ### Community 0 - "Community 0"
 Cohesion: 0.08
@@ -539,7 +541,7 @@ Nodes (51): 1. 대응 관계 (ROS2 ↔ TA), 2. 전역 선언 (shared), 3.1 radar
 
 ### Community 11 - "Community 11"
 Cohesion: 0.14
-Nodes (17): 0. 한 장 인덱스, 10. ROS2 시뮬레이터 ↔ UPPAAL 정합, 11. ROS2 시뮬레이터 ↔ UPPAAL 정합, 1. 모델 진화 (v1 → v2 → v3), 2. 모델 진화 (v1 → v2 → v3), 3.2 Template-local declarations, 3.3 System declarations, 3. Declaration 상세 — "어디에 무엇이 있고 누가 쓰나" (+9 more)
+Nodes (17): 0. 한 장 인덱스, 10. ROS2 시뮬레이터 ↔ UPPAAL 정합, 11. ROS2 시뮬레이터 ↔ UPPAAL 정합, 1. 모델 진화 (v1 → v2 → v3), 2. 모델 진화 (v1 → v2 → v3), 4.2 Template-local declarations, 4.3 System declarations, 4. Declaration 상세 — "어디에 무엇이 있고 누가 쓰나" (+9 more)
 
 ### Community 12 - "Community 12"
 Cohesion: 0.10
@@ -614,16 +616,16 @@ Cohesion: 0.20
 Nodes (19): LauncherNode, 발사대 노드 (Launcher) — 교전계획 실행(물리 발사 + 탄약).  교전계획(/engagement_plan)을 받아 요격탄을 발사한다, EngagementPlan, Interceptor, InterceptorStatus, LaunchEvent, RadarStatus, Message types for the DWTA ROS2 pipeline.  For the PoC these are plain datacla (+11 more)
 
 ### Community 35 - "Community 35"
-Cohesion: 0.11
-Nodes (21): 13개 인스턴스 (System declarations), 1.3 UPPAAL XML 명세 형식, 1. 모델 한 장 요약, 2. Broadcast 채널 — "누가 누구에게 무엇을", 2. v3 모델 전체 구성 (한 장 view), 3. v3 모델 전체 구성 (한 장 view), 3. 한 위협의 전체 lifecycle (시간순), 4. 사용자가 본 스크린샷 해석 (+13 more)
+Cohesion: 0.08
+Nodes (30): 12. 포대별 동시 교전 수 (6대 등), 13개 인스턴스 (System declarations), 1.3 UPPAAL XML 명세 형식, 1. 모델 한 장 요약, 2. Broadcast 채널 — "누가 누구에게 무엇을", 2. v3 모델 전체 구성 (한 장 view), 3.2 Template-local declarations, 3.3 System declarations (+22 more)
 
 ### Community 36 - "Community 36"
 Cohesion: 0.09
 Nodes (12): _Bus, _Clock, _Logger, now(), ok(), Publisher, In-process pub/sub bus that mirrors the rclpy API surface.  This lets the *exa, Subscription (+4 more)
 
 ### Community 38 - "Community 38"
-Cohesion: 0.15
-Nodes (13): 16.1 UPPAAL declaration 함수가 할 수 있는 것, 16.2 우리 use case에 적용하면, 16.3 trade-off 표, 16.4 권고, 16.5 부분적 동적 계산 — 절충안, 16. 모델 안 동적 계산 vs 사전 계산 — trade-off, code:block20 ([ROS2]                                    [UPPAAL]), code:c (int square(int x) { return x * x; }) (+5 more)
+Cohesion: 0.14
+Nodes (14): 16.1 UPPAAL declaration 함수가 할 수 있는 것, 16.2 우리 use case에 적용하면, 16.3 trade-off 표, 16.4 권고, 16.5 부분적 동적 계산 — 절충안, 16. 모델 안 동적 계산 vs 사전 계산 — trade-off, 17.3 우리 v3 모델에 적용 — 새 쿼리 4가지, code:c (int square(int x) { return x * x; }) (+6 more)
 
 ### Community 41 - "Community 41"
 Cohesion: 0.15
@@ -768,6 +770,14 @@ Nodes (4): code:python (feasible_pairs  : list[tuple[int, int]]), code:block6 (F
 ### Community 80 - "Community 80"
 Cohesion: 0.20
 Nodes (9): algorithm, detailed_records, elapsed_time_sec, memory_usage, avg_mb, peak_mb, performance_grade, scenario (+1 more)
+
+### Community 81 - "Community 81"
+Cohesion: 0.22
+Nodes (9): 11. 궤적·고도 기반 교전대 (사거리 + 고도 동시 게이트), 1단계 — ROS2 시나리오에서 윈도우 사전 계산, 2단계 — UPPAAL declaration에 const 배열로 주입, 3단계 — Radar 템플릿에서 윈도우 신호로 broadcast, 5.5.2 invariant + guard 결합의 의미, 6. 한 위협의 lifecycle (v3 기준 단계별), code:c (invariant: cp <= PERIOD_P    // (a) cp는 PERIOD_P 초과 못 함), code:c (int best_u_b(int b) {       // 포대 b의 GreedyWTA 우선순위 (작은 id가 ) (+1 more)
+
+### Community 82 - "Community 82"
+Cohesion: 0.22
+Nodes (9): 17.1 SMC가 무엇을 추가하나, 17.2 사용자가 본 파라미터 다이얼로그 해석, 17.4 우리 모델에 확률 가중치 추가하기 — Pk 직접 모델링, 17.5 Hybrid (ODE) 표현 — sqrt/궤적 동적 계산?, 17.6 SMC vs 기본 TCTL — 언제 무엇을 쓰나, 17.7 권고 — 두 단계 워크플로, 17. UPPAAL SMC — 통계적 검증과 확률·ODE 표현, code:c (// Slot_U.Flying -> Idle 전이에 weight 부여) (+1 more)
 
 ### Community 83 - "Community 83"
 Cohesion: 0.32
@@ -1154,8 +1164,8 @@ Cohesion: 0.22
 Nodes (9): solver_performance, avg_time_sec, max_time_sec, min_time_sec, timeout_count, timeout_rate_pct, total_optimizations, warmstart_count (+1 more)
 
 ### Community 184 - "Community 184"
-Cohesion: 0.08
-Nodes (26): 11. 궤적·고도 기반 교전대 (사거리 + 고도 동시 게이트), 1단계 — ROS2 시나리오에서 윈도우 사전 계산, 2단계 — UPPAAL declaration에 const 배열로 주입, 3단계 — Radar 템플릿에서 윈도우 신호로 broadcast, 4단계 — Threat의 engU/engL을 포대 단위로 토글, 5.1 Radar(const int id) — 위협 타이밍의 권위자, 5.2 Threat(const int id) — 신호 소비자, 5.3 Slot_U(const int batt_id) — 상층 채널 슬롯 (+18 more)
+Cohesion: 0.09
+Nodes (24): 11. PoC 활용 — 3가지 길, 12. PoC 활용 — 3가지 길, 4단계 — Threat의 engU/engL을 포대 단위로 토글, 5.1 Radar(const int id) — 위협 타이밍의 권위자, 5.2 Threat(const int id) — 신호 소비자, 5.3 Slot_U(const int batt_id) — 상층 채널 슬롯, 5.4 Slot_L(const int batt_id) — 하층 채널 슬롯, 5.5.1 `plan!`이 정확히 무엇을 하나 (+16 more)
 
 ### Community 185 - "Community 185"
 Cohesion: 0.40
@@ -2182,12 +2192,12 @@ Cohesion: 0.50
 Nodes (4): scalability, threats_per_second, time_per_optimization, time_per_threat
 
 ### Community 442 - "Community 442"
-Cohesion: 0.15
-Nodes (21): 10. `clean_slate_optimizer.py`는 UPPAAL과 어떻게 연결되나?, 3.1 글로벌 declaration의 모든 항목 (v3), 4.1 글로벌 declaration의 모든 항목 (v3), 4.2 Template-local declarations, 4.3 System declarations, 4. Declaration 상세 — "어디에 무엇이 있고 누가 쓰나", (a) 시스템 상수 — 컴파일 타임 고정값, (b) 시나리오 윈도우 — 위협별 / (위협, 포대)별 timing (+13 more)
+Cohesion: 0.20
+Nodes (17): 10. `clean_slate_optimizer.py`는 UPPAAL과 어떻게 연결되나?, 3.1 글로벌 declaration의 모든 항목 (v3), 4.1 글로벌 declaration의 모든 항목 (v3), (a) 시스템 상수 — 컴파일 타임 고정값, (b) 시나리오 윈도우 — 위협별 / (위협, 포대)별 timing, (c) 공유 상태 — 인스턴스 간 동기화 매개체, code:c (const int MAXT     = 3;     // 위협 수 (모든 배열의 첫 차원)), code:c (const int APPEAR[MAXT]        = { 0,  3,  6};       // 위협 탐지) (+9 more)
 
 ### Community 443 - "Community 443"
-Cohesion: 0.10
-Nodes (28): 11. PoC 활용 — 3가지 길, 12. `clean_slate_optimizer.py`와 UPPAAL의 관계, 12. PoC 활용 — 3가지 길, 12. 포대별 동시 교전 수 (6대 등), 13.1 의도적으로 추상화한 것, 13.2 검증 가능 규모 (state space 추정), 13.3 확장하려면, 13. `clean_slate_optimizer.py`와 UPPAAL의 관계 (+20 more)
+Cohesion: 0.18
+Nodes (14): 12. `clean_slate_optimizer.py`와 UPPAAL의 관계, 13.1 의도적으로 추상화한 것, 13.2 검증 가능 규모 (state space 추정), 13.3 확장하려면, 13. `clean_slate_optimizer.py`와 UPPAAL의 관계, 13. 모델 한계 + state space 상한, 5단계 — Interceptor 가드를 (위협, 포대) 단위로, code:block14 (1. UPPAAL 5 실행 → File → Open → dwta_model_v3_geometry.xml) (+6 more)
 
 ### Community 445 - "Community 445"
 Cohesion: 0.29
@@ -2206,11 +2216,11 @@ Cohesion: 0.06
 Nodes (44): 8.1 Safety (A[], 9개), 8.2 Geometry invariants (A[], 2개), 8.3 Policy invariants (A[], 2개), 8.4 Timing (A[], 1개), 8.5 Liveness (1개), 8.6 Reachability (E<>, 6개), 8.7 어떤 쿼리가 v3 특유인가, 8. 검증 쿼리 19개 상세 (+36 more)
 
 ### Community 449 - "Community 449"
-Cohesion: 0.20
-Nodes (11): 14.1 헬퍼 함수 (`scenario.py`), 14.2 v3 XML에 주입, 14.3 일관성 점검, 14. 시나리오 → 모델 자동 dump 워크플로, 15.1 헬퍼 함수 (`scenario.py`), 15.2 v3 XML에 주입, 15.3 일관성 점검, 15. 시나리오 → 모델 자동 dump 워크플로 (+3 more)
+Cohesion: 0.16
+Nodes (14): 14.1 헬퍼 함수 (`scenario.py`), 14.2 v3 XML에 주입, 14.3 일관성 점검, 14. 시나리오 → 모델 자동 dump 워크플로, 15.1 헬퍼 함수 (`scenario.py`), 15.2 v3 XML에 주입, 15.3 일관성 점검, 15. 시나리오 → 모델 자동 dump 워크플로 (+6 more)
 
 ## Knowledge Gaps
-- **2050 isolated node(s):** `bool`, `str`, `bool`, `str`, `scenario` (+2045 more)
+- **2056 isolated node(s):** `bool`, `str`, `bool`, `str`, `scenario` (+2051 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **12 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 

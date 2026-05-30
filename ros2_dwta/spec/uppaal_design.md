@@ -235,8 +235,10 @@ UPPAAL 검증식은 **TCTL(Timed Computation Tree Logic)** 의 단순 부분집�
   (일정 속도). 거리·고도 계산은 외부에서 사전 계산 필요.
 - **부동소수 실수**: int/bool/clock만. 실수는 적분식이 아닌 시간 비교 안에서만 등장.
 - **무한 데이터 구조**: 모든 배열·범위는 컴파일 타임 고정.
-- **확률**: 표준 UPPAAL은 비결정만 표현 (Pk 95%는 못 표현). 통계가 필요하면
-  **UPPAAL Stratego/SMC** 확장 사용.
+- **확률**: 기본 TCTL 검증(`A[]`, `E<>`)은 비결정만. 확률·통계가 필요하면 같은
+  UPPAAL 5에 **통합된 SMC(Statistical Model Checker)** 사용 (별도 설치 불요).
+  §17 참조 — `Pr[<=T](...)`, `simulate`, `E[...]` 쿼리 + branching edge에
+  확률 가중치 + 위치별 clock slope (ODE) 표현.
 - **MIP/LP 해**: 정수 최적해 자체는 표현 불가. 그 옵티마이저의 **정책 규칙**은
   추상화해서 모델에 박을 수 있음.
 
@@ -1173,6 +1175,144 @@ v3 모델의 `best_u_b(b)`, `best_l_b(b)`, `any_uCover(t)` 같은 것이 그 예
 > 즉, UPPAAL declaration 함수는 **"정책 / 우선순위 / 자원 점검"** 같은 한 step에
 > 한 번 호출되는 결정 로직에 최적이고, **"매 step 진화하는 동력학"** 표현에는
 > 부적합. v3가 이미 그 분할을 따르고 있습니다.
+
+---
+
+## 17. UPPAAL SMC — 통계적 검증과 확률·ODE 표현
+
+§1.5와 §16의 두 한계 — "확률 못 다룸 / sqrt·sin·연속 동역학 못 다룸" — 이
+**SMC 모드에서 부분 해제**됩니다. 사용자 환경의 UPPAAL 5는 SMC가 통합되어 있어
+(Verifier 탭의 `Options → Statistical parameters...` 메뉴) 별도 설치 없이 즉시
+사용 가능.
+
+### 17.1 SMC가 무엇을 추가하나
+
+기본 TCTL은 **모든 실행 / 어떤 실행**에 대한 정형 증명. SMC는 **무작위 시뮬레이션을
+N번 반복해 확률을 통계적으로 추정**합니다. 결과는 100% 증명이 아니라 신뢰구간
+포함 추정치.
+
+| 기능 | 기본 TCTL | SMC |
+|---|---|---|
+| 안전성 증명 | `A[] φ` | `Pr[<=T] [] φ`  (시간 T까지 항상 φ일 확률) |
+| 도달성 증명 | `E<> φ` | `Pr[<=T] <> φ`  (시간 T 안에 φ에 도달할 확률) |
+| 평균/최대/분포 | (없음) | `E[<=T; N] (max: x)`  (N회 시뮬 후 x의 평균 최댓값) |
+| 무작위 trace | 한 trace | `simulate N [<=T] {x, y, z}`  (N개 plot) |
+| 확률 모델링 | 비결정 분기 | **branching edge에 확률 가중치** `[1, 4]` (20% vs 80%) |
+| 연속 동역학 | clock slope = 1 고정 | **위치별 다른 slope** → ODE 표현 가능 |
+
+### 17.2 사용자가 본 파라미터 다이얼로그 해석
+
+| 파라미터 | 의미 | 보통 값 |
+|---|---|---|
+| Lower/Upper probabilistic deviation (±δ) | 확률 추정의 허용 오차 폭 (신뢰구간 절반 너비) | 0.01 (=1%) |
+| Probability of false negatives (α) | Type I 오류 (참인데 거짓 판정) 한계. 보통 5% | 0.05 |
+| Probability of false positives (β) | Type II 오류 (거짓인데 참 판정) 한계 | 0.05 |
+| Probability uncertainty (ε) | 확률 비교 시 uncertainty zone 폭 | 0.05 |
+| Ratio lower bound (u0) / upper bound (u1) | 가설 검정의 두 임계 — `H0: P ≤ u0` vs `H1: P ≥ u1` (SPRT) | 0.9 / 1.1 (가중치 비교용) |
+| Histogram bucket width / count | `E[]` 결과 히스토그램 빈 크기/개수. 0이면 자동 | 0 |
+| Trace resolution | `simulate`의 샘플 수 (해상도) | 4000 |
+| Discretization step for hybrid systems | hybrid ODE의 이산화 시간 step | 0.01 (=10ms) |
+| Local integration error bound | ODE 적분 한 step 오차 한계 | 0.01 |
+| Integration error bound pr. time-unit | ODE 적분 누적 오차 한계 (시간 단위당) | 0.01 |
+
+신뢰구간 95%로 확률을 ±1% 안에서 추정하고, hybrid ODE는 10ms step으로 적분.
+보통은 기본값 그대로 두고 변경 안 함.
+
+### 17.3 우리 v3 모델에 적용 — 새 쿼리 4가지
+
+`dwta_model_v3_geometry.xml`의 `<queries>`에 다음을 추가하면 곧바로 통계 분석:
+
+```c
+// (1) 시간 T=40초 안에 전량 격추할 확률
+Pr[<=40] (<> killed == MAXT)
+
+// (2) T=40초 안에 누설이 한 번이라도 발생할 확률
+Pr[<=40] (<> leaked > 0)
+
+// (3) 100회 시뮬레이션 후 격추 수의 평균
+E[<=40; 100] (max: killed)
+
+// (4) trace 100개를 시간 0~40 구간에서 plot — killed/leaked/inflU_b 변화 관찰
+simulate 100 [<=40] {killed, leaked, inflU_b[0], inflU_b[1]}
+```
+
+GUI Verifier 탭에서 (1)(2)는 P값과 신뢰구간, (3)은 평균과 분포 히스토그램,
+(4)는 100개 trace 그래프를 출력.
+
+### 17.4 우리 모델에 확률 가중치 추가하기 — Pk 직접 모델링
+
+현재 v3는 `hitU[tgt]!` / `missU[tgt]!`를 비결정 분기로 표현 → "둘 다 가능한 trace
+존재" 만 검증. SMC를 쓰면 Pk를 **확률 가중치**로 표현해서 정확한 격추율 계산
+가능:
+
+```c
+// Slot_U.Flying -> Idle 전이에 weight 부여
+// pk=0.85 가정: 17 : 3 = 85% : 15%
+<transition>
+  <source ref="su_fly"/><target ref="su_idle"/>
+  <label kind="guard">f >= FLYOUT_U</label>
+  <label kind="synchronisation">hitU[tgt]!</label>
+  <label kind="probability">17</label>   <!-- 새로 추가 -->
+  ...
+</transition>
+<transition>
+  <source ref="su_fly"/><target ref="su_idle"/>
+  <label kind="guard">f >= FLYOUT_U</label>
+  <label kind="synchronisation">missU[tgt]!</label>
+  <label kind="probability">3</label>    <!-- 17:3 = 85%:15% -->
+  ...
+</transition>
+```
+
+이러면 `Pr[<=T] (<> killed == MAXT)` 결과가 **"Pk=0.85 조건에서 전량 격추 확률
+= 0.62 ± 0.01"** 같은 양적 답이 됩니다. ROS2 시뮬레이터의 "30번 돌려 평균 격추율
+X%" 와 직접 비교 가능.
+
+### 17.5 Hybrid (ODE) 표현 — sqrt/궤적 동적 계산?
+
+SMC에선 **위치마다 clock slope를 다르게** 줄 수 있어서 ODE 표현이 부분 가능:
+```c
+// declaration
+clock x_pos, y_pos;       // 위치 (clock으로 표현)
+
+// Threat location Flight (invariant ...) 에:
+// rate 명시 (위치별 dynamics)
+//   x_pos' = SPD_X[id]        // dx/dt
+//   y_pos' = SPD_Y[id]        // dy/dt
+```
+시간이 흐르면 `x_pos`/`y_pos`가 자동으로 적분됨. 거리 비교는 여전히 sqrt 못 쓰지만
+`x_pos*x_pos + y_pos*y_pos <= R*R` 식으로 우회 가능.
+
+다만 **state space는 더 폭발**. SMC는 정형 증명이 아닌 통계 추정이므로 state
+space에 덜 민감하지만, 단순 통계 시뮬레이션은 빨라도 정확한 정형 보증은 약해짐.
+
+### 17.6 SMC vs 기본 TCTL — 언제 무엇을 쓰나
+
+| 목표 | 도구 |
+|---|---|
+| "절대 안 일어남" 정형 증명 (안전성) | **기본 TCTL** `A[] φ` |
+| "결국 도달" 정형 증명 (라이브니스) | **기본 TCTL** `A<> φ`, `φ --> ψ` |
+| "Pk 0.85에서 격추율 평균" 양적 분석 | **SMC** `E[...; N]` |
+| "10초 안에 누설 확률 < 5%" 위험 분석 | **SMC** `Pr[<=10] (<> leaked>0)` |
+| 시각화: 100 trace plot | **SMC** `simulate 100 [<=T] {...}` |
+| 연속 위치/궤적 직접 표현 | **SMC** hybrid ODE (단, 검증 신뢰도는 통계적) |
+
+### 17.7 권고 — 두 단계 워크플로
+
+1. **기본 TCTL로 invariant 정형 증명** (v3의 19개 쿼리: 안전성, 충돌-자유, 채널
+   한계, 우선순위 등) — "어떤 시나리오에서도 깨지지 않음" 보장.
+2. **SMC로 양적 분석** (격추율, 누설 확률, 자원 소비 분포) — Pk와 시나리오
+   variance를 반영한 실용 통계.
+
+ROS2 시뮬레이터의 통계와 SMC 결과를 교차 비교하면 시뮬레이터 코드의 정합성도
+간접 확인 가능. 예:
+- ROS2: random scenario 100회 → 격추율 85%, 누설 0
+- UPPAAL SMC: `E[<=75; 100] (max: killed)` → 28.4 (n_threats=30 기준 평균)
+- 두 값이 ±오차 안에서 일치하면 정합
+
+이 SMC 쿼리들은 **검증 가능한 자산**이라 v3 모델에 정식으로 추가할 만합니다.
+원하시면 위 (1)~(4) + Pk 가중치 분기를 `dwta_model_v3_geometry.xml`에 박아드릴 수
+있습니다.
 
 ---
 
