@@ -1,16 +1,16 @@
 # Graph Report - DWTA-Optimizer  (2026-05-30)
 
 ## Corpus Check
-- 72 files · ~84,245 words
+- 72 files · ~85,285 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 3766 nodes · 5551 edges · 445 communities (433 shown, 12 thin omitted)
+- 3783 nodes · 5569 edges · 445 communities (433 shown, 12 thin omitted)
 - Extraction: 84% EXTRACTED · 16% INFERRED · 0% AMBIGUOUS · INFERRED: 913 edges (avg confidence: 0.51)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `dd64827b`
+- Built from commit: `38da5c02`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -540,8 +540,8 @@ Cohesion: 0.05
 Nodes (51): 1. 대응 관계 (ROS2 ↔ TA), 2. 전역 선언 (shared), 3.1 radar_node (10 Hz, 시간/월드 권위), 3.1 surveillance_radar_node (중앙 감시레이다, 10 Hz, 시간/월드 권위), 3.1b fire_control_radar_node[b] (포대 사격통제레이다, 포대당 1개), 3.2 threat_assessment_node (5 Hz), 3.3 engageability_node (5 Hz, Pk 게이트), 3.4 planning_node (2 Hz, WTA) (+43 more)
 
 ### Community 11 - "Community 11"
-Cohesion: 0.14
-Nodes (17): 0. 한 장 인덱스, 10. ROS2 시뮬레이터 ↔ UPPAAL 정합, 11. ROS2 시뮬레이터 ↔ UPPAAL 정합, 1. 모델 진화 (v1 → v2 → v3), 2. 모델 진화 (v1 → v2 → v3), 4.2 Template-local declarations, 4.3 System declarations, 4. Declaration 상세 — "어디에 무엇이 있고 누가 쓰나" (+9 more)
+Cohesion: 0.11
+Nodes (23): 0. 한 장 인덱스, 10. ROS2 시뮬레이터 ↔ UPPAAL 정합, 11. ROS2 시뮬레이터 ↔ UPPAAL 정합, 13개 인스턴스 (System declarations), 1. 모델 진화 (v1 → v2 → v3), 2. v3 모델 전체 구성 (한 장 view), 2. 모델 진화 (v1 → v2 → v3), 3.2 Template-local declarations (+15 more)
 
 ### Community 12 - "Community 12"
 Cohesion: 0.10
@@ -616,8 +616,8 @@ Cohesion: 0.20
 Nodes (19): LauncherNode, 발사대 노드 (Launcher) — 교전계획 실행(물리 발사 + 탄약).  교전계획(/engagement_plan)을 받아 요격탄을 발사한다, EngagementPlan, Interceptor, InterceptorStatus, LaunchEvent, RadarStatus, Message types for the DWTA ROS2 pipeline.  For the PoC these are plain datacla (+11 more)
 
 ### Community 35 - "Community 35"
-Cohesion: 0.08
-Nodes (30): 12. 포대별 동시 교전 수 (6대 등), 13개 인스턴스 (System declarations), 1.3 UPPAAL XML 명세 형식, 1. 모델 한 장 요약, 2. Broadcast 채널 — "누가 누구에게 무엇을", 2. v3 모델 전체 구성 (한 장 view), 3.2 Template-local declarations, 3.3 System declarations (+22 more)
+Cohesion: 0.14
+Nodes (14): 12. 포대별 동시 교전 수 (6대 등), 2. Broadcast 채널 — "누가 누구에게 무엇을", 4. 사용자가 본 스크린샷 해석, 5. MSC 읽는 법, 7. 시나리오 → UPPAAL 정합, 8. PoC 활용 레시피, 9. 참고: 이 모델이 다루지 않는 것, (A) GUI로 한 step씩 따라가기 (가장 직관적) (+6 more)
 
 ### Community 36 - "Community 36"
 Cohesion: 0.09
@@ -736,8 +736,8 @@ Cohesion: 0.40
 Nodes (5): code:python (k_bounds : dict[tuple[int,int], tuple[float, float]]), code:python (with ThreadPoolExecutor(max_workers=4) as ex:), code:python (active_pairs    : list[tuple[int, int]]), code:block9 (For each (i, j) in active_pairs (independently):), Phase 2B — OBBT: K-factor Bound Tightening  ④
 
 ### Community 70 - "Community 70"
-Cohesion: 0.20
-Nodes (10): 1.1 UPPAAL이 무엇인가, 1.2 Timed Automaton — 이론 핵심, 1.4 TCTL 쿼리 기초 — 무엇을 검증하나, 1.5 UPPAAL이 못 다루는 것 (한계), 1. UPPAAL과 Timed Automata 기초, 구성 요소 6가지, 네트워크(NTA, Network of Timed Automata), 시간이 흐르는 두 가지 방식 (+2 more)
+Cohesion: 0.12
+Nodes (17): 1.1 UPPAAL이 무엇인가, 1.2 Timed Automaton — 이론 핵심, 1.3 UPPAAL XML 명세 형식, 1.4 TCTL 쿼리 기초 — 무엇을 검증하나, 1.5 UPPAAL이 못 다루는 것 (한계), 1. UPPAAL과 Timed Automata 기초, 1. 모델 한 장 요약, 3. 한 위협의 전체 lifecycle (시간순) (+9 more)
 
 ### Community 71 - "Community 71"
 Cohesion: 0.50
@@ -772,8 +772,8 @@ Cohesion: 0.20
 Nodes (9): algorithm, detailed_records, elapsed_time_sec, memory_usage, avg_mb, peak_mb, performance_grade, scenario (+1 more)
 
 ### Community 81 - "Community 81"
-Cohesion: 0.22
-Nodes (9): 11. 궤적·고도 기반 교전대 (사거리 + 고도 동시 게이트), 1단계 — ROS2 시나리오에서 윈도우 사전 계산, 2단계 — UPPAAL declaration에 const 배열로 주입, 3단계 — Radar 템플릿에서 윈도우 신호로 broadcast, 5.5.2 invariant + guard 결합의 의미, 6. 한 위협의 lifecycle (v3 기준 단계별), code:c (invariant: cp <= PERIOD_P    // (a) cp는 PERIOD_P 초과 못 함), code:c (int best_u_b(int b) {       // 포대 b의 GreedyWTA 우선순위 (작은 id가 ) (+1 more)
+Cohesion: 0.12
+Nodes (17): 18.1 Process Array — `system` 한 줄로 인스턴스 자동 생성, 18.2 ROS2 헬퍼로 system declarations도 자동 dump, 18.3 Location 편집 다이얼로그의 모든 옵션, 18.4 v3를 free parameter 패턴으로 옮길까?, 18. UPPAAL 모델 편의 기능 — 인스턴스 자동화, Test Code, Exponential rate, code:c (SU0_0 = Slot_U(0); SU0_1 = Slot_U(0); SU1_0 = Slot_U(1);), code:c (// (1) 글로벌 declaration), code:c (const int NCH_U = 10;   // 6 + 4) (+9 more)
 
 ### Community 82 - "Community 82"
 Cohesion: 0.22
@@ -1164,8 +1164,8 @@ Cohesion: 0.22
 Nodes (9): solver_performance, avg_time_sec, max_time_sec, min_time_sec, timeout_count, timeout_rate_pct, total_optimizations, warmstart_count (+1 more)
 
 ### Community 184 - "Community 184"
-Cohesion: 0.09
-Nodes (24): 11. PoC 활용 — 3가지 길, 12. PoC 활용 — 3가지 길, 4단계 — Threat의 engU/engL을 포대 단위로 토글, 5.1 Radar(const int id) — 위협 타이밍의 권위자, 5.2 Threat(const int id) — 신호 소비자, 5.3 Slot_U(const int batt_id) — 상층 채널 슬롯, 5.4 Slot_L(const int batt_id) — 하층 채널 슬롯, 5.5.1 `plan!`이 정확히 무엇을 하나 (+16 more)
+Cohesion: 0.07
+Nodes (33): 11. PoC 활용 — 3가지 길, 11. 궤적·고도 기반 교전대 (사거리 + 고도 동시 게이트), 12. PoC 활용 — 3가지 길, 1단계 — ROS2 시나리오에서 윈도우 사전 계산, 2단계 — UPPAAL declaration에 const 배열로 주입, 3단계 — Radar 템플릿에서 윈도우 신호로 broadcast, 4단계 — Threat의 engU/engL을 포대 단위로 토글, 5.1 Radar(const int id) — 위협 타이밍의 권위자 (+25 more)
 
 ### Community 185 - "Community 185"
 Cohesion: 0.40
@@ -2192,8 +2192,8 @@ Cohesion: 0.50
 Nodes (4): scalability, threats_per_second, time_per_optimization, time_per_threat
 
 ### Community 442 - "Community 442"
-Cohesion: 0.20
-Nodes (17): 10. `clean_slate_optimizer.py`는 UPPAAL과 어떻게 연결되나?, 3.1 글로벌 declaration의 모든 항목 (v3), 4.1 글로벌 declaration의 모든 항목 (v3), (a) 시스템 상수 — 컴파일 타임 고정값, (b) 시나리오 윈도우 — 위협별 / (위협, 포대)별 timing, (c) 공유 상태 — 인스턴스 간 동기화 매개체, code:c (const int MAXT     = 3;     // 위협 수 (모든 배열의 첫 차원)), code:c (const int APPEAR[MAXT]        = { 0,  3,  6};       // 위협 탐지) (+9 more)
+Cohesion: 0.16
+Nodes (20): 10. `clean_slate_optimizer.py`는 UPPAAL과 어떻게 연결되나?, 3.1 글로벌 declaration의 모든 항목 (v3), 4.1 글로벌 declaration의 모든 항목 (v3), 4.2 Template-local declarations, 4.3 System declarations, 4. Declaration 상세 — "어디에 무엇이 있고 누가 쓰나", (a) 시스템 상수 — 컴파일 타임 고정값, (b) 시나리오 윈도우 — 위협별 / (위협, 포대)별 timing (+12 more)
 
 ### Community 443 - "Community 443"
 Cohesion: 0.18
@@ -2220,19 +2220,19 @@ Cohesion: 0.16
 Nodes (14): 14.1 헬퍼 함수 (`scenario.py`), 14.2 v3 XML에 주입, 14.3 일관성 점검, 14. 시나리오 → 모델 자동 dump 워크플로, 15.1 헬퍼 함수 (`scenario.py`), 15.2 v3 XML에 주입, 15.3 일관성 점검, 15. 시나리오 → 모델 자동 dump 워크플로 (+6 more)
 
 ## Knowledge Gaps
-- **2056 isolated node(s):** `bool`, `str`, `bool`, `str`, `scenario` (+2051 more)
+- **2063 isolated node(s):** `bool`, `str`, `bool`, `str`, `scenario` (+2058 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **12 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
+- **Why does `MIPConfig` connect `Community 0` to `Community 1`, `Community 66`, `Community 9`, `Community 53`, `Community 27`, `Community 28`, `Community 29`, `Community 30`?**
+  _High betweenness centrality (0.010) - this node is a cross-community bridge._
 - **Why does `CleanSlateOptimizer` connect `Community 0` to `Community 69`, `Community 7`, `Community 9`, `Community 46`, `Community 53`?**
-  _High betweenness centrality (0.011) - this node is a cross-community bridge._
+  _High betweenness centrality (0.010) - this node is a cross-community bridge._
 - **Why does `DWTAMainWindow` connect `Community 9` to `Community 0`, `Community 8`, `Community 14`, `Community 16`, `Community 53`?**
   _High betweenness centrality (0.010) - this node is a cross-community bridge._
-- **Why does `MIPConfig` connect `Community 0` to `Community 1`, `Community 66`, `Community 9`, `Community 53`, `Community 27`, `Community 28`, `Community 29`, `Community 30`?**
-  _High betweenness centrality (0.009) - this node is a cross-community bridge._
 - **Are the 53 inferred relationships involving `Battery` (e.g. with `EngageabilityNode` and `Battery`) actually correct?**
   _`Battery` has 53 INFERRED edges - model-reasoned connections that need verification._
 - **Are the 14 inferred relationships involving `DWTAMainWindow` (e.g. with `TacticalMapWidget` and `MIPConfig`) actually correct?**

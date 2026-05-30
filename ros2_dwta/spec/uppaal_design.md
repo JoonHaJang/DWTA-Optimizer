@@ -1316,6 +1316,178 @@ ROS2 시뮬레이터의 통계와 SMC 결과를 교차 비교하면 시뮬레이
 
 ---
 
+## 18. UPPAAL 모델 편의 기능 — 인스턴스 자동화, Test Code, Exponential rate
+
+§3의 System declarations에서 `SU0_0, SU0_1, SU1_0, SL0_0, SL0_1, SL1_0`을 하나씩
+손으로 적어둔 게 어색했죠. UPPAAL은 **free parameter 자동 enumerate**를 지원해서
+포대 수·채널 수만 바꾸면 인스턴스를 자동 생성할 수 있습니다. 그리고 Location
+다이얼로그의 모든 옵션도 의미가 있습니다.
+
+### 18.1 Process Array — `system` 한 줄로 인스턴스 자동 생성
+
+**핵심 원리**: 템플릿 파라미터를 **bounded int 타입**으로 선언하고 `system` 절에
+템플릿 이름만 적으면, UPPAAL이 그 도메인의 **모든 조합에 대해 프로세스를 자동 생성**.
+
+#### 방법 A — 현재 v3 (명시적 list)
+```c
+SU0_0 = Slot_U(0); SU0_1 = Slot_U(0); SU1_0 = Slot_U(1);
+SL0_0 = Slot_L(0); SL0_1 = Slot_L(0); SL1_0 = Slot_L(1);
+system R0, R1, R2, T0, T1, T2,
+       SU0_0, SU0_1, SU1_0, SL0_0, SL0_1, SL1_0, P;
+```
+포대/채널이 늘면 손으로 추가해야 함.
+
+#### 방법 B — Free parameter (자동 enumerate)
+템플릿 파라미터 타입에 도메인을 명시하면 됩니다.
+
+```c
+// (1) 글로벌 declaration
+const int MAXT     = 3;
+const int NCH_U    = 3;             // 상층 채널 총 수 (CH_PER_U 합)
+const int NCH_L    = 3;
+const int batt_of_u[NCH_U] = {0, 0, 1};   // 슬롯 ch_id가 어느 포대인가
+const int batt_of_l[NCH_L] = {0, 0, 1};
+
+// (2) Threat / Radar 도 같은 패턴 — id를 bounded int로 선언:
+//     template <Radar> parameter: const int[0, MAXT-1] id
+
+// (3) Slot_U 템플릿 파라미터를 bounded int 채널 id로:
+template <Slot_U>
+  parameter: const int[0, NCH_U-1] ch_id;
+  declaration: int batt_id = batt_of_u[ch_id];  // 내부에서 매핑
+  // (나머지 location/transition은 batt_id로 그대로 사용)
+
+template <Slot_L>
+  parameter: const int[0, NCH_L-1] ch_id;
+  declaration: int batt_id = batt_of_l[ch_id];
+
+// (4) System declarations — 한 줄로 끝
+system Radar, Threat, Slot_U, Slot_L, Planner;
+```
+
+UPPAAL 동작:
+- `Radar` 파라미터 `id : int[0, MAXT-1]` → 자동으로 `Radar(0), Radar(1), Radar(2)`
+- `Slot_U` 파라미터 `ch_id : int[0, NCH_U-1]` → 자동으로 `Slot_U(0), Slot_U(1),
+  Slot_U(2)` 생성. 각 인스턴스 안에서 `batt_id = batt_of_u[ch_id]`로 포대 결정
+
+#### 시나리오 변경 흐름 (Free parameter 적용 후)
+
+"L1=6채널, L2=4채널, M1=5채널, M2=3채널"로 가고 싶을 때:
+
+```c
+const int NCH_U = 10;   // 6 + 4
+const int NCH_L = 8;    // 5 + 3
+const int batt_of_u[NCH_U] = {0,0,0,0,0,0, 1,1,1,1};   // 6개 + 4개
+const int batt_of_l[NCH_L] = {0,0,0,0,0,   1,1,1};      // 5개 + 3개
+const int CH_PER_U[NB_U]   = {6, 4};
+const int CH_PER_L[NB_L]   = {5, 3};
+const int AMMO0_U[NB_U]    = {12, 8};
+const int AMMO0_L[NB_L]    = {15, 9};
+
+// system은 변경 없음 — 그대로 한 줄
+system Radar, Threat, Slot_U, Slot_L, Planner;
+```
+→ 18개 슬롯 인스턴스 자동 생성. v3를 free parameter 패턴으로 옮기면 시나리오
+변경이 const 4줄로 끝남.
+
+#### Trade-off
+
+| 항목 | 명시적 list (v3 현재) | Free parameter |
+|---|---|---|
+| 인스턴스 추가 시 | 손으로 system 절 수정 | const 배열만 수정 |
+| MSC 가독성 | 인스턴스 이름이 `SU0_0` 명확 | UPPAAL이 `Slot_U(0).Idle` 형태로 표시 |
+| 디버깅 (특정 인스턴스 trace 추적) | 이름으로 바로 식별 | 인덱스로 식별 |
+| 모델 컴파일 시간 | 동일 | 동일 (인스턴스 수가 동일하면) |
+| 가독성 (다른 사람이 읽을 때) | 인스턴스화가 한눈에 | "어디서 인스턴스 정해지나" 한 번 더 찾아야 |
+
+### 18.2 ROS2 헬퍼로 system declarations도 자동 dump
+
+§15의 `dump_uppaal_windows`에 system 절 + batt_of 배열도 함께 출력하면 시나리오
+한 줄로 v3 모델 update 완료. 다음 patch를 `scenario.py`에 추가하면 됩니다 (직접
+편집해 드릴 수도).
+
+```python
+def dump_uppaal_system(NB_U, CH_PER_U, NB_L, CH_PER_L):
+    """system declarations 텍스트 생성."""
+    batt_u = []
+    for b in range(NB_U):
+        batt_u.extend([b] * CH_PER_U[b])
+    batt_l = []
+    for b in range(NB_L):
+        batt_l.extend([b] * CH_PER_L[b])
+    lines = [
+        f"const int NCH_U = {sum(CH_PER_U)};",
+        f"const int NCH_L = {sum(CH_PER_L)};",
+        f"const int batt_of_u[NCH_U] = {{ {', '.join(map(str, batt_u))} }};",
+        f"const int batt_of_l[NCH_L] = {{ {', '.join(map(str, batt_l))} }};",
+        "// (template Slot_U parameter: const int[0,NCH_U-1] ch_id;",
+        "//  declaration: int batt_id = batt_of_u[ch_id];)",
+        "system Radar, Threat, Slot_U, Slot_L, Planner;",
+    ]
+    return "\n".join(lines)
+```
+
+### 18.3 Location 편집 다이얼로그의 모든 옵션
+
+사용자가 본 다이얼로그의 모든 항목 의미:
+
+| 항목 | 설명 | 우리 모델 사용 |
+|---|---|---|
+| **Name** | location 이름. 쿼리에서 `R0.Scan` 같이 참조 | 모든 location |
+| **Invariant** | 시간 제약. 위반 시 위치 머무는 시간 강제 종료 | `t <= IMPACT_AT[id]` 등 |
+| **Rate of Exponential** | **SMC 전용**. invariant 없는 location 머무는 시간이 지수분포 따를 때 그 rate λ. `Pr(t후 떠남) = 1 - e^(-λt)` | 안 씀 (결정적 invariant 사용) |
+| **Initial** | 초기 location 여부 | Radar의 `Pre`, Threat의 `Inbound` 등 |
+| **Urgent** | 시간 진행 금지 (즉시 다음 step) | 안 씀 |
+| **Committed** | urgent + 다른 자동기보다 우선 처리 | `Ready` 위치 |
+| **Comments 탭** | 주석. 모델 의미만 적음, 검증/시뮬레이션 무관 | 미사용 (XML주석으로 대체) |
+| **Test Code 탭 — On enter** | location 진입 시 실행 코드. UPPAAL **Yggdrasil**(test case 생성 도구)이 사용 | 일반 검증엔 무시 |
+| **Test Code 탭 — On exit** | location 이탈 시 실행 코드. Yggdrasil용 | 일반 검증엔 무시 |
+
+#### Rate of Exponential — 언제 쓰나
+
+invariant 없는 location에 머무는 시간을 **확률적**으로 모델링할 때:
+```
+rate = 2   →  평균 0.5초 머무름 (1/2)
+rate = 1:5 →  rate r/q = 0.2 → 평균 5초 머무름
+rate = 0   →  결정적 0초 (사실상 즉시 떠남)
+```
+
+우리 v3에 적용한다면:
+- Slot_U.Flying의 invariant `f <= FLYOUT_U` 빼고 rate `1:5` 두면 → 비행시간이
+  평균 5초 ± 분산의 지수분포가 됨. 실제 요격탄 비행시간이 발사 조건에 따라
+  변동한다는 가정을 표현.
+- 다만 invariant가 있어도 rate를 함께 두면 "invariant 한계 안에서 지수분포".
+- 결정적 검증(`A[]`, `E<>`)에선 rate가 무시됨 → 비결정. SMC 쿼리에서만 효과.
+
+#### Test Code — 언제 쓰나
+
+UPPAAL **Yggdrasil**은 모델로부터 자동으로 **테스트 케이스를 생성**하는 도구.
+On enter / On exit에 적은 코드가 생성된 테스트의 일부가 됨. 예:
+```c
+// On enter (Threat.Killed)
+printf("Threat %d killed at time %f\n", id, t);
+log_test_event("KILL", id);
+```
+이걸로 모델 → 외부 시스템(시뮬레이터·실제 ECU 등) 자동 테스트 가능. 우리 일반
+검증/SMC 워크플로엔 무관. 비워두면 됨.
+
+### 18.4 v3를 free parameter 패턴으로 옮길까?
+
+장점: 시나리오 변경이 const 4줄로 끝남. 사용자 헬퍼 자동화에 적합.
+단점: MSC에서 인스턴스가 `Slot_U(0)`, `Slot_U(1)`로 표시 → 어느 게 어느 포대의
+몇 번째 채널인지 한 번 더 찾아야.
+
+추천 워크플로:
+1. **소규모 데모(13 인스턴스 이하, 현재 v3)** — 명시적 list 유지, 가독성 우위
+2. **대규모 시나리오(20+ 인스턴스)** — free parameter로 자동화, `scenario.py`
+   헬퍼와 통합
+
+원하시면 v3를 free parameter 버전으로 (`dwta_model_v3_geometry_auto.xml` 같은
+이름으로) 옮겨드리고, `scenario.py`에 `dump_uppaal_system()` 헬퍼도 추가하겠
+습니다. 본 파일은 가독성 우위로 그대로 두고 자동 버전을 별도 파일로 추가.
+
+---
+
 ## 부록 A. v3 모델 파일 구조 한눈에
 
 ```

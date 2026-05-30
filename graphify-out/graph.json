@@ -27450,7 +27450,7 @@
       "source_file": "ros2_dwta/spec/uppaal_design.md",
       "source_location": "L118",
       "id": "spec_uppaal_design_1_3_uppaal_xml_\uba85\uc138_\ud615\uc2dd",
-      "community": 35,
+      "community": 70,
       "norm_label": "1.3 uppaal xml \u1106\u1167\u11bc\u1109\u1166 \u1112\u1167\u11bc\u1109\u1175\u11a8"
     },
     {
@@ -27459,7 +27459,7 @@
       "source_file": "ros2_dwta/spec/uppaal_design.md",
       "source_location": "L122",
       "id": "spec_uppaal_design_codeblock_1",
-      "community": 35,
+      "community": 70,
       "norm_label": "code:xml (<?xml version=\"1.0\" encoding=\"utf-8\"?>)"
     },
     {
@@ -27468,7 +27468,7 @@
       "source_file": "ros2_dwta/spec/uppaal_design.md",
       "source_location": "L172",
       "id": "spec_uppaal_design_declaration_4_\uacf3_uppaal_gui_\uc88c\uce21_\ud2b8\ub9ac",
-      "community": 35,
+      "community": 70,
       "norm_label": "declaration 4 \u1100\u1169\u11ba (uppaal gui \u110c\u116a\u110e\u1173\u11a8 \u1110\u1173\u1105\u1175)"
     },
     {
@@ -27477,7 +27477,7 @@
       "source_file": "ros2_dwta/spec/uppaal_design.md",
       "source_location": "L182",
       "id": "spec_uppaal_design_codeblock_2",
-      "community": 35,
+      "community": 70,
       "norm_label": "code:block2 (project)"
     },
     {
@@ -27486,7 +27486,7 @@
       "source_file": "ros2_dwta/spec/uppaal_design.md",
       "source_location": "L192",
       "id": "spec_uppaal_design_label_\uc885\ub958_transition_location_\uc606\uc5d0_\ubd99\ub294_\ud14d\uc2a4\ud2b8",
-      "community": 35,
+      "community": 70,
       "norm_label": "label \u110c\u1169\u11bc\u1105\u1172 (transition / location \u110b\u1167\u11c1\u110b\u1166 \u1107\u116e\u11c0\u1102\u1173\u11ab \u1110\u1166\u11a8\u1109\u1173\u1110\u1173)"
     },
     {
@@ -27549,7 +27549,7 @@
       "source_file": "ros2_dwta/spec/uppaal_design.md",
       "source_location": "L285",
       "id": "spec_uppaal_design_3_v3_\ubaa8\ub378_\uc804\uccb4_\uad6c\uc131_\ud55c_\uc7a5_view",
-      "community": 35,
+      "community": 11,
       "norm_label": "3. v3 \u1106\u1169\u1103\u1166\u11af \u110c\u1165\u11ab\u110e\u1166 \u1100\u116e\u1109\u1165\u11bc (\u1112\u1161\u11ab \u110c\u1161\u11bc view)"
     },
     {
@@ -27558,7 +27558,7 @@
       "source_file": "ros2_dwta/spec/uppaal_design.md",
       "source_location": "L287",
       "id": "spec_uppaal_design_codeblock_3",
-      "community": 35,
+      "community": 11,
       "norm_label": "code:block3 (\u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 \u1109\u1175\u1100\u1161\u11ab \u1100\u116f\u11ab\u110b\u1171 \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510    \u250c\u2500\u2500\u2500\u2500\u2500\u2500 \u1100\u1167\u11af\u1109\u1175\u11b7 \u2500\u2500\u2500\u2500)"
     },
     {
@@ -27567,7 +27567,7 @@
       "source_file": "ros2_dwta/spec/uppaal_design.md",
       "source_location": "L305",
       "id": "spec_uppaal_design_13\uac1c_\uc778\uc2a4\ud134\uc2a4_system_declarations",
-      "community": 35,
+      "community": 11,
       "norm_label": "13\u1100\u1162 \u110b\u1175\u11ab\u1109\u1173\u1110\u1165\u11ab\u1109\u1173 (system declarations)"
     },
     {
@@ -27576,7 +27576,7 @@
       "source_file": "ros2_dwta/spec/uppaal_design.md",
       "source_location": "L307",
       "id": "spec_uppaal_design_codeblock_4",
-      "community": 35,
+      "community": 11,
       "norm_label": "code:c (// \u110b\u1171\u1112\u1167\u11b8\u1107\u1167\u11af radar + threat (maxt=3))"
     },
     {
@@ -27585,7 +27585,7 @@
       "source_file": "ros2_dwta/spec/uppaal_design.md",
       "source_location": "L331",
       "id": "spec_uppaal_design_5\uac1c_\ud15c\ud50c\ub9bf_\uc694\uc57d",
-      "community": 35,
+      "community": 11,
       "norm_label": "5\u1100\u1162 \u1110\u1166\u11b7\u1111\u1173\u11af\u1105\u1175\u11ba \u110b\u116d\u110b\u1163\u11a8"
     },
     {
@@ -27594,7 +27594,7 @@
       "source_file": "ros2_dwta/spec/uppaal_design.md",
       "source_location": "L343",
       "id": "spec_uppaal_design_4_declaration_\uc0c1\uc138_\uc5b4\ub514\uc5d0_\ubb34\uc5c7\uc774_\uc788\uace0_\ub204\uac00_\uc4f0\ub098",
-      "community": 11,
+      "community": 442,
       "norm_label": "4. declaration \u1109\u1161\u11bc\u1109\u1166 \u2014 \"\u110b\u1165\u1103\u1175\u110b\u1166 \u1106\u116e\u110b\u1165\u11ba\u110b\u1175 \u110b\u1175\u11bb\u1100\u1169 \u1102\u116e\u1100\u1161 \u110a\u1173\u1102\u1161\""
     },
     {
@@ -27693,7 +27693,7 @@
       "source_file": "ros2_dwta/spec/uppaal_design.md",
       "source_location": "L426",
       "id": "spec_uppaal_design_codeblock_9",
-      "community": 81,
+      "community": 184,
       "norm_label": "code:c (int best_u_b(int b) {       // \u1111\u1169\u1103\u1162 b\u110b\u1174 greedywta \u110b\u116e\u1109\u1165\u11ab\u1109\u116e\u11ab\u110b\u1171 (\u110c\u1161\u11a8\u110b\u1173\u11ab id\u1100\u1161 )"
     },
     {
@@ -27702,7 +27702,7 @@
       "source_file": "ros2_dwta/spec/uppaal_design.md",
       "source_location": "L448",
       "id": "spec_uppaal_design_4_2_template_local_declarations",
-      "community": 11,
+      "community": 442,
       "norm_label": "4.2 template-local declarations"
     },
     {
@@ -27711,7 +27711,7 @@
       "source_file": "ros2_dwta/spec/uppaal_design.md",
       "source_location": "L460",
       "id": "spec_uppaal_design_4_3_system_declarations",
-      "community": 11,
+      "community": 442,
       "norm_label": "4.3 system declarations"
     },
     {
@@ -27792,7 +27792,7 @@
       "source_file": "ros2_dwta/spec/uppaal_design.md",
       "source_location": "L603",
       "id": "spec_uppaal_design_5_5_2_invariant_guard_\uacb0\ud569\uc758_\uc758\ubbf8",
-      "community": 81,
+      "community": 184,
       "norm_label": "5.5.2 invariant + guard \u1100\u1167\u11af\u1112\u1161\u11b8\u110b\u1174 \u110b\u1174\u1106\u1175"
     },
     {
@@ -27801,7 +27801,7 @@
       "source_file": "ros2_dwta/spec/uppaal_design.md",
       "source_location": "L606",
       "id": "spec_uppaal_design_codeblock_11",
-      "community": 81,
+      "community": 184,
       "norm_label": "code:c (invariant: cp <= period_p    // (a) cp\u1102\u1173\u11ab period_p \u110e\u1169\u1100\u116a \u1106\u1169\u11ba \u1112\u1161\u11b7)"
     },
     {
@@ -28642,28 +28642,181 @@
       "norm_label": "17.7 \u1100\u116f\u11ab\u1100\u1169 \u2014 \u1103\u116e \u1103\u1161\u11ab\u1100\u1168 \u110b\u116f\u110f\u1173\u1111\u1173\u11af\u1105\u1169"
     },
     {
-      "label": "\ubd80\ub85d A. v3 \ubaa8\ub378 \ud30c\uc77c \uad6c\uc870 \ud55c\ub208\uc5d0",
+      "label": "18. UPPAAL \ubaa8\ub378 \ud3b8\uc758 \uae30\ub2a5 \u2014 \uc778\uc2a4\ud134\uc2a4 \uc790\ub3d9\ud654, Test Code, Exponential rate",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
       "source_location": "L1319",
+      "id": "spec_uppaal_design_18_uppaal_\ubaa8\ub378_\ud3b8\uc758_\uae30\ub2a5_\uc778\uc2a4\ud134\uc2a4_\uc790\ub3d9\ud654_test_code_exponential_rate",
+      "community": 81,
+      "norm_label": "18. uppaal \u1106\u1169\u1103\u1166\u11af \u1111\u1167\u11ab\u110b\u1174 \u1100\u1175\u1102\u1173\u11bc \u2014 \u110b\u1175\u11ab\u1109\u1173\u1110\u1165\u11ab\u1109\u1173 \u110c\u1161\u1103\u1169\u11bc\u1112\u116a, test code, exponential rate"
+    },
+    {
+      "label": "18.1 Process Array \u2014 `system` \ud55c \uc904\ub85c \uc778\uc2a4\ud134\uc2a4 \uc790\ub3d9 \uc0dd\uc131",
+      "file_type": "document",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L1326",
+      "id": "spec_uppaal_design_18_1_process_array_system_\ud55c_\uc904\ub85c_\uc778\uc2a4\ud134\uc2a4_\uc790\ub3d9_\uc0dd\uc131",
+      "community": 81,
+      "norm_label": "18.1 process array \u2014 `system` \u1112\u1161\u11ab \u110c\u116e\u11af\u1105\u1169 \u110b\u1175\u11ab\u1109\u1173\u1110\u1165\u11ab\u1109\u1173 \u110c\u1161\u1103\u1169\u11bc \u1109\u1162\u11bc\u1109\u1165\u11bc"
+    },
+    {
+      "label": "\ubc29\ubc95 A \u2014 \ud604\uc7ac v3 (\uba85\uc2dc\uc801 list)",
+      "file_type": "document",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L1331",
+      "id": "spec_uppaal_design_\ubc29\ubc95_a_\ud604\uc7ac_v3_\uba85\uc2dc\uc801_list",
+      "community": 81,
+      "norm_label": "\u1107\u1161\u11bc\u1107\u1165\u11b8 a \u2014 \u1112\u1167\u11ab\u110c\u1162 v3 (\u1106\u1167\u11bc\u1109\u1175\u110c\u1165\u11a8 list)"
+    },
+    {
+      "label": "code:c (SU0_0 = Slot_U(0); SU0_1 = Slot_U(0); SU1_0 = Slot_U(1);)",
+      "file_type": "document",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L1332",
+      "id": "spec_uppaal_design_codeblock_28",
+      "community": 81,
+      "norm_label": "code:c (su0_0 = slot_u(0); su0_1 = slot_u(0); su1_0 = slot_u(1);)"
+    },
+    {
+      "label": "\ubc29\ubc95 B \u2014 Free parameter (\uc790\ub3d9 enumerate)",
+      "file_type": "document",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L1340",
+      "id": "spec_uppaal_design_\ubc29\ubc95_b_free_parameter_\uc790\ub3d9_enumerate",
+      "community": 81,
+      "norm_label": "\u1107\u1161\u11bc\u1107\u1165\u11b8 b \u2014 free parameter (\u110c\u1161\u1103\u1169\u11bc enumerate)"
+    },
+    {
+      "label": "code:c (// (1) \uae00\ub85c\ubc8c declaration)",
+      "file_type": "document",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L1343",
+      "id": "spec_uppaal_design_codeblock_29",
+      "community": 81,
+      "norm_label": "code:c (// (1) \u1100\u1173\u11af\u1105\u1169\u1107\u1165\u11af declaration)"
+    },
+    {
+      "label": "\uc2dc\ub098\ub9ac\uc624 \ubcc0\uacbd \ud750\ub984 (Free parameter \uc801\uc6a9 \ud6c4)",
+      "file_type": "document",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L1373",
+      "id": "spec_uppaal_design_\uc2dc\ub098\ub9ac\uc624_\ubcc0\uacbd_\ud750\ub984_free_parameter_\uc801\uc6a9_\ud6c4",
+      "community": 81,
+      "norm_label": "\u1109\u1175\u1102\u1161\u1105\u1175\u110b\u1169 \u1107\u1167\u11ab\u1100\u1167\u11bc \u1112\u1173\u1105\u1173\u11b7 (free parameter \u110c\u1165\u11a8\u110b\u116d\u11bc \u1112\u116e)"
+    },
+    {
+      "label": "code:c (const int NCH_U = 10;   // 6 + 4)",
+      "file_type": "document",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L1377",
+      "id": "spec_uppaal_design_codeblock_30",
+      "community": 81,
+      "norm_label": "code:c (const int nch_u = 10;   // 6 + 4)"
+    },
+    {
+      "label": "Trade-off",
+      "file_type": "document",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L1393",
+      "id": "spec_uppaal_design_trade_off",
+      "community": 81,
+      "norm_label": "trade-off"
+    },
+    {
+      "label": "18.2 ROS2 \ud5ec\ud37c\ub85c system declarations\ub3c4 \uc790\ub3d9 dump",
+      "file_type": "document",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L1403",
+      "id": "spec_uppaal_design_18_2_ros2_\ud5ec\ud37c\ub85c_system_declarations\ub3c4_\uc790\ub3d9_dump",
+      "community": 81,
+      "norm_label": "18.2 ros2 \u1112\u1166\u11af\u1111\u1165\u1105\u1169 system declarations\u1103\u1169 \u110c\u1161\u1103\u1169\u11bc dump"
+    },
+    {
+      "label": "code:python (def dump_uppaal_system(NB_U, CH_PER_U, NB_L, CH_PER_L):)",
+      "file_type": "document",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L1409",
+      "id": "spec_uppaal_design_codeblock_31",
+      "community": 81,
+      "norm_label": "code:python (def dump_uppaal_system(nb_u, ch_per_u, nb_l, ch_per_l):)"
+    },
+    {
+      "label": "18.3 Location \ud3b8\uc9d1 \ub2e4\uc774\uc5bc\ub85c\uadf8\uc758 \ubaa8\ub4e0 \uc635\uc158",
+      "file_type": "document",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L1430",
+      "id": "spec_uppaal_design_18_3_location_\ud3b8\uc9d1_\ub2e4\uc774\uc5bc\ub85c\uadf8\uc758_\ubaa8\ub4e0_\uc635\uc158",
+      "community": 81,
+      "norm_label": "18.3 location \u1111\u1167\u11ab\u110c\u1175\u11b8 \u1103\u1161\u110b\u1175\u110b\u1165\u11af\u1105\u1169\u1100\u1173\u110b\u1174 \u1106\u1169\u1103\u1173\u11ab \u110b\u1169\u11b8\u1109\u1167\u11ab"
+    },
+    {
+      "label": "Rate of Exponential \u2014 \uc5b8\uc81c \uc4f0\ub098",
+      "file_type": "document",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L1446",
+      "id": "spec_uppaal_design_rate_of_exponential_\uc5b8\uc81c_\uc4f0\ub098",
+      "community": 81,
+      "norm_label": "rate of exponential \u2014 \u110b\u1165\u11ab\u110c\u1166 \u110a\u1173\u1102\u1161"
+    },
+    {
+      "label": "code:block32 (rate = 2   \u2192  \ud3c9\uade0 0.5\ucd08 \uba38\ubb34\ub984 (1/2))",
+      "file_type": "document",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L1449",
+      "id": "spec_uppaal_design_codeblock_32",
+      "community": 81,
+      "norm_label": "code:block32 (rate = 2   \u2192  \u1111\u1167\u11bc\u1100\u1172\u11ab 0.5\u110e\u1169 \u1106\u1165\u1106\u116e\u1105\u1173\u11b7 (1/2))"
+    },
+    {
+      "label": "Test Code \u2014 \uc5b8\uc81c \uc4f0\ub098",
+      "file_type": "document",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L1462",
+      "id": "spec_uppaal_design_test_code_\uc5b8\uc81c_\uc4f0\ub098",
+      "community": 81,
+      "norm_label": "test code \u2014 \u110b\u1165\u11ab\u110c\u1166 \u110a\u1173\u1102\u1161"
+    },
+    {
+      "label": "code:c (// On enter (Threat.Killed))",
+      "file_type": "document",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L1466",
+      "id": "spec_uppaal_design_codeblock_33",
+      "community": 81,
+      "norm_label": "code:c (// on enter (threat.killed))"
+    },
+    {
+      "label": "18.4 v3\ub97c free parameter \ud328\ud134\uc73c\ub85c \uc62e\uae38\uae4c?",
+      "file_type": "document",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L1474",
+      "id": "spec_uppaal_design_18_4_v3\ub97c_free_parameter_\ud328\ud134\uc73c\ub85c_\uc62e\uae38\uae4c",
+      "community": 81,
+      "norm_label": "18.4 v3\u1105\u1173\u11af free parameter \u1111\u1162\u1110\u1165\u11ab\u110b\u1173\u1105\u1169 \u110b\u1169\u11b1\u1100\u1175\u11af\u1101\u1161?"
+    },
+    {
+      "label": "\ubd80\ub85d A. v3 \ubaa8\ub378 \ud30c\uc77c \uad6c\uc870 \ud55c\ub208\uc5d0",
+      "file_type": "document",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L1491",
       "id": "spec_uppaal_design_\ubd80\ub85d_a_v3_\ubaa8\ub378_\ud30c\uc77c_\uad6c\uc870_\ud55c\ub208\uc5d0",
       "community": 38,
       "norm_label": "\u1107\u116e\u1105\u1169\u11a8 a. v3 \u1106\u1169\u1103\u1166\u11af \u1111\u1161\u110b\u1175\u11af \u1100\u116e\u110c\u1169 \u1112\u1161\u11ab\u1102\u116e\u11ab\u110b\u1166"
     },
     {
-      "label": "code:block28 (<?xml ?>)",
+      "label": "code:block34 (<?xml ?>)",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L1321",
-      "id": "spec_uppaal_design_codeblock_28",
+      "source_location": "L1493",
+      "id": "spec_uppaal_design_codeblock_34",
       "community": 38,
-      "norm_label": "code:block28 (<?xml ?>)"
+      "norm_label": "code:block34 (<?xml ?>)"
     },
     {
       "label": "\ubd80\ub85d B. v3 \ub514\ubc84\uae45 \uccb4\ud06c\ub9ac\uc2a4\ud2b8",
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
-      "source_location": "L1351",
+      "source_location": "L1523",
       "id": "spec_uppaal_design_\ubd80\ub85d_b_v3_\ub514\ubc84\uae45_\uccb4\ud06c\ub9ac\uc2a4\ud2b8",
       "community": 11,
       "norm_label": "\u1107\u116e\u1105\u1169\u11a8 b. v3 \u1103\u1175\u1107\u1165\u1100\u1175\u11bc \u110e\u1166\u110f\u1173\u1105\u1175\u1109\u1173\u1110\u1173"
@@ -31580,7 +31733,7 @@
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
       "source_location": "L75",
-      "community": 35,
+      "community": 11,
       "norm_label": "2. v3 \u1106\u1169\u1103\u1166\u11af \u110c\u1165\u11ab\u110e\u1166 \u1100\u116e\u1109\u1165\u11bc (\u1112\u1161\u11ab \u110c\u1161\u11bc view)",
       "id": "spec_uppaal_design_2_v3_\ubaa8\ub378_\uc804\uccb4_\uad6c\uc131_\ud55c_\uc7a5_view"
     },
@@ -31589,7 +31742,7 @@
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
       "source_location": "L133",
-      "community": 35,
+      "community": 11,
       "norm_label": "3. declaration \u1109\u1161\u11bc\u1109\u1166 \u2014 \"\u110b\u1165\u1103\u1175\u110b\u1166 \u1106\u116e\u110b\u1165\u11ba\u110b\u1175 \u110b\u1175\u11bb\u1100\u1169 \u1102\u116e\u1100\u1161 \u110a\u1173\u1102\u1161\"",
       "id": "spec_uppaal_design_3_declaration_\uc0c1\uc138_\uc5b4\ub514\uc5d0_\ubb34\uc5c7\uc774_\uc788\uace0_\ub204\uac00_\uc4f0\ub098"
     },
@@ -31607,7 +31760,7 @@
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
       "source_location": "L261",
-      "community": 35,
+      "community": 11,
       "norm_label": "3.2 template-local declarations",
       "id": "spec_uppaal_design_3_2_template_local_declarations"
     },
@@ -31616,7 +31769,7 @@
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
       "source_location": "L273",
-      "community": 35,
+      "community": 11,
       "norm_label": "3.3 system declarations",
       "id": "spec_uppaal_design_3_3_system_declarations"
     },
@@ -31688,7 +31841,7 @@
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
       "source_location": "L442",
-      "community": 81,
+      "community": 184,
       "norm_label": "6. \u1112\u1161\u11ab \u110b\u1171\u1112\u1167\u11b8\u110b\u1174 lifecycle (v3 \u1100\u1175\u110c\u116e\u11ab \u1103\u1161\u11ab\u1100\u1168\u1107\u1167\u11af)",
       "id": "spec_uppaal_design_6_\ud55c_\uc704\ud611\uc758_lifecycle_v3_\uae30\uc900_\ub2e8\uacc4\ubcc4"
     },
@@ -32003,7 +32156,7 @@
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
       "source_location": "L9",
-      "community": 35,
+      "community": 70,
       "norm_label": "1. \u1106\u1169\u1103\u1166\u11af \u1112\u1161\u11ab \u110c\u1161\u11bc \u110b\u116d\u110b\u1163\u11a8",
       "id": "spec_uppaal_design_1_\ubaa8\ub378_\ud55c_\uc7a5_\uc694\uc57d"
     },
@@ -32021,7 +32174,7 @@
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
       "source_location": "L58",
-      "community": 35,
+      "community": 70,
       "norm_label": "3. \u1112\u1161\u11ab \u110b\u1171\u1112\u1167\u11b8\u110b\u1174 \u110c\u1165\u11ab\u110e\u1166 lifecycle (\u1109\u1175\u1100\u1161\u11ab\u1109\u116e\u11ab)",
       "id": "spec_uppaal_design_3_\ud55c_\uc704\ud611\uc758_\uc804\uccb4_lifecycle_\uc2dc\uac04\uc21c"
     },
@@ -32174,7 +32327,7 @@
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
       "source_location": "L313",
-      "community": 81,
+      "community": 184,
       "norm_label": "11. \u1100\u1170\u110c\u1165\u11a8\u00b7\u1100\u1169\u1103\u1169 \u1100\u1175\u1107\u1161\u11ab \u1100\u116d\u110c\u1165\u11ab\u1103\u1162 (\u1109\u1161\u1100\u1165\u1105\u1175 + \u1100\u1169\u1103\u1169 \u1103\u1169\u11bc\u1109\u1175 \u1100\u1166\u110b\u1175\u1110\u1173)",
       "id": "spec_uppaal_design_11_\uada4\uc801_\uace0\ub3c4_\uae30\ubc18_\uad50\uc804\ub300_\uc0ac\uac70\ub9ac_\uace0\ub3c4_\ub3d9\uc2dc_\uac8c\uc774\ud2b8"
     },
@@ -32183,7 +32336,7 @@
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
       "source_location": "L323",
-      "community": 81,
+      "community": 184,
       "norm_label": "1\u1103\u1161\u11ab\u1100\u1168 \u2014 ros2 \u1109\u1175\u1102\u1161\u1105\u1175\u110b\u1169\u110b\u1166\u1109\u1165 \u110b\u1171\u11ab\u1103\u1169\u110b\u116e \u1109\u1161\u110c\u1165\u11ab \u1100\u1168\u1109\u1161\u11ab",
       "id": "spec_uppaal_design_1\ub2e8\uacc4_ros2_\uc2dc\ub098\ub9ac\uc624\uc5d0\uc11c_\uc708\ub3c4\uc6b0_\uc0ac\uc804_\uacc4\uc0b0"
     },
@@ -32192,7 +32345,7 @@
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
       "source_location": "L357",
-      "community": 81,
+      "community": 184,
       "norm_label": "2\u1103\u1161\u11ab\u1100\u1168 \u2014 uppaal declaration\u110b\u1166 const \u1107\u1162\u110b\u1167\u11af\u1105\u1169 \u110c\u116e\u110b\u1175\u11b8",
       "id": "spec_uppaal_design_2\ub2e8\uacc4_uppaal_declaration\uc5d0_const_\ubc30\uc5f4\ub85c_\uc8fc\uc785"
     },
@@ -32201,7 +32354,7 @@
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
       "source_location": "L374",
-      "community": 81,
+      "community": 184,
       "norm_label": "3\u1103\u1161\u11ab\u1100\u1168 \u2014 radar \u1110\u1166\u11b7\u1111\u1173\u11af\u1105\u1175\u11ba\u110b\u1166\u1109\u1165 \u110b\u1171\u11ab\u1103\u1169\u110b\u116e \u1109\u1175\u11ab\u1112\u1169\u1105\u1169 broadcast",
       "id": "spec_uppaal_design_3\ub2e8\uacc4_radar_\ud15c\ud50c\ub9bf\uc5d0\uc11c_\uc708\ub3c4\uc6b0_\uc2e0\ud638\ub85c_broadcast"
     },
@@ -32228,7 +32381,7 @@
       "file_type": "document",
       "source_file": "ros2_dwta/spec/uppaal_design.md",
       "source_location": "L427",
-      "community": 81,
+      "community": 184,
       "norm_label": "v2 \u110b\u116a\u110b\u1174 \u1107\u1175\u1100\u116d",
       "id": "spec_uppaal_design_v2_\uc640\uc758_\ube44\uad50"
     },
@@ -83344,8 +83497,18 @@
       "source_file": "ros2_dwta/spec/uppaal_design.md",
       "source_location": "L1181",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "spec_uppaal_design_uppaal_\ubaa8\ub378_\uc124\uacc4_\uad6c\ud604_\uc0ac\uc6a9_\uc644\uc804_\ubb38\uc11c",
-      "target": "spec_uppaal_design_17_uppaal_smc_\ud1b5\uacc4\uc801_\uac80\uc99d\uacfc_\ud655\ub960_ode_\ud45c\ud604",
+      "target": "spec_uppaal_design_17_uppaal_smc_\ud1b5\uacc4\uc801_\uac80\uc99d\uacfc_\ud655\ub960_ode_\ud45c\ud604"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L1319",
+      "weight": 1.0,
+      "source": "spec_uppaal_design_uppaal_\ubaa8\ub378_\uc124\uacc4_\uad6c\ud604_\uc0ac\uc6a9_\uc644\uc804_\ubb38\uc11c",
+      "target": "spec_uppaal_design_18_uppaal_\ubaa8\ub378_\ud3b8\uc758_\uae30\ub2a5_\uc778\uc2a4\ud134\uc2a4_\uc790\ub3d9\ud654_test_code_exponential_rate",
       "confidence_score": 1.0
     },
     {
@@ -85414,9 +85577,9 @@
       "source_file": "ros2_dwta/spec/uppaal_design.md",
       "source_location": "L1188",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "spec_uppaal_design_17_uppaal_smc_\ud1b5\uacc4\uc801_\uac80\uc99d\uacfc_\ud655\ub960_ode_\ud45c\ud604",
-      "target": "spec_uppaal_design_17_1_smc\uac00_\ubb34\uc5c7\uc744_\ucd94\uac00\ud558\ub098",
-      "confidence_score": 1.0
+      "target": "spec_uppaal_design_17_1_smc\uac00_\ubb34\uc5c7\uc744_\ucd94\uac00\ud558\ub098"
     },
     {
       "relation": "contains",
@@ -85424,9 +85587,9 @@
       "source_file": "ros2_dwta/spec/uppaal_design.md",
       "source_location": "L1203",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "spec_uppaal_design_17_uppaal_smc_\ud1b5\uacc4\uc801_\uac80\uc99d\uacfc_\ud655\ub960_ode_\ud45c\ud604",
-      "target": "spec_uppaal_design_17_2_\uc0ac\uc6a9\uc790\uac00_\ubcf8_\ud30c\ub77c\ubbf8\ud130_\ub2e4\uc774\uc5bc\ub85c\uadf8_\ud574\uc11d",
-      "confidence_score": 1.0
+      "target": "spec_uppaal_design_17_2_\uc0ac\uc6a9\uc790\uac00_\ubcf8_\ud30c\ub77c\ubbf8\ud130_\ub2e4\uc774\uc5bc\ub85c\uadf8_\ud574\uc11d"
     },
     {
       "relation": "contains",
@@ -85434,9 +85597,9 @@
       "source_file": "ros2_dwta/spec/uppaal_design.md",
       "source_location": "L1221",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "spec_uppaal_design_17_uppaal_smc_\ud1b5\uacc4\uc801_\uac80\uc99d\uacfc_\ud655\ub960_ode_\ud45c\ud604",
-      "target": "spec_uppaal_design_17_3_\uc6b0\ub9ac_v3_\ubaa8\ub378\uc5d0_\uc801\uc6a9_\uc0c8_\ucffc\ub9ac_4\uac00\uc9c0",
-      "confidence_score": 1.0
+      "target": "spec_uppaal_design_17_3_\uc6b0\ub9ac_v3_\ubaa8\ub378\uc5d0_\uc801\uc6a9_\uc0c8_\ucffc\ub9ac_4\uac00\uc9c0"
     },
     {
       "relation": "contains",
@@ -85444,9 +85607,9 @@
       "source_file": "ros2_dwta/spec/uppaal_design.md",
       "source_location": "L1242",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "spec_uppaal_design_17_uppaal_smc_\ud1b5\uacc4\uc801_\uac80\uc99d\uacfc_\ud655\ub960_ode_\ud45c\ud604",
-      "target": "spec_uppaal_design_17_4_\uc6b0\ub9ac_\ubaa8\ub378\uc5d0_\ud655\ub960_\uac00\uc911\uce58_\ucd94\uac00\ud558\uae30_pk_\uc9c1\uc811_\ubaa8\ub378\ub9c1",
-      "confidence_score": 1.0
+      "target": "spec_uppaal_design_17_4_\uc6b0\ub9ac_\ubaa8\ub378\uc5d0_\ud655\ub960_\uac00\uc911\uce58_\ucd94\uac00\ud558\uae30_pk_\uc9c1\uc811_\ubaa8\ub378\ub9c1"
     },
     {
       "relation": "contains",
@@ -85454,9 +85617,9 @@
       "source_file": "ros2_dwta/spec/uppaal_design.md",
       "source_location": "L1271",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "spec_uppaal_design_17_uppaal_smc_\ud1b5\uacc4\uc801_\uac80\uc99d\uacfc_\ud655\ub960_ode_\ud45c\ud604",
-      "target": "spec_uppaal_design_17_5_hybrid_ode_\ud45c\ud604_sqrt_\uada4\uc801_\ub3d9\uc801_\uacc4\uc0b0",
-      "confidence_score": 1.0
+      "target": "spec_uppaal_design_17_5_hybrid_ode_\ud45c\ud604_sqrt_\uada4\uc801_\ub3d9\uc801_\uacc4\uc0b0"
     },
     {
       "relation": "contains",
@@ -85464,9 +85627,9 @@
       "source_file": "ros2_dwta/spec/uppaal_design.md",
       "source_location": "L1289",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "spec_uppaal_design_17_uppaal_smc_\ud1b5\uacc4\uc801_\uac80\uc99d\uacfc_\ud655\ub960_ode_\ud45c\ud604",
-      "target": "spec_uppaal_design_17_6_smc_vs_\uae30\ubcf8_tctl_\uc5b8\uc81c_\ubb34\uc5c7\uc744_\uc4f0\ub098",
-      "confidence_score": 1.0
+      "target": "spec_uppaal_design_17_6_smc_vs_\uae30\ubcf8_tctl_\uc5b8\uc81c_\ubb34\uc5c7\uc744_\uc4f0\ub098"
     },
     {
       "relation": "contains",
@@ -85474,9 +85637,9 @@
       "source_file": "ros2_dwta/spec/uppaal_design.md",
       "source_location": "L1300",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "spec_uppaal_design_17_uppaal_smc_\ud1b5\uacc4\uc801_\uac80\uc99d\uacfc_\ud655\ub960_ode_\ud45c\ud604",
-      "target": "spec_uppaal_design_17_7_\uad8c\uace0_\ub450_\ub2e8\uacc4_\uc6cc\ud06c\ud50c\ub85c",
-      "confidence_score": 1.0
+      "target": "spec_uppaal_design_17_7_\uad8c\uace0_\ub450_\ub2e8\uacc4_\uc6cc\ud06c\ud50c\ub85c"
     },
     {
       "relation": "contains",
@@ -85484,9 +85647,9 @@
       "source_file": "ros2_dwta/spec/uppaal_design.md",
       "source_location": "L1225",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "spec_uppaal_design_17_3_\uc6b0\ub9ac_v3_\ubaa8\ub378\uc5d0_\uc801\uc6a9_\uc0c8_\ucffc\ub9ac_4\uac00\uc9c0",
-      "target": "spec_uppaal_design_codeblock_25",
-      "confidence_score": 1.0
+      "target": "spec_uppaal_design_codeblock_25"
     },
     {
       "relation": "contains",
@@ -85504,9 +85667,9 @@
       "source_file": "ros2_dwta/spec/uppaal_design.md",
       "source_location": "L1248",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "spec_uppaal_design_17_4_\uc6b0\ub9ac_\ubaa8\ub378\uc5d0_\ud655\ub960_\uac00\uc911\uce58_\ucd94\uac00\ud558\uae30_pk_\uc9c1\uc811_\ubaa8\ub378\ub9c1",
-      "target": "spec_uppaal_design_codeblock_26",
-      "confidence_score": 1.0
+      "target": "spec_uppaal_design_codeblock_26"
     },
     {
       "relation": "contains",
@@ -85514,8 +85677,98 @@
       "source_file": "ros2_dwta/spec/uppaal_design.md",
       "source_location": "L1274",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "spec_uppaal_design_17_5_hybrid_ode_\ud45c\ud604_sqrt_\uada4\uc801_\ub3d9\uc801_\uacc4\uc0b0",
-      "target": "spec_uppaal_design_codeblock_27",
+      "target": "spec_uppaal_design_codeblock_27"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L1326",
+      "weight": 1.0,
+      "source": "spec_uppaal_design_18_uppaal_\ubaa8\ub378_\ud3b8\uc758_\uae30\ub2a5_\uc778\uc2a4\ud134\uc2a4_\uc790\ub3d9\ud654_test_code_exponential_rate",
+      "target": "spec_uppaal_design_18_1_process_array_system_\ud55c_\uc904\ub85c_\uc778\uc2a4\ud134\uc2a4_\uc790\ub3d9_\uc0dd\uc131",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L1403",
+      "weight": 1.0,
+      "source": "spec_uppaal_design_18_uppaal_\ubaa8\ub378_\ud3b8\uc758_\uae30\ub2a5_\uc778\uc2a4\ud134\uc2a4_\uc790\ub3d9\ud654_test_code_exponential_rate",
+      "target": "spec_uppaal_design_18_2_ros2_\ud5ec\ud37c\ub85c_system_declarations\ub3c4_\uc790\ub3d9_dump",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L1430",
+      "weight": 1.0,
+      "source": "spec_uppaal_design_18_uppaal_\ubaa8\ub378_\ud3b8\uc758_\uae30\ub2a5_\uc778\uc2a4\ud134\uc2a4_\uc790\ub3d9\ud654_test_code_exponential_rate",
+      "target": "spec_uppaal_design_18_3_location_\ud3b8\uc9d1_\ub2e4\uc774\uc5bc\ub85c\uadf8\uc758_\ubaa8\ub4e0_\uc635\uc158",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L1474",
+      "weight": 1.0,
+      "source": "spec_uppaal_design_18_uppaal_\ubaa8\ub378_\ud3b8\uc758_\uae30\ub2a5_\uc778\uc2a4\ud134\uc2a4_\uc790\ub3d9\ud654_test_code_exponential_rate",
+      "target": "spec_uppaal_design_18_4_v3\ub97c_free_parameter_\ud328\ud134\uc73c\ub85c_\uc62e\uae38\uae4c",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L1331",
+      "weight": 1.0,
+      "source": "spec_uppaal_design_18_1_process_array_system_\ud55c_\uc904\ub85c_\uc778\uc2a4\ud134\uc2a4_\uc790\ub3d9_\uc0dd\uc131",
+      "target": "spec_uppaal_design_\ubc29\ubc95_a_\ud604\uc7ac_v3_\uba85\uc2dc\uc801_list",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L1340",
+      "weight": 1.0,
+      "source": "spec_uppaal_design_18_1_process_array_system_\ud55c_\uc904\ub85c_\uc778\uc2a4\ud134\uc2a4_\uc790\ub3d9_\uc0dd\uc131",
+      "target": "spec_uppaal_design_\ubc29\ubc95_b_free_parameter_\uc790\ub3d9_enumerate",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L1373",
+      "weight": 1.0,
+      "source": "spec_uppaal_design_18_1_process_array_system_\ud55c_\uc904\ub85c_\uc778\uc2a4\ud134\uc2a4_\uc790\ub3d9_\uc0dd\uc131",
+      "target": "spec_uppaal_design_\uc2dc\ub098\ub9ac\uc624_\ubcc0\uacbd_\ud750\ub984_free_parameter_\uc801\uc6a9_\ud6c4",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L1393",
+      "weight": 1.0,
+      "source": "spec_uppaal_design_18_1_process_array_system_\ud55c_\uc904\ub85c_\uc778\uc2a4\ud134\uc2a4_\uc790\ub3d9_\uc0dd\uc131",
+      "target": "spec_uppaal_design_trade_off",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L1332",
+      "weight": 1.0,
+      "source": "spec_uppaal_design_\ubc29\ubc95_a_\ud604\uc7ac_v3_\uba85\uc2dc\uc801_list",
+      "target": "spec_uppaal_design_codeblock_28",
       "confidence_score": 1.0
     },
     {
@@ -85524,8 +85777,88 @@
       "source_file": "ros2_dwta/spec/uppaal_design.md",
       "source_location": "L1321",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "spec_uppaal_design_\ubd80\ub85d_a_v3_\ubaa8\ub378_\ud30c\uc77c_\uad6c\uc870_\ud55c\ub208\uc5d0",
-      "target": "spec_uppaal_design_codeblock_28",
+      "target": "spec_uppaal_design_codeblock_28"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L1343",
+      "weight": 1.0,
+      "source": "spec_uppaal_design_\ubc29\ubc95_b_free_parameter_\uc790\ub3d9_enumerate",
+      "target": "spec_uppaal_design_codeblock_29",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L1377",
+      "weight": 1.0,
+      "source": "spec_uppaal_design_\uc2dc\ub098\ub9ac\uc624_\ubcc0\uacbd_\ud750\ub984_free_parameter_\uc801\uc6a9_\ud6c4",
+      "target": "spec_uppaal_design_codeblock_30",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L1409",
+      "weight": 1.0,
+      "source": "spec_uppaal_design_18_2_ros2_\ud5ec\ud37c\ub85c_system_declarations\ub3c4_\uc790\ub3d9_dump",
+      "target": "spec_uppaal_design_codeblock_31",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L1446",
+      "weight": 1.0,
+      "source": "spec_uppaal_design_18_3_location_\ud3b8\uc9d1_\ub2e4\uc774\uc5bc\ub85c\uadf8\uc758_\ubaa8\ub4e0_\uc635\uc158",
+      "target": "spec_uppaal_design_rate_of_exponential_\uc5b8\uc81c_\uc4f0\ub098",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L1462",
+      "weight": 1.0,
+      "source": "spec_uppaal_design_18_3_location_\ud3b8\uc9d1_\ub2e4\uc774\uc5bc\ub85c\uadf8\uc758_\ubaa8\ub4e0_\uc635\uc158",
+      "target": "spec_uppaal_design_test_code_\uc5b8\uc81c_\uc4f0\ub098",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L1449",
+      "weight": 1.0,
+      "source": "spec_uppaal_design_rate_of_exponential_\uc5b8\uc81c_\uc4f0\ub098",
+      "target": "spec_uppaal_design_codeblock_32",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L1466",
+      "weight": 1.0,
+      "source": "spec_uppaal_design_test_code_\uc5b8\uc81c_\uc4f0\ub098",
+      "target": "spec_uppaal_design_codeblock_33",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ros2_dwta/spec/uppaal_design.md",
+      "source_location": "L1493",
+      "weight": 1.0,
+      "source": "spec_uppaal_design_\ubd80\ub85d_a_v3_\ubaa8\ub378_\ud30c\uc77c_\uad6c\uc870_\ud55c\ub208\uc5d0",
+      "target": "spec_uppaal_design_codeblock_34",
       "confidence_score": 1.0
     },
     {
@@ -90966,5 +91299,5 @@
       "source_file": "clean_slate_optimizer.py"
     }
   ],
-  "built_at_commit": "dd64827b6b25271813a98d9bfa1cae106cd7fa5d"
+  "built_at_commit": "38da5c0234c769cc90ad24b775ad3797bc17dfbe"
 }
