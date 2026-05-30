@@ -1,9 +1,9 @@
 # UPPAAL 모델 설계 · 구현 · 사용 — 완전 문서
 
 이 문서 하나로 `ros2_dwta/spec/` 의 모든 UPPAAL 모델을 **읽고, 시뮬레이션하고,
-검증하고, ROS2 시뮬레이터와 정합**시킬 수 있게 작성됐습니다. 모델 진화(v2→v3),
-각 템플릿의 location/transition/guard, declaration의 모든 변수/함수, 19개 검증
-쿼리 의미, MSC 해석, PoC 흐름까지 한 장에 정리합니다.
+검증하고, ROS2 시뮬레이터와 정합**시킬 수 있게 작성됐습니다. UPPAAL/Timed Automata
+기초부터, 모델 진화(v2→v3), 각 템플릿의 location/transition/guard, declaration의
+모든 변수/함수, 19개 검증 쿼리 의미, MSC 해석, PoC 흐름까지 한 장에 정리합니다.
 
 검증 속성의 짧은 카탈로그는 [`timed_automata.md`](./timed_automata.md), 모델
 파일은 다음 세 개입니다.
@@ -20,24 +20,232 @@
 
 | § | 내용 |
 |---|---|
-| 1 | 모델 진화 (v1→v2→v3) |
-| 2 | v3 모델 전체 구성 (템플릿/인스턴스/채널 한눈에) |
-| 3 | Declaration 상세 (글로벌·로컬·시스템·함수) |
-| 4 | 템플릿별 구현 상세 (Radar / Threat / Slot_U / Slot_L / Planner) |
-| 5 | Broadcast 채널 전체 사양 |
-| 6 | 한 위협의 lifecycle (v3 기준 단계별) |
-| 7 | v2 vs v3 차이점 |
-| 8 | 검증 쿼리 19개 상세 |
-| 9 | MSC 읽는 법 + 흔히 헷갈리는 동작 |
-| 10 | ROS2 시뮬레이터 ↔ UPPAAL 매핑 |
-| 11 | PoC 활용 (GUI / verifyta / 헬퍼) |
-| 12 | clean_slate_optimizer 와의 관계 |
-| 13 | 모델 한계 + state space 상한 |
-| 14 | 시나리오 → 모델 자동 dump 워크플로 |
+| 1 | **UPPAAL과 Timed Automata 기초** (도구·이론·XML 명세 형식·TCTL) |
+| 2 | 모델 진화 (v1→v2→v3) |
+| 3 | v3 모델 전체 구성 (템플릿/인스턴스/채널 한눈에) |
+| 4 | Declaration 상세 (글로벌·로컬·시스템·함수) |
+| 5 | 템플릿별 구현 상세 (Radar / Threat / Slot_U / Slot_L / Planner) |
+| 6 | Broadcast 채널 전체 사양 |
+| 7 | 한 위협의 lifecycle (v3 기준 단계별) |
+| 8 | v2 vs v3 차이점 |
+| 9 | 검증 쿼리 19개 상세 |
+| 10 | MSC 읽는 법 + 흔히 헷갈리는 동작 |
+| 11 | ROS2 시뮬레이터 ↔ UPPAAL 매핑 |
+| 12 | PoC 활용 (GUI / verifyta / 헬퍼) |
+| 13 | clean_slate_optimizer 와의 관계 |
+| 14 | 모델 한계 + state space 상한 |
+| 15 | 시나리오 → 모델 자동 dump 워크플로 |
 
 ---
 
-## 1. 모델 진화 (v1 → v2 → v3)
+## 1. UPPAAL과 Timed Automata 기초
+
+이 섹션을 먼저 읽으면 본문(§2~)의 모든 표·다이어그램 기호가 자연스럽게 읽힙니다.
+UPPAAL을 처음 보는 사람을 가정하고 도구·이론·XML 명세 형식·검증식 4가지를 차례로
+설명합니다.
+
+### 1.1 UPPAAL이 무엇인가
+
+**UPPAAL**은 Aalborg(덴마크) + Uppsala(스웨덴) 두 대학이 1995년 이후 공동 개발해
+온 **실시간 시스템 모델 체커**입니다. 통합 도구로 다음 세 가지를 한 GUI에서 제공:
+
+| 역할 | 도구 | 무엇을 |
+|---|---|---|
+| **에디터** | Editor 탭 | 시스템(템플릿들의 네트워크)을 그래프 + 코드로 명세 |
+| **시뮬레이터** | Symbolic / Concrete Simulator 탭 | 한 step씩 실행하며 trace 관찰 (MSC, 변수 패널) |
+| **검증기** | Verifier 탭 | TCTL 쿼리로 안전성·라이브니스·도달성을 형식 증명 |
+
+검증 엔진은 별도 CLI `verifyta.exe`로도 동작 (라이선스 동일).
+
+**모델링 대상**: 분산 임베디드 시스템, 통신 프로토콜, 실시간 컨트롤러, 작업 스케줄러,
+의료 기기, 자동차 ECU, 항공 시스템 등. 학계 + 산업계에서 30년간 검증된 표준 도구.
+
+### 1.2 Timed Automaton — 이론 핵심
+
+**Timed Automaton (TA)**은 유한 오토마타에 **실수값 클럭**(continuous time)을 더한
+형식 모델입니다 (Alur & Dill, 1994). UPPAAL 모델 하나는 여러 TA의 **네트워크**.
+
+#### 구성 요소 6가지
+
+| 요소 | 정의 | UPPAAL XML |
+|---|---|---|
+| **Location (위치)** | 자동기의 상태 노드. 시스템의 현재 위치 | `<location id="...">` |
+| **Edge / Transition (전이)** | location 간 화살표. guard 만족 시 fire | `<transition><source/><target/>` |
+| **Clock (클럭)** | 실수값 변수. 모든 클럭은 동일 속도로 증가 | `clock x;` (declaration) |
+| **Guard (가드)** | edge fire 조건. 클럭 비교·정수 변수 | `<label kind="guard">x >= 5</label>` |
+| **Invariant (불변식)** | location에 머무는 조건. 위반 시 강제 이동 | `<label kind="invariant">x <= 10</label>` |
+| **Assignment (할당)** | edge fire 시 실행. 클럭 리셋 + 변수 갱신 | `<label kind="assignment">x=0, n++</label>` |
+
+#### 시간이 흐르는 두 가지 방식
+
+1. **Delay (시간 진행)**: 어떤 edge도 fire하지 않으면 모든 클럭이 동시에 같은
+   속도로 증가. **invariant가 한계** — `x <= 10`인 location에선 `x`가 10을
+   넘기 전에 어떤 edge가 발화해야 함.
+2. **Action (전이)**: edge가 fire하면 시간 진행 없이 즉시 다음 location으로.
+   같은 step에서 assignment 실행.
+
+#### 특수 location 종류
+
+| 종류 | 의미 | UPPAAL 표기 |
+|---|---|---|
+| 일반 | invariant 한계 안에서 시간 진행 OK | (기본) |
+| **Urgent** | 시간 진행 금지. 즉시 outgoing edge 중 하나 fire | `<urgent/>` 자식 태그 |
+| **Committed** | urgent + 다른 자동기보다 우선. 원자적 처리 | `<committed/>` |
+
+v3 모델에서 Slot_U의 `Ready` 위치가 committed. 의미: plan? 받은 직후 시간 진행
+없이 즉시 발사 또는 skip 결심.
+
+#### 채널(Channel)과 동기화
+
+여러 자동기의 transition을 동기화하는 메커니즘.
+
+| 채널 종류 | semantics | UPPAAL 선언 |
+|---|---|---|
+| **이진 동기 (handshake)** | 정확히 한 sender(`a!`) + 한 receiver(`a?`) 동시 발화 필요. 매칭 없으면 fire 불가 | `chan a;` |
+| **Broadcast** | sender(`a!`) 한 명, receiver(`a?`) **0명 이상** 동시 수신. 매칭 안 돼도 sender 발화 가능 | `broadcast chan a;` |
+| **Urgent** | + 시간 진행 막음. 가능하면 즉시 fire | `urgent chan a;` |
+
+**v3 모델은 모든 채널이 broadcast** — receiver 0명이어도 fire 가능 → deadlock
+방지. (예: 종결된 위협에 Slot이 hit를 발사해도 Threat는 이미 Killed라 수신
+안 하지만 broadcast라 OK.)
+
+#### 네트워크(NTA, Network of Timed Automata)
+
+여러 TA가 채널·전역변수로 통신하며 함께 동작. UPPAAL의 `<nta>` 루트가 이 NTA를
+의미. **모든 클럭은 절대 시각이 같다** (모두 같은 속도로 흐름) — 즉 R0의 `t=6.0`과
+R1의 `t=6.0`은 같은 절대 시각.
+
+### 1.3 UPPAAL XML 명세 형식
+
+UPPAAL 모델 파일은 표준 XML. 핵심 태그 6가지.
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE nta PUBLIC '...flat-1_6.dtd'>
+<nta>                                     <!-- (1) 최상위: Network of Timed Automata -->
+
+  <declaration>                            <!-- (2) 글로벌 declaration -->
+    const int N = 3;
+    int counter;
+    broadcast chan tick;
+    int square(int x) { return x * x; }    <!-- 함수도 정의 가능 (C-like) -->
+  </declaration>
+
+  <template>                               <!-- (3) 자동기 한 개 -->
+    <name>Worker</name>
+    <parameter>const int id</parameter>     <!-- 인스턴스화 시 받는 파라미터 -->
+    <declaration>clock x;</declaration>     <!-- (4) 템플릿 로컬 declaration -->
+
+    <location id="l0" x="0" y="0">          <!-- (5) location -->
+      <name>Idle</name>
+      <label kind="invariant">x <= 10</label>
+    </location>
+    <location id="l1" x="200" y="0">
+      <name>Busy</name>
+      <committed/>                          <!-- committed 위치 표시 -->
+    </location>
+    <init ref="l0"/>                        <!-- 초기 위치 -->
+
+    <transition>                            <!-- (6) transition -->
+      <source ref="l0"/>
+      <target ref="l1"/>
+      <label kind="select">i : int[0,N-1]</label>  <!-- 비결정 선택 -->
+      <label kind="guard">x >= 5</label>
+      <label kind="synchronisation">tick!</label>
+      <label kind="assignment">x=0, counter++</label>
+      <nail x="100" y="50"/>                 <!-- 곡선용 중간 핀 -->
+    </transition>
+  </template>
+
+  <system>                                  <!-- (7) 인스턴스화 -->
+    W0 = Worker(0);
+    W1 = Worker(1);
+    system W0, W1;                          <!-- 시뮬레이션할 인스턴스 -->
+  </system>
+
+  <queries>                                 <!-- (8) 검증식 -->
+    <query><formula>A[] not deadlock</formula><comment>...</comment></query>
+  </queries>
+</nta>
+```
+
+#### Declaration 4 곳 (UPPAAL GUI 좌측 트리)
+
+| 위치 | XML | 가시성 |
+|---|---|---|
+| **글로벌** | `<nta><declaration>` | 모든 인스턴스 공유 |
+| **템플릿 로컬** | `<template><declaration>` | 그 템플릿의 인스턴스마다 자기 사본 |
+| **System** | `<system>` | 인스턴스화 + `system A, B, C;` |
+| **Queries** | `<queries>` | 검증 쿼리 |
+
+GUI에서 좌측 트리:
+```
+Project
+├── Declarations               ← 글로벌
+├── <TemplateName>
+│   ├── Declarations           ← 템플릿 로컬
+│   └── (graph 영역)
+├── ... (다른 템플릿)
+└── System declarations         ← system 절
+```
+
+#### Label 종류 (transition / location 옆에 붙는 텍스트)
+
+| `kind` 값 | 위치에서 | 전이에서 |
+|---|---|---|
+| `invariant` | location 머무는 조건 | — |
+| `guard` | — | 전이 조건 |
+| `synchronisation` | — | `chan!` 또는 `chan?` |
+| `assignment` | — | 전이 시 실행할 코드 |
+| `select` | — | 비결정 변수 선택 `i : int[0, N-1]` |
+| `comments` | — | 메모 |
+
+### 1.4 TCTL 쿼리 기초 — 무엇을 검증하나
+
+UPPAAL 검증식은 **TCTL(Timed Computation Tree Logic)** 의 단순 부분집합.
+
+| 쿼리 형태 | 의미 | 예 |
+|---|---|---|
+| `A[] φ` | **모든** 실행의 **모든 상태**에서 φ 성립 (Safety) | `A[] x >= 0` 클럭 x는 음수 X |
+| `A<> φ` | 모든 실행에서 **언젠가** φ 성립 (Liveness) | `A<> done` 결국 done 도달 |
+| `E[] φ` | **어떤** 실행에서 모든 상태에 φ 성립 (가능성) | 드물게 사용 |
+| `E<> φ` | **어떤** 실행에서 언젠가 φ 성립 (Reachability) | `E<> killed == 5` 5건 격추 가능 |
+| `φ --> ψ` | φ가 참이면 **결국** ψ가 참 (leads-to, 응답성) | `request --> response` |
+
+**φ 안에 쓸 수 있는 것**:
+- 위치 검사: `T0.Killed` (인스턴스 T0가 Killed 위치인가)
+- 변수 비교: `killed == 3`, `ammoU_b[0] > 0`
+- 클럭 비교: `P.cp <= 2`
+- 논리: `&&`, `||`, `not`, `imply`
+- 수량자: `forall (i : int[0,N-1]) ...`, `exists (...) ...`
+
+**예시 (v3 모델)**:
+- `A[] not deadlock` — 어떤 실행에서도 교착 없음
+- `A[] forall (b : int[0,NB_U-1]) inflU_b[b] <= CH_PER_U[b]` — 모든 포대에서
+  비행중 ≤ 채널
+- `E<> killed == MAXT` — 전량 격추 시나리오가 가능
+
+검증 결과는:
+- `Formula is satisfied.` — 증명 완료
+- `Formula is NOT satisfied.` — 반례 발견 (verifyta `-t 1` 옵션으로 trace 받아 분석)
+
+### 1.5 UPPAAL이 못 다루는 것 (한계)
+
+- **연속 동역학**: sin/cos/sqrt 같은 비선형 함수. 클럭 동력학은 항상 `dx/dt = 1`
+  (일정 속도). 거리·고도 계산은 외부에서 사전 계산 필요.
+- **부동소수 실수**: int/bool/clock만. 실수는 적분식이 아닌 시간 비교 안에서만 등장.
+- **무한 데이터 구조**: 모든 배열·범위는 컴파일 타임 고정.
+- **확률**: 표준 UPPAAL은 비결정만 표현 (Pk 95%는 못 표현). 통계가 필요하면
+  **UPPAAL Stratego/SMC** 확장 사용.
+- **MIP/LP 해**: 정수 최적해 자체는 표현 불가. 그 옵티마이저의 **정책 규칙**은
+  추상화해서 모델에 박을 수 있음.
+
+이 한계들이 본문 §13(모델 한계)와 §14(자동 dump)에서 우리 모델이 어떻게 우회했는지
+설명됩니다.
+
+---
+
+## 2. 모델 진화 (v1 → v2 → v3)
 
 ### v1 (초기, 폐기)
 - 위협이 자체 클럭 `x`를 가지고 `x>=ENTER`로 자동 교전대 진입.
@@ -67,12 +275,12 @@ v2가 한 점으로 압축했던 두 가지를 풀어 헤친 모델.
 | 검증 쿼리 수 | 16 (SPEC), 18 (IMPL) | **19** (v3) |
 | 인스턴스 수 | 11 | 13 |
 
-이 문서의 본문은 **v3 기준**으로 쓰여 있고, v2 차이는 §7과 각 섹션의 "v2 동등물"에서
+이 문서의 본문은 **v3 기준**으로 쓰여 있고, v2 차이는 §8과 각 섹션의 "v2 동등물"에서
 함께 짚습니다.
 
 ---
 
-## 2. v3 모델 전체 구성 (한 장 view)
+## 3. v3 모델 전체 구성 (한 장 view)
 
 ```
 ┌──────────────── 시간 권위 ────────────────┐    ┌────── 결심 ──────┐    ┌──────── 실행 ────────┐
@@ -84,12 +292,12 @@ v2가 한 점으로 압축했던 두 가지를 풀어 헤친 모델.
 └────────────────────┬───────────────────────┘    └────────┬─────────┘    └───────┬───────────────┘
                      │ broadcast                            │ broadcast            │ hitU/L! / missU/L! (broadcast)
                      ▼                                      ▼                      ▼
-                  Threat(0/1/2)  ◄────────────── plan? (단순 listening 아님; 직접 갱신 없음) ─────────┐
-                  Inbound → Tracked                                                                  │
-                            ↑                                                                        │
-                     engU_b[id][b], engL_b[id][b]  ◄── enter/exit                                    │
-                            ↓ (hitU/L? 또는 impact?)                                                 │
-                          Killed / Leaked  ─────────────────────────────────────────────────────────┘
+                  Threat(0/1/2)
+                  Inbound → Tracked
+                            ↑
+                     engU_b[id][b], engL_b[id][b]  ◄── enter/exit
+                            ↓ (hitU/L? 또는 impact?)
+                          Killed / Leaked
 ```
 
 ### 13개 인스턴스 (System declarations)
@@ -130,35 +338,15 @@ MSC에 세로줄로 그려지는 lifeline 정확히 이 13개.
 
 ---
 
-## 3. Declaration 상세 — "어디에 무엇이 있고 누가 쓰나"
+## 4. Declaration 상세 — "어디에 무엇이 있고 누가 쓰나"
 
-UPPAAL의 declaration은 4 곳에 분산됩니다:
+UPPAAL의 declaration은 4 곳에 분산됩니다 (§1.3 참조):
 1. **Global** — 모든 인스턴스가 공유. `<nta><declaration>...</declaration>`.
 2. **Template-local** — 각 인스턴스가 자기 사본을 가짐. `<template><declaration>`.
 3. **System declarations** — 인스턴스화 + `system ... ;`.
 4. **Queries** — 검증식. `<queries>`.
 
-UPPAAL GUI 좌측 트리에서:
-```
-Project
-├── Declarations           ← (1) 글로벌
-├── Radar
-│   ├── Declarations       ← (2) Radar 로컬: clock t
-│   └── (graph)
-├── Threat
-│   ├── Declarations       ← (2) Threat 로컬: 비어있음
-│   └── (graph)
-├── Slot_U
-│   ├── Declarations       ← (2) Slot_U 로컬: clock f; int tgt
-│   └── (graph)
-├── Slot_L  (동일)
-├── Planner
-│   ├── Declarations       ← (2) clock cp
-│   └── (graph)
-└── System declarations    ← (3) 인스턴스화 + system
-```
-
-### 3.1 글로벌 declaration의 모든 항목 (v3)
+### 4.1 글로벌 declaration의 모든 항목 (v3)
 
 #### (a) 시스템 상수 — 컴파일 타임 고정값
 ```c
@@ -228,12 +416,9 @@ broadcast chan enterL1[MAXT], exitL1[MAXT]; // 하층 포대 1
 broadcast chan hitU[MAXT], missU[MAXT];    // Slot_U -> Threat(tgt)
 broadcast chan hitL[MAXT], missL[MAXT];    // Slot_L -> Threat(tgt)
 ```
-**왜 broadcast인가**: 한 `Radar(0).enterU0[0]!`가 발사되면 listening 중인 모든
-인스턴스가 동시 수신. `Threat(0)`가 받아 `engU_b[0][0]=true`로 토글, 다른 Slot은
-수신 안 함(noop). receiver 0명이어도 발사 가능 → 모델이 deadlock 없음.
-
-**§11/§12 패턴 차이**: 패턴 설명에서는 `enterU[MAXT][NB_U]` 2차원 chan을 썼지만,
-실제 구현은 호환성을 위해 `enterU0/enterU1` 1차원 4종으로 풀어 씀.
+**왜 broadcast인가**: §1.2 표 참조. handshake(`chan`)는 receiver 1명 필요해 일치
+못 하면 sender도 fire 불가. broadcast는 receiver 0명이어도 OK → 종결된 위협에
+hit를 fire해도 모델이 안 막힘.
 
 #### (e) 함수 — 정책 추상화
 ```c
@@ -258,7 +443,7 @@ bool any_engL(int t)   { return engL_b[t][0] || engL_b[t][1]; }
 - `any_uCover(t)` / `any_lCover(t)` / `any_engU(t)` / `any_engL(t)`: 검증 쿼리
   `R4: E<> (any_uCover(0) && any_lCover(0))` 같은 곳에서 사용.
 
-### 3.2 Template-local declarations
+### 4.2 Template-local declarations
 
 | Template | local | 의미 |
 |---|---|---|
@@ -270,18 +455,18 @@ bool any_engL(int t)   { return engL_b[t][0] || engL_b[t][1]; }
 
 > Local clock은 인스턴스마다 별개입니다. `R0.t`와 `R1.t`는 완전히 독립.
 
-### 3.3 System declarations
+### 4.3 System declarations
 
-위 §2의 13 인스턴스 + `system ...;` 행. `Slot_U(0)` 처럼 같은 batt_id로 인스턴스 두
+위 §3의 13 인스턴스 + `system ...;` 행. `Slot_U(0)` 처럼 같은 batt_id로 인스턴스 두
 개를 만들면 둘이 같은 `ammoU_b[0]` / `inflU_b[0]` 자원을 공유하는 두 채널이 됩니다.
 
 ---
 
-## 4. 템플릿별 구현 상세
+## 5. 템플릿별 구현 상세
 
 각 템플릿의 location, transition, guard/assignment를 한 줄씩 설명합니다.
 
-### 4.1 Radar(const int id) — 위협 타이밍의 권위자
+### 5.1 Radar(const int id) — 위협 타이밍의 권위자
 
 **Local**: `clock t;` (0초부터 시작)
 
@@ -314,10 +499,7 @@ bool any_engL(int t)   { return engL_b[t][0] || engL_b[t][1]; }
 - `Done`은 더 이상 전이 없는 sink. impact가 발사된 후엔 Radar 인스턴스가 영원히
   Done에 머묾.
 
-**v2 동등물**: v2는 `crossU[id]!`, `crossL[id]!` 두 가지만 있었고 enter만 표현
-(exit 없음). v3는 enter/exit 8종으로 확장.
-
-### 4.2 Threat(const int id) — 신호 소비자
+### 5.2 Threat(const int id) — 신호 소비자
 
 **Local**: 없음 (clock 없음, 변수 없음 — 순수 signal-driven)
 
@@ -327,7 +509,7 @@ bool any_engL(int t)   { return engL_b[t][0] || engL_b[t][1]; }
 - `Killed` — terminal (격추)
 - `Leaked` — terminal (탄착)
 
-**Transitions** (13개):
+**Transitions** (15개):
 
 | # | from → to | sync | assignment | 의미 |
 |---|---|---|---|---|
@@ -340,23 +522,14 @@ bool any_engL(int t)   { return engL_b[t][0] || engL_b[t][1]; }
 | 7 | Tracked → Tracked | `exitL0[id]?` | `engL_b[id][0]=false` | 하층 포대 0 이탈 |
 | 8 | Tracked → Tracked | `enterL1[id]?` | `engL_b[id][1]=true` | 하층 포대 1 진입 |
 | 9 | Tracked → Tracked | `exitL1[id]?` | `engL_b[id][1]=false` | 하층 포대 1 이탈 |
-| 10 | Tracked → Tracked | `missU[id]?` | — | 상층 요격탄 빗나감 (lifeline 유지) |
+| 10 | Tracked → Tracked | `missU[id]?` | — | 상층 요격탄 빗나감 |
 | 11 | Tracked → Tracked | `missL[id]?` | — | 하층 요격탄 빗나감 |
 | 12 | Tracked → Killed | `hitU[id]?` | `engU_b[id][0]=false, engU_b[id][1]=false, engL_b[id][0]=false, engL_b[id][1]=false, killed++` | 상층 격추 |
 | 13 | Tracked → Killed | `hitL[id]?` | (같음) | 하층 격추 |
-| 14 | Inbound → Leaked | `impact[id]?` | `leaked++` | 탐지 전 탄착 (드물지만 가능) |
+| 14 | Inbound → Leaked | `impact[id]?` | `leaked++` | 탐지 전 탄착 |
 | 15 | Tracked → Leaked | `impact[id]?` | (engU/engL 모두 false, leaked++) | 탐지 후 탄착 |
 
-**작동 원리**:
-- Threat 자체는 어떤 시간 추론도 안 함. `t == ...` 가드 없음.
-- 모든 상태 변화는 broadcast 수신(`?`)으로만 발생.
-- 종결 시(`Killed`/`Leaked`) `engU_b/engL_b`를 모두 false로 초기화 → Slot이
-  종결된 위협에 발사 결심하지 않음.
-
-**v2 동등물**: v2는 위치가 더 많았고(`Inbound/UpperEng/BothEng/Killed/Leaked`)
-self-loop 대신 위치 전이로 표현. v3는 윈도우 토글이 잦아 self-loop가 자연.
-
-### 4.3 Slot_U(const int batt_id) — 상층 채널 슬롯
+### 5.3 Slot_U(const int batt_id) — 상층 채널 슬롯
 
 **Local**: `clock f; int tgt;`
 
@@ -370,48 +543,157 @@ self-loop 대신 위치 전이로 표현. v3는 윈도우 토글이 잦아 self-
 | # | from → to | select | guard | sync | assignment | 의미 |
 |---|---|---|---|---|---|---|
 | 1 | Idle → Ready | — | — | `plan?` | — | 계획수립 신호 수신 |
-| 2 | Ready → Flying | `t : int[0,MAXT-1]` | `ammoU_b[batt_id]>0 && inflU_b[batt_id]<CH_PER_U[batt_id] && best_u_b(batt_id)>=0 && t==best_u_b(batt_id)` | — | `ammoU_b[batt_id]--, inflU_b[batt_id]++, upCnt_bt[batt_id][t]++, tgt=t, f=0` | **발사**: GreedyWTA 우선순위 위협(`best_u_b`)에 사격 |
-| 3 | Ready → Idle | — | `best_u_b(batt_id)<0 \|\| ammoU_b[batt_id]==0 \|\| inflU_b[batt_id]>=CH_PER_U[batt_id]` | — | — | **skip**: 발사 조건 미충족 |
-| 4 | Flying → Idle | — | `f >= FLYOUT_U` | `hitU[tgt]!` | `inflU_b[batt_id]--, upCnt_bt[batt_id][tgt]--` | 요격 성공 (양보) |
+| 2 | Ready → Flying | `t : int[0,MAXT-1]` | `ammoU_b[batt_id]>0 && inflU_b[batt_id]<CH_PER_U[batt_id] && best_u_b(batt_id)>=0 && t==best_u_b(batt_id)` | — | `ammoU_b[batt_id]--, inflU_b[batt_id]++, upCnt_bt[batt_id][t]++, tgt=t, f=0` | **발사** |
+| 3 | Ready → Idle | — | `best_u_b(batt_id)<0 \|\| ammoU_b[batt_id]==0 \|\| inflU_b[batt_id]>=CH_PER_U[batt_id]` | — | — | **skip** |
+| 4 | Flying → Idle | — | `f >= FLYOUT_U` | `hitU[tgt]!` | `inflU_b[batt_id]--, upCnt_bt[batt_id][tgt]--` | 요격 성공 |
 | 5 | Flying → Idle | — | `f >= FLYOUT_U` | `missU[tgt]!` | (같음) | 요격 실패 |
 
 **작동 원리 — 핵심 4가지**:
+1. **committed Ready**: `plan?` 수신 후 시간 진행 X → 즉시 발사 또는 skip.
+2. **결정적 발사**: `t==best_u_b(batt_id)` 가드가 select range를 단 하나의 t로 고정.
+3. **포대별 자원 분리**: 모든 mutation이 `[batt_id]`로 indexed.
+4. **격추/실패 둘 다 비결정 발화**: Pk 확률을 추상화한 채 양쪽 trace 검증.
 
-1. **committed Ready**: `plan?`을 수신하면 Ready로 가는데 committed라서 시간이
-   흐를 수 없음. 반드시 전이 2(발사) 또는 전이 3(skip)이 **즉시** 발화.
-2. **결정적 발사 (GreedyWTA)**: `t==best_u_b(batt_id)` 가드가 select range를 단
-   하나의 t로 고정. v2 IMPL과 같은 결정성. SPEC 모델이 필요하면 이 가드를
-   `engU_b[t][batt_id] && upCnt_bt[batt_id][t]==0`로 바꾸면 비결정.
-3. **포대별 자원 분리**: 모든 mutation이 `[batt_id]`로 indexed → 다른 포대의
-   채널과 자원 충돌 없음.
-4. **격추/실패 둘 다 비결정 발화**: Flying에서 `f >= FLYOUT_U` 가드만 동일.
-   verifyta가 두 경로를 모두 탐색하므로 Pk 확률을 추상화한 채 양쪽 시나리오
-   모두 검증.
-
-### 4.4 Slot_L(const int batt_id) — 하층 채널 슬롯
+### 5.4 Slot_L(const int batt_id) — 하층 채널 슬롯
 
 Slot_U와 구조 100% 동일. 변수만 `ammoL_b/inflL_b/loCnt_bt/best_l_b/FLYOUT_L`로
 대체. broadcast도 `hitL/missL`.
 
-### 4.5 Planner — 계획수립 주기
+### 5.5 Planner — `plan!` 의 모든 것
 
-**Local**: `clock cp;`
+Planner는 **모델 전체의 클럭 주파수**를 결정하는 핵심 컴포넌트. 단 하나의 인스턴스
+`P`, 단 하나의 location, 단 하나의 transition으로 이루어진 가장 단순한 템플릿이지만
+그 `plan!` 한 줄이 모든 발사 결심의 출발점.
+
+**Local**: `clock cp;` (Planner 인스턴스의 주기 클럭)
 
 **Locations** (1개):
 - `Tick` — invariant `cp <= PERIOD_P`
 
 **Transitions** (1개):
+- `Tick → Tick`: guard `cp >= PERIOD_P`, sync `plan!`, assignment `cp = 0`
 
-| # | from → to | guard | sync | assignment | 의미 |
-|---|---|---|---|---|---|
-| 1 | Tick → Tick | `cp >= PERIOD_P` | `plan!` | `cp = 0` | 주기마다 계획수립 broadcast 후 클럭 리셋 |
+#### 5.5.1 `plan!`이 정확히 무엇을 하나
 
-**작동 원리**: invariant + 가드 결합으로 정확히 `PERIOD_P`마다 fire 강제. Slot
-6개(상층 3 + 하층 3)가 동시에 `plan?`을 수신.
+```c
+//                            ┌─── invariant: cp <= PERIOD_P ───┐
+//                            │                                 │
+//   ┌────────────► Tick ─────┴─── guard: cp >= PERIOD_P ───────┘
+//   │              clock cp;       sync: plan!
+//   │                              assign: cp = 0
+//   └──────────── (self-loop) ────────────
+```
+
+**단계별로 보면**:
+1. **시뮬레이션 시작 (t=0)**: P는 Tick 위치, cp=0
+2. **시간 진행**: cp가 0부터 자동 증가 (모든 클럭과 같은 속도)
+3. **invariant 한계 도달 직전 (cp=2)**: invariant `cp <= PERIOD_P`가 cp를 더 증가
+   못 하게 막음 → 어떤 enabled transition이 즉시 fire해야 함
+4. **가드 만족 확인**: 유일한 outgoing edge의 가드 `cp >= PERIOD_P` (2 >= 2) ✓
+5. **edge fire**:
+   - **sync `plan!`** — broadcast로 "지금 계획수립!" 신호 발사
+   - **assignment `cp = 0`** — 클럭 리셋
+6. **다시 Tick** — cp=0부터 다시 증가
+
+**결과**: 정확히 매 `PERIOD_P=2`초마다 `plan!` 한 번씩 발사 (절대 시각으로 t=2,
+4, 6, 8, ...).
+
+#### 5.5.2 invariant + guard 결합의 의미
+
+UPPAAL에서 "정확한 주기"는 항상 이 두 줄의 조합으로 표현됩니다:
+```c
+invariant: cp <= PERIOD_P    // (a) cp는 PERIOD_P 초과 못 함
+guard:     cp >= PERIOD_P    // (b) 정확히 PERIOD_P 도달 시 fire
+```
+- (a)만 있으면: PERIOD_P 도달하면 시간이 멈출 뿐 fire 안 됨 → 교착
+- (b)만 있으면: PERIOD_P 도달 후 시간이 더 흐르고 언제든 fire 가능 → 비정확
+- **둘 다**: PERIOD_P에 도달하면 시간이 멈춰서(invariant) 즉시 fire 해야만 시간이
+  다시 흐를 수 있음(guard) → **정확한 주기 강제**
+
+이 패턴은 v2/v3 모든 정기적 이벤트(Radar의 detect/cross/impact, Planner의 plan)에
+공통.
+
+#### 5.5.3 `plan!` 발사 직후 무슨 일이 일어나나
+
+broadcast이므로 **현재 `plan?`을 listening 중인 모든 인스턴스가 동시에 수신**.
+v3 모델에서 그 인스턴스는:
+
+| 인스턴스 | 현재 위치 | plan? 수신 시 행동 |
+|---|---|---|
+| SU0_0 (Slot_U, batt_id=0) | Idle | Idle → Ready (committed) |
+| SU0_1 (Slot_U, batt_id=0) | Idle | Idle → Ready (committed) |
+| SU1_0 (Slot_U, batt_id=1) | Idle | Idle → Ready (committed) |
+| SL0_0 (Slot_L, batt_id=0) | Idle | Idle → Ready (committed) |
+| SL0_1 (Slot_L, batt_id=0) | Idle | Idle → Ready (committed) |
+| SL1_0 (Slot_L, batt_id=1) | Idle | Idle → Ready (committed) |
+
+**6개 Slot이 동시에** Ready로 전이 → committed라 시간 진행 없이 즉시 다음 결심.
+
+각 Slot은 자기 차례에서 두 가지 갈림길:
+- 발사: `best_u_b(batt_id) >= 0` 이고 자원 OK → Flying으로
+- skip: 자원 부족 또는 가능 위협 없음 → Idle로
+
+여러 Slot이 같은 위협을 노릴 수 있나? — best_u_b(b)가 `upCnt_bt[b][i] == 0` 가드를
+포함하므로, **같은 포대(같은 batt_id)의 두 Slot은 자동으로 다른 위협 선택**. 다른
+포대는 같은 위협을 선택 가능 → 다포대 동시 사격 가능 (R2/R3 쿼리).
+
+이미 Flying인 Slot은 `plan?`을 받지 않습니다 (Idle에서만 listening). 즉 비행 중인
+Slot은 plan 무시.
+
+#### 5.5.4 다른 인스턴스와의 시간적 관계
+
+```
+t=0   P:Tick(cp=0)        R0:Pre(t=0)         ...
+                          (R0.t reaches APPEAR[0]=0)
+                          R0 fires detect[0]!  ────► T0: Inbound → Tracked
+t=2   P.cp == 2
+      P fires plan!  ─────► 6 Slots: Idle → Ready (committed)
+      cp = 0
+                            6 Slots 동시 결심:
+                              best_u_b(0) = -1 (engU_b[0][0]=false 아직)
+                              모두 skip → Ready → Idle
+t=4   P fires plan!  ─────► (또 모두 skip; 위협들 아직 사거리 안 들어옴)
+...
+t=8   R0 fires enterU0[0]! ─► T0: engU_b[0][0]=true (다음 plan에서 발사 가능)
+...
+t=10  P fires plan!  ─────► SU0_0: best_u_b(0) = 0, 발사!
+                            SU0_1: best_u_b(0) = -1 (위협 0은 이미 SU0_0이 잡음),
+                                   다음 위협들 아직 engU_b 안 됨 → skip
+                            SU1_0: best_u_b(1) = ? (engU_b[0][1]은 t=9에 true 됐다면) ...
+                            ...
+```
+
+**핵심**: Planner의 plan!은 "지금이 결심할 순간"을 알릴 뿐. 실제 발사는 각 Slot이
+독립 판단. 위협이 사거리 안에 안 들어왔거나(`engU_b=false`) 자원 부족이면 plan을
+받아도 skip → MSC에 Ready 박스 잠깐 보였다가 Idle로 돌아감.
+
+#### 5.5.5 ROS2 시뮬레이터와의 매핑
+
+| ROS2 | UPPAAL v3 |
+|---|---|
+| `planning_node.PERIOD = 0.5` (2 Hz timer) | `Planner.PERIOD_P = 2` (단위 임의, 의미 동등) |
+| `planning_node._tick()` 호출 | `plan!` broadcast 발사 |
+| `_tick` 안에서 GreedyWTA.solve() 호출 | 각 Slot의 Ready → Flying 가드에서 best_u_b/best_l_b |
+| solve() 반환 후 LauncherNode가 발사 | Slot 인스턴스의 ammo/inflight 갱신 |
+
+ROS2의 `_tick`이 위협 정보가 부족할 때 plan을 만들지 않거나 빈 plan을 보내는 것과
+동등하게, UPPAAL의 Slot은 plan?을 받아도 skip 가능.
+
+#### 5.5.6 디버깅 팁
+
+- "왜 plan이 아예 안 발사되나?" → P의 cp가 PERIOD_P에 도달 못 함. 다른 인스턴스의
+  invariant가 시간 진행을 막고 있을 가능성 (예: Radar의 Pre invariant가 위반되면
+  교착 → P의 cp도 멈춤). verifyta `A[] not deadlock`으로 확인.
+- "plan이 너무 자주 발사되는데?" → PERIOD_P 값 확인. 또는 다른 자동기의 urgent
+  edge가 시간 진행을 자꾸 막는지 확인.
+- "plan 받았는데 Slot이 fire 안 함" → committed Ready의 두 outgoing edge 가드를
+  점검. (Idle → Ready → Flying 또는 Idle → Ready → Idle)
+- "T1 쿼리 (`A[] P.cp <= PERIOD_P`) NOT satisfied" → 절대 일어나지 않아야 하는데
+  일어났다면 model에 bug (invariant 누락 등).
 
 ---
 
-## 5. Broadcast 채널 전체 사양
+## 6. Broadcast 채널 전체 사양
 
 | 채널 | sender | receivers | 의미 |
 |---|---|---|---|
@@ -432,21 +714,18 @@ Slot_U와 구조 100% 동일. 변수만 `ammoL_b/inflL_b/loCnt_bt/best_l_b/FLYOU
 | `missL[t]` | Slot_L | Threat(t) | 하층 요격 실패 |
 
 **총 broadcast 종류**: `plan` 단일 + 8종 × MAXT + 4종(hit/miss × U/L) × MAXT.
-MAXT=3이면 `1 + 8*3 + 4*3 = 37 chan slot`. 모두 listening 가능한 인스턴스 자동 fan-out.
-
-**MSC 화살표**: 매 broadcast가 한 가로 화살표. receiver가 다수면 같은 시점에
-여러 lifeline으로 동시 도달 (예: `plan!`은 6개 Slot으로).
+MAXT=3이면 `1 + 8*3 + 4*3 = 37 chan slot`.
 
 ---
 
-## 6. 한 위협의 lifecycle (v3 기준 단계별)
+## 7. 한 위협의 lifecycle (v3 기준 단계별)
 
 위협 0이 t=0에 발사되어 격추까지 가는 가장 일반적 흐름. 시간 축은 위→아래.
 
 ```
 t=0  R0:Pre[t=0]      T0:Inbound       Slots:Idle      P:Tick[cp=0]
      ────  R0.t reaches APPEAR[0]=0 immediately  ────
-     R0 fires detect[0]! 
+     R0 fires detect[0]!
               ─────────────►  T0: Inbound → Tracked
      R0: Pre → Scan[t=0]
 
@@ -454,258 +733,183 @@ t=2  ─── P.cp reaches 2 ───
      P fires plan! ──────────► 6 Slots: Idle → Ready (committed)
         Slots 각자 best_u_b(batt_id) 호출:
           - engU_b[0][0]=false → best_u_b(0) = -1
-          - skip 전이 (트랜지션 3) 발화
+          - skip 전이 발화
         6 Slots: Ready → Idle (즉시, 시간 진행 없음)
      P: Tick[cp=0] (리셋)
 
 t=4  P가 다시 plan! 발사. 동일하게 모두 skip.
 
 t=8  ─── R0.t reaches U_ENTER[0][0]=8 ───
-     R0 fires enterU0[0]! ──► T0: engU_b[0][0]=true
-     (T0 위치는 변하지 않음. self-loop)
+     R0 fires enterU0[0]! ──► T0: engU_b[0][0]=true (T0 위치 변화 없음, self-loop)
 
 t=9  ─── R0.t reaches U_ENTER[0][1]=9 ───
      R0 fires enterU1[0]! ──► T0: engU_b[0][1]=true
 
 t=10 ─── P.cp reaches 2 다시 ───
      P fires plan! ──────────► 6 Slots: Idle → Ready
-        SU0_0(batt_id=0): best_u_b(0)=0 (engU_b[0][0]=true, upCnt_bt[0][0]=0)
-                          가드 만족: ammoU_b[0]=3>0, inflU_b[0]=0<CH_PER_U[0]=2
+        SU0_0(batt_id=0): best_u_b(0)=0, 발사
                           ammoU_b[0]=2, inflU_b[0]=1, upCnt_bt[0][0]=1, tgt=0, f=0
                           SU0_0: Ready → Flying[f=0]
-        SU0_1(batt_id=0): best_u_b(0) 호출 시 upCnt_bt[0][0]=1 → return -1
-                          (이미 같은 포대가 잡았으니 다음 위협 봐야)
-                          best_u_b(0)에서 if (engU_b[i][b] && upCnt_bt[b][i] == 0)
-                          위협 0은 cnt 1이라 skip, 위협 1은 engU_b[1][0]=false, ...
-                          → -1 → skip 전이로 Idle
-        SU1_0(batt_id=1): best_u_b(1) = 0 (engU_b[0][1]=true, upCnt_bt[1][0]=0)
-                          발사: ammoU_b[1]=2→1, inflU_b[1]=0→1, upCnt_bt[1][0]=1
+        SU0_1(batt_id=0): best_u_b(0)=-1 (이미 같은 포대 잡음), skip
+        SU1_0(batt_id=1): best_u_b(1)=0, 발사
+                          ammoU_b[1]=1, inflU_b[1]=1, upCnt_bt[1][0]=1
                           SU1_0: Ready → Flying
 
-t=15 ─── SU0_0.f reaches FLYOUT_U=5 (발사 후 5초) ───
+t=15 ─── SU0_0.f reaches FLYOUT_U=5 ───
      SU0_0 fires hitU[0]! ──► T0: Tracked → Killed
-                              engU_b[0][0]=false, engU_b[0][1]=false,
-                              engL_b[0][0]=false, engL_b[0][1]=false, killed=1
-                              (다른 Slot의 engU 등은 영향 X. 위 4개만 reset)
+                              engU_b/engL_b 모두 false, killed=1
      SU0_0: inflU_b[0]=0, upCnt_bt[0][0]=0, Flying → Idle
-     
-     동시: SU1_0.f가 마침 5 도달 → hitU[0]! 또는 missU[0]! fire
-        T0는 이미 Killed라 더 받지 않지만 SU1_0의 카운터는 정리됨:
-        inflU_b[1]=0, upCnt_bt[1][0]=0
-        broadcast는 0 receiver여도 OK.
+
+     SU1_0.f도 5 도달 → hitU[0]! 또는 missU[0]! fire
+        T0는 이미 Killed라 수신 안 함, broadcast라 OK
+        SU1_0: 카운터 정리 후 Idle
 
 t=30 ─── R0.t reaches IMPACT_AT[0]=30 ───
-     R0 fires impact[0]! ──► T0는 Killed라 받지 않음 (Killed는 sink)
+     R0 fires impact[0]! ──► T0는 Killed (sink)라 수신 안 함
      R0: Scan → Done
 ```
 
 **6가지 핵심 포인트**:
-1. 위협이 시간을 모름. Radar의 broadcast가 모든 상태 변화의 트리거.
+1. 위협이 시간을 모름. Radar의 broadcast가 모든 상태 변화 트리거.
 2. plan은 매 PERIOD_P=2초마다 발사되지만 발사 조건 미충족 시 모두 skip.
-3. 같은 포대의 두 채널이 같은 위협을 노릴 수 없음 (`best_u_b` 자체가 cnt==0인
-   위협만 반환).
+3. 같은 포대의 두 채널이 같은 위협을 노릴 수 없음.
 4. 다른 포대는 같은 위협을 노릴 수 있음 (포대별 cnt가 별개).
-5. broadcast hit/miss는 0 receiver여도 OK → Slot이 종결된 위협에 대해 fire해도
-   model이 안 막힘.
+5. broadcast hit/miss는 0 receiver여도 OK.
 6. `f == FLYOUT_U` 가드 만족 시 hit/miss는 비결정 → 양쪽 trace 다 탐색.
 
 ---
 
-## 7. v2 vs v3 차이점 — 한 표로
+## 8. v2 vs v3 차이점 — 한 표로
 
 | 항목 | v2 SPEC/IMPL | v3 |
 |---|---|---|
-| **위협 진입 표현** | `crossU[id]!` 한 번 발사 → engU[id]=true 영원 | `enterU0[id]!`/`exitU0[id]!` 등 4종 × 2포대 = 8 broadcast로 (위협,포대)별 토글 |
-| **Threat 위치** | Inbound/UpperEng/BothEng/Killed/Leaked (5개) | Inbound/Tracked/Killed/Leaked (4개) — 윈도우는 self-loop로 표현 |
+| **위협 진입 표현** | `crossU[id]!` 한 번 → engU[id]=true 영원 | `enterU0[id]!`/`exitU0[id]!` 4종 × 2포대 = 8 broadcast |
+| **Threat 위치** | Inbound/UpperEng/BothEng/Killed/Leaked (5개) | Inbound/Tracked/Killed/Leaked (4개) |
 | **포대 자원** | 단일 `ammoU`, `inflU` | 포대별 `ammoU_b[NB_U]`, `inflU_b[NB_U]` |
-| **충돌 회피 카운터** | `upCnt[t]` (1D) | `upCnt_bt[b][t]` (2D, 포대 단위) |
-| **Interceptor 인스턴스** | `InterceptorU × CH_U` (단일 풀) | `Slot_U(b) × CH_PER_U[b]` for each b ∈ NB_U |
-| **best 함수** | `best_u()`, `best_l()` (글로벌) | `best_u_b(b)`, `best_l_b(b)` (포대 단위) |
+| **충돌 회피 카운터** | `upCnt[t]` (1D) | `upCnt_bt[b][t]` (2D) |
+| **Interceptor 인스턴스** | `InterceptorU × CH_U` | `Slot_U(b) × CH_PER_U[b]` for each b |
+| **best 함수** | `best_u()`, `best_l()` | `best_u_b(b)`, `best_l_b(b)` |
 | **시간 const 표현** | `ENTER_U[MAXT]` 1D | `U_ENTER[MAXT][NB_U]`, `U_EXIT[MAXT][NB_U]` 2D |
 | **검증 쿼리 수** | 16 (SPEC) / 18 (IMPL) | 19 |
-| **새 쿼리 (v3 only)** | — | S3/S4 포대별 채널, S7 위협당 포대 수, RD1/RD2 윈도우 일관성, R2/R3/R5 포대 동시/만탱크 |
-| **표현 가능한 게임플레이** | 위협 1발이 사거리 진입 후 영원히 교전 가능 | 위협이 사거리 안 ↔ 밖을 오가며 다른 포대로 인계됨 |
+| **새 쿼리 (v3 only)** | — | S3/S4 포대별 채널, S7 위협당 포대 수, RD1/RD2 윈도우 일관성, R2/R3/R5 |
+| **윈도우 이탈 표현** | 불가 (영원히 engU=true) | 가능 (`exitU0/exitU1`로 다른 포대로 인계) |
 
 ---
 
-## 8. 검증 쿼리 19개 상세
+## 9. 검증 쿼리 19개 상세
 
-각 쿼리가 무엇을 보장하고 어떤 모델 요소가 그것을 만들어내는지.
-
-### 8.1 Safety (A[], 9개)
+### 9.1 Safety (A[], 9개)
 
 #### S1: `A[] not deadlock`
 **의미**: 어떤 reachable 상태에서도 시간 진행 또는 enabled transition이 있음.
-**왜 성립하나**:
-- Threat의 `Tracked`는 hitU/hitL/impact 어느 하나는 결국 도달 (모든 위협이
-  `IMPACT_AT[id]`에 도달하면 impact 발사).
-- Slot의 committed `Ready`는 skip 전이가 항상 enabled (가드가 `best_u_b<0 ||
-  ammo==0 || infl>=CH`로 발사 가드의 정확한 negation을 포함).
-- Radar의 `Pre/Scan/Done`은 시간 진행 OK (invariant 한계 안에서).
+**왜 성립하나**: Threat의 Tracked는 결국 impact 수신, Slot의 Ready committed는
+skip 전이가 항상 enabled, Radar의 Pre/Scan/Done은 시간 진행 OK.
 
 #### S2u/S2l: `A[] forall (b) ammoU_b[b] >= 0` / `ammoL_b[b] >= 0`
-**의미**: 포대별 잔여탄이 음수가 되지 않음.
 **왜 성립하나**: Slot 발사 가드에 `ammoU_b[batt_id] > 0` 포함. `--`는 발사 시 한
 번만 실행.
 
 #### S3: `A[] forall (b) inflU_b[b] <= CH_PER_U[b]`
-**의미**: 포대 b의 비행 중 요격탄이 그 포대의 채널 수를 초과하지 않음.
-**왜 성립하나**: 발사 가드에 `inflU_b[batt_id] < CH_PER_U[batt_id]`. `++`는
-발사 시, `--`는 hit/miss 시 호출되어 균형.
-**v3 특유**: v2는 인스턴스 수로 구조적 보장이었는데 v3는 가드로 명시 보장.
+**왜 성립하나**: 발사 가드 `inflU_b[batt_id] < CH_PER_U[batt_id]`. `++`/`--` 균형.
 
-#### S4: `A[] forall (b) inflL_b[b] <= CH_PER_L[b]`
-하층 동일.
+#### S4: 하층 동일
 
 #### S5: `A[] forall (b)(t) upCnt_bt[b][t] <= 1`
 **의미**: 한 포대가 같은 위협에 두 발 동시 발사 안 함.
-**왜 성립하나**: `best_u_b(b)`가 `upCnt_bt[b][i]==0` 가드로 필터. 한 번 발사해
-1이 되면 그 위협은 더 이상 best 후보가 아님.
+**왜 성립하나**: `best_u_b(b)`가 `upCnt_bt[b][i]==0` 가드로 필터.
 
-#### S6: 하층 동일 (`loCnt_bt[b][t] <= 1`)
+#### S6: 하층 동일
 
 #### S7: `A[] forall (t) upCnt_bt[0][t] + upCnt_bt[1][t] <= NB_U`
-**의미**: 한 위협을 chase 중인 상층 포대 수가 NB_U(=2) 초과 못 함.
-**왜 성립하나**: 포대마다 upCnt[t]<=1 (S5), 포대 수 = NB_U.
-**의의**: 위협당 다포대 분산 한계.
+**의미**: 한 위협 chase 중 상층 포대 수 ≤ NB_U.
 
 #### S8: `A[] killed + leaked <= MAXT`
 **의미**: 종결 카운터 합이 위협 총 수 이내.
-**왜 성립하나**: Threat 인스턴스마다 Killed/Leaked는 한 번만 진입 (terminal).
-counter ++ 도 한 번만.
 
-### 8.2 Geometry invariants (A[], 2개)
+### 9.2 Geometry invariants (A[], 2개)
 
 #### RD1: `A[] forall (b)(t) upCnt_bt[b][t] > 0 imply engU_b[t][b]`
-**의미**: 포대 b가 위협 t에 발사 중이면 위협 t는 반드시 포대 b의 윈도우 안에 있음.
-**왜 성립하나**: 발사 가드가 `best_u_b(b)==t` 요구 → `best_u_b`가 `engU_b[t][b]`
-true만 반환. 종결 시 `upCnt_bt[b][t]--`와 `engU_b[t][b]=false` 모두 reset.
-**의의**: **"사거리·고도 밖 발사 0건"** — v3 추가 핵심 보장.
+**의미**: 발사 중인 위협은 반드시 그 포대의 윈도우 안에 있음.
+**의의**: **"사거리·고도 밖 발사 0건"** — v3 핵심 보장.
 
-#### RD2: 하층 동일 (`loCnt_bt[b][t] > 0 imply engL_b[t][b]`)
+#### RD2: 하층 동일
 
-### 8.3 Policy invariants (A[], 2개)
+### 9.3 Policy invariants (A[], 2개)
 
 #### D1: `A[] forall (b) best_u_b(b) >= -1 && best_u_b(b) < MAXT`
-**의미**: `best_u_b()` 반환값이 [-1, MAXT-1] 범위 (totality + 안전).
-**왜 성립하나**: 함수 정의가 `return -1`로 fallback, 루프 반환은 `i < MAXT`로 제한.
-**의의**: 함수 자체의 well-formedness 검증.
+**의미**: `best_u_b()` 반환값 totality 검증.
 
-#### D2: 하층 동일.
+#### D2: 하층 동일
 
-### 8.4 Timing (A[], 1개)
+### 9.4 Timing (A[], 1개)
 
 #### T1: `A[] P.cp <= PERIOD_P`
-**의미**: Planner의 주기 클럭이 PERIOD_P 초과 못 함.
-**왜 성립하나**: Tick 위치의 invariant `cp <= PERIOD_P` + 가드 `cp >= PERIOD_P`로
-정확히 PERIOD_P에 도달하면 fire되어 0으로 리셋.
-**의의**: 계획수립 데드라인 보장. 시뮬레이터의 `planning_node._tick(2 Hz)` 데드라인
-동등물.
+**의미**: Planner 주기 클럭이 PERIOD_P 초과 못 함.
+**왜 성립하나**: §5.5.2 invariant + guard 결합 (Planner location의 invariant
+`cp <= PERIOD_P`가 시간 진행을 막고, 가드 `cp >= PERIOD_P`가 정확히 그 시각에
+fire 강제).
 
-### 8.5 Liveness (1개)
+### 9.5 Liveness (1개)
 
 #### L1: `A<> killed + leaked == MAXT`
-**의미**: 모든 위협은 결국 종결 (격추 또는 누설).
-**왜 성립하나**: 모든 Threat의 Tracked는 결국 `impact[id]?`를 수신 (Radar가
-IMPACT_AT[id]에 fire). impact 수신 → Leaked. 그 전에 hitU/hitL을 수신했으면
-Killed. 어느 쪽이든 terminal.
+**의미**: 모든 위협은 결국 종결.
 
-### 8.6 Reachability (E<>, 6개)
+### 9.6 Reachability (E<>, 6개)
 
-#### R1: `E<> killed == MAXT`
-**의미**: 전량 격추 시나리오가 존재.
-**확인**: verifyta가 hit 경로만 선택하는 trace를 찾아주면 성립.
-
-#### R2: `E<> inflU_b[0] > 0 && inflU_b[1] > 0`
-**의미**: 두 상층 포대가 동시에 비행 중인 trace 존재 = **부하 분산 가능**.
-**의의**: 한 포대로 다 처리하지 않고 두 포대로 나누는 동적 전략 가능성 검증.
-
-#### R3: `E<> inflL_b[0] > 0 && inflL_b[1] > 0` (하층 동일)
-
-#### R4: `E<> any_uCover(0) && any_lCover(0)`
-**의미**: 위협 0이 상층 AND 하층 어느 포대로든 동시에 cover되는 trace 존재 =
-**다층 요격 가능**.
-**의의**: §11 패턴의 핵심 목표 검증.
-
-#### R5: `E<> inflU_b[0] == CH_PER_U[0]`
-**의미**: 상층 포대 0의 채널이 만탱크(=2) 차는 trace 존재 = **포화 상황 도달 가능**.
-**의의**: 채널 한계 게이트가 활성화되는 시나리오가 모델 안에 있는지 sanity check.
-
-#### R6: `E<> leaked > 0`
-**의미**: 누설(탄착) 시나리오 존재.
-**확인**: ammo/채널이 부족하거나 윈도우를 못 잡는 trace를 verifyta가 찾으면 성립.
-
-### 8.7 어떤 쿼리가 v3 특유인가
-
-| 쿼리 | v2 | v3 |
-|---|---|---|
-| S1, S2, S8, T1, L1, R1, R6 | ✅ (이름만 다를 수도) | ✅ |
-| S3, S4 (포대별 채널) | ❌ (단일 `inflU<=CH_U`) | ✅ 포대별 forall |
-| S5, S6 (포대별 충돌) | upCnt[t]<=1 (1D) | upCnt_bt[b][t]<=1 (2D) |
-| S7 (위협당 포대 수) | ❌ | ✅ |
-| RD1, RD2 (윈도우 일관성) | ❌ | ✅ |
-| D1, D2 (정책 totality) | IMPL 한정 | ✅ |
-| R2, R3 (포대 동시) | ❌ | ✅ |
-| R4 (다층요격) | E<>(upCnt[0]>0 && loCnt[0]>0) | E<>(any_uCover(0) && any_lCover(0)) |
-| R5 (만탱크) | ❌ | ✅ |
+#### R1: `E<> killed == MAXT` — 전량 격추 가능
+#### R2: `E<> inflU_b[0] > 0 && inflU_b[1] > 0` — 두 상층 포대 동시 가동
+#### R3: 하층 동일
+#### R4: `E<> any_uCover(0) && any_lCover(0)` — 위협 0 다층요격 도달
+#### R5: `E<> inflU_b[0] == CH_PER_U[0]` — 상층 포대 0 채널 만탱크
+#### R6: `E<> leaked > 0` — 누설 도달
 
 ---
 
-## 9. MSC 읽는 법 + 흔히 헷갈리는 동작
+## 10. MSC 읽는 법 + 흔히 헷갈리는 동작
 
-### 9.1 MSC 기본 기호
+### 10.1 MSC 기본 기호
 
 | 기호 | 의미 |
 |---|---|
 | 세로 막대 (lifeline) | 인스턴스 1개. 위→아래 = 시간 진행 |
-| 박스 (Pre/Scan/Tracked/Idle/Ready/Flying/...) | 현재 location |
+| 박스 | 현재 location |
 | 가로 빨간 화살표 | broadcast 발사 + 수신. 양쪽 모두 같은 시점에 전이 |
 | 옅은 회색 박스 (Ready) | committed 위치. 시간 진행 없이 즉시 다음 |
 | 박스 사이 빈 공간 | 시간 진행. 길이는 의미 없음 |
 | 화살표 없는 박스 전이 | internal transition (가드만, 예: Radar `t == APPEAR[id]`) |
 
-Symbolic Simulator는 절대 시각을 안 보이고, Concrete Simulator는 변수 패널에
-`R0.t = 6.0`, `P.cp = 1.4` 같은 실수값을 함께 표시.
-
-### 9.2 흔히 헷갈리는 3가지
+### 10.2 흔히 헷갈리는 3가지
 
 #### (1) "plan을 받았는데 왜 발사 안 하나"
-Ready(committed)에서 두 outgoing edge:
-- `Ready → Flying`: 가드 `ammoU_b[batt_id]>0 && infl<CH && best_u_b>=0 && t==best`
-- `Ready → Idle`: 가드 `best_u_b<0 || ammo==0 || infl>=CH`
-
-committed라서 둘 중 하나가 즉시 발화. 첫 가드가 거짓이면 skip → MSC에 Ready 박스
-잠깐 보였다가 Idle로 돌아감.
+Ready(committed)에서 두 outgoing edge — 가드 만족하는 쪽이 즉시 fire.
+첫 가드 거짓이면 skip → MSC에 Ready 박스 잠깐 보였다가 Idle로 돌아감.
 
 #### (2) "왜 모든 Slot이 동시에 Ready로 가나"
-`plan`이 broadcast → Planner 한 발사로 6개 Slot이 동시 수신 → 6개 동시 Idle → Ready.
+`plan`이 broadcast → Planner 한 발사로 6개 Slot이 동시 수신 → 6개 동시 Ready.
 
 #### (3) "Threat 자체 클럭이 없는데 어떻게 진행하나"
-Threat에는 clock 없음. 모든 상태 변화는 broadcast 수신으로만 발생. 시간 권위는
-Radar가 가짐 (Radar의 `clock t`가 위협별 timing 결정).
+모든 상태 변화는 broadcast 수신으로만 발생. 시간 권위는 Radar.
 
 ---
 
-## 10. ROS2 시뮬레이터 ↔ UPPAAL 정합
+## 11. ROS2 시뮬레이터 ↔ UPPAAL 정합
 
 | ROS2 (`dwta_nodes/`) | UPPAAL v3 | 의미 |
 |---|---|---|
 | `surveillance_radar_node` /events: DETECTED | `Radar(id) detect[id]!` | 탐지 |
-| `engageability_node`의 상층 cell (포대 b) 열림 | `Radar(id) enterU<b>[id]!` | 상층 포대 b 사거리·고도 진입 |
-| `engageability_node`의 상층 cell (포대 b) 닫힘 | `Radar(id) exitU<b>[id]!` | 이탈 |
-| `engageability_node`의 하층 cell 열림/닫힘 | `enterL<b>[id]!` / `exitL<b>[id]!` | 하층 동일 |
+| `engageability_node`의 상층 cell (포대 b) 열림 | `Radar(id) enterU<b>[id]!` | 상층 진입 |
+| `engageability_node`의 상층 cell 닫힘 | `Radar(id) exitU<b>[id]!` | 이탈 |
+| 하층 동일 | `enterL<b>[id]!` / `exitL<b>[id]!` | 하층 |
 | `planning_node._tick(2 Hz)` | `Planner plan!` | 계획수립 주기 |
 | `LauncherNode._on_plan`의 발사 (포대 b) | `Slot_U(b) Ready → Flying` | 발사 |
 | `FireControlRadarNode.resolve` INTERCEPT | `Slot_U hitU[tgt]!` | 격추 |
 | `FireControlRadarNode.resolve` MISS | `Slot_U missU[tgt]!` | 실패 |
 | `surveillance_radar_node` /events: IMPACT | `Radar(id) impact[id]!` | 탄착 |
-| `wta_backend.CleanSlateAdapter`의 우선순위 | `best_u_b(b)`, `best_l_b(b)` 함수 | 정책 추상 |
-| (포대 b 잔여탄) `LauncherNode._available[battery.id]` | `ammoU_b[b]` | 잔여탄 |
-| (포대 b 비행중) `LauncherNode._inflight[battery.id]` | `inflU_b[b]` | 비행중 |
+| `wta_backend.CleanSlateAdapter` 우선순위 | `best_u_b(b)`, `best_l_b(b)` | 정책 추상 |
 
 ---
 
-## 11. PoC 활용 — 3가지 길
+## 12. PoC 활용 — 3가지 길
 
 ### (A) GUI 시뮬레이터로 한 step씩 따라가기
 ```
@@ -715,28 +919,22 @@ Radar가 가짐 (Radar의 `clock t`가 위협별 timing 결정).
 4. 우측 Variables 패널: ammoU_b/inflU_b/engU_b/killed 변화 관찰
 5. Trace 영역에 MSC 자동 누적
 ```
-가장 직관적. "정말 사거리 밖에선 발사 안 하나" 같은 의문을 즉시 확인.
 
 ### (B) verifyta로 trace 자동 생성
 ```powershell
 cd c:\Users\USER\Desktop\DWTA-Optimizer
-# R1: 전량 격추 trace
 verifyta.exe -t 1 -f r1 ros2_dwta\spec\dwta_model_v3_geometry.xml
-# R4: 다층요격 trace
 verifyta.exe -t 1 -f r4 ros2_dwta\spec\dwta_model_v3_geometry.xml
-# 생성된 r1.xtr/r4.xtr를 GUI File→Open Trace로 로드 → MSC가 채워짐
 ```
 
 ### (C) 19개 쿼리 일괄 검증
 ```powershell
 verifyta.exe -q ros2_dwta\spec\dwta_model_v3_geometry.xml
 ```
-각 쿼리에 `Formula is satisfied` 또는 `Formula is NOT satisfied`가 출력됨.
-NOT satisfied가 나오면 `-t 1`로 반례 trace를 받아 분석.
 
-### 단축 명령 (PowerShell)
+### 단축 명령
 ```powershell
-# 시나리오 dump 후 v3 모델에 주입할 const 출력
+# 시나리오 dump
 python -c "import sys; sys.path.insert(0,'ros2_dwta'); from dwta_nodes.scenario import dump_uppaal_windows; print(dump_uppaal_windows(seed=42, n_threats=3))"
 
 # 모델 well-formedness 점검 (라이선스 없이)
@@ -745,11 +943,11 @@ python -c "import xml.dom.minidom as m; m.parse('ros2_dwta/spec/dwta_model_v3_ge
 
 ---
 
-## 12. `clean_slate_optimizer.py`와 UPPAAL의 관계
+## 13. `clean_slate_optimizer.py`와 UPPAAL의 관계
 
 **UPPAAL은 그 파이썬 코드를 호출하지 않습니다.** Python 함수, HiGHS MIP, 부동소수
-계수는 UPPAAL이 못 다룹니다. 대신 그 옵티마이저가 따르는 **정책 규칙**을 추상화해서
-모델에 박았습니다.
+계수는 UPPAAL이 못 다룹니다 (§1.5 한계 참조). 대신 그 옵티마이저가 따르는
+**정책 규칙**을 추상화해서 모델에 박았습니다.
 
 ### 정책의 본질만 추출
 ```python
@@ -771,20 +969,13 @@ int best_u_b(int b) {       // ① 작은 id (= danger DESC 추상) 우선
     }
     return -1;
 }
-// Slot_U 발사 가드:
-ammoU_b[batt_id] > 0 && inflU_b[batt_id] < CH_PER_U[batt_id]
-  && best_u_b(batt_id) >= 0 && t == best_u_b(batt_id)
 ```
-③ 다층요격은 Slot_L의 독립 동작으로 자연 표현 (Slot_U와 Slot_L이 같은 위협을 동시
-잡아도 OK, 단 각자 cnt 관리).
+③ 다층요격은 Slot_U와 Slot_L이 독립 동작하므로 자연 표현.
 
 ### 따라오는 보장
 - (S5) `upCnt_bt[b][t] <= 1` — 어느 시나리오에서도 한 포대가 같은 위협에 두 발 X
 - (RD1) `upCnt_bt[b][t] > 0 ⇒ engU_b[t][b]` — 윈도우 밖 발사 0건
 - (D1) `best_u_b(b)` 항상 valid 반환
-
-이 규칙이 모든 합리적 WTA(GA/MIP/Greedy)에 공통이므로, ROS2 백엔드를 다른 옵티마이저로
-바꿔도 동일 모델 사용 가능.
 
 ### 교차 검증 흐름
 ```
@@ -795,89 +986,68 @@ CleanSlateOptimizer 매 plan!마다 풀음        verifyta -q dwta_model_v3...
   ↓                                         ↓
 "격추 34/0 누설, 다층 9구간"                "19개 쿼리 모두 satisfied"
 ```
-ROS2 trace의 모든 step이 UPPAAL의 19개 invariant를 어기지 않으면 정합.
 
 ---
 
-## 13. 모델 한계 + state space 상한
+## 14. 모델 한계 + state space 상한
 
-### 13.1 의도적으로 추상화한 것
+### 14.1 의도적으로 추상화한 것
 - **위협 위치/궤적**: 시간 윈도우로 환원 (사거리 + 고도의 교집합)
 - **Pk 확률**: hit/miss 비결정 (Pk 0.85 → 85% 격추는 SMC/Stratego 필요)
 - **MIP 정수 해 자체**: best_u_b/best_l_b 순서로 추상
 - **연속 좌표 / 속도**: 사전 계산된 시간 윈도우로 변환
 
-### 13.2 검증 가능 규모 (state space 추정)
+### 14.2 검증 가능 규모 (state space 추정)
 
 | MAXT | NB_U+NB_L | sum(CH) | 총 인스턴스 | verifyta 시간 |
 |---|---|---|---|---|
 | 2 | 2 | 4 | ~10 | 초 단위 |
 | 3 | 2 | 8 | ~15 | 수십 초 |
-| **3** | **4** | **6** | **13 (현재 v3)** | **분 단위 (예상)** |
+| **3** | **4** | **6** | **13 (현재 v3)** | **분 단위** |
 | 5 | 4 | 16 | ~25 | 분~십수 분 |
-| 10+ | — | — | — | timeout / 불가 |
+| 10+ | — | — | — | timeout |
 
-ROS2의 24발 random 시나리오를 그대로는 못 검증. **축소 대표 시나리오로 invariant
-보증 → 큰 trace에 일반화 적용**이 정석.
-
-### 13.3 확장하려면
-포대별 6채널 같은 큰 capacity로 가려면:
+### 14.3 확장하려면
+포대별 6채널 같은 큰 capacity:
 ```c
-const int CH_PER_U[NB_U] = {6, 4};   // L1=6, L2=4
+const int CH_PER_U[NB_U] = {6, 4};
 // System:
-SU0_0 = Slot_U(0); ... SU0_5 = Slot_U(0);   // L1: 6 슬롯
-SU1_0 = Slot_U(1); ... SU1_3 = Slot_U(1);   // L2: 4 슬롯
+SU0_0 = Slot_U(0); ... SU0_5 = Slot_U(0);   // 6 슬롯
+SU1_0 = Slot_U(1); ... SU1_3 = Slot_U(1);   // 4 슬롯
 ```
-총 16+ 상층 슬롯 → verifyta 1~3분 안에 끝나는 범위. MSC 가독성은 떨어짐.
 
 ---
 
-## 14. 시나리오 → 모델 자동 dump 워크플로
+## 15. 시나리오 → 모델 자동 dump 워크플로
 
 ROS2 random 시나리오를 UPPAAL 모델에 그대로 박는 한 줄.
 
-### 14.1 헬퍼 함수 (`scenario.py`)
+### 15.1 헬퍼 함수 (`scenario.py`)
 
 #### `compute_engagement_window(spawn, battery, assets, *, max_alt_km=80.0, dt=0.05, alt_window_km=None)`
-위협의 포물선 궤적을 100Hz 샘플링해서 `(d ≤ R_battery) ∧ (h ∈ alt_window_km)`을
-모두 만족하는 첫·마지막 절대 시각을 반환. `alt_window_km` 기본값: 상층 40~150 km,
-하층 5~40 km.
+위협의 포물선 궤적을 샘플링해서 `(d ≤ R_battery) ∧ (h ∈ alt_window_km)`을 모두
+만족하는 첫·마지막 절대 시각을 반환. 기본 고도: 상층 40~150 km, 하층 5~40 km.
 
 ```python
 from dwta_nodes.scenario import compute_engagement_window, random_saturation_scenario
 assets, batteries, spawns = random_saturation_scenario(seed=42, n_threats=3)
 upper_bat = next(b for b in batteries if b.layer == "UPPER")
 w = compute_engagement_window(spawns[0], upper_bat, assets)
-# -> (8.4, 23.1)  같은 (enter, exit) 절대 초
+# -> (8.4, 23.1)
 ```
 
 #### `dump_uppaal_windows(seed=42, n_threats=3, *, max_alt_km=80.0) -> str`
 random 시나리오의 모든 (위협, 포대) 윈도우를 UPPAAL declaration 형식으로 출력.
 
-```python
-print(dump_uppaal_windows(seed=42, n_threats=3))
-# const int MAXT             = 3;
-# const int NB_U             = 2;
-# const int APPEAR[MAXT]    = { 3, 5, 9 };
-# const int U_ENTER[MAXT][NB_U] = { {8, 8}, {14, 16}, {14, 19} };
-# ...
-```
-
-### 14.2 v3 XML에 주입
+### 15.2 v3 XML에 주입
 
 1. 위 출력의 const 블록을 복사
-2. `dwta_model_v3_geometry.xml`의 `<declaration>` 안 const 부분을 교체 (또는
-   별도 파일에 붙여 새 인스턴스로)
+2. v3 XML의 `<declaration>` 안 const 부분을 교체
 3. `MAXT/NB_U/NB_L/CH_PER_*/AMMO0_*` 일치 확인
 4. verifyta 또는 GUI로 검증
 
-### 14.3 일관성 점검
-ROS2 PoC와 UPPAAL이 같은 시나리오 const를 쓰면:
-- ROS2 trace: `python ros2_dwta\run_poc.py 75 random` (시뮬레이션 결과)
-- UPPAAL trace: `verifyta.exe -q dwta_model_v3_geometry.xml` (정형 검증)
-
-두 결과의 일관성을 직접 비교 가능. UPPAAL이 invariant 위반을 발견하면 ROS2도
-같은 seed로 재현되어야 함.
+### 15.3 일관성 점검
+ROS2와 UPPAAL이 같은 시나리오 const를 쓰면 trace를 직접 비교 가능.
 
 ---
 
@@ -887,19 +1057,18 @@ ROS2 PoC와 UPPAAL이 같은 시나리오 const를 쓰면:
 <?xml ?>
 <nta>
   <declaration>
-    // §3.1(a) 시스템 상수: MAXT, NB_U, NB_L, CH_PER_U/L, FLYOUT_U/L, PERIOD_P
-    // §3.1(b) 시나리오 윈도우: APPEAR, IMPACT_AT, U_ENTER, U_EXIT, L_ENTER, L_EXIT
-    // §3.1(c) 공유 상태: ammoU_b, ammoL_b, inflU_b, inflL_b, upCnt_bt, loCnt_bt,
-    //                   engU_b, engL_b, killed, leaked
-    // §3.1(d) Broadcast 채널: plan, detect, enterU0/U1/L0/L1, exit*, impact, hit/miss
-    // §3.1(e) 함수: best_u_b, best_l_b, any_uCover, any_lCover, any_engU, any_engL
+    // §4.1(a) 시스템 상수
+    // §4.1(b) 시나리오 윈도우
+    // §4.1(c) 공유 상태
+    // §4.1(d) Broadcast 채널
+    // §4.1(e) 함수
   </declaration>
 
-  <template><name>Radar</name> ... (§4.1)
-  <template><name>Threat</name> ... (§4.2)
-  <template><name>Slot_U</name> ... (§4.3)
-  <template><name>Slot_L</name> ... (§4.4)
-  <template><name>Planner</name> ... (§4.5)
+  <template><name>Radar</name>     ... (§5.1)
+  <template><name>Threat</name>    ... (§5.2)
+  <template><name>Slot_U</name>    ... (§5.3)
+  <template><name>Slot_L</name>    ... (§5.4)
+  <template><name>Planner</name>   ... (§5.5)
 
   <system>
     R0/R1/R2, T0/T1/T2,
@@ -916,18 +1085,18 @@ ROS2 PoC와 UPPAAL이 같은 시나리오 const를 쓰면:
 
 ## 부록 B. v3 디버깅 체크리스트
 
-문제 → 어디를 보나:
-- 모델 열리지 않음 → XML well-formed? `python -m xml.dom.minidom ...`
-- "is enabled but never fires" → committed 위치(Ready)의 두 outgoing edge 가드가
-  배타적이고 합집합이 전체인지 확인
-- best_u_b가 항상 -1 → engU_b가 true로 안 들어옴 → Radar의 enter* fire 시점 확인
-- inflU_b 음수 → 발사/판정 시 `++/--` 균형 깨짐. 종결 시 reset 누락 확인
-- 위협이 종결돼도 Slot의 cnt가 안 줄어듦 → broadcast hit가 0 receiver여서 OK여야
-  하는데 동기화 에러? UPPAAL broadcast는 sender만 fire하므로 정상
-- state space explosion → MAXT/NB/CH 줄이거나 invariant 단순화
+| 증상 | 어디를 확인 |
+|---|---|
+| 모델 안 열림 | XML well-formed? `python -m xml.dom.minidom ...` |
+| 가드가 fire 안 됨 | committed 위치의 outgoing edge 가드가 배타적·합집합=전체 |
+| `best_u_b`가 항상 -1 | `engU_b`가 true로 안 들어옴 → Radar의 enter* fire 시점 확인 |
+| `inflU_b` 음수 | 발사/판정 `++/--` 균형 깨짐. 종결 시 reset 누락 |
+| state space 폭발 | MAXT/NB/CH 줄이기 또는 invariant 단순화 |
+| `plan!`이 안 발사됨 | P의 Tick invariant + guard 조합 확인 (§5.5.2) |
+| 다른 자동기가 시간 멈춤 | urgent edge 또는 invariant 위반 확인 |
 
 ---
 
 이 문서로 v2/v3 모델의 모든 요소를 추적할 수 있습니다. 추가 질문(특정 transition의
-의미, 새 쿼리 추가, ROS2 시뮬레이터 결과와 trace 비교)은 §11(PoC) 또는 §10(매핑)
+의미, 새 쿼리 추가, ROS2 시뮬레이터 결과와 trace 비교)은 §12(PoC) 또는 §11(매핑)
 섹션을 출발점으로.
