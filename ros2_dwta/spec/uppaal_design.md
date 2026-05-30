@@ -2050,6 +2050,289 @@ v5는 ROS2 정합 검증 전용으로 분리. 두 모델의 안전성 결과가 
 
 ---
 
+## 22. v5 모델 완전 walkthrough — `dwta_model_v5_explicit_assign.xml`
+
+**구현 완료**: [`dwta_model_v5_explicit_assign.xml`](./dwta_model_v5_explicit_assign.xml).
+v3 베이스(단발 + 윈도우 const)에 §21의 **Planner-as-decider + 명시적 assign 채널**
+패턴을 적용. 13 인스턴스(v3 동일), **20 검증 쿼리**(v3와 같은 17개 + v5 전용 3개).
+
+### 22.0 자연어로 본 v5 시스템
+
+**우리가 표현하려는 것**:
+*"실제 ROS2처럼, **PlanningNode가 매 주기마다 WTA를 풀어 (포대, 위협) 페어 리스트를
+만들고**, 결정된 포대에게만 명시적으로 발사 명령을 내린다. 발사대(LauncherNode/Slot)는
+받은 명령을 그저 실행만 한다."*
+
+**v3/v4와의 본질적 차이**:
+- v3/v4: Planner = 시각 알림 / Slot = 의사결정 + 실행 (역할이 ROS2와 반대)
+- **v5**: Planner = 의사결정 + 자원 갱신 / Slot = 실행만 (ROS2 1:1 정합)
+
+### 22.1 글로벌 declaration이 표현하는 것
+
+**자연어**: "v3와 같은 시나리오 (위협 3발, 상층 2포대 채널 2·1, 하층 2포대 채널 2·1,
+잔여탄 3·2, 윈도우 const는 헬퍼 dump). 단발만 (`upCnt_bt[b][t] <= 1` 가드). 통신은
+Radar의 broadcast + **Planner→Slot의 handshake assign** 두 가지로 분리."
+
+```c
+// (v3 동일 부분 생략 — MAXT, NB_*, CH_PER_*, FLYOUT_*, PERIOD_P, 윈도우 const,
+//  ammoU_b, inflU_b, upCnt_bt, engU_b, killed, leaked)
+
+int shots_u_fired = 0;   // v5 신규: Planner가 결심한 누계
+int shots_l_fired = 0;
+
+// ⭐ Handshake 채널 (broadcast 아님)
+chan assign_u[NB_U][MAXT];
+chan assign_l[NB_L][MAXT];
+
+// Radar/outcome은 그대로 broadcast
+broadcast chan detect[MAXT];   // ... 9 종
+broadcast chan hitU[MAXT];     // ... 4 종
+// plan! 제거됨 (Planner 내부 결심으로 대체)
+```
+
+**왜 handshake?** broadcast는 receiver 0명이어도 fire 가능 → "발사할 채널 없는데
+명령 발사"가 모델적으로 가능해버림. handshake는 매칭이 정확히 1쌍 있어야 fire →
+"발사 명령은 항상 자유 채널 1개가 있을 때만" 자연히 강제.
+
+### 22.2 Radar 템플릿 — v3와 동일
+
+위협별 timing 권위자. Pre / Scan / Done 3 위치, 10 transition. v5에서 변화 없음
+(WTA 의사결정과 무관).
+
+### 22.3 Threat 템플릿 — v3와 동일
+
+signal-driven. Inbound / Tracked / Killed / Leaked 4 위치. 윈도우 토글 + hit/miss
+수신 + impact로 종결. v5에서 변화 없음.
+
+### 22.4 Slot_U 템플릿 — **대폭 단순화 (v5 핵심)**
+
+#### 왜 이런 구조인가
+자연어: "Slot은 자기 결정 권한 없음. Planner의 `assign_u[batt_id][t]?` 명령만 듣고
+즉시 비행 시작. 비행 끝나면 hit 또는 miss 통보. 끝."
+
+v3에서는 Idle / **Ready(committed)** / Flying 3 위치 + 5 transition이었지만, v5는
+**Idle / Flying 2 위치 + 3 transition**으로 축소.
+
+#### 노드 하나하나
+
+**Idle** (대기)
+- 자연어: "Planner의 발사 명령 대기. plan!은 더 이상 받지 않음."
+- 나가는 edge 1개:
+  - `Idle → Flying`
+  - select `t : int[0,MAXT-1]` — 어느 위협에 매칭됐는지
+  - sync `assign_u[batt_id][t]?` — "내 포대의 채널 한 슬롯에게 위협 t를 노리라는 명령"
+  - assign `tgt = t, f = 0` — 목표 저장, 비행 클럭 0
+  - ⭐ **자원 갱신 없음**: ammoU_b, inflU_b, upCnt_bt 모두 Planner가 이미 갱신했음
+
+**Flying** (비행)
+- 자연어: "미사일 비행 중. FLYOUT_U 시각 후 hit 또는 miss."
+- invariant `f <= FLYOUT_U`
+- 나가는 edge 2개:
+  - `Flying → Idle` (hit): guard `f >= FLYOUT_U`, sync `hitU[tgt]!`, assign `inflU_b[batt_id]--, upCnt_bt[batt_id][tgt]--`
+  - `Flying → Idle` (miss): guard `f >= FLYOUT_U`, sync `missU[tgt]!`, assign 같음
+
+#### v3 대비 변화 정리
+| 항목 | v3 | v5 |
+|---|---|---|
+| Locations | Idle / Ready(committed) / Flying | **Idle / Flying** |
+| Transitions | 5 (plan?, fire, skip, hit, miss) | **3 (assign?, hit, miss)** |
+| best_u_b 호출 | Slot이 직접 | Planner가 |
+| ammo/infl/upCnt 갱신(발사 시) | Slot에서 | **Planner에서** |
+| ammo/infl/upCnt 갱신(판정 시) | Slot에서 | Slot에서 (그대로) |
+| committed 위치 | 있음 (Ready) | **없음** |
+| Skip 전이 | 있음 (Ready→Idle) | **없음** (Planner가 fire 안 함) |
+
+### 22.5 Slot_L 템플릿 — Slot_U와 동일 구조
+
+L-계열 변수 (`ammoL_b`, `inflL_b`, `loCnt_bt`, `FLYOUT_L`, `hitL/missL`, `assign_l`).
+Idle / Flying 2 위치 + 3 transition.
+
+### 22.6 Planner 템플릿 — **WTA 의사결정 주체 (v5 핵심)**
+
+#### 왜 이런 구조인가
+자연어: "주기 도래 시 모든 포대를 순회하며 `best_u_b`/`best_l_b`로 우선순위 위협
+선택. 발사 가능하면 그 포대에 `assign_u/l` 명령 발사, 자원 즉시 갱신. 발사 불가면
+다음 포대로 skip. 모든 포대 끝나면 다시 Tick."
+
+v3 Planner는 1 위치 + 1 transition으로 가장 단순했는데, v5는 **2 위치 + 6 transition**.
+"분산이었던 의사결정을 Planner에 모았으니" 그만큼 복잡해진 것.
+
+#### 노드 하나하나
+
+**Tick** (주기 대기)
+- 자연어: "다음 결심 주기 도래 대기."
+- invariant `cp <= PERIOD_P`
+- 나가는 edge 1개:
+  - `Tick → Decide`
+  - guard `cp >= PERIOD_P` — 주기 도달
+  - assign `ds = 0` — decision step 초기화 (포대 순회 카운터)
+
+**Decide** (committed, 결심 진행)
+- 자연어: "포대를 ds=0 → NB_U+NB_L 순회하며 각자 발사 결심 즉시 수행. committed라
+  시간 진행 0초."
+- ⭐ **committed**: 모든 결심이 0-시간 안에 fire되어 외부 관찰자에겐 "주기마다 한
+  방에 모든 결정"으로 보임
+- 나가는 edge 5개 (self-loop 4 + 종료 1):
+
+**Edge 1 — 상층 포대 발사**:
+```
+guard: ds < NB_U
+     && ammoU_b[ds] > 0
+     && inflU_b[ds] < CH_PER_U[ds]
+     && best_u_b(ds) >= 0
+     && t == best_u_b(ds)
+select: t : int[0,MAXT-1]
+sync:   assign_u[ds][t]!
+assign: ammoU_b[ds]--, inflU_b[ds]++, upCnt_bt[ds][t]++, shots_u_fired++, ds++
+```
+자연어 분해:
+- `ds < NB_U` — "지금 상층 포대 차례"
+- `ammoU_b[ds] > 0` — "그 포대 잔여탄 있음"
+- `inflU_b[ds] < CH_PER_U[ds]` — "그 포대 채널 여유"
+- `best_u_b(ds) >= 0` — "그 포대로 사격할 위협 존재"
+- `t == best_u_b(ds)` — "그 위협이 정확히 t (결정적)"
+→ assign: "잔여탄 1↓, 비행중 1↑, (포대, 위협) 카운터 1↑, 누적 발사 1↑, 다음 포대"
+
+**Edge 2 — 상층 포대 skip**:
+```
+guard: ds < NB_U
+     && (ammoU_b[ds] == 0
+         || inflU_b[ds] >= CH_PER_U[ds]
+         || best_u_b(ds) < 0)
+assign: ds++
+```
+자연어: "상층 포대 차례인데 발사 불가 (잔탄 / 채널 / 위협 셋 중 하나 없음) → 그냥
+다음 포대로 넘김"
+
+**Edge 3 — 하층 포대 발사** (Edge 1과 대응):
+```
+guard: ds >= NB_U && ds < NB_U + NB_L
+     && ammoL_b[ds - NB_U] > 0
+     && inflL_b[ds - NB_U] < CH_PER_L[ds - NB_U]
+     && best_l_b(ds - NB_U) >= 0
+     && t == best_l_b(ds - NB_U)
+select: t : int[0,MAXT-1]
+sync:   assign_l[ds - NB_U][t]!
+assign: ammoL_b[ds-NB_U]--, inflL_b[ds-NB_U]++, loCnt_bt[ds-NB_U][t]++, shots_l_fired++, ds++
+```
+`ds - NB_U`로 하층 포대 인덱스 0,1 변환.
+
+**Edge 4 — 하층 포대 skip**: Edge 2와 동등.
+
+**Edge 5 — 종료**:
+```
+target: Tick
+guard:  ds == NB_U + NB_L
+assign: cp = 0
+```
+자연어: "모든 포대 (상층 2 + 하층 2 = 4번) 순회 완료 → 주기 클럭 리셋 후 Tick으로
+복귀."
+
+#### 의사결정 1 cycle 흐름
+```
+t = PERIOD_P (예: t=2)
+ P.Tick ─[cp>=2, ds=0]──► P.Decide (committed)
+                            ds=0 (상층 0): best_u_b(0)=-1 (위협 미진입)
+                            Edge 2 skip: ds=1
+                            ds=1 (상층 1): 동일
+                            Edge 2 skip: ds=2
+                            ds=2 (하층 0): best_l_b(0)=-1
+                            Edge 4 skip: ds=3
+                            ds=3 (하층 1): 동일
+                            Edge 4 skip: ds=4 (=NB_U+NB_L)
+                            Edge 5: cp=0
+ P.Decide ──► P.Tick     (모든 게 0 시간 안에 처리)
+```
+
+이후 위협이 사거리 진입한 후 (예: t=10):
+```
+ P.Tick ─[cp>=2, ds=0]──► P.Decide
+                            ds=0: best_u_b(0)=0 (위협 0이 상층 포대 0 윈도우 안)
+                            Edge 1: assign_u[0][0]! ──► 어느 Slot_U(0) 인스턴스로
+                              ammoU_b[0]=2, inflU_b[0]=1, upCnt_bt[0][0]=1, ds=1
+                            ds=1: best_u_b(1)=0이지만 upCnt_bt[1][0]=0 (다른 포대)
+                              만족 → Edge 1: assign_u[1][0]! 
+                              (단, 위협 0이 상층 포대 1 윈도우도 안에 있을 때만)
+                            ...
+                            ds=4: Edge 5 → Tick (cp=0)
+```
+
+#### 이 패턴의 의의
+- **WTA 의사결정이 한 위치(Decide)에 모임** — ROS2의 `GreedyWTA.solve()`와 동일
+- assign! 화살표가 MSC에 명시적으로 "Planner→Slot 명령" 표시 → 의사결정이
+  시각화됨
+- Slot의 skip 박스가 사라짐 → MSC가 깔끔
+- Salvo 표현은 어려움 (Edge 1을 같은 ds에서 여러 번 fire하게 만들어야 → v4 패턴
+  병합 필요)
+
+### 22.7 System declarations — v3와 동일 13 인스턴스
+
+```c
+R0 = Radar(0); R1 = Radar(1); R2 = Radar(2);
+T0 = Threat(0); T1 = Threat(1); T2 = Threat(2);
+SU0_0 = Slot_U(0); SU0_1 = Slot_U(0); SU1_0 = Slot_U(1);
+SL0_0 = Slot_L(0); SL0_1 = Slot_L(0); SL1_0 = Slot_L(1);
+P = Planner();
+system R0, R1, R2, T0, T1, T2,
+       SU0_0, SU0_1, SU1_0, SL0_0, SL0_1, SL1_0, P;
+```
+
+### 22.8 검증 쿼리 20개
+
+v3의 17개 (S1~S8, RD1, RD2, T1, L1, R1~R5) + **v5 전용 3개**:
+
+| ID | 쿼리 | 의미 |
+|---|---|---|
+| **E1** | `A[] (P.Tick or P.Decide)` | Planner는 항상 두 위치 중 하나에 있음 (sanity) |
+| **E2** | `A[] (P.Decide imply 0 <= P.ds <= NB_U+NB_L)` | decision-step 카운터 유효 범위 보장 |
+| **E3** | `E<> (shots_u_fired > 0 && shots_l_fired > 0)` | 상층·하층 둘 다 Planner 명령 실제 받음 |
+
+`shots_u_fired/shots_l_fired`로 "발사 명령이 실제 발생했나" 도달성 확인 가능.
+
+### 22.9 사용 워크플로
+
+```powershell
+cd c:\Users\USER\Desktop\DWTA-Optimizer
+
+# 시나리오 윈도우 dump (헬퍼 그대로 사용 가능 — Pk는 v5에서 불필요)
+python -c "import sys; sys.path.insert(0,'ros2_dwta'); from dwta_nodes.scenario import dump_uppaal_windows; print(dump_uppaal_windows(seed=42, n_threats=3))"
+
+# v5 XML의 declaration 윈도우 const를 위 출력으로 교체
+
+# 일괄 검증
+verifyta.exe -q ros2_dwta\spec\dwta_model_v5_explicit_assign.xml
+
+# 또는 GUI로 한 step씩 따라가며 assign! 시각 관찰
+```
+
+### 22.10 v3/v4/v5 비교 — 운용 권장
+
+| 모델 | 의사결정 위치 | 검증 강점 | 운용 시 사용 |
+|---|---|---|---|
+| v3 (`dwta_model_v3_geometry.xml`) | Slot 자율 | 기본 안전성 invariant (19개) | 모든 합리적 정책이 만족해야 할 일반 invariant |
+| v4 (`dwta_model_v4_salvo_pk.xml`) | Slot 자율 + Salvo + SMC | Pk 양적 분석, 격추율 통계 | "이 Pk + Salvo면 평균 격추율 X%" 정량 분석 |
+| **v5** (`dwta_model_v5_explicit_assign.xml`) | **Planner 중앙** | **ROS2 trace 1:1 정합** | ROS2 시뮬레이터 결과와 직접 대조 검증 |
+
+세 모델이 **공통 안전성 (S1~S8, RD1, RD2)** 을 모두 만족하면, 모델·구현·통계 세 축이
+서로 cross-validate 됩니다. v5는 의사결정 구조 정합 + ROS2 trace 비교 전용.
+
+### 22.11 ROS2 ↔ v5 정합
+
+| ROS2 코드 | UPPAAL v5 |
+|---|---|
+| `planning_node._tick()` 진입 | `P.Tick → P.Decide` 전이 |
+| `GreedyWTA.solve()` 호출 | Planner의 Decide self-loop 4개 (포대 순회) |
+| `Assignment(system_id, threat_id)` 한 행 | Planner의 `assign_u[b][t]!` 또는 `assign_l[b][t]!` 한 fire |
+| Assignment 리스트 publish 완료 | Decide → Tick 복귀 (`ds == NB_U+NB_L`) |
+| `LauncherNode._on_plan`이 자기 포대 명령 발사 | Slot의 `assign_u[batt_id][t]?` → Flying |
+| ROS2 trace 한 step | v5 MSC의 assign! 화살표 한 개 |
+
+→ ROS2 PoC log에서 `planning_node` 한 tick의 Assignment 리스트와 UPPAAL v5의
+Decide 한 cycle의 assign! 시퀀스를 1:1 비교 가능. 어떤 포대가 어떤 위협을 잡았는지
+직접 트레이스 매칭.
+
+---
+
 ## 부록 A. v3 모델 파일 구조 한눈에
 
 ```
