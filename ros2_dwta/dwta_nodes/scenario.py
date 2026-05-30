@@ -309,3 +309,76 @@ def dump_uppaal_windows(
         f"const int L_EXIT [MAXT][NB_L] = {fmt_2d(l_w, 1)};",
     ]
     return "\n".join(lines)
+
+
+def dump_uppaal_pk(
+    seed: Optional[int] = 42,
+    n_threats: int = 3,
+) -> str:
+    """Render per-(threat, battery) Pk as the const arrays that v4 expects.
+
+    Pk is rendered as an integer percentage (Pk * 100) because UPPAAL has no
+    floats.  The simple model below uses each battery's base_pk * 100 for
+    every threat -- replace with a more sophisticated lookup if your scenario
+    needs per-threat Pk variance.
+    """
+    assets, batteries, spawns = random_saturation_scenario(
+        seed=seed, n_threats=n_threats)
+    upper = [b for b in batteries if b.layer == "UPPER"]
+    lower = [b for b in batteries if b.layer == "LOWER"]
+
+    def fmt_2d_pk(layer_batts: List[Battery]) -> str:
+        rows = [
+            "{" + ", ".join(str(int(round(b.base_pk * 100))) for b in layer_batts) + "}"
+            for _ in range(n_threats)
+        ]
+        return "{ " + ", ".join(rows) + " }"
+
+    return "\n".join([
+        f"const int PK_U[MAXT][NB_U] = {fmt_2d_pk(upper)};",
+        f"const int PK_L[MAXT][NB_L] = {fmt_2d_pk(lower)};",
+    ])
+
+
+def dump_uppaal_system(
+    seed: Optional[int] = 42,
+    n_threats: int = 3,
+) -> str:
+    """Render the v4 ``<system>`` block with one Slot_U / Slot_L per channel.
+
+    Multiplies each battery's fire_control_channels by an instance with the
+    correct batt_id so the model gets the exact channel-pool sizes the ROS2
+    scenario uses.  Drop this into ``dwta_model_v4_salvo_pk.xml``'s
+    ``<system>`` element.
+    """
+    assets, batteries, spawns = random_saturation_scenario(
+        seed=seed, n_threats=n_threats)
+    upper = [b for b in batteries if b.layer == "UPPER"]
+    lower = [b for b in batteries if b.layer == "LOWER"]
+
+    lines: List[str] = []
+    lines.append(", ".join(f"R{i} = Radar({i})" for i in range(n_threats)) + ";")
+    lines.append(", ".join(f"T{i} = Threat({i})" for i in range(n_threats)) + ";")
+    su_names: List[str] = []
+    for b_idx, b in enumerate(upper):
+        for ch in range(b.fire_control_channels):
+            name = f"SU{b_idx}_{ch}"
+            su_names.append(name)
+            lines.append(f"{name} = Slot_U({b_idx});")
+    sl_names: List[str] = []
+    for b_idx, b in enumerate(lower):
+        for ch in range(b.fire_control_channels):
+            name = f"SL{b_idx}_{ch}"
+            sl_names.append(name)
+            lines.append(f"{name} = Slot_L({b_idx});")
+    lines.append("P = Planner();")
+
+    system_parts = (
+        [f"R{i}" for i in range(n_threats)]
+        + [f"T{i}" for i in range(n_threats)]
+        + su_names
+        + sl_names
+        + ["P"]
+    )
+    lines.append("system " + ", ".join(system_parts) + ";")
+    return "\n".join(lines)
