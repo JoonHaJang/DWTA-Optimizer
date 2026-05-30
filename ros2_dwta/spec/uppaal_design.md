@@ -1709,6 +1709,198 @@ E[<=40; 200] (max: (AMMO0_U[0] - ammoU_b[0]) + (AMMO0_U[1] - ammoU_b[1]))
 
 ---
 
+## 20. v4 모델 완전 walkthrough — `dwta_model_v4_salvo_pk.xml`
+
+**구현 완료**: [`dwta_model_v4_salvo_pk.xml`](./dwta_model_v4_salvo_pk.xml). §19 패턴
+(Salvo + 발당 Pk + 비행시간 jitter)을 그대로 적용한 v3 확장 모델. 13개 인스턴스에서
+15개로 늘었고(상층 슬롯 +2, 하층 슬롯 +2), 검증 쿼리는 19개 → **23개**(Salvo 1 +
+SMC 4 추가).
+
+이 섹션은 **자연어 → 템플릿 단위 → 템플릿 내 노드** 순으로 모델을 풀어 설명합니다.
+
+### 20.0 자연어로 본 v4 시스템
+
+**우리가 표현하려는 것**:
+*"여러 대의 탄도탄이 시간 차이를 두고 다가올 때, 두 종류(L-SAM 상층, M-SAM 하층)의
+방어 포대들이 각자 사거리·고도 윈도우에 들어온 위협을 명중률(Pk)에 기반해 요격하되,
+필요 시 한 위협에 한 포대가 여러 발을 동시 발사(Salvo)하고, 미사일마다 비행시간이
+조금씩 다를 수 있다."*
+
+**시스템 행위자(actor)** — 자연어로 정리하면 다섯 부류:
+
+1. **Radar (감시·사격통제 통합 추상)** — 각 위협을 추적하면서 등장·사거리 진입·이탈·탄착 시각을 모든 컴포넌트에 broadcast.
+2. **Threat (적 탄도탄)** — 자기 시간을 모르고 Radar 신호로 진행. hit/miss/impact 수신으로 종결.
+3. **Slot_U / Slot_L (요격 채널 슬롯)** — 한 발 단위 발사 능력. plan?에 결심, Salvo 허용 안에서 best 위협 발사.
+4. **Planner (계획수립)** — 일정 주기로 plan! broadcast.
+5. **공유 상태** — 포대별 잔여탄·비행중·동시 추적 카운터·윈도우 플래그·종결 누계·총 발사 수.
+
+이 5개 행위자를 UPPAAL 템플릿 5개로 1:1 매핑한 것이 v4.
+
+### 20.1 글로벌 declaration이 표현하는 것
+
+**자연어**: "위협 3발, 상층 포대 2개·채널 3/2, 하층 2개·채널 3/2. 상층 잔여탄 4/3, 하층 4/3. 위협별 등장·탄착 시각, (위협, 포대)별 윈도우와 Pk는 시나리오에서 사전 계산. 위협 한 대당 한 포대가 상층 최대 2발, 하층 1발 동시 발사. 비행시간 상층 4~6초, 하층 1~3초. 계획주기 2초."
+
+```c
+const int MAXT             = 3;
+const int NB_U             = 2;
+const int NB_L             = 2;
+const int CH_PER_U[NB_U]   = {3, 2};
+const int CH_PER_L[NB_L]   = {3, 2};
+const int FLYOUT_U_MIN     = 4;  const int FLYOUT_U_MAX = 6;
+const int FLYOUT_L_MIN     = 1;  const int FLYOUT_L_MAX = 3;
+const int PERIOD_P         = 2;
+const int MAX_SALVO_U      = 2;
+const int MAX_SALVO_L      = 1;
+const int PK_U[MAXT][NB_U] = {{85,80},{78,82},{88,75}};   // Pk × 100
+const int PK_L[MAXT][NB_L] = {{72,70},{75,73},{68,71}};
+```
+
+**핵심 함수**:
+```c
+int best_u_b_salvo(int b) {
+    int i = 0;
+    while (i < MAXT) {
+        if (engU_b[i][b] && upCnt_bt[b][i] < MAX_SALVO_U) return i;
+        i++;
+    }
+    return -1;
+}
+```
+v3 `best_u_b()`의 `== 0` → `< MAX_SALVO_U` 한 글자가 Salvo의 모든 것.
+
+### 20.2 Radar 템플릿 — 시간 권위자 (v3와 동일)
+
+**왜 이런 구조**: 위협 한 대 처음부터 끝까지 책임. 클럭 `t`로 시각 측정, invariant + guard 조합으로 정확한 시각 발사 강제.
+
+**Pre** (초기) — invariant `t <= APPEAR[id]`
+- 나가는 edge 1: `Pre → Scan`, guard `t == APPEAR[id]`, sync `detect[id]!`
+  → 자연어: "APPEAR 시각 도달, '지금 등장' broadcast"
+
+**Scan** (활성) — invariant `t <= IMPACT_AT[id]`
+- 8 self-loop (포대별 enter/exit broadcast):
+  * `enterU0[id]!` at `t==U_ENTER[id][0]` — "상층 포대 0 윈도우 진입"
+  * `exitU0[id]!` at `t==U_EXIT[id][0]` — "상층 포대 0 윈도우 이탈"
+  * (U1/L0/L1 동일 패턴 6개)
+- 종결 edge: `Scan → Done`, guard `t == IMPACT_AT[id]`, sync `impact[id]!`
+
+**Done** (sink) — 영원히 머묾.
+
+**v4에서 변화**: 없음. Salvo/Pk는 슬롯 측 동작.
+
+### 20.3 Threat 템플릿 — signal-driven consumer (v3와 동일)
+
+**왜 이런 구조**: 자기 시간을 모름. Radar 신호로 토글, hit 한 발에 즉시 종결 (Salvo 두 발 비행 중이어도 한 발이면 끝).
+
+**Inbound** (초기)
+- `Inbound → Tracked`: sync `detect[id]?` — "탐지됨"
+- `Inbound → Leaked`: sync `impact[id]?`, assign `leaked++` — "탐지 전 탄착"
+
+**Tracked** (활성)
+- 8 윈도우 toggle self-loop: `enterU0[id]?` → `engU_b[id][0]=true`, `exitU0[id]?` → `=false`, (U1/L0/L1 동일)
+- 2 miss self-loop: `missU[id]?` / `missL[id]?` (무시, 재교전 대기)
+- 2 격추 edge: `Tracked → Killed` on `hitU[id]?` 또는 `hitL[id]?`, assign 윈도우 정리 + `killed++`
+  ⭐ Salvo로 두 발 비행 중이어도 hit 한 발에 종결. 다른 미사일 broadcast는 receiver 0 (Killed는 hit 무시).
+- 탄착 edge: `Tracked → Leaked` on `impact[id]?`
+
+**Killed/Leaked** (terminal sink)
+
+**v4에서 변화**: 없음.
+
+### 20.4 Slot_U 템플릿 — 상층 채널 (v4 핵심 변화 ⭐)
+
+**왜 이런 구조**: 한 채널 = 한 발 능력. plan?에 결심, Salvo 허용 안에서 발사, 비행 후 Pk 기반 hit/miss.
+
+`CH_PER_U = {3, 2}` → 인스턴스 5개 (SU0_0~2, SU1_0~1).
+
+**Idle** (대기)
+- `Idle → Ready`: sync `plan?` — "결심 시각"
+
+**Ready** (committed, 시간 진행 0초)
+- ⭐ **발사 edge** `Ready → Flying`:
+  * select `t : int[0,MAXT-1]`
+  * guard 분해:
+    - `ammoU_b[batt_id]>0` : "내 포대 잔여탄"
+    - `inflU_b[batt_id]<CH_PER_U[batt_id]` : "내 포대 채널 여유"
+    - `best_u_b_salvo(batt_id)>=0` : "발사할 위협 존재"
+    - `t==best_u_b_salvo(batt_id)` : "그 위협이 t (결정적)"
+  * assign: `ammoU_b[batt_id]--, inflU_b[batt_id]++, upCnt_bt[batt_id][t]++, shots_u_fired++, tgt=t, f=0`
+  * ⭐ v3 차이: `best_u_b_salvo`는 `upCnt_bt < MAX_SALVO_U` 가드 → 같은 위협 두 번째 발사도 통과
+- **skip edge** `Ready → Idle`:
+  * guard `best_u_b_salvo(batt_id)<0 || ammoU_b[batt_id]==0 || inflU_b[batt_id]>=CH_PER_U[batt_id]`
+
+**Flying** (비행)
+- invariant `f <= FLYOUT_U_MAX` ⭐ v3는 `f <= FLYOUT_U` 고정
+- ⭐ **명중 edge** `Flying → Idle`:
+  * guard `f >= FLYOUT_U_MIN` (jitter 윈도우 시작) ⭐ v3는 `f >= FLYOUT_U` 단일
+  * sync `hitU[tgt]!`
+  * ⭐ **probability `PK_U[tgt][batt_id]`** (SMC 가중치, v3엔 없음)
+  * assign `inflU_b[batt_id]--, upCnt_bt[batt_id][tgt]--`
+- ⭐ **실패 edge** `Flying → Idle`:
+  * guard `f >= FLYOUT_U_MIN`
+  * sync `missU[tgt]!`
+  * ⭐ **probability `100 - PK_U[tgt][batt_id]`**
+  * assign 같음
+- ⭐ jitter: `[FLYOUT_U_MIN, FLYOUT_U_MAX]` 안에서 fire 시각 비결정 → 같은 plan에 발사된 슬롯들도 결과 시각 다름
+
+**v3와 차이 요약**:
+1. `best_u_b` → `best_u_b_salvo`
+2. invariant `FLYOUT_U` → `FLYOUT_U_MAX`
+3. hit/miss guard `>= FLYOUT_U` → `>= FLYOUT_U_MIN`
+4. hit/miss edge에 `probability` label 추가
+5. 발사 assignment에 `shots_u_fired++` 추가
+
+### 20.5 Slot_L 템플릿 — 하층 채널
+
+Slot_U와 구조 동일, L-계열 변수 (`ammoL_b`, `inflL_b`, `loCnt_bt`, `FLYOUT_L_MIN/MAX`, `hitL/missL`, `PK_L`, `best_l_b_salvo`, `shots_l_fired`, `MAX_SALVO_L=1` 기본).
+
+### 20.6 Planner 템플릿 — 주기 (v3와 동일)
+
+**Tick** (유일 위치) — invariant `cp <= PERIOD_P`
+- self-loop `Tick → Tick`: guard `cp >= PERIOD_P`, sync `plan!`, assign `cp=0`
+
+### 20.7 System declarations
+
+총 15 인스턴스. 헬퍼 `dump_uppaal_system()`이 자동 생성.
+
+### 20.8 검증 쿼리 23개
+
+| 그룹 | 개수 | 핵심 |
+|---|---|---|
+| Safety (S1~S8) | 8 | v3 + S5/S6의 `<=1`을 `<= MAX_SALVO_U/L`로 일반화 |
+| Geometry (RD1/RD2) | 2 | v3 동일 |
+| Timing (T1) | 1 | v3 동일 |
+| Liveness (L1) | 1 | v3 동일 |
+| Reachability (R1~R6) | 6 | v3 동일 |
+| **Salvo (SV1)** | 1 | `E<> exists(b)(t) upCnt_bt[b][t]==MAX_SALVO_U` |
+| **SMC (SMC1~SMC4)** | 4 | `Pr/E[...; 200]/simulate` |
+
+### 20.9 사용 워크플로
+
+```powershell
+# 1) ROS2 시나리오에서 v4용 const 텍스트 생성
+python -c "import sys; sys.path.insert(0,'ros2_dwta'); from dwta_nodes.scenario import dump_uppaal_windows, dump_uppaal_pk, dump_uppaal_system; print(dump_uppaal_windows(seed=42, n_threats=3)); print(); print(dump_uppaal_pk(seed=42, n_threats=3)); print(); print(dump_uppaal_system(seed=42, n_threats=3))"
+
+# 2) v4 XML의 declaration / system 블록을 위 출력으로 교체
+
+# 3) GUI에서 열기 (verifyta CLI도 가능)
+# UPPAAL → File → Open → ros2_dwta\spec\dwta_model_v4_salvo_pk.xml
+verifyta.exe -q ros2_dwta\spec\dwta_model_v4_salvo_pk.xml
+```
+
+### 20.10 ROS2 시뮬레이터와 정합
+
+| ROS2 | UPPAAL v4 |
+|---|---|
+| `Battery.base_pk = 0.86` | `PK_U[t][b] = 86` (헬퍼 dump) |
+| `LauncherNode` 단발 (현재) | `MAX_SALVO_U = 2` (의도적 강화) |
+| `FCR.FLYOUT = 5` 결정 | `[FLYOUT_U_MIN, MAX] = [4, 6]` 윈도우 |
+| ROS2 통계 "격추율 X%" | UPPAAL SMC `Pr[<=40] (<> killed==MAXT)` |
+| ROS2 평균 발사 미사일 수 | `E[<=40; 200] (max: shots_u_fired + shots_l_fired)` |
+
+v4 SMC와 ROS2 통계가 ±오차 안에서 일치하면 모델·시뮬레이터 정합.
+
+---
+
 ## 부록 A. v3 모델 파일 구조 한눈에
 
 ```
