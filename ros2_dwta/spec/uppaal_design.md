@@ -1488,6 +1488,227 @@ log_test_event("KILL", id);
 
 ---
 
+## 19. Salvo(동시 다발) · 발당 Pk · 비행시간 jitter — 더 현실적인 교전 모사
+
+현재 v3는 검증 가능성을 우선해 **단순화 3가지**를 채택했습니다:
+
+| 측면 | v3 현재 | 한계 |
+|---|---|---|
+| 격추/실패 판정 | `hitU!` / `missU!` 비결정 분기 | "양쪽 trace 다 가능"만 검증, 격추율 양적 표현 X |
+| 발사 패턴 | 위협당 포대당 1발(`upCnt_bt[b][t]==0` 가드) | Salvo(동시 다발 사격) 불가 |
+| 비행시간 | `f >= FLYOUT_U` 결정적 5초 | 미사일마다 비행 jitter 없음 |
+
+세 가지 모두 표현 가능합니다. SMC 빌드(§17)에서 가장 자연. 패턴을 정리합니다.
+
+### 19.1 발당 Pk — 결정적 변수 + SMC 확률 가중치
+
+#### 19.1.1 글로벌 declaration에 Pk 도입
+```c
+// (위협, 포대) 쌍별 명중률 — ROS2 시나리오에서 사전 계산
+// 정수 표기: Pk × 100 (예: 0.85 → 85)
+const int PK_U[MAXT][NB_U] = {
+    {85, 80},   // 위협 0: 상층 포대 0=85%, 1=80%
+    {78, 82},   // 위협 1
+    {88, 75},   // 위협 2
+};
+const int PK_L[MAXT][NB_L] = {
+    {72, 70},
+    {75, 73},
+    {68, 71},
+};
+```
+
+#### 19.1.2 SMC 모드 — branching edge 확률 가중치
+Slot_U의 Flying → Idle 전이를 둘로 갈라 가중치 부여:
+
+```xml
+<!-- hit 전이 -->
+<transition>
+  <source ref="su_fly"/><target ref="su_idle"/>
+  <label kind="guard">f >= FLYOUT_U</label>
+  <label kind="synchronisation">hitU[tgt]!</label>
+  <label kind="probability">PK_U[tgt][batt_id]</label>      <!-- 새로 -->
+  <label kind="assignment">inflU_b[batt_id]--, upCnt_bt[batt_id][tgt]--</label>
+</transition>
+
+<!-- miss 전이 -->
+<transition>
+  <source ref="su_fly"/><target ref="su_idle"/>
+  <label kind="guard">f >= FLYOUT_U</label>
+  <label kind="synchronisation">missU[tgt]!</label>
+  <label kind="probability">100 - PK_U[tgt][batt_id]</label>
+  <label kind="assignment">inflU_b[batt_id]--, upCnt_bt[batt_id][tgt]--</label>
+</transition>
+```
+
+비율 `Pk : (100-Pk)`로 SMC가 무작위 선택. 이제 `Pr[<=40](<> killed==MAXT)`가
+실제 Pk를 반영한 격추 확률을 반환.
+
+#### 19.1.3 결정적 검증(기본 TCTL) 호환성
+가중치는 SMC 쿼리(`Pr/simulate/E[]`)에서만 효과. 기본 TCTL(`A[]/E<>`)는 두 분기를
+비결정으로 동등 취급 → §9의 19개 안전성 쿼리는 그대로 성립.
+
+### 19.2 Salvo — 위협당 동시 다발 사격
+
+#### 19.2.1 Salvo 한계 변수 도입
+```c
+const int MAX_SALVO_U = 2;   // 한 포대가 한 위협에 동시 발사 가능한 최대 발수
+const int MAX_SALVO_L = 1;
+```
+
+#### 19.2.2 Slot_U 가드 완화
+현재:
+```c
+ammoU_b[batt_id] > 0 && inflU_b[batt_id] < CH_PER_U[batt_id]
+  && best_u_b(batt_id) >= 0 && t == best_u_b(batt_id)
+```
+변경 후 (Salvo 허용):
+```c
+ammoU_b[batt_id] > 0 && inflU_b[batt_id] < CH_PER_U[batt_id]
+  && best_u_b_salvo(batt_id) >= 0 && t == best_u_b_salvo(batt_id)
+```
+새 함수:
+```c
+int best_u_b_salvo(int b) {
+    int i = 0;
+    while (i < MAXT) {
+        if (engU_b[i][b] && upCnt_bt[b][i] < MAX_SALVO_U) return i;
+        i++;
+    }
+    return -1;
+}
+```
+즉 한 포대가 한 위협에 **MAX_SALVO_U발까지 동시 비행** 가능. 채널 한계
+(`inflU_b < CH_PER_U`)는 여전히 있어서 무한정은 아님.
+
+#### 19.2.3 따라오는 효과
+- 같은 plan! tick에서 한 포대가 한 위협에 두 발 동시 발사 (committed Ready에서
+  best_u_b_salvo가 두 번 호출되면 같은 위협 반환)
+- `inflU_b[b]`가 빠르게 채널 한계 도달 → 다른 위협 못 잡음 trade-off
+- Pk 효과: 한 발만 맞으면 격추. 효과적 Pk = `1 - (1-Pk)^salvo_size`
+- 새 보장: `A[] forall (b)(t) upCnt_bt[b][t] <= MAX_SALVO_U` (S5 갱신)
+
+#### 19.2.4 효과적 Pk 검증 (SMC)
+```c
+// Salvo=2, Pk=0.85 가정 → 효과적 Pk = 1 - 0.15² = 0.9775
+// SMC로 확인:
+Pr[<=40] (<> killed == MAXT)
+// 결과가 약 0.97 ± 0.01 나오면 정합
+```
+
+### 19.3 비행시간 jitter — 미사일마다 delay 다양화
+
+#### 19.3.1 단순 비결정 (select)
+```c
+// declaration
+const int FLYOUT_U_MIN = 4;
+const int FLYOUT_U_MAX = 6;
+
+// Slot_U.Flying invariant: f <= FLYOUT_U_MAX
+// Flying -> Idle hit/miss 가드:
+f >= FLYOUT_U_MIN
+```
+가드와 invariant 사이 구간에서 verifyta가 어떤 시점에 fire될지 비결정 선택 →
+효과적 jitter 표현.
+
+#### 19.3.2 SMC 모드 — 지수분포 또는 정규분포 근사
+Flying에 `rate of exponential = 1` 두면 평균 1초 머무름. 결정적 + 확률 결합:
+```
+invariant: f <= FLYOUT_U_MAX
+rate of exponential: 1    (평균 1초, 단 invariant까지)
+```
+또는 별도 location들로 정규분포 근사 (좀 복잡).
+
+#### 19.3.3 슬롯별 launch jitter
+같은 plan!에서 발사된 두 슬롯의 비행시간을 다르게 하려면:
+```c
+// Slot_U local declaration
+int my_jitter;   // 인스턴스마다 다른 jitter
+
+// Idle -> Ready committed 전이 assignment:
+my_jitter = ch_id;  // ch_id가 free parameter면 자동으로 다름
+
+// Flying -> Idle 가드:
+f >= FLYOUT_U + my_jitter
+```
+free parameter 패턴(§18.1)과 결합하면 자동으로 슬롯별 다른 비행시간.
+
+### 19.4 세 가지 합쳐서 — v4 모델 후보 스케치
+
+`dwta_model_v4_salvo_pk.xml` (가칭) 의 핵심 추가:
+
+```c
+const int MAXT     = 3;
+const int NB_U     = 2;
+const int NB_L     = 2;
+const int CH_PER_U[NB_U] = {3, 2};      // Salvo 위해 채널 약간 늘림
+const int CH_PER_L[NB_L] = {3, 2};
+const int FLYOUT_U_MIN = 4, FLYOUT_U_MAX = 6;   // jitter 윈도우
+const int FLYOUT_L_MIN = 1, FLYOUT_L_MAX = 3;
+const int MAX_SALVO_U = 2;
+const int MAX_SALVO_L = 1;
+
+// 위협별 포대별 명중률 (Pk × 100)
+const int PK_U[MAXT][NB_U] = { {85, 80}, {78, 82}, {88, 75} };
+const int PK_L[MAXT][NB_L] = { {72, 70}, {75, 73}, {68, 71} };
+
+// (나머지 ammoU_b, inflU_b, upCnt_bt, engU_b 등 v3 그대로)
+
+int best_u_b_salvo(int b) {
+    int i = 0;
+    while (i < MAXT) {
+        if (engU_b[i][b] && upCnt_bt[b][i] < MAX_SALVO_U) return i;
+        i++;
+    }
+    return -1;
+}
+```
+
+새 검증 쿼리:
+```c
+// (Safety) Salvo 한계
+A[] forall (b : int[0,NB_U-1]) forall (t : int[0,MAXT-1])
+   (upCnt_bt[b][t] <= MAX_SALVO_U)
+
+// (Reachability) 같은 포대가 한 위협에 동시 2발
+E<> exists (b : int[0,NB_U-1]) exists (t : int[0,MAXT-1])
+   (upCnt_bt[b][t] == 2)
+
+// (SMC) 효과적 격추율
+Pr[<=40] (<> killed == MAXT)
+
+// (SMC) 평균 격추 수
+E[<=40; 200] (max: killed)
+
+// (SMC) 평균 미사일 소비량 (= initial - remaining)
+E[<=40; 200] (max: (AMMO0_U[0] - ammoU_b[0]) + (AMMO0_U[1] - ammoU_b[1]))
+```
+
+### 19.5 ROS2 시뮬레이터와의 정합
+
+| ROS2 | UPPAAL v4 후보 |
+|---|---|
+| `Battery.base_pk` (포대 Pk) | `PK_U[t][b] / PK_L[t][b]` (위협별 Pk) |
+| `FireControlRadarNode.HIT_THRESHOLD = 0.5` | SMC probability weight |
+| `interceptor_flyout` 결정값 | `FLYOUT_U_MIN ~ MAX` 윈도우 또는 SMC rate |
+| `LauncherNode`의 SLS(shoot-look-shoot) | Salvo (현재 ROS2는 비활성, v4에선 모델화) |
+| ROS2 통계 "격추율 85%" | UPPAAL SMC `Pr[<=T](<> killed==MAXT)` |
+
+### 19.6 만들어드릴까
+
+§19의 패턴 셋(Pk + Salvo + jitter)을 적용한 **v4 모델 (`dwta_model_v4_salvo_pk.xml`)**
+과 ROS2 측 헬퍼 확장(`dump_uppaal_pk()`, `dump_uppaal_system()`)을 한 묶음으로
+만들어드릴 수 있습니다. 시작 시 결정 필요 사항:
+
+- 검증 가능 규모: MAXT=3, NB_U=NB_L=2, sum(CH)=8~10 정도 (state space 안전)
+- Salvo 크기: MAX_SALVO_U=2, MAX_SALVO_L=1 권장
+- 모델 옵션: (a) v4 신규 파일 또는 (b) v3에 옵션 플래그
+- 검증 쿼리: 기존 19개 + Salvo 1 + SMC 2~3 = 약 23개
+
+원하시면 (a) 또는 (b) 선택만 알려주세요.
+
+---
+
 ## 부록 A. v3 모델 파일 구조 한눈에
 
 ```

@@ -1,16 +1,16 @@
 # Graph Report - DWTA-Optimizer  (2026-05-30)
 
 ## Corpus Check
-- 72 files · ~85,285 words
+- 72 files · ~86,312 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 3783 nodes · 5569 edges · 445 communities (433 shown, 12 thin omitted)
+- 3812 nodes · 5599 edges · 446 communities (434 shown, 12 thin omitted)
 - Extraction: 84% EXTRACTED · 16% INFERRED · 0% AMBIGUOUS · INFERRED: 913 edges (avg confidence: 0.51)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `38da5c02`
+- Built from commit: `ab0a99b4`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -101,6 +101,7 @@
 - [[_COMMUNITY_Community 83|Community 83]]
 - [[_COMMUNITY_Community 86|Community 86]]
 - [[_COMMUNITY_Community 87|Community 87]]
+- [[_COMMUNITY_Community 88|Community 88]]
 - [[_COMMUNITY_Community 89|Community 89]]
 - [[_COMMUNITY_Community 90|Community 90]]
 - [[_COMMUNITY_Community 91|Community 91]]
@@ -493,7 +494,7 @@
 - **DWTA optimizer strategies implementing shared solve/create_model interface** — ga_optimizer_geneticalgorithmoptimizer, greedy_optimizer_greedyoptimizer, clean_slate_optimizer_cleanslateoptimizer [INFERRED 0.85]
 - **Optimizers sharing Asset/InterceptorSystem/Threat dataclasses and engagement-matrix data** — ga_optimizer_geneticalgorithmoptimizer, greedy_optimizer_greedyoptimizer, clean_slate_optimizer_build_problem [INFERRED 0.85]
 
-## Communities (445 total, 12 thin omitted)
+## Communities (446 total, 12 thin omitted)
 
 ### Community 0 - "Community 0"
 Cohesion: 0.08
@@ -790,6 +791,10 @@ Nodes (6): 4.1 Radar(const int id) — 위협 타이밍의 권위자, 4.2 Threat
 ### Community 87 - "Community 87"
 Cohesion: 0.40
 Nodes (5): 14.1 의도적으로 추상화한 것, 14.2 검증 가능 규모 (state space 추정), 14.3 확장하려면, 14. 모델 한계 + state space 상한, code:c (const int CH_PER_U[NB_U] = {6, 4};)
+
+### Community 88 - "Community 88"
+Cohesion: 0.07
+Nodes (29): 19.1.1 글로벌 declaration에 Pk 도입, 19.1.2 SMC 모드 — branching edge 확률 가중치, 19.1.3 결정적 검증(기본 TCTL) 호환성, 19.1 발당 Pk — 결정적 변수 + SMC 확률 가중치, 19.2.1 Salvo 한계 변수 도입, 19.2.2 Slot_U 가드 완화, 19.2.3 따라오는 효과, 19.2.4 효과적 Pk 검증 (SMC) (+21 more)
 
 ### Community 89 - "Community 89"
 Cohesion: 0.20
@@ -2220,16 +2225,16 @@ Cohesion: 0.16
 Nodes (14): 14.1 헬퍼 함수 (`scenario.py`), 14.2 v3 XML에 주입, 14.3 일관성 점검, 14. 시나리오 → 모델 자동 dump 워크플로, 15.1 헬퍼 함수 (`scenario.py`), 15.2 v3 XML에 주입, 15.3 일관성 점검, 15. 시나리오 → 모델 자동 dump 워크플로 (+6 more)
 
 ## Knowledge Gaps
-- **2063 isolated node(s):** `bool`, `str`, `bool`, `str`, `scenario` (+2058 more)
+- **2078 isolated node(s):** `bool`, `str`, `bool`, `str`, `scenario` (+2073 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **12 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `MIPConfig` connect `Community 0` to `Community 1`, `Community 66`, `Community 9`, `Community 53`, `Community 27`, `Community 28`, `Community 29`, `Community 30`?**
-  _High betweenness centrality (0.010) - this node is a cross-community bridge._
 - **Why does `CleanSlateOptimizer` connect `Community 0` to `Community 69`, `Community 7`, `Community 9`, `Community 46`, `Community 53`?**
+  _High betweenness centrality (0.010) - this node is a cross-community bridge._
+- **Why does `MIPConfig` connect `Community 0` to `Community 1`, `Community 66`, `Community 9`, `Community 53`, `Community 27`, `Community 28`, `Community 29`, `Community 30`?**
   _High betweenness centrality (0.010) - this node is a cross-community bridge._
 - **Why does `DWTAMainWindow` connect `Community 9` to `Community 0`, `Community 8`, `Community 14`, `Community 16`, `Community 53`?**
   _High betweenness centrality (0.010) - this node is a cross-community bridge._
